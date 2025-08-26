@@ -1,0 +1,1479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SettingsLoaded" xml:space="preserve">
+    <value>设置加载成功</value>
+  </data>
+  <data name="SettingsNotFound" xml:space="preserve">
+    <value>设置文件未找到，使用默认设置</value>
+  </data>
+  <data name="SettingsLoadError" xml:space="preserve">
+    <value>设置加载错误</value>
+  </data>
+  <data name="SettingsSaved" xml:space="preserve">
+    <value>设置保存成功</value>
+  </data>
+  <data name="SettingsSaveError" xml:space="preserve">
+    <value>设置保存错误</value>
+  </data>
+  <data name="NetworkCheckFailed" xml:space="preserve">
+    <value>✗ 网络连接检测失败</value>
+  </data>
+  <data name="FetchingModConfig" xml:space="preserve">
+    <value>正在从 {0} 获取Mod配置</value>
+  </data>
+  <data name="ModConfigFetchError" xml:space="preserve">
+    <value>从 {0} 获取Mod配置时出错</value>
+  </data>
+  <data name="FetchingTranslationConfig" xml:space="preserve">
+    <value>正在从 {0} 获取翻译配置</value>
+  </data>
+  <data name="TranslationConfigFetchError" xml:space="preserve">
+    <value>从 {0} 获取翻译配置时出错</value>
+  </data>
+  <data name="FetchingGitHubReleases" xml:space="preserve">
+    <value>正在从 {0} 获取GitHub版本信息</value>
+  </data>
+  <data name="GitHubReleasesFetchError" xml:space="preserve">
+    <value>获取 {0}/{1} 的GitHub版本信息时出错</value>
+  </data>
+  <data name="DownloadStarted" xml:space="preserve">
+    <value>开始下载: {0}</value>
+  </data>
+  <data name="DownloadCompleted" xml:space="preserve">
+    <value>下载完成: {0}</value>
+  </data>
+  <data name="DownloadError" xml:space="preserve">
+    <value>下载错误: {0}</value>
+  </data>
+  <data name="GameStarted" xml:space="preserve">
+    <value>游戏进程已启动</value>
+  </data>
+  <data name="GameStopped" xml:space="preserve">
+    <value>游戏进程已停止</value>
+  </data>
+  <data name="ProcessMonitoringStarted" xml:space="preserve">
+    <value>进程监控已启动</value>
+  </data>
+  <data name="ProcessMonitoringStopped" xml:space="preserve">
+    <value>进程监控已停止</value>
+  </data>
+  <data name="ProcessCheckError" xml:space="preserve">
+    <value>检查游戏进程时出错</value>
+  </data>
+  <data name="GameExeNotFound" xml:space="preserve">
+    <value>在 {0} 未找到GHPC.exe</value>
+  </data>
+  <data name="LaunchingGame" xml:space="preserve">
+    <value>正在启动游戏: {0}</value>
+  </data>
+  <data name="GameLaunchError" xml:space="preserve">
+    <value>启动游戏错误</value>
+  </data>
+  <data name="MelonLoaderCheckError" xml:space="preserve">
+    <value>检查MelonLoader安装时出错</value>
+  </data>
+  <data name="MelonLoaderDirCheckError" xml:space="preserve">
+    <value>检查MelonLoader目录时出错</value>
+  </data>
+  <data name="MelonLoaderReleasesFetchError" xml:space="preserve">
+    <value>获取MelonLoader版本信息时出错</value>
+  </data>
+  <data name="InstallingMelonLoader" xml:space="preserve">
+    <value>正在安装MelonLoader...</value>
+  </data>
+  <data name="MelonLoaderVersionNotFound" xml:space="preserve">
+    <value>未找到MelonLoader版本 {0}</value>
+  </data>
+  <data name="MelonLoaderAssetNotFound" xml:space="preserve">
+    <value>未找到MelonLoader版本 {0} 的安装文件</value>
+  </data>
+  <data name="MelonLoaderInstalled" xml:space="preserve">
+    <value>MelonLoader版本 {0} 安装成功</value>
+  </data>
+  <data name="MelonLoaderInstallError" xml:space="preserve">
+    <value>安装MelonLoader错误</value>
+  </data>
+  <data name="ModInstallError" xml:space="preserve">
+    <value>安装Mod {0} 版本 {1} 时出错</value>
+  </data>
+  <data name="ModVersionNotFound" xml:space="preserve">
+    <value>未找到Mod {0} 版本 {1}</value>
+  </data>
+  <data name="ModAssetNotFound" xml:space="preserve">
+    <value>未找到Mod {0} 的安装文件 {1}</value>
+  </data>
+  <data name="ModInstalled" xml:space="preserve">
+    <value>Mod {0} 版本 {1} 安装成功</value>
+  </data>
+  <data name="ModNotInstalled" xml:space="preserve">
+    <value>Mod {0} 未安装</value>
+  </data>
+  <data name="UninstallingMod" xml:space="preserve">
+    <value>正在卸载Mod {0}</value>
+  </data>
+  <data name="ModUninstalled" xml:space="preserve">
+    <value>Mod {0} 卸载成功</value>
+  </data>
+  <data name="ModUninstallError" xml:space="preserve">
+    <value>卸载Mod {0} 时出错</value>
+  </data>
+  <data name="ModConfigNotFound" xml:space="preserve">
+    <value>未找到Mod {0} 的配置</value>
+  </data>
+  <data name="ModEnabled" xml:space="preserve">
+    <value>Mod {0} 已启用</value>
+  </data>
+  <data name="ModDisabled" xml:space="preserve">
+    <value>Mod {0} 已禁用</value>
+  </data>
+  <data name="ModToggleError" xml:space="preserve">
+    <value>切换Mod {0} 到 {1} 时出错</value>
+  </data>
+  <data name="ModConfigReadError" xml:space="preserve">
+    <value>读取Mod {0} 配置时出错</value>
+  </data>
+  <data name="ModConfigSaved" xml:space="preserve">
+    <value>Mod {0} 配置保存成功</value>
+  </data>
+  <data name="ModConfigSaveError" xml:space="preserve">
+    <value>保存Mod {0} 配置时出错</value>
+  </data>
+  <data name="ManifestLoadError" xml:space="preserve">
+    <value>加载Mod安装清单时出错</value>
+  </data>
+  <data name="ManifestSaveError" xml:space="preserve">
+    <value>保存Mod安装清单时出错</value>
+  </data>
+  <data name="AvailableModsLoadError" xml:space="preserve">
+    <value>加载可用Mod列表时出错</value>
+  </data>
+  <data name="ManualModScanError" xml:space="preserve">
+    <value>扫描手动安装的Mod时出错</value>
+  </data>
+  <data name="XUnityReleasesFetchError" xml:space="preserve">
+    <value>获取XUnity AutoTranslator版本信息时出错</value>
+  </data>
+  <data name="InstallingTranslation" xml:space="preserve">
+    <value>正在安装翻译系统版本 {0}</value>
+  </data>
+  <data name="XUnityVersionNotFound" xml:space="preserve">
+    <value>未找到XUnity AutoTranslator版本 {0}</value>
+  </data>
+  <data name="XUnityAssetNotFound" xml:space="preserve">
+    <value>未找到XUnity AutoTranslator安装文件</value>
+  </data>
+  <data name="XUnityInstallError" xml:space="preserve">
+    <value>安装XUnity AutoTranslator时出错</value>
+  </data>
+  <data name="TranslationRepoUrlEmpty" xml:space="preserve">
+    <value>翻译仓库URL为空</value>
+  </data>
+  <data name="TranslationFilesCloneError" xml:space="preserve">
+    <value>克隆翻译文件时出错</value>
+  </data>
+  <data name="TranslationInstalled" xml:space="preserve">
+    <value>翻译系统安装成功</value>
+  </data>
+  <data name="TranslationInstallError" xml:space="preserve">
+    <value>安装翻译系统时出错</value>
+  </data>
+  <data name="UpdatingTranslationFiles" xml:space="preserve">
+    <value>正在更新翻译文件...</value>
+  </data>
+  <data name="TranslationFilesUpdated" xml:space="preserve">
+    <value>翻译文件更新成功</value>
+  </data>
+  <data name="TranslationUpdateError" xml:space="preserve">
+    <value>更新翻译文件时出错</value>
+  </data>
+  <data name="UninstallingTranslation" xml:space="preserve">
+    <value>正在卸载翻译系统</value>
+  </data>
+  <data name="TranslationUninstalled" xml:space="preserve">
+    <value>翻译系统卸载成功</value>
+  </data>
+  <data name="TranslationUninstallError" xml:space="preserve">
+    <value>卸载翻译系统时出错</value>
+  </data>
+  <data name="LanguageListError" xml:space="preserve">
+    <value>获取可用语言列表时出错</value>
+  </data>
+  <data name="CurrentLanguageError" xml:space="preserve">
+    <value>获取当前翻译语言时出错</value>
+  </data>
+  <data name="AutoTranslatorConfigNotFound" xml:space="preserve">
+    <value>未找到AutoTranslator配置文件</value>
+  </data>
+  <data name="TranslationLanguageSet" xml:space="preserve">
+    <value>翻译语言已设置为 {0}</value>
+  </data>
+  <data name="SetLanguageError" xml:space="preserve">
+    <value>设置翻译语言为 {0} 时出错</value>
+  </data>
+  <data name="TranslationManifestLoadError" xml:space="preserve">
+    <value>加载翻译安装清单时出错</value>
+  </data>
+  <data name="TranslationManifestSaveError" xml:space="preserve">
+    <value>保存翻译安装清单时出错</value>
+  </data>
+  <data name="TempFilesCleaned" xml:space="preserve">
+    <value>临时文件清理成功</value>
+  </data>
+  <data name="TempFilesCleanError" xml:space="preserve">
+    <value>清理临时文件时出错</value>
+  </data>
+  <data name="DataRefreshError" xml:space="preserve">
+    <value>刷新数据时出错</value>
+  </data>
+  <data name="LanguageSettingError" xml:space="preserve">
+    <value>应用语言设置错误</value>
+  </data>
+  <data name="ModConfiguration" xml:space="preserve">
+    <value>Mod 配置</value>
+  </data>
+  <data name="ConfigurationPresets" xml:space="preserve">
+    <value>配置预设</value>
+  </data>
+  <data name="LoadPreset" xml:space="preserve">
+    <value>加载</value>
+  </data>
+  <data name="SavePreset" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DeletePreset" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="SaveAsPreset" xml:space="preserve">
+    <value>另存为</value>
+  </data>
+  <data name="NoConfigurationOptions" xml:space="preserve">
+    <value>无配置选项</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="PresetNameRequired" xml:space="preserve">
+    <value>请输入预设名称</value>
+  </data>
+  <data name="PresetLoaded" xml:space="preserve">
+    <value>已加载预设: {0}</value>
+  </data>
+  <data name="PresetSaved" xml:space="preserve">
+    <value>已保存预设: {0}</value>
+  </data>
+  <data name="PresetCreated" xml:space="preserve">
+    <value>已创建预设: {0}</value>
+  </data>
+  <data name="PresetDeleted" xml:space="preserve">
+    <value>已删除预设: {0}</value>
+  </data>
+  <data name="ConfirmDeletePreset" xml:space="preserve">
+    <value>确定要删除预设 '{0}' 吗？</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>确认删除</value>
+  </data>
+  <data name="ConfigurationSaved" xml:space="preserve">
+    <value>配置已保存</value>
+  </data>
+  <data name="ConfigurationSaveError" xml:space="preserve">
+    <value>配置保存失败</value>
+  </data>
+  <data name="OpenConfigurationWindowError" xml:space="preserve">
+    <value>打开配置窗口失败: {0}</value>
+  </data>
+  <data name="CopySelected" xml:space="preserve">
+    <value>复制选中</value>
+  </data>
+  <data name="CopyAll" xml:space="preserve">
+    <value>复制全部</value>
+  </data>
+  <data name="ClearLogs" xml:space="preserve">
+    <value>清空日志</value>
+  </data>
+  <data name="SelectLogsToCompany" xml:space="preserve">
+    <value>请先选择要复制的日志条目</value>
+  </data>
+  <data name="LogsCopiedToClipboard" xml:space="preserve">
+    <value>已复制 {0} 条日志到剪贴板</value>
+  </data>
+  <data name="AllLogsCopiedToClipboard" xml:space="preserve">
+    <value>已复制全部 {0} 条日志到剪贴板</value>
+  </data>
+  <data name="NoLogsToCopy" xml:space="preserve">
+    <value>没有日志可以复制</value>
+  </data>
+  <data name="CopyToClipboardError" xml:space="preserve">
+    <value>复制到剪贴板失败: {0}</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="ForceRefreshCloudConfigurations" xml:space="preserve">
+    <value>强制刷新云端配置</value>
+  </data>
+  <data name="Install" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="Uninstall" xml:space="preserve">
+    <value>卸载</value>
+  </data>
+  <data name="Toggle" xml:space="preserve">
+    <value>切换</value>
+  </data>
+  <data name="InstallTranslationSystem" xml:space="preserve">
+    <value>安装翻译系统</value>
+  </data>
+  <data name="UpdateTranslationFiles" xml:space="preserve">
+    <value>更新翻译文件</value>
+  </data>
+  <data name="UninstallTranslationSystem" xml:space="preserve">
+    <value>卸载翻译系统</value>
+  </data>
+  <data name="ChineseSimplified" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="RetryNetworkCheck" xml:space="preserve">
+    <value>重新检测</value>
+  </data>
+  <data name="NetworkHelpSolution" xml:space="preserve">
+    <value>了解解决方案</value>
+  </data>
+  <data name="ShowLog" xml:space="preserve">
+    <value>显示日志</value>
+  </data>
+  <data name="CopyLog" xml:space="preserve">
+    <value>复制日志</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>浏览...</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>上一步</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="CleanTempFiles" xml:space="preserve">
+    <value>清理临时文件</value>
+  </data>
+  <data name="ViewLogs" xml:space="preserve">
+    <value>查看日志</value>
+  </data>
+  <data name="SaveSettings" xml:space="preserve">
+    <value>保存设置</value>
+  </data>
+  <data name="BackToMain" xml:space="preserve">
+    <value>返回主界面</value>
+  </data>
+  <data name="ModManagement" xml:space="preserve">
+    <value>Mod 管理</value>
+  </data>
+  <data name="TranslationManagement" xml:space="preserve">
+    <value>翻译管理</value>
+  </data>
+  <data name="AvailableMods" xml:space="preserve">
+    <value>可用Mod</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="InstalledVersion" xml:space="preserve">
+    <value>已安装版本</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>最新版本</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="TranslationSystem" xml:space="preserve">
+    <value>翻译系统</value>
+  </data>
+  <data name="InstallationStatus" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="Installed" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="NotInstalled" xml:space="preserve">
+    <value>未安装</value>
+  </data>
+  <data name="LanguageSelection" xml:space="preserve">
+    <value>语言选择</value>
+  </data>
+  <data name="CurrentLanguage" xml:space="preserve">
+    <value>当前语言</value>
+  </data>
+  <data name="GameRunning" xml:space="preserve">
+    <value>游戏运行中</value>
+  </data>
+  <data name="GameRunningDescription" xml:space="preserve">
+    <value>游戏运行时无法操作Mod</value>
+  </data>
+  <data name="SetupWizardTitle" xml:space="preserve">
+    <value>GHPC Mod Manager 初始化向导</value>
+  </data>
+  <data name="Step1LanguageSelection" xml:space="preserve">
+    <value>步骤 1: 选择语言</value>
+  </data>
+  <data name="SelectInterfaceLanguage" xml:space="preserve">
+    <value>请选择程序界面语言：</value>
+  </data>
+  <data name="Step2NetworkCheck" xml:space="preserve">
+    <value>步骤 2: 网络检查</value>
+  </data>
+  <data name="Step3GameDirectory" xml:space="preserve">
+    <value>步骤 3: 游戏目录</value>
+  </data>
+  <data name="Step4MelonLoader" xml:space="preserve">
+    <value>步骤 4: MelonLoader</value>
+  </data>
+  <data name="GameDirectoryPath" xml:space="preserve">
+    <value>游戏目录路径：</value>
+  </data>
+  <data name="ProgramLogs" xml:space="preserve">
+    <value>程序日志</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>级别</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="LogContentCopiedToClipboard" xml:space="preserve">
+    <value>日志内容已复制到剪贴板</value>
+  </data>
+  <data name="CopySuccess" xml:space="preserve">
+    <value>复制成功</value>
+  </data>
+  <data name="NoLogContentToCopy" xml:space="preserve">
+    <value>没有日志内容可复制</value>
+  </data>
+  <data name="Tip" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="CopyFailed" xml:space="preserve">
+    <value>复制失败: {0}</value>
+  </data>
+  <data name="PleaseSelectGHPCExe" xml:space="preserve">
+    <value>请选择GHPC.exe文件</value>
+  </data>
+  <data name="PleaseSelectGameDirectory" xml:space="preserve">
+    <value>请选择游戏目录</value>
+  </data>
+  <data name="GHPCExeNotFoundInDirectory" xml:space="preserve">
+    <value>指定目录中未找到GHPC.exe</value>
+  </data>
+  <data name="CannotGetMelonLoaderVersions" xml:space="preserve">
+    <value>无法获取MelonLoader版本列表</value>
+  </data>
+  <data name="PleaseSelectMelonLoaderVersion" xml:space="preserve">
+    <value>请选择MelonLoader版本</value>
+  </data>
+  <data name="MelonLoaderInstallFailed" xml:space="preserve">
+    <value>MelonLoader安装失败</value>
+  </data>
+  <data name="MelonLoaderInstallationError" xml:space="preserve">
+    <value>MelonLoader安装过程中发生错误</value>
+  </data>
+  <data name="GameLaunchFailed" xml:space="preserve">
+    <value>启动游戏失败</value>
+  </data>
+  <data name="GameLaunchErrorOccurred" xml:space="preserve">
+    <value>启动游戏时发生错误</value>
+  </data>
+  <data name="SetupIncompleteWarning" xml:space="preserve">
+    <value>设置未完成，请重新运行游戏并确保到达主菜单</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="ConfigurationFor" xml:space="preserve">
+    <value>配置 - {0}</value>
+  </data>
+  <data name="ConfigurationItemsLoaded" xml:space="preserve">
+    <value>已加载 {0} 个配置项</value>
+  </data>
+  <data name="ConfigurationLoadFailed" xml:space="preserve">
+    <value>配置加载失败</value>
+  </data>
+  <data name="PresetLoaded_" xml:space="preserve">
+    <value>已加载预设: {0}</value>
+  </data>
+  <data name="PresetLoadFailed" xml:space="preserve">
+    <value>预设加载失败</value>
+  </data>
+  <data name="PresetSaved_" xml:space="preserve">
+    <value>已保存预设: {0}</value>
+  </data>
+  <data name="ScriptModInstallWarning" xml:space="preserve">
+    <value>警告：基于脚本的Mod安装存在安全风险。请只安装来自可信源的Mod。</value>
+  </data>
+  <data name="DoYouWantToContinue" xml:space="preserve">
+    <value>您想要继续吗？</value>
+  </data>
+  <data name="SecurityWarning" xml:space="preserve">
+    <value>安全警告</value>
+  </data>
+  <data name="InvalidModConfiguration" xml:space="preserve">
+    <value>{0} 的Mod配置无效</value>
+  </data>
+  <data name="SettingsSavedSuccessfully" xml:space="preserve">
+    <value>设置保存成功</value>
+  </data>
+  <data name="SettingsSaveFailed" xml:space="preserve">
+    <value>设置保存失败</value>
+  </data>
+  <data name="TempFilesCleaned_" xml:space="preserve">
+    <value>临时文件清理完成</value>
+  </data>
+  <data name="TempFilesCleanFailed" xml:space="preserve">
+    <value>临时文件清理失败</value>
+  </data>
+  <data name="CannotGetModVersionInfo" xml:space="preserve">
+    <value>无法获取Mod版本信息</value>
+  </data>
+  <data name="CannotGetTranslationVersions" xml:space="preserve">
+    <value>无法获取翻译组件版本</value>
+  </data>
+  <data name="WindowTitle" xml:space="preserve">
+    <value>GHPC助手</value>
+  </data>
+  <data name="GameIsRunning" xml:space="preserve">
+    <value>游戏运行中</value>
+  </data>
+  <data name="ProgramSettings" xml:space="preserve">
+    <value>程序设置</value>
+  </data>
+  <data name="LanguageSettings" xml:space="preserve">
+    <value>语言设置</value>
+  </data>
+  <data name="ThemeSettings" xml:space="preserve">
+    <value>主题设置</value>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>主题:</value>
+  </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>浅色主题</value>
+  </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>深色主题</value>
+  </data>
+  <data name="ProgramLanguage" xml:space="preserve">
+    <value>程序语言：</value>
+  </data>
+  <data name="GamePath" xml:space="preserve">
+    <value>游戏路径</value>
+  </data>
+  <data name="GameRootDirectory" xml:space="preserve">
+    <value>游戏根目录：</value>
+  </data>
+  <data name="DataSourceConfiguration" xml:space="preserve">
+    <value>数据源配置</value>
+  </data>
+  <data name="ModConfigURL" xml:space="preserve">
+    <value>Mod配置URL：</value>
+  </data>
+  <data name="TranslationConfigURL" xml:space="preserve">
+    <value>翻译配置URL：</value>
+  </data>
+  <data name="NetworkStatus" xml:space="preserve">
+    <value>网络状态：</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>检测中...</value>
+  </data>
+  <data name="ConnectionNormal" xml:space="preserve">
+    <value>连接正常</value>
+  </data>
+  <data name="ConnectionAbnormal" xml:space="preserve">
+    <value>连接异常</value>
+  </data>
+  <data name="RetryCheck" xml:space="preserve">
+    <value>重新检测</value>
+  </data>
+  <data name="NetworkCheckFailedWarning" xml:space="preserve">
+    <value>⚠️ 网络连接检测失败</value>
+  </data>
+  <data name="NetworkCheckFailedDescription" xml:space="preserve">
+    <value>可能无法正常下载Mod和翻译文件。您可以：</value>
+  </data>
+  <data name="ClickRetryToRetry" xml:space="preserve">
+    <value>• 点击 重新检测重试网络连接</value>
+  </data>
+  <data name="ClickViewSolutions" xml:space="preserve">
+    <value>• 点击 了解解决方案 查看网络问题排查指南</value>
+  </data>
+  <data name="ClickShowLogForDetails" xml:space="preserve">
+    <value>• 点击 显示日志 查看详细的检测过程</value>
+  </data>
+  <data name="Step4MelonLoaderCheck" xml:space="preserve">
+    <value>步骤 4: MelonLoader 环境检测</value>
+  </data>
+  <data name="MelonLoaderInstallStatus" xml:space="preserve">
+    <value>MelonLoader 安装状态：</value>
+  </data>
+  <data name="RequiredDirectoryStatus" xml:space="preserve">
+    <value>必要目录状态：</value>
+  </data>
+  <data name="Generated" xml:space="preserve">
+    <value>已生成</value>
+  </data>
+  <data name="NotGenerated" xml:space="preserve">
+    <value>未生成</value>
+  </data>
+  <data name="MelonLoaderNotInstalledNote" xml:space="preserve">
+    <value>MelonLoader未安装，将进入安装步骤。</value>
+  </data>
+  <data name="MelonLoaderInstalledButMissingDirs" xml:space="preserve">
+    <value>MelonLoader已安装，但缺少关键目录。请至少完整运行一次游戏至主菜单后退出，以便生成所需文件。</value>
+  </data>
+  <data name="Step5InstallMelonLoader" xml:space="preserve">
+    <value>步骤 5: 安装 MelonLoader</value>
+  </data>
+  <data name="Step6FirstRunGuide" xml:space="preserve">
+    <value>步骤 6: 首次运行引导</value>
+  </data>
+  <data name="InstallSuccessNeedGameRun" xml:space="preserve">
+    <value>安装成功！现在需要运行一次游戏来完成全部设置。</value>
+  </data>
+  <data name="Step7WaitGameExit" xml:space="preserve">
+    <value>步骤 7: 等待游戏退出</value>
+  </data>
+  <data name="GameStatus" xml:space="preserve">
+    <value>游戏状态：</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>运行中</value>
+  </data>
+  <data name="Exited" xml:space="preserve">
+    <value>已退出</value>
+  </data>
+  <data name="PresetSaveFailed" xml:space="preserve">
+    <value>预设保存失败</value>
+  </data>
+  <data name="PresetCreationFailed" xml:space="preserve">
+    <value>预设创建失败</value>
+  </data>
+  <data name="PresetDeletionFailed" xml:space="preserve">
+    <value>预设删除失败</value>
+  </data>
+  <data name="ConfirmUninstallMod" xml:space="preserve">
+    <value>确定要卸载 {0} 吗？</value>
+  </data>
+  <data name="ConfirmUninstall" xml:space="preserve">
+    <value>确认卸载</value>
+  </data>
+  <data name="ManualModUninstallMessage" xml:space="preserve">
+    <value>{0} 是手动安装的Mod，请自行前往游戏Mods文件夹删除相关文件。</value>
+  </data>
+  <data name="ManualMod" xml:space="preserve">
+    <value>手动Mod</value>
+  </data>
+  <data name="UninstallingMod_" xml:space="preserve">
+    <value>正在卸载 {0}...</value>
+  </data>
+  <data name="ModUninstalledSuccessfully" xml:space="preserve">
+    <value>{0} 卸载成功</value>
+  </data>
+  <data name="ConfirmUninstallTranslation" xml:space="preserve">
+    <value>确定要卸载翻译系统吗？</value>
+  </data>
+  <data name="UninstallingTranslationSystem" xml:space="preserve">
+    <value>正在卸载翻译系统...</value>
+  </data>
+  <data name="TranslationSystemUninstalledSuccessfully" xml:space="preserve">
+    <value>翻译系统卸载成功</value>
+  </data>
+  <data name="ViewSolutions" xml:space="preserve">
+    <value>了解解决方案</value>
+  </data>
+  <data name="NetworkCheckLog" xml:space="preserve">
+    <value>网络检测日志</value>
+  </data>
+  <data name="ContinueAndConfigureLater" xml:space="preserve">
+    <value>• 或继续安装，稍后手动配置网络</value>
+  </data>
+  <data name="PleaseSelectGHPCLocation" xml:space="preserve">
+    <value>请选择GHPC.exe文件所在位置：</value>
+  </data>
+  <data name="LanguageSelected" xml:space="preserve">
+    <value>语言选择: {0}</value>
+  </data>
+  <data name="EnteringNetworkCheck" xml:space="preserve">
+    <value>进入网络检测步骤</value>
+  </data>
+  <data name="SkippingNetworkCheck" xml:space="preserve">
+    <value>跳过网络检测，直接进入游戏目录设置</value>
+  </data>
+  <data name="NeedRunGameToGenerateDirs" xml:space="preserve">
+    <value>需要运行游戏来生成必要目录</value>
+  </data>
+  <data name="SelectGHPCExeFile" xml:space="preserve">
+    <value>选择GHPC.exe文件</value>
+  </data>
+  <data name="NetworkHelpPageOpened" xml:space="preserve">
+    <value>已打开网络帮助页面</value>
+  </data>
+  <data name="NetworkHelpPageOpenFailed" xml:space="preserve">
+    <value>打开网络帮助页面失败</value>
+  </data>
+  <data name="UserClickedRetryNetworkCheck" xml:space="preserve">
+    <value>用户点击重试网络检测</value>
+  </data>
+  <data name="StartingNetworkConnectionCheck" xml:space="preserve">
+    <value>开始网络连接检测</value>
+  </data>
+  <data name="CheckingNetworkConnectionStatus" xml:space="preserve">
+    <value>正在检测网络连接状态...</value>
+  </data>
+  <data name="NetworkCheckSuccessful" xml:space="preserve">
+    <value>✓ 网络连接检测成功</value>
+  </data>
+  <data name="PossibleReasons" xml:space="preserve">
+    <value>可能原因:</value>
+  </data>
+  <data name="UnstableNetworkConnection" xml:space="preserve">
+    <value>- 网络连接不稳定</value>
+  </data>
+  <data name="DNSResolutionProblem" xml:space="preserve">
+    <value>- DNS解析问题</value>
+  </data>
+  <data name="FirewallBlocking" xml:space="preserve">
+    <value>- 防火墙阻止连接</value>
+  </data>
+  <data name="ProxyServerConfigProblem" xml:space="preserve">
+    <value>- 代理服务器配置问题</value>
+  </data>
+  <data name="NetworkCheckException" xml:space="preserve">
+    <value>网络检测异常发生</value>
+  </data>
+  <data name="SuggestRetryOrCheckSettings" xml:space="preserve">
+    <value>建议尝试重新检测或检查网络设置</value>
+  </data>
+  <data name="NetworkCheckComplete" xml:space="preserve">
+    <value>网络检测完成 - 结果: {0}</value>
+  </data>
+  <data name="ConnectionNormalResult" xml:space="preserve">
+    <value>连接正常</value>
+  </data>
+  <data name="ConnectionAbnormalResult" xml:space="preserve">
+    <value>连接异常</value>
+  </data>
+  <data name="MelonLoaderInstallSuccessNeedGameRun" xml:space="preserve">
+    <value>MelonLoader安装成功！现在需要运行游戏来完成设置。</value>
+  </data>
+  <data name="StartingGame" xml:space="preserve">
+    <value>正在启动游戏...</value>
+  </data>
+  <data name="GameStartedRunToMainMenu" xml:space="preserve">
+    <value>游戏已启动，请运行至主菜单后点击菜单中的退出。</value>
+  </data>
+  <data name="GameExitedVerifyingInstall" xml:space="preserve">
+    <value>游戏已退出，正在验证安装...</value>
+  </data>
+  <data name="PleaseRunGameAgain" xml:space="preserve">
+    <value>请重新运行游戏</value>
+  </data>
+  <data name="SetupComplete" xml:space="preserve">
+    <value>设置完成！</value>
+  </data>
+  <data name="RefreshingData" xml:space="preserve">
+    <value>正在刷新数据...</value>
+  </data>
+  <data name="DataRefreshComplete" xml:space="preserve">
+    <value>数据刷新完成</value>
+  </data>
+  <data name="DataRefreshFailed" xml:space="preserve">
+    <value>数据刷新失败</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>正在安装 {0}...</value>
+  </data>
+  <data name="InstallSuccessful" xml:space="preserve">
+    <value>{0} 安装成功</value>
+  </data>
+  <data name="InstallFailed" xml:space="preserve">
+    <value>{0} 安装失败</value>
+  </data>
+  <data name="UninstallFailed" xml:space="preserve">
+    <value>{0} 卸载失败</value>
+  </data>
+  <data name="ModDisabledStatus" xml:space="preserve">
+    <value>{0} 已禁用</value>
+  </data>
+  <data name="ModEnabledStatus" xml:space="preserve">
+    <value>{0} 已启用</value>
+  </data>
+  <data name="ModDisableFailed" xml:space="preserve">
+    <value>{0} 禁用失败</value>
+  </data>
+  <data name="ModEnableFailed" xml:space="preserve">
+    <value>{0} 启用失败</value>
+  </data>
+  <data name="StatusToggleFailed" xml:space="preserve">
+    <value>{0} 状态切换失败</value>
+  </data>
+  <data name="OpenConfigWindowFailed" xml:space="preserve">
+    <value>打开配置窗口失败: {0}</value>
+  </data>
+  <data name="InstallingTranslationSystem" xml:space="preserve">
+    <value>正在安装翻译系统...</value>
+  </data>
+  <data name="TranslationSystemInstallSuccessful" xml:space="preserve">
+    <value>翻译系统安装成功</value>
+  </data>
+  <data name="TranslationSystemInstallFailed" xml:space="preserve">
+    <value>翻译系统安装失败</value>
+  </data>
+  <data name="TranslationFilesUpdateSuccessful" xml:space="preserve">
+    <value>翻译文件更新成功</value>
+  </data>
+  <data name="TranslationFilesUpdateFailed" xml:space="preserve">
+    <value>翻译文件更新失败</value>
+  </data>
+  <data name="TranslationSystemUninstallFailed" xml:space="preserve">
+    <value>翻译系统卸载失败</value>
+  </data>
+  <data name="TranslationLanguageSetTo" xml:space="preserve">
+    <value>翻译语言已设置为: {0}</value>
+  </data>
+  <data name="TranslationLanguageSetFailed" xml:space="preserve">
+    <value>翻译语言设置失败</value>
+  </data>
+  <data name="GameRunningCannotOperate" xml:space="preserve">
+    <value>游戏运行中，无法操作</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="LaunchGame" xml:space="preserve">
+    <value>启动游戏</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="FetchingModI18nConfig" xml:space="preserve">
+    <value>正在从 {0} 获取Mod翻译配置</value>
+  </data>
+  <data name="ModI18nConfigFetchError" xml:space="preserve">
+    <value>从 {0} 获取Mod翻译配置时出错</value>
+  </data>
+  <data name="ModI18nConfigURL" xml:space="preserve">
+    <value>Mod翻译配置URL：</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>搜索：</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>项</value>
+  </data>
+  <data name="ItemsOf" xml:space="preserve">
+    <value>/</value>
+  </data>
+  <data name="ModI18nConfigLoadedFromCache" xml:space="preserve">
+    <value>从缓存加载Mod翻译配置</value>
+  </data>
+  <data name="ModI18nConfigCacheLoadError" xml:space="preserve">
+    <value>从缓存加载Mod翻译配置时出错</value>
+  </data>
+  <data name="ModI18nConfigRefreshed" xml:space="preserve">
+    <value>Mod翻译配置已从远程更新</value>
+  </data>
+  <data name="ModI18nConfigRefreshError" xml:space="preserve">
+    <value>刷新Mod翻译配置时出错</value>
+  </data>
+  <data name="MaintenanceTools" xml:space="preserve">
+    <value>维护工具</value>
+  </data>
+  <data name="ClickToSelectAndCopyComment" xml:space="preserve">
+    <value>点击选择并复制注释内容</value>
+  </data>
+  <data name="ModConfigLoadedFromCache" xml:space="preserve">
+    <value>从缓存加载Mod配置</value>
+  </data>
+  <data name="TranslationConfigLoadedFromCache" xml:space="preserve">
+    <value>从缓存加载翻译配置</value>
+  </data>
+  <data name="GitHubReleasesLoadedFromSessionCache" xml:space="preserve">
+    <value>从会话缓存加载 {0}/{1} 的GitHub版本信息</value>
+  </data>
+  <data name="StartGame" xml:space="preserve">
+    <value>开始游戏</value>
+  </data>
+  <data name="StopGame" xml:space="preserve">
+    <value>停止游戏</value>
+  </data>
+  <data name="NotRunning" xml:space="preserve">
+    <value>未运行</value>
+  </data>
+  <data name="GamePathNotSet" xml:space="preserve">
+    <value>游戏路径未设置。请在设置中配置。</value>
+  </data>
+  <data name="GameStartedSuccessfully" xml:space="preserve">
+    <value>游戏启动成功</value>
+  </data>
+  <data name="StoppingGame" xml:space="preserve">
+    <value>正在停止游戏...</value>
+  </data>
+  <data name="GameStoppedSuccessfully" xml:space="preserve">
+    <value>游戏停止成功</value>
+  </data>
+  <data name="GameStopFailed" xml:space="preserve">
+    <value>停止游戏失败</value>
+  </data>
+  <data name="NoGameProcessToStop" xml:space="preserve">
+    <value>没有游戏进程需要停止</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="LanguageWillTakeEffectAfterApply" xml:space="preserve">
+    <value>点击应用后语言更改将生效</value>
+  </data>
+  <data name="LanguageWillTakeEffectAfterRestart" xml:space="preserve">
+    <value>应用程序将重启以应用语言更改</value>
+  </data>
+  <data name="LanguageChangedConfirmRestart" xml:space="preserve">
+    <value>语言设置已保存。应用程序将重启以应用更改。是否继续？</value>
+  </data>
+  <data name="LanguageChanged" xml:space="preserve">
+    <value>语言已更改</value>
+  </data>
+  <data name="GameRootDirectoryPath" xml:space="preserve">
+    <value>游戏根目录: {0}</value>
+  </data>
+  <data name="TempFilePath" xml:space="preserve">
+    <value>临时文件路径: {0}</value>
+  </data>
+  <data name="FileDownloadCompleted" xml:space="preserve">
+    <value>文件下载完成，大小: {0} 字节</value>
+  </data>
+  <data name="DownloadedFileDataEmpty" xml:space="preserve">
+    <value>下载的文件数据为空</value>
+  </data>
+  <data name="InvalidZipFileHeader" xml:space="preserve">
+    <value>下载的文件不是有效的 ZIP 文件，文件头: {0}</value>
+  </data>
+  <data name="TempFileNotExists" xml:space="preserve">
+    <value>临时文件不存在: {0}</value>
+  </data>
+  <data name="FileSizeMismatch" xml:space="preserve">
+    <value>文件写入大小不匹配，期望: {0}，实际: {1}</value>
+  </data>
+  <data name="FileVerificationSuccess" xml:space="preserve">
+    <value>文件验证成功，大小: {0} 字节</value>
+  </data>
+  <data name="ZipFileOpenSuccess" xml:space="preserve">
+    <value>ZIP 文件打开成功，条目数量: {0}</value>
+  </data>
+  <data name="ZipFileEmpty" xml:space="preserve">
+    <value>ZIP 文件为空，没有找到任何条目</value>
+  </data>
+  <data name="SkippingDirectory" xml:space="preserve">
+    <value>跳过目录: {0}</value>
+  </data>
+  <data name="ExtractingFile" xml:space="preserve">
+    <value>解压文件: {0} -&gt; {1}</value>
+  </data>
+  <data name="FileExtractionSuccess" xml:space="preserve">
+    <value>文件解压成功: {0}</value>
+  </data>
+  <data name="FileExtractionFailed" xml:space="preserve">
+    <value>文件解压失败: {0}</value>
+  </data>
+  <data name="ZipProcessingError" xml:space="preserve">
+    <value>ZIP 文件处理出错: {0}</value>
+  </data>
+  <data name="VerifyingInstallationResult" xml:space="preserve">
+    <value>验证安装结果:</value>
+  </data>
+  <data name="MelonLoaderDirectoryExists" xml:space="preserve">
+    <value>MelonLoader 目录存在: {0}</value>
+  </data>
+  <data name="VersionDllExists" xml:space="preserve">
+    <value>version.dll 存在: {0}</value>
+  </data>
+  <data name="DobbyDllExists" xml:space="preserve">
+    <value>dobby.dll 存在: {0}</value>
+  </data>
+  <data name="TempFileDeleted" xml:space="preserve">
+    <value>临时文件已删除</value>
+  </data>
+  <data name="CleanupTempFileFailed" xml:space="preserve">
+    <value>清理临时文件失败: {0}</value>
+  </data>
+  <data name="MelonLoaderInstallVerificationFailed" xml:space="preserve">
+    <value>MelonLoader 安装验证失败</value>
+  </data>
+  <data name="ModConfigReadFailedNoSection" xml:space="preserve">
+    <value>配置读取失败: {0} - 无配置段名称</value>
+  </data>
+  <data name="TryingToReadConfigFile" xml:space="preserve">
+    <value>尝试读取配置文件: {0}</value>
+  </data>
+  <data name="ConfigFileNotExists" xml:space="preserve">
+    <value>配置文件不存在: {0}</value>
+  </data>
+  <data name="SearchingForConfigSection" xml:space="preserve">
+    <value>查找配置段: {0}</value>
+  </data>
+  <data name="FoundConfigSection" xml:space="preserve">
+    <value>找到配置段: {0}</value>
+  </data>
+  <data name="ReadConfigItem" xml:space="preserve">
+    <value>读取配置项: {0} = {1}{2}</value>
+  </data>
+  <data name="ConfigReadComplete" xml:space="preserve">
+    <value>配置读取完成: {0}, 共 {1} 项</value>
+  </data>
+  <data name="DirectoryCopyStarted" xml:space="preserve">
+    <value>开始复制目录: {0} -&gt; {1}</value>
+  </data>
+  <data name="DirectoryCopyExcludePatterns" xml:space="preserve">
+    <value>排除模式: {0}</value>
+  </data>
+  <data name="DirectoryCopyCreateDirectory" xml:space="preserve">
+    <value>创建目录: {0}</value>
+  </data>
+  <data name="DirectoryCopySkipFile" xml:space="preserve">
+    <value>跳过文件: {0}</value>
+  </data>
+  <data name="DirectoryCopyFile" xml:space="preserve">
+    <value>复制文件: {0}</value>
+  </data>
+  <data name="DirectoryCopyComplete" xml:space="preserve">
+    <value>目录复制完成</value>
+  </data>
+  <data name="ModI18nConfigRefreshedWithCount" xml:space="preserve">
+    <value>ModI18n配置已刷新 - 加载了 {0} 个模组配置</value>
+  </data>
+  <data name="ModI18nConfigEmptyOrInaccessible" xml:space="preserve">
+    <value>ModI18n配置为空或无法访问 - 请检查云端URL</value>
+  </data>
+  <data name="UsingMultiThreadedDownload" xml:space="preserve">
+    <value>使用多线程下载（文件大小: {0} 字节）</value>
+  </data>
+  <data name="UsingSingleThreadedDownload" xml:space="preserve">
+    <value>使用单线程下载（{0}，文件大小: {1} 字节）</value>
+  </data>
+  <data name="RangeRequestSupportTest" xml:space="preserve">
+    <value>范围请求支持测试: {0}</value>
+  </data>
+  <data name="RangeRequestTestFailed" xml:space="preserve">
+    <value>范围请求测试失败: {0}，回退到单线程下载</value>
+  </data>
+  <data name="StartingMultiThreadedDownload" xml:space="preserve">
+    <value>开始多线程下载: {0} 个线程，块大小: {1} 字节</value>
+  </data>
+  <data name="ChunkDownloadRange" xml:space="preserve">
+    <value>块 {0}: 字节范围 {1}-{2}（预期大小: {3} 字节）</value>
+  </data>
+  <data name="ChunkValidation" xml:space="preserve">
+    <value>块 {0} 验证: {1} 字节</value>
+  </data>
+  <data name="DownloadSizeMismatch" xml:space="preserve">
+    <value>大小不匹配！预期: {0}，已下载: {1}</value>
+  </data>
+  <data name="ChunkCopiedToOffset" xml:space="preserve">
+    <value>块 {0} 已复制到偏移 {1}</value>
+  </data>
+  <data name="MultiThreadedDownloadCompleted" xml:space="preserve">
+    <value>多线程下载成功完成: {0} 字节</value>
+  </data>
+  <data name="ChunkCompleted" xml:space="preserve">
+    <value>块 {0} 完成: {1} 字节</value>
+  </data>
+  <data name="ChunkFailedRetrying" xml:space="preserve">
+    <value>块 {0} 失败（第 {1}/{2} 次尝试），{3}毫秒后重试: {4}</value>
+  </data>
+  <data name="AllCachesClearedSuccessfully" xml:space="preserve">
+    <value>所有缓存清理成功</value>
+  </data>
+  <data name="FailedToClearPersistentCache" xml:space="preserve">
+    <value>清理持久缓存失败: {0}</value>
+  </data>
+  <data name="FailedToReadCache" xml:space="preserve">
+    <value>读取 {0} 的缓存失败: {1}</value>
+  </data>
+  <data name="FailedToSaveCache" xml:space="preserve">
+    <value>保存 {0} 的缓存失败: {1}</value>
+  </data>
+  <data name="DirectoryCopySkipTree" xml:space="preserve">
+    <value>跳过目录树: {0}</value>
+  </data>
+  <data name="DirectoryAccessWarning" xml:space="preserve">
+    <value>Warning: Could not access subdirectories in {0}: {1}</value>
+  </data>
+  <data name="GitDirectoryRemovalWarning" xml:space="preserve">
+    <value>Could not completely remove .git directory: {0}</value>
+  </data>
+  <data name="ChunkDownloadFailed" xml:space="preserve">
+    <value>块 {0} 下载失败</value>
+  </data>
+  <data name="DownloadSizeMismatchException" xml:space="preserve">
+    <value>下载大小不匹配：期望 {0}，得到 {1}</value>
+  </data>
+  <data name="ChunkDownloadMaxRetriesExceeded" xml:space="preserve">
+    <value>块 {0} 在 {1} 次尝试后下载失败</value>
+  </data>
+  <data name="ApplyLanguageError" xml:space="preserve">
+    <value>应用语言设置错误</value>
+  </data>
+  <data name="FailedToApplyLanguageSetting" xml:space="preserve">
+    <value>应用语言设置失败</value>
+  </data>
+  <data name="RestartApplicationError" xml:space="preserve">
+    <value>重启应用程序错误</value>
+  </data>
+  <data name="FailedToRestartApplication" xml:space="preserve">
+    <value>重启应用程序失败。请手动重启</value>
+  </data>
+  <data name="NetworkHelpOpenError" xml:space="preserve">
+    <value>打开网络帮助页面错误</value>
+  </data>
+  <data name="NetworkCheckResult" xml:space="preserve">
+    <value>网络检测结果：{0}</value>
+  </data>
+  <data name="MelonLoaderReleasesLoadError" xml:space="preserve">
+    <value>加载MelonLoader版本错误</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>手动</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="TranslationPlugin" xml:space="preserve">
+    <value>翻译插件</value>
+  </data>
+  <data name="ScriptModSecurityWarning" xml:space="preserve">
+    <value>警告：此Mod使用脚本进行安装，可能对您的系统造成未知风险。请确保您信任此Mod的来源。是否继续？</value>
+  </data>
+  <data name="SecurityWarningTitle" xml:space="preserve">
+    <value>安全警告</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>{0} 项</value>
+  </data>
+  <data name="ItemsCountOfTotal" xml:space="preserve">
+    <value>{0} / {1} 项</value>
+  </data>
+  <data name="Refreshing" xml:space="preserve">
+    <value>刷新中...</value>
+  </data>
+  <data name="ConfigurationsRefreshedSuccessfully" xml:space="preserve">
+    <value>配置刷新成功！</value>
+  </data>
+  <data name="RefreshFailedCheckLogs" xml:space="preserve">
+    <value>刷新失败。请查看日志以获取详细信息。</value>
+  </data>
+  <data name="ThemeServiceConstructor" xml:space="preserve">
+    <value>主题服务构造函数 - 初始主题: {0}</value>
+  </data>
+  <data name="ThemeServiceInitializeState" xml:space="preserve">
+    <value>初始化当前状态 - 同步状态至: {0}</value>
+  </data>
+  <data name="SetThemeCalled" xml:space="preserve">
+    <value>设置主题调用 - 请求主题: {0}, 当前主题: {1}</value>
+  </data>
+  <data name="ThemeSwitched" xml:space="preserve">
+    <value>主题已切换至: {0}</value>
+  </data>
+  <data name="ApplyThemeStarted" xml:space="preserve">
+    <value>应用主题开始 - 目标主题: {0}</value>
+  </data>
+  <data name="PreparingToRemoveResourceDictionaries" xml:space="preserve">
+    <value>准备移除 {0} 个主题资源字典</value>
+  </data>
+  <data name="RemovingResourceDictionary" xml:space="preserve">
+    <value>移除资源字典: {0}</value>
+  </data>
+  <data name="RemovedResourceDictionaries" xml:space="preserve">
+    <value>已移除 {0} 个主题资源字典</value>
+  </data>
+  <data name="LoadingThemeResource" xml:space="preserve">
+    <value>加载主题资源: {0}</value>
+  </data>
+  <data name="ThemeResourceApplied" xml:space="preserve">
+    <value>主题资源已应用: {0}, 资源字典总数: {1}</value>
+  </data>
+  <data name="StartingForcedUIRefresh" xml:space="preserve">
+    <value>开始强制刷新UI</value>
+  </data>
+  <data name="ForcedUIRefreshComplete" xml:space="preserve">
+    <value>UI强制刷新完成</value>
+  </data>
+  <data name="AppStartupSettingsTheme" xml:space="preserve">
+    <value>应用启动 - 设置文件中的主题: {0}</value>
+  </data>
+  <data name="AppStartupResourceDictionaryCount" xml:space="preserve">
+    <value>应用启动 - 当前资源字典数量: {0}</value>
+  </data>
+  <data name="SettingsLightThemeConsistent" xml:space="preserve">
+    <value>设置为浅色主题，与App.xaml默认一致，只同步状态</value>
+  </data>
+  <data name="SettingsDarkThemeNeedSwitch" xml:space="preserve">
+    <value>设置为深色主题，需要从默认浅色主题切换</value>
+  </data>
+  <data name="ThemeInitializationComplete" xml:space="preserve">
+    <value>主题初始化完成 - 当前资源字典数量: {0}</value>
+  </data>
+  <data name="ThemeApplicationError" xml:space="preserve">
+    <value>应用主题时发生错误</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="ProjectUrl" xml:space="preserve">
+    <value>项目地址</value>
+  </data>
+  <data name="ApplicationVersion" xml:space="preserve">
+    <value>应用版本</value>
+  </data>
+  <data name="GHPCModManager" xml:space="preserve">
+    <value>GHPC 模组管理器</value>
+  </data>
+  <data name="UseGitHubProxy" xml:space="preserve">
+    <value>启用GitHub加速</value>
+  </data>
+  <data name="GitHubProxyDescription" xml:space="preserve">
+    <value>使用代理服务加速GitHub下载（备用方案，不建议和反代同时使用）</value>
+  </data>
+  <data name="GitHubProxyApplied" xml:space="preserve">
+    <value>已应用GitHub代理: {0} -&gt; {1}</value>
+  </data>
+  <data name="GitHubProxyFailed" xml:space="preserve">
+    <value>GitHub代理失败 ({0})，回退到原始URL: {1}</value>
+  </data>
+  <data name="ProxyConnectivityTestFailed" xml:space="preserve">
+    <value>代理连通性测试失败 {0}: {1}</value>
+  </data>
+  <data name="GitHubProxyDisabled" xml:space="preserve">
+    <value>GitHub代理已禁用，使用原始URL: {0}</value>
+  </data>
+  <data name="URLNotGitHub" xml:space="preserve">
+    <value>URL不是GitHub链接，使用原始链接: {0}</value>
+  </data>
+  <data name="GitHubProxyTransforming" xml:space="preserve">
+    <value>GitHub代理已启用，转换URL: {0} -&gt; {1}</value>
+  </data>
+  <data name="URLPatternNotSupported" xml:space="preserve">
+    <value>URL模式不支持代理，使用原始链接: {0} (路径: {1})</value>
+  </data>
+  <data name="ErrorApplyingGitHubProxy" xml:space="preserve">
+    <value>应用GitHub代理到URL时出错: {0}</value>
+  </data>
+  <data name="ProxyConnectivityTestSuccessful" xml:space="preserve">
+    <value>代理连通性测试成功: {0}</value>
+  </data>
+  <data name="ConfigurationRefreshComplete" xml:space="preserve">
+    <value>配置刷新完成</value>
+  </data>
+  <data name="ConfigurationRefreshError" xml:space="preserve">
+    <value>配置刷新错误</value>
+  </data>
+  <data name="ConfigurationLoadError" xml:space="preserve">
+    <value>配置加载错误</value>
+  </data>
+  <data name="ProcessStopError" xml:space="preserve">
+    <value>进程停止错误</value>
+  </data>
+  <data name="GameStopError" xml:space="preserve">
+    <value>游戏停止错误</value>
+  </data>
+  <data name="PresetLoadError" xml:space="preserve">
+    <value>预设加载错误</value>
+  </data>
+  <data name="OpenProjectUrlError" xml:space="preserve">
+    <value>打开项目URL错误</value>
+  </data>
+  <data name="PresetSaveError" xml:space="preserve">
+    <value>预设保存错误</value>
+  </data>
+  <data name="ConfigureModError" xml:space="preserve">
+    <value>配置模组错误</value>
+  </data>
+  <data name="TranslationLanguageSetError" xml:space="preserve">
+    <value>翻译语言设置错误</value>
+  </data>
+  <data name="LaunchGameError" xml:space="preserve">
+    <value>启动游戏错误</value>
+  </data>
+  <data name="StopGameError" xml:space="preserve">
+    <value>停止游戏错误</value>
+  </data>
+  <data name="ModNotFound" xml:space="preserve">
+    <value>模组未找到</value>
+  </data>
+  <data name="ModToggleFileError" xml:space="preserve">
+    <value>模组切换文件错误</value>
+  </data>
+  <data name="FoundStandaloneComment" xml:space="preserve">
+    <value>发现独立注释</value>
+  </data>
+  <data name="ConfigReadOrderedComplete" xml:space="preserve">
+    <value>配置有序读取完成</value>
+  </data>
+  <data name="ModConfigReadOrderedError" xml:space="preserve">
+    <value>模组配置有序读取错误</value>
+  </data>
+  <data name="PresetCreateError" xml:space="preserve">
+    <value>预设创建错误</value>
+  </data>
+  <data name="PresetDeleteError" xml:space="preserve">
+    <value>预设删除错误</value>
+  </data>
+</root>

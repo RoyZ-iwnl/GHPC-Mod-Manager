@@ -1,0 +1,165 @@
+name: Build and Release GHPC Mod Manager
+
+on:
+  push:
+    branches: [ "main", "release" ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.gif'
+      - '**/*.svg'
+      - 'docs/**'
+      - '.github/**'
+      - '!.github/workflows/**'
+      - 'LICENSE'
+      - '.gitignore'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Extract version from project file
+      id: extract_version
+      shell: pwsh
+      run: |
+        $projectFile = "GHPC Mod Manager.csproj"
+        [xml]$xml = Get-Content $projectFile
+        $version = $xml.Project.PropertyGroup.Version
+        
+        Write-Host "Extracted version: $version"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+        
+        # Check if this is a prerelease version
+        $isPrerelease = $false
+        if ($version -match '-') {
+          $isPrerelease = $true
+          Write-Host "Detected prerelease version"
+        } else {
+          Write-Host "Detected stable release version"
+        }
+        echo "is_prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+        
+        # Set release name
+        $releaseName = "GHPC Mod Manager v$version"
+        echo "release_name=$releaseName" >> $env:GITHUB_OUTPUT
+        
+        # Set tag name
+        $tagName = "v$version"
+        echo "tag_name=$tagName" >> $env:GITHUB_OUTPUT
+
+    - name: Restore dependencies
+      run: dotnet restore "GHPC Mod Manager.csproj"
+
+    - name: Build project
+      run: dotnet build "GHPC Mod Manager.csproj" --configuration Release --no-restore
+
+    - name: Publish application
+      run: dotnet publish "GHPC Mod Manager.csproj" --configuration Release --output ./publish --no-build --framework net8.0-windows
+
+    - name: Create release package
+      shell: pwsh
+      run: |
+        $version = "${{ steps.extract_version.outputs.version }}"
+        $packageName = "GHPC-Mod-Manager-v$version"
+        
+        # Create release directory
+        New-Item -ItemType Directory -Force -Path "./release"
+        
+        # Copy published files
+        Copy-Item -Path "./publish/*" -Destination "./release/" -Recurse -Force
+        
+        # Create ZIP package
+        Compress-Archive -Path "./release/*" -DestinationPath "./$packageName.zip" -Force
+        
+        # Set output for later steps
+        echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
+        echo "package_file=$packageName.zip" >> $env:GITHUB_OUTPUT
+
+    - name: Generate release notes
+      id: release_notes
+      shell: pwsh
+      run: |
+        $version = "${{ steps.extract_version.outputs.version }}"
+        $isPrerelease = [System.Convert]::ToBoolean("${{ steps.extract_version.outputs.is_prerelease }}")
+        $commitSha = "${{ github.sha }}"
+        $shortSha = $commitSha.Substring(0, 7)
+        
+        if ($isPrerelease) {
+          $releaseType = "🚧 Pre-release"
+          $warning = "⚠️ **This is a pre-release version and may contain bugs or incomplete features.**`n`n"
+        } else {
+          $releaseType = "🎉 Stable Release"
+          $warning = ""
+        }
+        
+        $body = @"
+        $releaseType
+        
+        $warning## 📦 What's included
+        
+        - GHPC Mod Manager executable and dependencies
+        - Support for mod installation and management
+        - Translation system integration
+        - MelonLoader integration
+        
+        ## 🔧 System Requirements
+        
+        - Windows 10/11
+        - .NET 8.0 Runtime (automatically installed if missing)
+        - Administrator privileges (required for mod installation)
+        
+        ## 📝 Installation
+        
+        1. Download ``GHPC-Mod-Manager-v$version.zip``
+        2. Extract to your preferred location
+        3. Run ``GHPC Mod Manager.exe`` as Administrator
+        4. Follow the setup wizard on first launch
+        
+        ---
+        **Build Info:** Commit $shortSha | Built on $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')
+        "@
+        
+        # Save to file for multiline support
+        $body | Out-File -FilePath "./release-notes.txt" -Encoding UTF8
+        
+        echo "body_file=./release-notes.txt" >> $env:GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      if: success()
+      with:
+        name: ${{ steps.extract_version.outputs.release_name }}
+        tag_name: ${{ steps.extract_version.outputs.tag_name }}
+        body_path: ${{ steps.release_notes.outputs.body_file }}
+        files: |
+          GHPC-Mod-Manager-v${{ steps.extract_version.outputs.version }}.zip
+        prerelease: ${{ steps.extract_version.outputs.is_prerelease }}
+        make_latest: ${{ steps.extract_version.outputs.is_prerelease == 'false' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: GHPC-Mod-Manager-v${{ steps.extract_version.outputs.version }}
+        path: |
+          GHPC-Mod-Manager-v${{ steps.extract_version.outputs.version }}.zip
+          ./release/
+        retention-days: 30

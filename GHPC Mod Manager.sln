@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36401.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHPC Mod Manager", "GHPC Mod Manager.csproj", "{C1A6811E-12F8-4FFE-A372-0EB19D640B34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Debug|x64.ActiveCfg = Release|x64
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Debug|x64.Build.0 = Release|x64
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Release|x64.ActiveCfg = Release|x64
+		{C1A6811E-12F8-4FFE-A372-0EB19D640B34}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63E3877F-D9BC-4E54-A6A8-650173EBDA84}
+	EndGlobalSection
+EndGlobal

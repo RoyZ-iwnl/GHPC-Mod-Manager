@@ -1,0 +1,174 @@
+<UserControl x:Class="GHPC_Mod_Manager.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
+             xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    
+    <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="{x:Static resources:Strings.ProgramSettings}" 
+                      FontSize="{DynamicResource HeadlineSmall}" 
+                      FontWeight="Medium" 
+                      VerticalAlignment="Center"
+                      Foreground="{DynamicResource OnBackgroundBrush}"/>
+        </StackPanel>
+        
+        <!-- Settings Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                
+                <!-- Language Settings -->
+                <GroupBox Header="{x:Static resources:Strings.LanguageSettings}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.ProgramLanguage}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <ComboBox ItemsSource="{Binding AvailableLanguages}" 
+                                      SelectedItem="{Binding SelectedLanguage}"
+                                      MinWidth="120" MaxWidth="200">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={x:Static converters:LanguageDisplayConverter.Instance}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- Theme Settings -->
+                <GroupBox Header="{x:Static resources:Strings.ThemeSettings}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.AppTheme}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <ComboBox ItemsSource="{Binding AvailableThemes}" 
+                                      SelectedItem="{Binding SelectedTheme}"
+                                      MinWidth="120" MaxWidth="200" Margin="0,0,10,0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={x:Static converters:ThemeDisplayConverter.Instance}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ChangeThemeCommand}" 
+                                    MinWidth="60" Style="{DynamicResource FilledButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- Game Path Settings -->
+                <GroupBox Header="{x:Static resources:Strings.GamePath}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.GameRootDirectory}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <TextBox Text="{Binding GameRootPath}" IsReadOnly="True" Margin="0,0,10,0" MinWidth="300" MaxWidth="400"/>
+                            <Button Content="{x:Static resources:Strings.Browse}" Command="{Binding BrowseGameDirectoryCommand}" 
+                                    MinWidth="80" Style="{DynamicResource OutlinedButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- URL Settings -->
+                <GroupBox Header="{x:Static resources:Strings.DataSourceConfiguration}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.ModConfigURL}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding ModConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.TranslationConfigURL}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding TranslationConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.ModI18nConfigURL}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding ModI18nUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                        </StackPanel>
+                        
+                        <!-- GitHub Proxy Settings -->
+                        <StackPanel Margin="0,0,0,10">
+                            <CheckBox IsChecked="{Binding UseGitHubProxy}" Margin="0,0,0,5">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>
+                                    <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}" 
+                                               FontSize="{DynamicResource BodySmall}"
+                                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Button Content="{x:Static resources:Strings.ForceRefreshCloudConfigurations}" 
+                                    Command="{Binding ForceRefreshConfigurationsCommand}" 
+                                    MinWidth="200" MaxWidth="300"
+                                    Style="{DynamicResource OutlinedButtonStyle}"
+                                    Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding RefreshStatus}" 
+                                       VerticalAlignment="Center" 
+                                       Foreground="{DynamicResource SuccessBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- Maintenance -->
+                <GroupBox Header="{x:Static resources:Strings.MaintenanceTools}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button Content="{x:Static resources:Strings.CleanTempFiles}" Command="{Binding CleanTempFilesCommand}" 
+                                    MinWidth="120" MaxWidth="150" Margin="0,0,10,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                            <Button Content="{x:Static resources:Strings.ViewLogs}" Command="{Binding ShowLogWindowCommand}" 
+                                    MinWidth="80" MaxWidth="120"
+                                    Style="{DynamicResource TextButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+                <!-- About -->
+                <GroupBox Header="{x:Static resources:Strings.About}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.ApplicationVersion}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding ApplicationVersion}" VerticalAlignment="Center" FontWeight="Medium" MinWidth="100" Margin="0,0,10,0"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.ProjectUrl}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <Button Style="{DynamicResource TextButtonStyle}" 
+                                    Command="{Binding OpenProjectUrlCommand}"
+                                    Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent">
+                                <TextBlock Foreground="{DynamicResource PrimaryBrush}" TextDecorations="Underline">
+                                    https://github.com/RoyZ-iwnl/GHPC-Mod-Manager/
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="{x:Static resources:Strings.SaveSettings}" Command="{Binding SaveSettingsCommand}" 
+                    MinWidth="100" Margin="0,0,10,0"
+                    Style="{DynamicResource FilledButtonStyle}"/>
+            <Button Content="{x:Static resources:Strings.BackToMain}" Command="{Binding BackToMainCommand}" 
+                    MinWidth="120"
+                    Style="{DynamicResource OutlinedButtonStyle}"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

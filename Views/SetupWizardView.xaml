@@ -1,0 +1,247 @@
+<UserControl x:Class="GHPC_Mod_Manager.Views.SetupWizardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GHPC_Mod_Manager.Views"
+             xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
+             xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:StepVisibilityConverter x:Key="StepVisibilityConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="{x:Static resources:Strings.SetupWizardTitle}" 
+                   FontSize="{DynamicResource HeadlineMedium}" FontWeight="Medium" 
+                   HorizontalAlignment="Center" Margin="0,0,0,20"
+                   Foreground="{DynamicResource OnBackgroundBrush}"/>
+        
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                
+                <!-- Step 1: Language Selection -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=1}"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource OutlineVariantBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="{DynamicResource RadiusMedium}" 
+                        Padding="24" Margin="0,16">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step1LanguageSelection}" 
+                                  FontSize="{DynamicResource TitleLarge}" FontWeight="Medium" 
+                                  Margin="0,0,0,16" Foreground="{DynamicResource OnSurfaceBrush}"/>
+                        <TextBlock Text="{x:Static resources:Strings.SelectInterfaceLanguage}" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <ComboBox SelectedValue="{Binding SelectedLanguage}" 
+                                      SelectedValuePath="Tag" 
+                                      Width="200" Margin="0,0,10,0">
+                                <ComboBoxItem Content="{x:Static resources:Strings.ChineseSimplified}" Tag="zh-CN"/>
+                                <ComboBoxItem Content="{x:Static resources:Strings.English}" Tag="en-US"/>
+                            </ComboBox>
+                            <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ApplyLanguageCommand}" 
+                                    MinWidth="80" Style="{DynamicResource FilledButtonStyle}"/>
+                        </StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.LanguageWillTakeEffectAfterRestart}" 
+                                   Foreground="Gray" FontSize="11" Margin="0,0,0,5"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 2: Network Check -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=2}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step2NetworkCheck}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <!-- Network Status Display -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.NetworkStatus}"/>
+                            <TextBlock Text="{x:Static resources:Strings.Checking}" Foreground="Blue" 
+                                       Visibility="{Binding IsCheckingNetwork, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="{x:Static resources:Strings.ConnectionNormal}" Foreground="Green" 
+                                       Visibility="{Binding IsNetworkAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="{x:Static resources:Strings.ConnectionAbnormal}" Foreground="Red"
+                                       Visibility="{Binding ShowNetworkFailed, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                        
+                        <!-- Control Buttons -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <Button Content="{x:Static resources:Strings.RetryNetworkCheck}" Command="{Binding RetryNetworkCheckCommand}" 
+                                    Width="80" Margin="0,0,10,0"
+                                    IsEnabled="{Binding IsCheckingNetwork, Converter={StaticResource InverseBooleanConverter}}"/>
+                            <Button Content="{x:Static resources:Strings.NetworkHelpSolution}" Command="{Binding OpenNetworkHelpCommand}" 
+                                    Width="120" Margin="0,0,10,0"/>
+                            <ToggleButton Content="{x:Static resources:Strings.ShowLog}" IsChecked="{Binding ShowNetworkLog}" 
+                                          MinWidth="100" Style="{DynamicResource MaterialToggleButtonStyle}"/>
+                        </StackPanel>
+                        
+                        <!-- Network Check Log -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3" 
+                                Visibility="{Binding ShowNetworkLog, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Background="Black" Margin="0,0,0,10" MaxHeight="200">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                
+                                <!-- Log Header with Copy Button -->
+                                <Border Grid.Row="0" Background="DarkGray" Padding="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{x:Static resources:Strings.NetworkCheckLog}" Foreground="White" VerticalAlignment="Center"/>
+                                        <Button Content="{x:Static resources:Strings.CopyLog}" Margin="10,0,0,0" Padding="5,2" 
+                                                FontSize="11" Height="20" Width="60"
+                                                Click="CopyLogButton_Click"
+                                                Tag="{Binding NetworkCheckLog}"/>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- Log Content -->
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                    <TextBox Text="{Binding NetworkCheckLog}" 
+                                             IsReadOnly="False" 
+                                             TextWrapping="Wrap"
+                                             Background="Black" 
+                                             Foreground="LightGreen" 
+                                             FontFamily="Consolas"
+                                             FontSize="12"
+                                             BorderThickness="0"
+                                             Padding="10"
+                                             AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             x:Name="NetworkLogTextBox"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                        
+                        <!-- Network Issue Warning -->
+                        <Border BorderBrush="Orange" BorderThickness="2" CornerRadius="5" 
+                                Background="#FFF3CD" Padding="10" 
+                                Visibility="{Binding ShowNetworkFailed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="{x:Static resources:Strings.NetworkCheckFailedWarning}" FontWeight="Bold" Foreground="DarkOrange" Margin="0,0,0,5"/>
+                                <TextBlock Text="{x:Static resources:Strings.NetworkCheckFailedDescription}" Foreground="DarkOrange" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                <TextBlock Text="{x:Static resources:Strings.ClickRetryToRetry}" Foreground="DarkOrange" Margin="10,0,0,2"/>
+                                <TextBlock Text="{x:Static resources:Strings.ClickViewSolutions}" Foreground="DarkOrange" Margin="10,0,0,2"/>
+                                <TextBlock Text="{x:Static resources:Strings.ClickShowLogForDetails}" Foreground="DarkOrange" Margin="10,0,0,2"/>
+                                <TextBlock Text="{x:Static resources:Strings.ContinueAndConfigureLater}" Foreground="DarkOrange" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 3: Game Directory -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=3}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step3GameDirectory}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <TextBlock Text="{x:Static resources:Strings.PleaseSelectGHPCLocation}" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox Text="{Binding GameRootPath}" Width="400" IsReadOnly="True" Margin="0,0,10,0"/>
+                            <Button Content="{x:Static resources:Strings.Browse}" Command="{Binding BrowseGameDirectoryCommand}" Width="80"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 4: MelonLoader Check -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=4}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step4MelonLoaderCheck}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <StackPanel Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="{x:Static resources:Strings.MelonLoaderInstallStatus}"/>
+                                <TextBlock Text="{x:Static resources:Strings.Installed}" Foreground="Green" 
+                                           Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="{x:Static resources:Strings.NotInstalled}" Foreground="Red" 
+                                           Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5"
+                                        Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static resources:Strings.RequiredDirectoryStatus}"/>
+                                <TextBlock Text="{x:Static resources:Strings.Generated}" Foreground="Green" 
+                                           Visibility="{Binding AreMelonLoaderDirsCreated, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="{x:Static resources:Strings.NotGenerated}" Foreground="Orange" 
+                                           Visibility="{Binding AreMelonLoaderDirsCreated, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderNotInstalledNote}" 
+                                   Foreground="Orange" TextWrapping="Wrap"
+                                   Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderInstalledButMissingDirs}" 
+                                   Foreground="{DynamicResource WarningBrush}" TextWrapping="Wrap"
+                                   Visibility="{Binding ShowMelonLoaderDirWarning, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 5: Install MelonLoader -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=5}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step5InstallMelonLoader}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <TextBlock Text="{x:Static resources:Strings.PleaseSelectMelonLoaderVersion}" Margin="0,0,0,10"/>
+                        <ComboBox ItemsSource="{Binding MelonLoaderReleases}" 
+                                  SelectedItem="{Binding SelectedMelonLoaderVersion}"
+                                  DisplayMemberPath="TagName" 
+                                  Width="200" HorizontalAlignment="Left" Margin="0,0,0,15"/>
+                        <ProgressBar Value="{Binding InstallProgress}" Height="20" Margin="0,0,0,10"
+                                     Visibility="{Binding IsInstalling, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="Blue" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 6: First Run -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=6}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step6FirstRunGuide}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <TextBlock Text="{x:Static resources:Strings.InstallSuccessNeedGameRun}" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="Blue" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Step 7: Wait for game exit -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=7}"
+                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.Step7WaitGameExit}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.GameStatus}"/>
+                            <TextBlock Text="{x:Static resources:Strings.Running}" Foreground="Green" 
+                                       Visibility="{Binding IsGameRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="{x:Static resources:Strings.Exited}" Foreground="Blue" 
+                                       Visibility="{Binding IsGameRunning, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="Blue" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="{x:Static resources:Strings.Previous}" Command="{Binding BackCommand}" 
+                    IsEnabled="{Binding IsBackEnabled}" 
+                    Width="80" Margin="0,0,10,0"/>
+            <Button Content="{x:Static resources:Strings.Next}" Command="{Binding NextCommand}" 
+                    IsEnabled="{Binding IsNextEnabled}" 
+                    Width="80"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

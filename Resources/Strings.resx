@@ -1,0 +1,1479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SettingsLoaded" xml:space="preserve">
+    <value>Settings loaded successfully</value>
+  </data>
+  <data name="SettingsNotFound" xml:space="preserve">
+    <value>Settings file not found, using defaults</value>
+  </data>
+  <data name="SettingsLoadError" xml:space="preserve">
+    <value>Error loading settings</value>
+  </data>
+  <data name="SettingsSaved" xml:space="preserve">
+    <value>Settings saved successfully</value>
+  </data>
+  <data name="SettingsSaveError" xml:space="preserve">
+    <value>Error saving settings</value>
+  </data>
+  <data name="NetworkCheckFailed" xml:space="preserve">
+    <value>✗ Network connection check failed</value>
+  </data>
+  <data name="FetchingModConfig" xml:space="preserve">
+    <value>Fetching mod configuration from {0}</value>
+  </data>
+  <data name="ModConfigFetchError" xml:space="preserve">
+    <value>Error fetching mod configuration from {0}</value>
+  </data>
+  <data name="FetchingTranslationConfig" xml:space="preserve">
+    <value>Fetching translation configuration from {0}</value>
+  </data>
+  <data name="TranslationConfigFetchError" xml:space="preserve">
+    <value>Error fetching translation configuration from {0}</value>
+  </data>
+  <data name="FetchingGitHubReleases" xml:space="preserve">
+    <value>Fetching GitHub releases from {0}</value>
+  </data>
+  <data name="GitHubReleasesFetchError" xml:space="preserve">
+    <value>Error fetching GitHub releases for {0}/{1}</value>
+  </data>
+  <data name="DownloadStarted" xml:space="preserve">
+    <value>Download started: {0}</value>
+  </data>
+  <data name="DownloadCompleted" xml:space="preserve">
+    <value>Download completed: {0}</value>
+  </data>
+  <data name="DownloadError" xml:space="preserve">
+    <value>Download error: {0}</value>
+  </data>
+  <data name="GameStarted" xml:space="preserve">
+    <value>Game process started</value>
+  </data>
+  <data name="GameStopped" xml:space="preserve">
+    <value>Game process stopped</value>
+  </data>
+  <data name="ProcessMonitoringStarted" xml:space="preserve">
+    <value>Process monitoring started</value>
+  </data>
+  <data name="ProcessMonitoringStopped" xml:space="preserve">
+    <value>Process monitoring stopped</value>
+  </data>
+  <data name="ProcessCheckError" xml:space="preserve">
+    <value>Error checking game process</value>
+  </data>
+  <data name="GameExeNotFound" xml:space="preserve">
+    <value>GHPC.exe not found at {0}</value>
+  </data>
+  <data name="LaunchingGame" xml:space="preserve">
+    <value>Launching game: {0}</value>
+  </data>
+  <data name="GameLaunchError" xml:space="preserve">
+    <value>Error launching game</value>
+  </data>
+  <data name="MelonLoaderCheckError" xml:space="preserve">
+    <value>Error checking MelonLoader installation</value>
+  </data>
+  <data name="MelonLoaderDirCheckError" xml:space="preserve">
+    <value>Error checking MelonLoader directories</value>
+  </data>
+  <data name="MelonLoaderReleasesFetchError" xml:space="preserve">
+    <value>Error fetching MelonLoader releases</value>
+  </data>
+  <data name="InstallingMelonLoader" xml:space="preserve">
+    <value>Installing MelonLoader...</value>
+  </data>
+  <data name="MelonLoaderVersionNotFound" xml:space="preserve">
+    <value>MelonLoader version {0} not found</value>
+  </data>
+  <data name="MelonLoaderAssetNotFound" xml:space="preserve">
+    <value>MelonLoader asset not found for version {0}</value>
+  </data>
+  <data name="MelonLoaderInstalled" xml:space="preserve">
+    <value>MelonLoader version {0} installed successfully</value>
+  </data>
+  <data name="MelonLoaderInstallError" xml:space="preserve">
+    <value>Error installing MelonLoader</value>
+  </data>
+  <data name="ModInstallError" xml:space="preserve">
+    <value>Error installing mod {0} version {1}</value>
+  </data>
+  <data name="ModVersionNotFound" xml:space="preserve">
+    <value>Mod {0} version {1} not found</value>
+  </data>
+  <data name="ModAssetNotFound" xml:space="preserve">
+    <value>Mod {0} asset {1} not found</value>
+  </data>
+  <data name="ModInstalled" xml:space="preserve">
+    <value>Mod {0} version {1} installed successfully</value>
+  </data>
+  <data name="ModNotInstalled" xml:space="preserve">
+    <value>Mod {0} is not installed</value>
+  </data>
+  <data name="UninstallingMod" xml:space="preserve">
+    <value>Uninstalling mod {0}</value>
+  </data>
+  <data name="ModUninstalled" xml:space="preserve">
+    <value>Mod {0} uninstalled successfully</value>
+  </data>
+  <data name="ModUninstallError" xml:space="preserve">
+    <value>Error uninstalling mod {0}</value>
+  </data>
+  <data name="ModConfigNotFound" xml:space="preserve">
+    <value>Mod configuration not found for {0}</value>
+  </data>
+  <data name="ModEnabled" xml:space="preserve">
+    <value>Mod {0} enabled</value>
+  </data>
+  <data name="ModDisabled" xml:space="preserve">
+    <value>Mod {0} disabled</value>
+  </data>
+  <data name="ModToggleError" xml:space="preserve">
+    <value>Error toggling mod {0} to {1}</value>
+  </data>
+  <data name="ModConfigReadError" xml:space="preserve">
+    <value>Error reading configuration for mod {0}</value>
+  </data>
+  <data name="ModConfigSaved" xml:space="preserve">
+    <value>Configuration saved for mod {0}</value>
+  </data>
+  <data name="ModConfigSaveError" xml:space="preserve">
+    <value>Error saving configuration for mod {0}</value>
+  </data>
+  <data name="ManifestLoadError" xml:space="preserve">
+    <value>Error loading mod install manifest</value>
+  </data>
+  <data name="ManifestSaveError" xml:space="preserve">
+    <value>Error saving mod install manifest</value>
+  </data>
+  <data name="AvailableModsLoadError" xml:space="preserve">
+    <value>Error loading available mods</value>
+  </data>
+  <data name="ManualModScanError" xml:space="preserve">
+    <value>Error scanning for manual mods</value>
+  </data>
+  <data name="XUnityReleasesFetchError" xml:space="preserve">
+    <value>Error fetching XUnity AutoTranslator releases</value>
+  </data>
+  <data name="InstallingTranslation" xml:space="preserve">
+    <value>Installing translation system version {0}</value>
+  </data>
+  <data name="XUnityVersionNotFound" xml:space="preserve">
+    <value>XUnity AutoTranslator version {0} not found</value>
+  </data>
+  <data name="XUnityAssetNotFound" xml:space="preserve">
+    <value>XUnity AutoTranslator asset not found</value>
+  </data>
+  <data name="XUnityInstallError" xml:space="preserve">
+    <value>Error installing XUnity AutoTranslator</value>
+  </data>
+  <data name="TranslationRepoUrlEmpty" xml:space="preserve">
+    <value>Translation repository URL is empty</value>
+  </data>
+  <data name="TranslationFilesCloneError" xml:space="preserve">
+    <value>Error cloning translation files</value>
+  </data>
+  <data name="TranslationInstalled" xml:space="preserve">
+    <value>Translation system installed successfully</value>
+  </data>
+  <data name="TranslationInstallError" xml:space="preserve">
+    <value>Error installing translation system</value>
+  </data>
+  <data name="UpdatingTranslationFiles" xml:space="preserve">
+    <value>Updating translation files...</value>
+  </data>
+  <data name="TranslationFilesUpdated" xml:space="preserve">
+    <value>Translation files updated successfully</value>
+  </data>
+  <data name="TranslationUpdateError" xml:space="preserve">
+    <value>Error updating translation files</value>
+  </data>
+  <data name="UninstallingTranslation" xml:space="preserve">
+    <value>Uninstalling translation system</value>
+  </data>
+  <data name="TranslationUninstalled" xml:space="preserve">
+    <value>Translation system uninstalled successfully</value>
+  </data>
+  <data name="TranslationUninstallError" xml:space="preserve">
+    <value>Error uninstalling translation system</value>
+  </data>
+  <data name="LanguageListError" xml:space="preserve">
+    <value>Error getting available languages</value>
+  </data>
+  <data name="CurrentLanguageError" xml:space="preserve">
+    <value>Error getting current translation language</value>
+  </data>
+  <data name="AutoTranslatorConfigNotFound" xml:space="preserve">
+    <value>AutoTranslator configuration file not found</value>
+  </data>
+  <data name="TranslationLanguageSet" xml:space="preserve">
+    <value>Translation language set to {0}</value>
+  </data>
+  <data name="SetLanguageError" xml:space="preserve">
+    <value>Error setting translation language to {0}</value>
+  </data>
+  <data name="TranslationManifestLoadError" xml:space="preserve">
+    <value>Error loading translation install manifest</value>
+  </data>
+  <data name="TranslationManifestSaveError" xml:space="preserve">
+    <value>Error saving translation install manifest</value>
+  </data>
+  <data name="TempFilesCleaned" xml:space="preserve">
+    <value>Temporary files cleaned successfully</value>
+  </data>
+  <data name="TempFilesCleanError" xml:space="preserve">
+    <value>Error cleaning temporary files</value>
+  </data>
+  <data name="DataRefreshError" xml:space="preserve">
+    <value>Error refreshing data</value>
+  </data>
+  <data name="LanguageSettingError" xml:space="preserve">
+    <value>Language Setting Error</value>
+  </data>
+  <data name="ModConfiguration" xml:space="preserve">
+    <value>Mod Configuration</value>
+  </data>
+  <data name="ConfigurationPresets" xml:space="preserve">
+    <value>Configuration Presets</value>
+  </data>
+  <data name="LoadPreset" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="SavePreset" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DeletePreset" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SaveAsPreset" xml:space="preserve">
+    <value>Save As</value>
+  </data>
+  <data name="NoConfigurationOptions" xml:space="preserve">
+    <value>No configuration options available</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="PresetNameRequired" xml:space="preserve">
+    <value>Please enter preset name</value>
+  </data>
+  <data name="PresetLoaded" xml:space="preserve">
+    <value>Preset loaded: {0}</value>
+  </data>
+  <data name="PresetSaved" xml:space="preserve">
+    <value>Preset saved: {0}</value>
+  </data>
+  <data name="PresetCreated" xml:space="preserve">
+    <value>Preset created: {0}</value>
+  </data>
+  <data name="PresetDeleted" xml:space="preserve">
+    <value>Preset deleted: {0}</value>
+  </data>
+  <data name="ConfirmDeletePreset" xml:space="preserve">
+    <value>Are you sure you want to delete preset '{0}'?</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="ConfigurationSaved" xml:space="preserve">
+    <value>Configuration saved</value>
+  </data>
+  <data name="ConfigurationSaveError" xml:space="preserve">
+    <value>Failed to save configuration</value>
+  </data>
+  <data name="OpenConfigurationWindowError" xml:space="preserve">
+    <value>Failed to open configuration window: {0}</value>
+  </data>
+  <data name="CopySelected" xml:space="preserve">
+    <value>Copy Selected</value>
+  </data>
+  <data name="CopyAll" xml:space="preserve">
+    <value>Copy All</value>
+  </data>
+  <data name="ClearLogs" xml:space="preserve">
+    <value>Clear Logs</value>
+  </data>
+  <data name="SelectLogsToCompany" xml:space="preserve">
+    <value>Please select log entries to copy</value>
+  </data>
+  <data name="LogsCopiedToClipboard" xml:space="preserve">
+    <value>Copied {0} log entries to clipboard</value>
+  </data>
+  <data name="AllLogsCopiedToClipboard" xml:space="preserve">
+    <value>Copied all {0} log entries to clipboard</value>
+  </data>
+  <data name="NoLogsToCopy" xml:space="preserve">
+    <value>No logs to copy</value>
+  </data>
+  <data name="CopyToClipboardError" xml:space="preserve">
+    <value>Failed to copy to clipboard: {0}</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Configure</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="ForceRefreshCloudConfigurations" xml:space="preserve">
+    <value>Force Refresh Cloud Configurations</value>
+  </data>
+  <data name="Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="Toggle" xml:space="preserve">
+    <value>Toggle</value>
+  </data>
+  <data name="InstallTranslationSystem" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="UpdateTranslationFiles" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="UninstallTranslationSystem" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="ChineseSimplified" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="RetryNetworkCheck" xml:space="preserve">
+    <value>Retry Network Check</value>
+  </data>
+  <data name="NetworkHelpSolution" xml:space="preserve">
+    <value>View Solutions</value>
+  </data>
+  <data name="ShowLog" xml:space="preserve">
+    <value>Show Log</value>
+  </data>
+  <data name="CopyLog" xml:space="preserve">
+    <value>Copy Log</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="CleanTempFiles" xml:space="preserve">
+    <value>Clean Temp Files</value>
+  </data>
+  <data name="ViewLogs" xml:space="preserve">
+    <value>View Logs</value>
+  </data>
+  <data name="SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+  <data name="BackToMain" xml:space="preserve">
+    <value>Back to Main</value>
+  </data>
+  <data name="ModManagement" xml:space="preserve">
+    <value>Mod Management</value>
+  </data>
+  <data name="TranslationManagement" xml:space="preserve">
+    <value>Translation Management</value>
+  </data>
+  <data name="AvailableMods" xml:space="preserve">
+    <value>Available Mods</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="InstalledVersion" xml:space="preserve">
+    <value>Installed Version</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>Latest Version</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="TranslationSystem" xml:space="preserve">
+    <value>Translation System</value>
+  </data>
+  <data name="InstallationStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="NotInstalled" xml:space="preserve">
+    <value>Not Installed</value>
+  </data>
+  <data name="LanguageSelection" xml:space="preserve">
+    <value>Language Selection</value>
+  </data>
+  <data name="CurrentLanguage" xml:space="preserve">
+    <value>Current Language</value>
+  </data>
+  <data name="GameRunning" xml:space="preserve">
+    <value>Game Running</value>
+  </data>
+  <data name="GameRunningDescription" xml:space="preserve">
+    <value>Mods cannot be operated while the game is running</value>
+  </data>
+  <data name="SetupWizardTitle" xml:space="preserve">
+    <value>GHPC Mod Manager Setup Wizard</value>
+  </data>
+  <data name="Step1LanguageSelection" xml:space="preserve">
+    <value>Step 1: Language Selection</value>
+  </data>
+  <data name="SelectInterfaceLanguage" xml:space="preserve">
+    <value>Please select the interface language:</value>
+  </data>
+  <data name="Step2NetworkCheck" xml:space="preserve">
+    <value>Step 2: Network Check</value>
+  </data>
+  <data name="Step3GameDirectory" xml:space="preserve">
+    <value>Step 3: Game Directory</value>
+  </data>
+  <data name="Step4MelonLoader" xml:space="preserve">
+    <value>Step 4: MelonLoader</value>
+  </data>
+  <data name="GameDirectoryPath" xml:space="preserve">
+    <value>Game Directory Path:</value>
+  </data>
+  <data name="ProgramLogs" xml:space="preserve">
+    <value>Program Logs</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="LogContentCopiedToClipboard" xml:space="preserve">
+    <value>Log content copied to clipboard</value>
+  </data>
+  <data name="CopySuccess" xml:space="preserve">
+    <value>Copy Success</value>
+  </data>
+  <data name="NoLogContentToCopy" xml:space="preserve">
+    <value>No log content to copy</value>
+  </data>
+  <data name="Tip" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="CopyFailed" xml:space="preserve">
+    <value>Copy failed: {0}</value>
+  </data>
+  <data name="PleaseSelectGHPCExe" xml:space="preserve">
+    <value>Please select GHPC.exe file</value>
+  </data>
+  <data name="PleaseSelectGameDirectory" xml:space="preserve">
+    <value>Please select game directory</value>
+  </data>
+  <data name="GHPCExeNotFoundInDirectory" xml:space="preserve">
+    <value>GHPC.exe not found in specified directory</value>
+  </data>
+  <data name="CannotGetMelonLoaderVersions" xml:space="preserve">
+    <value>Cannot get MelonLoader version list</value>
+  </data>
+  <data name="PleaseSelectMelonLoaderVersion" xml:space="preserve">
+    <value>Please select MelonLoader version</value>
+  </data>
+  <data name="MelonLoaderInstallFailed" xml:space="preserve">
+    <value>MelonLoader installation failed</value>
+  </data>
+  <data name="MelonLoaderInstallationError" xml:space="preserve">
+    <value>Error occurred during MelonLoader installation</value>
+  </data>
+  <data name="GameLaunchFailed" xml:space="preserve">
+    <value>Failed to launch game</value>
+  </data>
+  <data name="GameLaunchErrorOccurred" xml:space="preserve">
+    <value>Error occurred while launching game</value>
+  </data>
+  <data name="SetupIncompleteWarning" xml:space="preserve">
+    <value>Setup not complete, please rerun the game and ensure it reaches the main menu</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ConfigurationFor" xml:space="preserve">
+    <value>Configuration - {0}</value>
+  </data>
+  <data name="ConfigurationItemsLoaded" xml:space="preserve">
+    <value>Loaded {0} configuration items</value>
+  </data>
+  <data name="ConfigurationLoadFailed" xml:space="preserve">
+    <value>Configuration load failed</value>
+  </data>
+  <data name="PresetLoaded_" xml:space="preserve">
+    <value>Preset loaded: {0}</value>
+  </data>
+  <data name="PresetLoadFailed" xml:space="preserve">
+    <value>Preset load failed</value>
+  </data>
+  <data name="PresetSaved_" xml:space="preserve">
+    <value>Preset saved: {0}</value>
+  </data>
+  <data name="ScriptModInstallWarning" xml:space="preserve">
+    <value>WARNING: Script-based mod installation carries security risks. Only install mods from trusted sources.</value>
+  </data>
+  <data name="DoYouWantToContinue" xml:space="preserve">
+    <value>Do you want to continue?</value>
+  </data>
+  <data name="SecurityWarning" xml:space="preserve">
+    <value>Security Warning</value>
+  </data>
+  <data name="InvalidModConfiguration" xml:space="preserve">
+    <value>Invalid mod configuration for {0}</value>
+  </data>
+  <data name="SettingsSavedSuccessfully" xml:space="preserve">
+    <value>Settings saved successfully</value>
+  </data>
+  <data name="SettingsSaveFailed" xml:space="preserve">
+    <value>Settings save failed</value>
+  </data>
+  <data name="TempFilesCleaned_" xml:space="preserve">
+    <value>Temporary files cleaned</value>
+  </data>
+  <data name="TempFilesCleanFailed" xml:space="preserve">
+    <value>Temporary files clean failed</value>
+  </data>
+  <data name="CannotGetModVersionInfo" xml:space="preserve">
+    <value>Cannot get mod version information</value>
+  </data>
+  <data name="CannotGetTranslationVersions" xml:space="preserve">
+    <value>Cannot get translation component versions</value>
+  </data>
+  <data name="WindowTitle" xml:space="preserve">
+    <value>GHPC Mod Manager</value>
+  </data>
+  <data name="GameIsRunning" xml:space="preserve">
+    <value>Game is running</value>
+  </data>
+  <data name="ProgramSettings" xml:space="preserve">
+    <value>Program Settings</value>
+  </data>
+  <data name="LanguageSettings" xml:space="preserve">
+    <value>Language Settings</value>
+  </data>
+  <data name="ThemeSettings" xml:space="preserve">
+    <value>Theme Settings</value>
+  </data>
+  <data name="AppTheme" xml:space="preserve">
+    <value>Theme:</value>
+  </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>Light Theme</value>
+  </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>Dark Theme</value>
+  </data>
+  <data name="ProgramLanguage" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="GamePath" xml:space="preserve">
+    <value>Game Path</value>
+  </data>
+  <data name="GameRootDirectory" xml:space="preserve">
+    <value>Root Directory:</value>
+  </data>
+  <data name="DataSourceConfiguration" xml:space="preserve">
+    <value>Data Source Configuration</value>
+  </data>
+  <data name="ModConfigURL" xml:space="preserve">
+    <value>Mod Configuration URL:</value>
+  </data>
+  <data name="TranslationConfigURL" xml:space="preserve">
+    <value>Translation Configuration URL:</value>
+  </data>
+  <data name="NetworkStatus" xml:space="preserve">
+    <value>Network Status:</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="ConnectionNormal" xml:space="preserve">
+    <value>Connection Normal</value>
+  </data>
+  <data name="ConnectionAbnormal" xml:space="preserve">
+    <value>Connection Abnormal</value>
+  </data>
+  <data name="RetryCheck" xml:space="preserve">
+    <value>Retry Check</value>
+  </data>
+  <data name="NetworkCheckFailedWarning" xml:space="preserve">
+    <value>⚠️ Network connection check failed</value>
+  </data>
+  <data name="NetworkCheckFailedDescription" xml:space="preserve">
+    <value>May not be able to download mods and translation files normally. You can:</value>
+  </data>
+  <data name="ClickRetryToRetry" xml:space="preserve">
+    <value>• Click Retry Check to retry network connection</value>
+  </data>
+  <data name="ClickViewSolutions" xml:space="preserve">
+    <value>• Click View Solutions to see network troubleshooting guide</value>
+  </data>
+  <data name="ClickShowLogForDetails" xml:space="preserve">
+    <value>• Click Show Log to view detailed detection process</value>
+  </data>
+  <data name="Step4MelonLoaderCheck" xml:space="preserve">
+    <value>Step 4: MelonLoader Environment Check</value>
+  </data>
+  <data name="MelonLoaderInstallStatus" xml:space="preserve">
+    <value>MelonLoader Installation Status:</value>
+  </data>
+  <data name="RequiredDirectoryStatus" xml:space="preserve">
+    <value>Required Directory Status:</value>
+  </data>
+  <data name="Generated" xml:space="preserve">
+    <value>Generated</value>
+  </data>
+  <data name="NotGenerated" xml:space="preserve">
+    <value>Not Generated</value>
+  </data>
+  <data name="MelonLoaderNotInstalledNote" xml:space="preserve">
+    <value>MelonLoader is not installed, will proceed to installation step.</value>
+  </data>
+  <data name="MelonLoaderInstalledButMissingDirs" xml:space="preserve">
+    <value>MelonLoader is installed but missing key directories. Please run the game at least once to the main menu and exit to generate required files.</value>
+  </data>
+  <data name="Step5InstallMelonLoader" xml:space="preserve">
+    <value>Step 5: Install MelonLoader</value>
+  </data>
+  <data name="Step6FirstRunGuide" xml:space="preserve">
+    <value>Step 6: First Run Guide</value>
+  </data>
+  <data name="InstallSuccessNeedGameRun" xml:space="preserve">
+    <value>Installation successful! Now need to run the game once to complete all settings.</value>
+  </data>
+  <data name="Step7WaitGameExit" xml:space="preserve">
+    <value>Step 7: Wait for Game Exit</value>
+  </data>
+  <data name="GameStatus" xml:space="preserve">
+    <value>Game Status:</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="Exited" xml:space="preserve">
+    <value>Exited</value>
+  </data>
+  <data name="PresetSaveFailed" xml:space="preserve">
+    <value>Preset save failed</value>
+  </data>
+  <data name="PresetCreationFailed" xml:space="preserve">
+    <value>Preset creation failed</value>
+  </data>
+  <data name="PresetDeletionFailed" xml:space="preserve">
+    <value>Preset deletion failed</value>
+  </data>
+  <data name="ConfirmUninstallMod" xml:space="preserve">
+    <value>Are you sure you want to uninstall {0}?</value>
+  </data>
+  <data name="ConfirmUninstall" xml:space="preserve">
+    <value>Confirm Uninstall</value>
+  </data>
+  <data name="ManualModUninstallMessage" xml:space="preserve">
+    <value>{0} is a manually installed mod, please go to the game Mods folder to delete related files yourself.</value>
+  </data>
+  <data name="ManualMod" xml:space="preserve">
+    <value>Manual Mod</value>
+  </data>
+  <data name="UninstallingMod_" xml:space="preserve">
+    <value>Uninstalling {0}...</value>
+  </data>
+  <data name="ModUninstalledSuccessfully" xml:space="preserve">
+    <value>{0} uninstalled successfully</value>
+  </data>
+  <data name="ConfirmUninstallTranslation" xml:space="preserve">
+    <value>Are you sure you want to uninstall the translation system?</value>
+  </data>
+  <data name="UninstallingTranslationSystem" xml:space="preserve">
+    <value>Uninstalling translation system...</value>
+  </data>
+  <data name="TranslationSystemUninstalledSuccessfully" xml:space="preserve">
+    <value>Translation system uninstalled successfully</value>
+  </data>
+  <data name="ViewSolutions" xml:space="preserve">
+    <value>Solutions</value>
+  </data>
+  <data name="NetworkCheckLog" xml:space="preserve">
+    <value>Network Log</value>
+  </data>
+  <data name="ContinueAndConfigureLater" xml:space="preserve">
+    <value>Configure Later</value>
+  </data>
+  <data name="PleaseSelectGHPCLocation" xml:space="preserve">
+    <value>Please select GHPC Location</value>
+  </data>
+  <data name="LanguageSelected" xml:space="preserve">
+    <value>Language selected: {0}</value>
+  </data>
+  <data name="EnteringNetworkCheck" xml:space="preserve">
+    <value>Entering network check step</value>
+  </data>
+  <data name="SkippingNetworkCheck" xml:space="preserve">
+    <value>Skipping network check, proceeding to game directory setup</value>
+  </data>
+  <data name="NeedRunGameToGenerateDirs" xml:space="preserve">
+    <value>Need to run game to generate necessary directories</value>
+  </data>
+  <data name="SelectGHPCExeFile" xml:space="preserve">
+    <value>Select GHPC.exe file</value>
+  </data>
+  <data name="NetworkHelpPageOpened" xml:space="preserve">
+    <value>Network help page opened</value>
+  </data>
+  <data name="NetworkHelpPageOpenFailed" xml:space="preserve">
+    <value>Failed to open network help page</value>
+  </data>
+  <data name="UserClickedRetryNetworkCheck" xml:space="preserve">
+    <value>User clicked retry network check</value>
+  </data>
+  <data name="StartingNetworkConnectionCheck" xml:space="preserve">
+    <value>Starting network connection check</value>
+  </data>
+  <data name="CheckingNetworkConnectionStatus" xml:space="preserve">
+    <value>Checking network connection status...</value>
+  </data>
+  <data name="NetworkCheckSuccessful" xml:space="preserve">
+    <value>✓ Network connection check successful</value>
+  </data>
+  <data name="PossibleReasons" xml:space="preserve">
+    <value>Possible reasons:</value>
+  </data>
+  <data name="UnstableNetworkConnection" xml:space="preserve">
+    <value>- Unstable network connection</value>
+  </data>
+  <data name="DNSResolutionProblem" xml:space="preserve">
+    <value>- DNS resolution problem</value>
+  </data>
+  <data name="FirewallBlocking" xml:space="preserve">
+    <value>- Firewall blocking connection</value>
+  </data>
+  <data name="ProxyServerConfigProblem" xml:space="preserve">
+    <value>- Proxy server configuration problem</value>
+  </data>
+  <data name="NetworkCheckException" xml:space="preserve">
+    <value>Network check exception occurred</value>
+  </data>
+  <data name="SuggestRetryOrCheckSettings" xml:space="preserve">
+    <value>Suggest retrying or checking network settings</value>
+  </data>
+  <data name="NetworkCheckComplete" xml:space="preserve">
+    <value>Network check complete - Result: {0}</value>
+  </data>
+  <data name="ConnectionNormalResult" xml:space="preserve">
+    <value>Connection Normal</value>
+  </data>
+  <data name="ConnectionAbnormalResult" xml:space="preserve">
+    <value>Connection Abnormal</value>
+  </data>
+  <data name="MelonLoaderInstallSuccessNeedGameRun" xml:space="preserve">
+    <value>MelonLoader installation successful! Now need to run the game to complete setup.</value>
+  </data>
+  <data name="StartingGame" xml:space="preserve">
+    <value>Starting game...</value>
+  </data>
+  <data name="GameStartedRunToMainMenu" xml:space="preserve">
+    <value>Game started, please run to main menu and exit via menu.</value>
+  </data>
+  <data name="GameExitedVerifyingInstall" xml:space="preserve">
+    <value>Game exited, verifying installation...</value>
+  </data>
+  <data name="PleaseRunGameAgain" xml:space="preserve">
+    <value>Please run the game again</value>
+  </data>
+  <data name="SetupComplete" xml:space="preserve">
+    <value>Setup complete!</value>
+  </data>
+  <data name="RefreshingData" xml:space="preserve">
+    <value>Refreshing data...</value>
+  </data>
+  <data name="DataRefreshComplete" xml:space="preserve">
+    <value>Data refresh complete</value>
+  </data>
+  <data name="DataRefreshFailed" xml:space="preserve">
+    <value>Data refresh failed</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Installing {0}...</value>
+  </data>
+  <data name="InstallSuccessful" xml:space="preserve">
+    <value>{0} installed successfully</value>
+  </data>
+  <data name="InstallFailed" xml:space="preserve">
+    <value>{0} installation failed</value>
+  </data>
+  <data name="UninstallFailed" xml:space="preserve">
+    <value>{0} uninstall failed</value>
+  </data>
+  <data name="ModDisabledStatus" xml:space="preserve">
+    <value>{0} disabled</value>
+  </data>
+  <data name="ModEnabledStatus" xml:space="preserve">
+    <value>{0} enabled</value>
+  </data>
+  <data name="ModDisableFailed" xml:space="preserve">
+    <value>{0} disable failed</value>
+  </data>
+  <data name="ModEnableFailed" xml:space="preserve">
+    <value>{0} enable failed</value>
+  </data>
+  <data name="StatusToggleFailed" xml:space="preserve">
+    <value>{0} status toggle failed</value>
+  </data>
+  <data name="OpenConfigWindowFailed" xml:space="preserve">
+    <value>Failed to open config window: {0}</value>
+  </data>
+  <data name="InstallingTranslationSystem" xml:space="preserve">
+    <value>Installing translation system...</value>
+  </data>
+  <data name="TranslationSystemInstallSuccessful" xml:space="preserve">
+    <value>Translation system installed successfully</value>
+  </data>
+  <data name="TranslationSystemInstallFailed" xml:space="preserve">
+    <value>Translation system installation failed</value>
+  </data>
+  <data name="TranslationFilesUpdateSuccessful" xml:space="preserve">
+    <value>Translation files updated successfully</value>
+  </data>
+  <data name="TranslationFilesUpdateFailed" xml:space="preserve">
+    <value>Translation files update failed</value>
+  </data>
+  <data name="TranslationSystemUninstallFailed" xml:space="preserve">
+    <value>Translation system uninstall failed</value>
+  </data>
+  <data name="TranslationLanguageSetTo" xml:space="preserve">
+    <value>Translation language set to: {0}</value>
+  </data>
+  <data name="TranslationLanguageSetFailed" xml:space="preserve">
+    <value>Translation language setting failed</value>
+  </data>
+  <data name="GameRunningCannotOperate" xml:space="preserve">
+    <value>Game running, cannot operate</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="LaunchGame" xml:space="preserve">
+    <value>Launch Game</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="FetchingModI18nConfig" xml:space="preserve">
+    <value>Fetching mod internationalization config from {0}</value>
+  </data>
+  <data name="ModI18nConfigFetchError" xml:space="preserve">
+    <value>Error fetching mod internationalization config from {0}</value>
+  </data>
+  <data name="ModI18nConfigURL" xml:space="preserve">
+    <value>Mod I18n Config URL:</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search:</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>items</value>
+  </data>
+  <data name="ItemsOf" xml:space="preserve">
+    <value>of</value>
+  </data>
+  <data name="ModI18nConfigLoadedFromCache" xml:space="preserve">
+    <value>Mod I18n configuration loaded from cache</value>
+  </data>
+  <data name="ModI18nConfigCacheLoadError" xml:space="preserve">
+    <value>Error loading mod I18n configuration from cache</value>
+  </data>
+  <data name="ModI18nConfigRefreshed" xml:space="preserve">
+    <value>Mod I18n configuration refreshed from remote</value>
+  </data>
+  <data name="ModI18nConfigRefreshError" xml:space="preserve">
+    <value>Error refreshing mod I18n configuration</value>
+  </data>
+  <data name="MaintenanceTools" xml:space="preserve">
+    <value>Maintenance Tools</value>
+  </data>
+  <data name="ClickToSelectAndCopyComment" xml:space="preserve">
+    <value>Click to select and copy comment text</value>
+  </data>
+  <data name="ModConfigLoadedFromCache" xml:space="preserve">
+    <value>Mod configuration loaded from cache</value>
+  </data>
+  <data name="TranslationConfigLoadedFromCache" xml:space="preserve">
+    <value>Translation configuration loaded from cache</value>
+  </data>
+  <data name="GitHubReleasesLoadedFromSessionCache" xml:space="preserve">
+    <value>GitHub releases loaded from session cache for {0}/{1}</value>
+  </data>
+  <data name="StartGame" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StopGame" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="NotRunning" xml:space="preserve">
+    <value>Not Running</value>
+  </data>
+  <data name="GamePathNotSet" xml:space="preserve">
+    <value>Game path not set. Please configure in Settings.</value>
+  </data>
+  <data name="GameStartedSuccessfully" xml:space="preserve">
+    <value>Game started successfully</value>
+  </data>
+  <data name="StoppingGame" xml:space="preserve">
+    <value>Stopping game...</value>
+  </data>
+  <data name="GameStoppedSuccessfully" xml:space="preserve">
+    <value>Game stopped successfully</value>
+  </data>
+  <data name="GameStopFailed" xml:space="preserve">
+    <value>Failed to stop game</value>
+  </data>
+  <data name="NoGameProcessToStop" xml:space="preserve">
+    <value>No game process to stop</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="LanguageWillTakeEffectAfterApply" xml:space="preserve">
+    <value>Language changes will take effect after clicking Apply</value>
+  </data>
+  <data name="LanguageWillTakeEffectAfterRestart" xml:space="preserve">
+    <value>Application will restart to apply language changes</value>
+  </data>
+  <data name="LanguageChangedConfirmRestart" xml:space="preserve">
+    <value>Language setting saved. The application will restart to apply changes. Continue?</value>
+  </data>
+  <data name="LanguageChanged" xml:space="preserve">
+    <value>Language Changed</value>
+  </data>
+  <data name="GameRootDirectoryPath" xml:space="preserve">
+    <value>Game root directory: {0}</value>
+  </data>
+  <data name="TempFilePath" xml:space="preserve">
+    <value>Temp file path: {0}</value>
+  </data>
+  <data name="FileDownloadCompleted" xml:space="preserve">
+    <value>File download completed, size: {0} bytes</value>
+  </data>
+  <data name="DownloadedFileDataEmpty" xml:space="preserve">
+    <value>Downloaded file data is empty</value>
+  </data>
+  <data name="InvalidZipFileHeader" xml:space="preserve">
+    <value>Downloaded file is not a valid ZIP file, header: {0}</value>
+  </data>
+  <data name="TempFileNotExists" xml:space="preserve">
+    <value>Temp file does not exist: {0}</value>
+  </data>
+  <data name="FileSizeMismatch" xml:space="preserve">
+    <value>File write size mismatch, expected: {0}, actual: {1}</value>
+  </data>
+  <data name="FileVerificationSuccess" xml:space="preserve">
+    <value>File verification successful, size: {0} bytes</value>
+  </data>
+  <data name="ZipFileOpenSuccess" xml:space="preserve">
+    <value>ZIP file opened successfully, entry count: {0}</value>
+  </data>
+  <data name="ZipFileEmpty" xml:space="preserve">
+    <value>ZIP file is empty, no entries found</value>
+  </data>
+  <data name="SkippingDirectory" xml:space="preserve">
+    <value>Skipping directory: {0}</value>
+  </data>
+  <data name="ExtractingFile" xml:space="preserve">
+    <value>Extracting file: {0} -&gt; {1}</value>
+  </data>
+  <data name="FileExtractionSuccess" xml:space="preserve">
+    <value>File extraction successful: {0}</value>
+  </data>
+  <data name="FileExtractionFailed" xml:space="preserve">
+    <value>File extraction failed: {0}</value>
+  </data>
+  <data name="ZipProcessingError" xml:space="preserve">
+    <value>ZIP file processing error: {0}</value>
+  </data>
+  <data name="VerifyingInstallationResult" xml:space="preserve">
+    <value>Verifying installation result:</value>
+  </data>
+  <data name="MelonLoaderDirectoryExists" xml:space="preserve">
+    <value>MelonLoader directory exists: {0}</value>
+  </data>
+  <data name="VersionDllExists" xml:space="preserve">
+    <value>version.dll exists: {0}</value>
+  </data>
+  <data name="DobbyDllExists" xml:space="preserve">
+    <value>dobby.dll exists: {0}</value>
+  </data>
+  <data name="TempFileDeleted" xml:space="preserve">
+    <value>Temp file deleted</value>
+  </data>
+  <data name="CleanupTempFileFailed" xml:space="preserve">
+    <value>Cleanup temp file failed: {0}</value>
+  </data>
+  <data name="MelonLoaderInstallVerificationFailed" xml:space="preserve">
+    <value>MelonLoader installation verification failed</value>
+  </data>
+  <data name="ModConfigReadFailedNoSection" xml:space="preserve">
+    <value>Configuration read failed: {0} - no section name</value>
+  </data>
+  <data name="TryingToReadConfigFile" xml:space="preserve">
+    <value>Trying to read configuration file: {0}</value>
+  </data>
+  <data name="ConfigFileNotExists" xml:space="preserve">
+    <value>Configuration file does not exist: {0}</value>
+  </data>
+  <data name="SearchingForConfigSection" xml:space="preserve">
+    <value>Searching for configuration section: {0}</value>
+  </data>
+  <data name="FoundConfigSection" xml:space="preserve">
+    <value>Found configuration section: {0}</value>
+  </data>
+  <data name="ReadConfigItem" xml:space="preserve">
+    <value>Read configuration item: {0} = {1}{2}</value>
+  </data>
+  <data name="ConfigReadComplete" xml:space="preserve">
+    <value>Configuration read complete: {0}, total {1} items</value>
+  </data>
+  <data name="DirectoryCopyStarted" xml:space="preserve">
+    <value>Starting directory copy: {0} -&gt; {1}</value>
+  </data>
+  <data name="DirectoryCopyExcludePatterns" xml:space="preserve">
+    <value>Exclude patterns: {0}</value>
+  </data>
+  <data name="DirectoryCopyCreateDirectory" xml:space="preserve">
+    <value>Creating directory: {0}</value>
+  </data>
+  <data name="DirectoryCopySkipFile" xml:space="preserve">
+    <value>Skipping file: {0}</value>
+  </data>
+  <data name="DirectoryCopyFile" xml:space="preserve">
+    <value>Copying file: {0}</value>
+  </data>
+  <data name="DirectoryCopyComplete" xml:space="preserve">
+    <value>Directory copy completed</value>
+  </data>
+  <data name="ModI18nConfigRefreshedWithCount" xml:space="preserve">
+    <value>ModI18nConfig refreshed - {0} mod configurations loaded</value>
+  </data>
+  <data name="ModI18nConfigEmptyOrInaccessible" xml:space="preserve">
+    <value>ModI18nConfig is empty or not accessible - check the cloud URL</value>
+  </data>
+  <data name="UsingMultiThreadedDownload" xml:space="preserve">
+    <value>Using multi-threaded download (file size: {0} bytes)</value>
+  </data>
+  <data name="UsingSingleThreadedDownload" xml:space="preserve">
+    <value>Using single-threaded download ({0}, file size: {1} bytes)</value>
+  </data>
+  <data name="RangeRequestSupportTest" xml:space="preserve">
+    <value>Range request support test: {0}</value>
+  </data>
+  <data name="RangeRequestTestFailed" xml:space="preserve">
+    <value>Range request test failed: {0}, falling back to single-threaded download</value>
+  </data>
+  <data name="StartingMultiThreadedDownload" xml:space="preserve">
+    <value>Starting multi-threaded download: {0} threads, chunk size: {1} bytes</value>
+  </data>
+  <data name="ChunkDownloadRange" xml:space="preserve">
+    <value>Chunk {0}: bytes {1}-{2} (expected size: {3} bytes)</value>
+  </data>
+  <data name="ChunkValidation" xml:space="preserve">
+    <value>Chunk {0} validation: {1} bytes</value>
+  </data>
+  <data name="DownloadSizeMismatch" xml:space="preserve">
+    <value>Size mismatch! Expected: {0}, Downloaded: {1}</value>
+  </data>
+  <data name="ChunkCopiedToOffset" xml:space="preserve">
+    <value>Chunk {0} copied to offset {1}</value>
+  </data>
+  <data name="MultiThreadedDownloadCompleted" xml:space="preserve">
+    <value>Multi-threaded download completed successfully: {0} bytes</value>
+  </data>
+  <data name="ChunkCompleted" xml:space="preserve">
+    <value>Chunk {0} completed: {1} bytes</value>
+  </data>
+  <data name="ChunkFailedRetrying" xml:space="preserve">
+    <value>Chunk {0} failed (attempt {1}/{2}), retrying in {3}ms: {4}</value>
+  </data>
+  <data name="AllCachesClearedSuccessfully" xml:space="preserve">
+    <value>All caches cleared successfully</value>
+  </data>
+  <data name="FailedToClearPersistentCache" xml:space="preserve">
+    <value>Failed to clear persistent cache: {0}</value>
+  </data>
+  <data name="FailedToReadCache" xml:space="preserve">
+    <value>Failed to read cache for {0}: {1}</value>
+  </data>
+  <data name="FailedToSaveCache" xml:space="preserve">
+    <value>Failed to save cache for {0}: {1}</value>
+  </data>
+  <data name="DirectoryCopySkipTree" xml:space="preserve">
+    <value>Skipping directory tree: {0}</value>
+  </data>
+  <data name="DirectoryAccessWarning" xml:space="preserve">
+    <value>Warning: Could not access subdirectories in {0}: {1}</value>
+  </data>
+  <data name="GitDirectoryRemovalWarning" xml:space="preserve">
+    <value>Could not completely remove .git directory: {0}</value>
+  </data>
+  <data name="ChunkDownloadFailed" xml:space="preserve">
+    <value>Chunk {0} failed to download</value>
+  </data>
+  <data name="DownloadSizeMismatchException" xml:space="preserve">
+    <value>Downloaded size mismatch: expected {0}, got {1}</value>
+  </data>
+  <data name="ChunkDownloadMaxRetriesExceeded" xml:space="preserve">
+    <value>Failed to download chunk {0} after {1} attempts</value>
+  </data>
+  <data name="ApplyLanguageError" xml:space="preserve">
+    <value>Error applying language setting</value>
+  </data>
+  <data name="FailedToApplyLanguageSetting" xml:space="preserve">
+    <value>Failed to apply language setting</value>
+  </data>
+  <data name="RestartApplicationError" xml:space="preserve">
+    <value>Error restarting application</value>
+  </data>
+  <data name="FailedToRestartApplication" xml:space="preserve">
+    <value>Failed to restart application. Please restart manually</value>
+  </data>
+  <data name="NetworkHelpOpenError" xml:space="preserve">
+    <value>Error opening network help page</value>
+  </data>
+  <data name="NetworkCheckResult" xml:space="preserve">
+    <value>Network check result: {0}</value>
+  </data>
+  <data name="MelonLoaderReleasesLoadError" xml:space="preserve">
+    <value>Error loading MelonLoader releases</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="TranslationPlugin" xml:space="preserve">
+    <value>Translation Plugin</value>
+  </data>
+  <data name="ScriptModSecurityWarning" xml:space="preserve">
+    <value>WARNING: This mod uses scripts for installation, which may pose unknown risks to your system. Please ensure you trust the source of this mod. Do you want to continue?</value>
+  </data>
+  <data name="SecurityWarningTitle" xml:space="preserve">
+    <value>Security Warning</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+  <data name="ItemsCountOfTotal" xml:space="preserve">
+    <value>{0} / {1} items</value>
+  </data>
+  <data name="Refreshing" xml:space="preserve">
+    <value>Refreshing...</value>
+  </data>
+  <data name="ConfigurationsRefreshedSuccessfully" xml:space="preserve">
+    <value>Configurations refreshed successfully!</value>
+  </data>
+  <data name="RefreshFailedCheckLogs" xml:space="preserve">
+    <value>Refresh failed. Check logs for details.</value>
+  </data>
+  <data name="ThemeServiceConstructor" xml:space="preserve">
+    <value>ThemeService constructor - Initial theme: {0}</value>
+  </data>
+  <data name="ThemeServiceInitializeState" xml:space="preserve">
+    <value>InitializeWithCurrentState - Syncing state to: {0}</value>
+  </data>
+  <data name="SetThemeCalled" xml:space="preserve">
+    <value>SetTheme called - Requested theme: {0}, Current theme: {1}</value>
+  </data>
+  <data name="ThemeSwitched" xml:space="preserve">
+    <value>Theme switched to: {0}</value>
+  </data>
+  <data name="ApplyThemeStarted" xml:space="preserve">
+    <value>ApplyTheme started - Target theme: {0}</value>
+  </data>
+  <data name="PreparingToRemoveResourceDictionaries" xml:space="preserve">
+    <value>Preparing to remove {0} theme resource dictionaries</value>
+  </data>
+  <data name="RemovingResourceDictionary" xml:space="preserve">
+    <value>Removing resource dictionary: {0}</value>
+  </data>
+  <data name="RemovedResourceDictionaries" xml:space="preserve">
+    <value>Removed {0} theme resource dictionaries</value>
+  </data>
+  <data name="LoadingThemeResource" xml:space="preserve">
+    <value>Loading theme resource: {0}</value>
+  </data>
+  <data name="ThemeResourceApplied" xml:space="preserve">
+    <value>Theme resource applied: {0}, Total resource dictionaries: {1}</value>
+  </data>
+  <data name="StartingForcedUIRefresh" xml:space="preserve">
+    <value>Starting forced UI refresh</value>
+  </data>
+  <data name="ForcedUIRefreshComplete" xml:space="preserve">
+    <value>Forced UI refresh complete</value>
+  </data>
+  <data name="AppStartupSettingsTheme" xml:space="preserve">
+    <value>App startup - Theme in settings file: {0}</value>
+  </data>
+  <data name="AppStartupResourceDictionaryCount" xml:space="preserve">
+    <value>App startup - Current resource dictionary count: {0}</value>
+  </data>
+  <data name="SettingsLightThemeConsistent" xml:space="preserve">
+    <value>Settings set to light theme, consistent with App.xaml default, only syncing state</value>
+  </data>
+  <data name="SettingsDarkThemeNeedSwitch" xml:space="preserve">
+    <value>Settings set to dark theme, need to switch from default light theme</value>
+  </data>
+  <data name="ThemeInitializationComplete" xml:space="preserve">
+    <value>Theme initialization complete - Current resource dictionary count: {0}</value>
+  </data>
+  <data name="ThemeApplicationError" xml:space="preserve">
+    <value>Error occurred while applying theme</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="ProjectUrl" xml:space="preserve">
+    <value>Project URL</value>
+  </data>
+  <data name="ApplicationVersion" xml:space="preserve">
+    <value>Application Version</value>
+  </data>
+  <data name="GHPCModManager" xml:space="preserve">
+    <value>GHPC Mod Manager</value>
+  </data>
+  <data name="UseGitHubProxy" xml:space="preserve">
+    <value>Enable GitHub Acceleration</value>
+  </data>
+  <data name="GitHubProxyDescription" xml:space="preserve">
+    <value>Use proxy service to accelerate GitHub downloads</value>
+  </data>
+  <data name="GitHubProxyApplied" xml:space="preserve">
+    <value>GitHub proxy applied: {0} -> {1}</value>
+  </data>
+  <data name="GitHubProxyFailed" xml:space="preserve">
+    <value>GitHub proxy failed ({0}), falling back to original URL: {1}</value>
+  </data>
+  <data name="ProxyConnectivityTestFailed" xml:space="preserve">
+    <value>Proxy connectivity test failed for {0}: {1}</value>
+  </data>
+  <data name="GitHubProxyDisabled" xml:space="preserve">
+    <value>GitHub proxy disabled, using original URL: {0}</value>
+  </data>
+  <data name="URLNotGitHub" xml:space="preserve">
+    <value>URL is not a GitHub URL, using original: {0}</value>
+  </data>
+  <data name="GitHubProxyTransforming" xml:space="preserve">
+    <value>GitHub proxy enabled, transforming URL: {0} -> {1}</value>
+  </data>
+  <data name="URLPatternNotSupported" xml:space="preserve">
+    <value>URL pattern not supported for proxy, using original: {0} (path: {1})</value>
+  </data>
+  <data name="ErrorApplyingGitHubProxy" xml:space="preserve">
+    <value>Error applying GitHub proxy to URL: {0}</value>
+  </data>
+  <data name="ProxyConnectivityTestSuccessful" xml:space="preserve">
+    <value>Proxy connectivity test successful for {0}</value>
+  </data>
+  <data name="ConfigurationRefreshComplete" xml:space="preserve">
+    <value>Configuration refresh complete</value>
+  </data>
+  <data name="ConfigurationRefreshError" xml:space="preserve">
+    <value>Configuration refresh error</value>
+  </data>
+  <data name="ConfigurationLoadError" xml:space="preserve">
+    <value>Configuration load error</value>
+  </data>
+  <data name="ProcessStopError" xml:space="preserve">
+    <value>Process stop error</value>
+  </data>
+  <data name="GameStopError" xml:space="preserve">
+    <value>Game stop error</value>
+  </data>
+  <data name="PresetLoadError" xml:space="preserve">
+    <value>Preset load error</value>
+  </data>
+  <data name="OpenProjectUrlError" xml:space="preserve">
+    <value>Open project URL error</value>
+  </data>
+  <data name="PresetSaveError" xml:space="preserve">
+    <value>Preset save error</value>
+  </data>
+  <data name="ConfigureModError" xml:space="preserve">
+    <value>Configure mod error</value>
+  </data>
+  <data name="TranslationLanguageSetError" xml:space="preserve">
+    <value>Translation language set error</value>
+  </data>
+  <data name="LaunchGameError" xml:space="preserve">
+    <value>Launch game error</value>
+  </data>
+  <data name="StopGameError" xml:space="preserve">
+    <value>Stop game error</value>
+  </data>
+  <data name="ModNotFound" xml:space="preserve">
+    <value>Mod not found</value>
+  </data>
+  <data name="ModToggleFileError" xml:space="preserve">
+    <value>Mod toggle file error</value>
+  </data>
+  <data name="FoundStandaloneComment" xml:space="preserve">
+    <value>Found standalone comment</value>
+  </data>
+  <data name="ConfigReadOrderedComplete" xml:space="preserve">
+    <value>Config read ordered complete</value>
+  </data>
+  <data name="ModConfigReadOrderedError" xml:space="preserve">
+    <value>Mod config read ordered error</value>
+  </data>
+  <data name="PresetCreateError" xml:space="preserve">
+    <value>Preset create error</value>
+  </data>
+  <data name="PresetDeleteError" xml:space="preserve">
+    <value>Preset delete error</value>
+  </data>
+</root>
