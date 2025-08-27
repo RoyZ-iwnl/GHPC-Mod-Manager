@@ -160,6 +160,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Attention! 的本地化字符串。
+        /// </summary>
+        public static string Attention {
+            get {
+                return ResourceManager.GetString("Attention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 AutoTranslator configuration file not found 的本地化字符串。
         /// </summary>
         public static string AutoTranslatorConfigNotFound {
@@ -192,6 +201,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string BackToMain {
             get {
                 return ResourceManager.GetString("BackToMain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 If you already have mods installed, we recommend backing up your MODS folder before using this manager. This will ensure you don&apos;t lose any manually installed modifications. 的本地化字符串。
+        /// </summary>
+        public static string BackupModsRecommendation {
+            get {
+                return ResourceManager.GetString("BackupModsRecommendation", resourceCulture);
             }
         }
         
@@ -246,6 +264,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Checking {
             get {
                 return ResourceManager.GetString("Checking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Checking mod conflicts for: {0} 的本地化字符串。
+        /// </summary>
+        public static string CheckingModConflicts {
+            get {
+                return ResourceManager.GetString("CheckingModConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Checking mod dependencies for: {0} 的本地化字符串。
+        /// </summary>
+        public static string CheckingModDependencies {
+            get {
+                return ResourceManager.GetString("CheckingModDependencies", resourceCulture);
             }
         }
         
@@ -336,6 +372,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string CleanTempFiles {
             get {
                 return ResourceManager.GetString("CleanTempFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cleanup Downloaded Mods 的本地化字符串。
+        /// </summary>
+        public static string CleanupDownloadedMods {
+            get {
+                return ResourceManager.GetString("CleanupDownloadedMods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to cleanup mod backups: {0} 的本地化字符串。
+        /// </summary>
+        public static string CleanupModBackupsFailed {
+            get {
+                return ResourceManager.GetString("CleanupModBackupsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod backups cleaned up successfully. Freed {0} MB of space. 的本地化字符串。
+        /// </summary>
+        public static string CleanupModBackupsSuccessful {
+            get {
+                return ResourceManager.GetString("CleanupModBackupsSuccessful", resourceCulture);
             }
         }
         
@@ -538,6 +601,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Confirm Cleanup 的本地化字符串。
+        /// </summary>
+        public static string ConfirmCleanup {
+            get {
+                return ResourceManager.GetString("ConfirmCleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 This will delete all backed up mod files. Are you sure? 的本地化字符串。
+        /// </summary>
+        public static string ConfirmCleanupModBackups {
+            get {
+                return ResourceManager.GetString("ConfirmCleanupModBackups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Confirm Delete 的本地化字符串。
         /// </summary>
         public static string ConfirmDelete {
@@ -579,6 +660,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ConfirmUninstallTranslation {
             get {
                 return ResourceManager.GetString("ConfirmUninstallTranslation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Conflict found with mod: {0} 的本地化字符串。
+        /// </summary>
+        public static string ConflictFound {
+            get {
+                return ResourceManager.GetString("ConflictFound", resourceCulture);
             }
         }
         
@@ -988,6 +1078,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Failed to open game directory 的本地化字符串。
+        /// </summary>
+        public static string FailedToOpenGameDirectory {
+            get {
+                return ResourceManager.GetString("FailedToOpenGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to open GitHub page for mod: {0} 的本地化字符串。
+        /// </summary>
+        public static string FailedToOpenGitHubPage {
+            get {
+                return ResourceManager.GetString("FailedToOpenGitHubPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Failed to read cache for {0}: {1} 的本地化字符串。
         /// </summary>
         public static string FailedToReadCache {
@@ -1137,6 +1245,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FoundStandaloneComment {
             get {
                 return ResourceManager.GetString("FoundStandaloneComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Game directory is not set or not found. Please configure the game path in Settings. 的本地化字符串。
+        /// </summary>
+        public static string GameDirectoryNotSetOrNotFound {
+            get {
+                return ResourceManager.GetString("GameDirectoryNotSetOrNotFound", resourceCulture);
             }
         }
         
@@ -1366,6 +1483,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 GHPC Mod Manager Working Directory 的本地化字符串。
+        /// </summary>
+        public static string GHPCModManagerWorkingDirectory {
+            get {
+                return ResourceManager.GetString("GHPCModManagerWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Could not completely remove .git directory: {0} 的本地化字符串。
         /// </summary>
         public static string GitDirectoryRemovalWarning {
@@ -1425,6 +1551,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubReleasesFetchError {
             get {
                 return ResourceManager.GetString("GitHubReleasesFetchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 GitHub releases loaded from persistent cache: {0}/{1} 的本地化字符串。
+        /// </summary>
+        public static string GitHubReleasesLoadedFromPersistentCache {
+            get {
+                return ResourceManager.GetString("GitHubReleasesLoadedFromPersistentCache", resourceCulture);
             }
         }
         
@@ -1744,6 +1879,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Loading ModConfig from local path: {0} 的本地化字符串。
+        /// </summary>
+        public static string LoadingModConfigFromLocalPath {
+            get {
+                return ResourceManager.GetString("LoadingModConfigFromLocalPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Loading ModI18nConfig from local path: {0} 的本地化字符串。
+        /// </summary>
+        public static string LoadingModI18nConfigFromLocalPath {
+            get {
+                return ResourceManager.GetString("LoadingModI18nConfigFromLocalPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Loading theme resource: {0} 的本地化字符串。
         /// </summary>
         public static string LoadingThemeResource {
@@ -1753,11 +1906,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Loading TranslationConfig from local path: {0} 的本地化字符串。
+        /// </summary>
+        public static string LoadingTranslationConfigFromLocalPath {
+            get {
+                return ResourceManager.GetString("LoadingTranslationConfigFromLocalPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Load 的本地化字符串。
         /// </summary>
         public static string LoadPreset {
             get {
                 return ResourceManager.GetString("LoadPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Local path not found: {0} 的本地化字符串。
+        /// </summary>
+        public static string LocalPathNotFound {
+            get {
+                return ResourceManager.GetString("LocalPathNotFound", resourceCulture);
             }
         }
         
@@ -1996,6 +2167,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Missing required mod: {0} 的本地化字符串。
+        /// </summary>
+        public static string MissingRequirement {
+            get {
+                return ResourceManager.GetString("MissingRequirement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Mod {0} asset {1} not found 的本地化字符串。
         /// </summary>
         public static string ModAssetNotFound {
@@ -2005,11 +2185,56 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Mod backup directory created: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModBackupDirectoryCreated {
+            get {
+                return ResourceManager.GetString("ModBackupDirectoryCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to create mod backup directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModBackupDirectoryCreateFailed {
+            get {
+                return ResourceManager.GetString("ModBackupDirectoryCreateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to backup mod: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModBackupFailed {
+            get {
+                return ResourceManager.GetString("ModBackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod backup not found: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModBackupNotFound {
+            get {
+                return ResourceManager.GetString("ModBackupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Error fetching mod configuration from {0} 的本地化字符串。
         /// </summary>
         public static string ModConfigFetchError {
             get {
                 return ResourceManager.GetString("ModConfigFetchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 modconfig.json not found in directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModConfigJsonNotFound {
+            get {
+                return ResourceManager.GetString("ModConfigJsonNotFound", resourceCulture);
             }
         }
         
@@ -2095,11 +2320,74 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Mod conflict check complete for: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModConflictCheckComplete {
+            get {
+                return ResourceManager.GetString("ModConflictCheckComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod conflict detected 的本地化字符串。
+        /// </summary>
+        public static string ModConflictDetected {
+            get {
+                return ResourceManager.GetString("ModConflictDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The mod &apos;{0}&apos; conflicts with the following installed mods: {1}. Do you want to continue anyway? 的本地化字符串。
+        /// </summary>
+        public static string ModConflictMessage {
+            get {
+                return ResourceManager.GetString("ModConflictMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod dependency check complete for: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModDependencyCheckComplete {
+            get {
+                return ResourceManager.GetString("ModDependencyCheckComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The mod &apos;{0}&apos; requires the following mods to be installed first: {1}. Please install them first. 的本地化字符串。
+        /// </summary>
+        public static string ModDependencyMessage {
+            get {
+                return ResourceManager.GetString("ModDependencyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Missing mod dependencies 的本地化字符串。
+        /// </summary>
+        public static string ModDependencyMissing {
+            get {
+                return ResourceManager.GetString("ModDependencyMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Mod {0} disabled 的本地化字符串。
         /// </summary>
         public static string ModDisabled {
             get {
                 return ResourceManager.GetString("ModDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod disabled and backed up: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModDisabledAndBackedUp {
+            get {
+                return ResourceManager.GetString("ModDisabledAndBackedUp", resourceCulture);
             }
         }
         
@@ -2127,6 +2415,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModEnabled {
             get {
                 return ResourceManager.GetString("ModEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod enabled from backup: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModEnabledFromBackup {
+            get {
+                return ResourceManager.GetString("ModEnabledFromBackup", resourceCulture);
             }
         }
         
@@ -2221,6 +2518,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 mod_i18n.json not found in directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModI18nJsonNotFound {
+            get {
+                return ResourceManager.GetString("ModI18nJsonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Mod {0} version {1} installed successfully 的本地化字符串。
         /// </summary>
         public static string ModInstalled {
@@ -2266,6 +2572,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Mod reinstalled from backup: {0} (version {1}) 的本地化字符串。
+        /// </summary>
+        public static string ModReinstalledFromBackup {
+            get {
+                return ResourceManager.GetString("ModReinstalledFromBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to restore mod from backup: {0} 的本地化字符串。
+        /// </summary>
+        public static string ModRestoreFromBackupFailed {
+            get {
+                return ResourceManager.GetString("ModRestoreFromBackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Error toggling mod {0} to {1} 的本地化字符串。
         /// </summary>
         public static string ModToggleError {
@@ -2289,6 +2613,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModUninstalled {
             get {
                 return ResourceManager.GetString("ModUninstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod uninstalled and backed up: {0} (version {1}) 的本地化字符串。
+        /// </summary>
+        public static string ModUninstalledAndBackedUp {
+            get {
+                return ResourceManager.GetString("ModUninstalledAndBackedUp", resourceCulture);
             }
         }
         
@@ -2491,6 +2824,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 No GitHub URL available for mod: {0} 的本地化字符串。
+        /// </summary>
+        public static string NoGitHubUrlAvailable {
+            get {
+                return ResourceManager.GetString("NoGitHubUrlAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 No log content to copy 的本地化字符串。
         /// </summary>
         public static string NoLogContentToCopy {
@@ -2559,6 +2901,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string OpenConfigWindowFailed {
             get {
                 return ResourceManager.GetString("OpenConfigWindowFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Opened game root directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string OpenedGameRootDirectory {
+            get {
+                return ResourceManager.GetString("OpenedGameRootDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Opened GitHub page for mod: {0} -&gt; {1} 的本地化字符串。
+        /// </summary>
+        public static string OpenedGitHubPage {
+            get {
+                return ResourceManager.GetString("OpenedGitHubPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Game Directory 的本地化字符串。
+        /// </summary>
+        public static string OpenGameRootDirectory {
+            get {
+                return ResourceManager.GetString("OpenGameRootDirectory", resourceCulture);
             }
         }
         
@@ -2901,6 +3270,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ReadConfigItem {
             get {
                 return ResourceManager.GetString("ReadConfigItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Reading ModConfig from: {0} 的本地化字符串。
+        /// </summary>
+        public static string ReadingModConfigFrom {
+            get {
+                return ResourceManager.GetString("ReadingModConfigFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Reading ModI18nConfig from: {0} 的本地化字符串。
+        /// </summary>
+        public static string ReadingModI18nConfigFrom {
+            get {
+                return ResourceManager.GetString("ReadingModI18nConfigFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Reading TranslationConfig from: {0} 的本地化字符串。
+        /// </summary>
+        public static string ReadingTranslationConfigFrom {
+            get {
+                return ResourceManager.GetString("ReadingTranslationConfigFrom", resourceCulture);
             }
         }
         
@@ -3346,6 +3742,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Welcome 的本地化字符串。
+        /// </summary>
+        public static string Step0WelcomeTitle {
+            get {
+                return ResourceManager.GetString("Step0WelcomeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Step 1: Language Selection 的本地化字符串。
         /// </summary>
         public static string Step1LanguageSelection {
@@ -3625,6 +4030,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 translationconfig.json not found in directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string TranslationConfigJsonNotFound {
+            get {
+                return ResourceManager.GetString("TranslationConfigJsonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Translation configuration loaded from cache 的本地化字符串。
         /// </summary>
         public static string TranslationConfigLoadedFromCache {
@@ -3859,6 +4273,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Unable to open game directory: {0} 的本地化字符串。
+        /// </summary>
+        public static string UnableToOpenGameDirectory {
+            get {
+                return ResourceManager.GetString("UnableToOpenGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to open GitHub page: {0} 的本地化字符串。
+        /// </summary>
+        public static string UnableToOpenGitHubPage {
+            get {
+                return ResourceManager.GetString("UnableToOpenGitHubPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Uninstall 的本地化字符串。
         /// </summary>
         public static string Uninstall {
@@ -4012,6 +4444,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Using stale GitHub releases cache due to API error: {0}/{1} 的本地化字符串。
+        /// </summary>
+        public static string UsingStaleGitHubReleasesCache {
+            get {
+                return ResourceManager.GetString("UsingStaleGitHubReleasesCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Verifying installation result: 的本地化字符串。
         /// </summary>
         public static string VerifyingInstallationResult {
@@ -4062,6 +4503,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 This wizard will help you set up the mod manager for GHPC (Gunner, HEAT, PC!). 的本地化字符串。
+        /// </summary>
+        public static string WelcomeDescription {
+            get {
+                return ResourceManager.GetString("WelcomeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Welcome to GHPC Mod Manager 的本地化字符串。
+        /// </summary>
+        public static string WelcomeToGHPCModManager {
+            get {
+                return ResourceManager.GetString("WelcomeToGHPCModManager", resourceCulture);
             }
         }
         

@@ -28,8 +28,9 @@ public class NetworkService : INetworkService
     private static readonly Dictionary<string, object> _sessionCache = new();
     private static readonly Dictionary<string, DateTime> _cacheTimestamps = new();
     
-    // Cache expiry time (24 hours for persistent cache, session-based for GitHub API)
-    private readonly TimeSpan _persistentCacheExpiry = TimeSpan.FromHours(24);
+    // Cache expiry times
+    private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
+    private readonly TimeSpan _dmrCacheExpiry = TimeSpan.FromMinutes(10); // DMR.gg data, short cache for quick updates
     
     public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService)
     {
@@ -118,13 +119,26 @@ public class NetworkService : INetworkService
     {
         try
         {
-            // Try to get from persistent cache first
-            var cacheKey = $"modconfig_{url}";
-            var cached = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey);
-            if (cached != null)
+            // Check if it's a local file path
+            if (IsLocalPath(url))
             {
-                _loggingService.LogInfo(Strings.ModConfigLoadedFromCache);
-                return cached;
+                _loggingService.LogInfo(Strings.LoadingModConfigFromLocalPath, url);
+                return await LoadModConfigFromLocalPath(url);
+            }
+            
+            // For DMR.gg URLs, use short cache or no cache
+            var cacheKey = $"modconfig_{url}";
+            var shouldCache = ShouldCacheUrl(url);
+            List<ModConfig>? cached = null;
+            
+            if (shouldCache)
+            {
+                cached = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url));
+                if (cached != null)
+                {
+                    _loggingService.LogInfo(Strings.ModConfigLoadedFromCache);
+                    return cached;
+                }
             }
             
             _loggingService.LogInfo(Strings.FetchingModConfig, url);
@@ -132,8 +146,11 @@ public class NetworkService : INetworkService
             var configs = JsonConvert.DeserializeObject<List<ModConfig>>(json);
             var result = configs ?? new List<ModConfig>();
             
-            // Save to persistent cache
-            await SaveToPersistentCacheAsync(cacheKey, result);
+            // Save to persistent cache only if caching is enabled for this URL
+            if (shouldCache)
+            {
+                await SaveToPersistentCacheAsync(cacheKey, result);
+            }
             
             return result;
         }
@@ -141,10 +158,18 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogError(ex, Strings.ModConfigFetchError, url);
             
-            // Try to return stale cached data as fallback
+            // For local paths, don't try cache fallback
+            if (IsLocalPath(url))
+                return new List<ModConfig>();
+            
+            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
             var cacheKey = $"modconfig_{url}";
-            var staleCache = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, ignoreExpiry: true);
-            return staleCache ?? new List<ModConfig>();
+            if (ShouldCacheUrl(url))
+            {
+                var staleCache = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
+                return staleCache ?? new List<ModConfig>();
+            }
+            return new List<ModConfig>();
         }
     }
 
@@ -152,13 +177,26 @@ public class NetworkService : INetworkService
     {
         try
         {
-            // Try to get from persistent cache first
-            var cacheKey = $"translationconfig_{url}";
-            var cached = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey);
-            if (cached != null)
+            // Check if it's a local file path
+            if (IsLocalPath(url))
             {
-                _loggingService.LogInfo(Strings.TranslationConfigLoadedFromCache);
-                return cached;
+                _loggingService.LogInfo(Strings.LoadingTranslationConfigFromLocalPath, url);
+                return await LoadTranslationConfigFromLocalPath(url);
+            }
+            
+            // For DMR.gg URLs, use short cache or no cache
+            var cacheKey = $"translationconfig_{url}";
+            var shouldCache = ShouldCacheUrl(url);
+            TranslationConfig? cached = null;
+            
+            if (shouldCache)
+            {
+                cached = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey, GetCacheExpiryForUrl(url));
+                if (cached != null)
+                {
+                    _loggingService.LogInfo(Strings.TranslationConfigLoadedFromCache);
+                    return cached;
+                }
             }
             
             _loggingService.LogInfo(Strings.FetchingTranslationConfig, url);
@@ -166,8 +204,11 @@ public class NetworkService : INetworkService
             var config = JsonConvert.DeserializeObject<TranslationConfig>(json);
             var result = config ?? new TranslationConfig();
             
-            // Save to persistent cache
-            await SaveToPersistentCacheAsync(cacheKey, result);
+            // Save to persistent cache only if caching is enabled for this URL
+            if (shouldCache)
+            {
+                await SaveToPersistentCacheAsync(cacheKey, result);
+            }
             
             return result;
         }
@@ -175,10 +216,18 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogError(ex, Strings.TranslationConfigFetchError, url);
             
-            // Try to return stale cached data as fallback
+            // For local paths, don't try cache fallback
+            if (IsLocalPath(url))
+                return new TranslationConfig();
+            
+            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
             var cacheKey = $"translationconfig_{url}";
-            var staleCache = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey, ignoreExpiry: true);
-            return staleCache ?? new TranslationConfig();
+            if (ShouldCacheUrl(url))
+            {
+                var staleCache = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
+                return staleCache ?? new TranslationConfig();
+            }
+            return new TranslationConfig();
         }
     }
 
@@ -186,13 +235,26 @@ public class NetworkService : INetworkService
     {
         try
         {
-            // Try to get from persistent cache first
-            var cacheKey = $"modi18nconfig_{url}";
-            var cached = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey);
-            if (cached != null)
+            // Check if it's a local file path
+            if (IsLocalPath(url))
             {
-                _loggingService.LogInfo(Strings.ModI18nConfigLoadedFromCache);
-                return cached;
+                _loggingService.LogInfo(Strings.LoadingModI18nConfigFromLocalPath, url);
+                return await LoadModI18nConfigFromLocalPath(url);
+            }
+            
+            // For DMR.gg URLs, use short cache or no cache
+            var cacheKey = $"modi18nconfig_{url}";
+            var shouldCache = ShouldCacheUrl(url);
+            ModI18nManager? cached = null;
+            
+            if (shouldCache)
+            {
+                cached = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url));
+                if (cached != null)
+                {
+                    _loggingService.LogInfo(Strings.ModI18nConfigLoadedFromCache);
+                    return cached;
+                }
             }
             
             _loggingService.LogInfo(Strings.FetchingModI18nConfig, url);
@@ -200,8 +262,11 @@ public class NetworkService : INetworkService
             var config = JsonConvert.DeserializeObject<ModI18nManager>(json);
             var result = config ?? new ModI18nManager();
             
-            // Save to persistent cache
-            await SaveToPersistentCacheAsync(cacheKey, result);
+            // Save to persistent cache only if caching is enabled for this URL
+            if (shouldCache)
+            {
+                await SaveToPersistentCacheAsync(cacheKey, result);
+            }
             _loggingService.LogInfo(Strings.ModI18nConfigRefreshed);
             
             return result;
@@ -210,10 +275,18 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogError(ex, Strings.ModI18nConfigFetchError, url);
             
-            // Try to return stale cached data as fallback
+            // For local paths, don't try cache fallback
+            if (IsLocalPath(url))
+                return new ModI18nManager();
+            
+            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
             var cacheKey = $"modi18nconfig_{url}";
-            var staleCache = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, ignoreExpiry: true);
-            return staleCache ?? new ModI18nManager();
+            if (ShouldCacheUrl(url))
+            {
+                var staleCache = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
+                return staleCache ?? new ModI18nManager();
+            }
+            return new ModI18nManager();
         }
     }
 
@@ -221,13 +294,25 @@ public class NetworkService : INetworkService
     {
         try
         {
-            // For GitHub API, use session cache (only fetch once per program startup)
+            // For GitHub API, use persistent cache to avoid rate limits
             var cacheKey = $"github_releases_{repoOwner}_{repoName}";
             
+            // First check session cache for immediate response during current session
             if (_sessionCache.ContainsKey(cacheKey))
             {
                 _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromSessionCache, repoOwner, repoName);
                 return (List<GitHubRelease>)_sessionCache[cacheKey];
+            }
+            
+            // Check persistent cache
+            var cached = await GetFromPersistentCacheAsync<List<GitHubRelease>>(cacheKey, _githubApiCacheExpiry);
+            if (cached != null)
+            {
+                _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromPersistentCache, repoOwner, repoName);
+                // Also store in session cache for faster access during current session
+                _sessionCache[cacheKey] = cached;
+                _cacheTimestamps[cacheKey] = DateTime.Now;
+                return cached;
             }
             
             var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
@@ -237,9 +322,10 @@ public class NetworkService : INetworkService
             var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
             var result = releases ?? new List<GitHubRelease>();
             
-            // Cache in session cache (memory only, cleared on restart)
+            // Save to both session cache and persistent cache
             _sessionCache[cacheKey] = result;
             _cacheTimestamps[cacheKey] = DateTime.Now;
+            await SaveToPersistentCacheAsync(cacheKey, result);
             
             return result;
         }
@@ -247,11 +333,19 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogError(ex, Strings.GitHubReleasesFetchError, repoOwner, repoName);
             
-            // Try to return from session cache if available
+            // Try to return from session cache first
             var cacheKey = $"github_releases_{repoOwner}_{repoName}";
             if (_sessionCache.ContainsKey(cacheKey))
             {
                 return (List<GitHubRelease>)_sessionCache[cacheKey];
+            }
+            
+            // Try to return stale persistent cache as fallback
+            var staleCache = await GetFromPersistentCacheAsync<List<GitHubRelease>>(cacheKey, _githubApiCacheExpiry, ignoreExpiry: true);
+            if (staleCache != null)
+            {
+                _loggingService.LogInfo(Strings.UsingStaleGitHubReleasesCache, repoOwner, repoName);
+                return staleCache;
             }
             
             return new List<GitHubRelease>();
@@ -654,6 +748,7 @@ public class NetworkService : INetworkService
 
     public void ClearCache()
     {
+        // Clear in-memory session cache
         _sessionCache.Clear();
         _cacheTimestamps.Clear();
         
@@ -671,9 +766,13 @@ public class NetworkService : INetworkService
                 _loggingService.LogWarning(Strings.FailedToClearPersistentCache, ex.Message);
             }
         }
+        else
+        {
+            _loggingService.LogInfo("All caches cleared (session cache cleared, no persistent cache files found)");
+        }
     }
 
-    private async Task<T?> GetFromPersistentCacheAsync<T>(string cacheKey, bool ignoreExpiry = false) where T : class
+    private async Task<T?> GetFromPersistentCacheAsync<T>(string cacheKey, TimeSpan cacheExpiry, bool ignoreExpiry = false) where T : class
     {
         try
         {
@@ -690,7 +789,7 @@ public class NetworkService : INetworkService
                 return null;
             
             // Check expiry unless explicitly ignoring it
-            if (!ignoreExpiry && DateTime.Now - cacheItem.Timestamp > _persistentCacheExpiry)
+            if (!ignoreExpiry && DateTime.Now - cacheItem.Timestamp > cacheExpiry)
             {
                 // Cache expired, delete file
                 File.Delete(cacheFile);
@@ -733,6 +832,200 @@ public class NetworkService : INetworkService
     {
         var invalid = Path.GetInvalidFileNameChars();
         return new string(fileName.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
+    }
+
+    /// <summary>
+    /// Determine if URL should be cached based on domain
+    /// </summary>
+    private bool ShouldCacheUrl(string url)
+    {
+        try
+        {
+            var uri = new Uri(url);
+            
+            // Don't cache GHPC.DMR.gg URLs for quick updates
+            if (uri.Host.Equals("ghpc.dmr.gg", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            
+            // Cache other URLs (like GitHub raw content, external APIs, etc.)
+            return true;
+        }
+        catch
+        {
+            // If URL parsing fails, default to caching
+            return true;
+        }
+    }
+    
+    /// <summary>
+    /// Get cache expiry time based on URL
+    /// </summary>
+    private TimeSpan GetCacheExpiryForUrl(string url)
+    {
+        try
+        {
+            var uri = new Uri(url);
+            
+            // Short cache for DMR.gg URLs
+            if (uri.Host.Equals("ghpc.dmr.gg", StringComparison.OrdinalIgnoreCase))
+            {
+                return _dmrCacheExpiry;
+            }
+            
+            // Longer cache for GitHub API and other external sources
+            return _githubApiCacheExpiry;
+        }
+        catch
+        {
+            // Default to GitHub API cache time
+            return _githubApiCacheExpiry;
+        }
+    }
+
+    /// <summary>
+    /// Check if a path is a local file system path (not a URL)
+    /// </summary>
+    private bool IsLocalPath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return false;
+
+        // Check if it's a URL scheme
+        if (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("ftp://", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // Check if it looks like a Windows or Unix path
+        return path.Contains(':') || path.StartsWith('/') || path.StartsWith('\\') || path.Contains('\\');
+    }
+
+    /// <summary>
+    /// Load ModConfig from local file system path
+    /// </summary>
+    private async Task<List<ModConfig>> LoadModConfigFromLocalPath(string path)
+    {
+        try
+        {
+            string jsonPath;
+            
+            // If path is a directory, look for modconfig.json inside
+            if (Directory.Exists(path))
+            {
+                jsonPath = Path.Combine(path, "modconfig.json");
+                if (!File.Exists(jsonPath))
+                {
+                    _loggingService.LogError(Strings.ModConfigJsonNotFound, path);
+                    return new List<ModConfig>();
+                }
+            }
+            // If it's a file, use it directly
+            else if (File.Exists(path))
+            {
+                jsonPath = path;
+            }
+            else
+            {
+                _loggingService.LogError(Strings.LocalPathNotFound, path);
+                return new List<ModConfig>();
+            }
+
+            _loggingService.LogInfo(Strings.ReadingModConfigFrom, jsonPath);
+            var json = await File.ReadAllTextAsync(jsonPath);
+            var configs = JsonConvert.DeserializeObject<List<ModConfig>>(json);
+            return configs ?? new List<ModConfig>();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to load ModConfig from local path: {0}", path);
+            return new List<ModConfig>();
+        }
+    }
+
+    /// <summary>
+    /// Load TranslationConfig from local file system path
+    /// </summary>
+    private async Task<TranslationConfig> LoadTranslationConfigFromLocalPath(string path)
+    {
+        try
+        {
+            string jsonPath;
+            
+            // If path is a directory, look for translationconfig.json inside
+            if (Directory.Exists(path))
+            {
+                jsonPath = Path.Combine(path, "translationconfig.json");
+                if (!File.Exists(jsonPath))
+                {
+                    _loggingService.LogError(Strings.TranslationConfigJsonNotFound, path);
+                    return new TranslationConfig();
+                }
+            }
+            // If it's a file, use it directly
+            else if (File.Exists(path))
+            {
+                jsonPath = path;
+            }
+            else
+            {
+                _loggingService.LogError(Strings.LocalPathNotFound, path);
+                return new TranslationConfig();
+            }
+
+            _loggingService.LogInfo(Strings.ReadingTranslationConfigFrom, jsonPath);
+            var json = await File.ReadAllTextAsync(jsonPath);
+            var config = JsonConvert.DeserializeObject<TranslationConfig>(json);
+            return config ?? new TranslationConfig();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to load TranslationConfig from local path: {0}", path);
+            return new TranslationConfig();
+        }
+    }
+
+    /// <summary>
+    /// Load ModI18nManager from local file system path
+    /// </summary>
+    private async Task<ModI18nManager> LoadModI18nConfigFromLocalPath(string path)
+    {
+        try
+        {
+            string jsonPath;
+            
+            // If path is a directory, look for mod_i18n.json inside
+            if (Directory.Exists(path))
+            {
+                jsonPath = Path.Combine(path, "mod_i18n.json");
+                if (!File.Exists(jsonPath))
+                {
+                    _loggingService.LogError(Strings.ModI18nJsonNotFound, path);
+                    return new ModI18nManager();
+                }
+            }
+            // If it's a file, use it directly
+            else if (File.Exists(path))
+            {
+                jsonPath = path;
+            }
+            else
+            {
+                _loggingService.LogError(Strings.LocalPathNotFound, path);
+                return new ModI18nManager();
+            }
+
+            _loggingService.LogInfo(Strings.ReadingModI18nConfigFrom, jsonPath);
+            var json = await File.ReadAllTextAsync(jsonPath);
+            var config = JsonConvert.DeserializeObject<ModI18nManager>(json);
+            return config ?? new ModI18nManager();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to load ModI18nConfig from local path: {0}", path);
+            return new ModI18nManager();
+        }
     }
 }
 

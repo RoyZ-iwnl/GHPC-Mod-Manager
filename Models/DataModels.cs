@@ -31,6 +31,8 @@ public class ModConfig
     public string ConfigSectionName { get; set; } = string.Empty;
     public InstallMethod InstallMethod { get; set; } = InstallMethod.DirectRelease;
     public string? InstallScript_Base64 { get; set; }
+    public List<string> Conflicts { get; set; } = new();
+    public List<string> Requirements { get; set; } = new();
 }
 
 public enum InstallMethod
@@ -125,4 +127,56 @@ public class ModViewModel
     public bool HasConfiguration => IsInstalled && 
                                     !IsTranslationPlugin && 
                                     !string.IsNullOrEmpty(Config.ConfigSectionName);
+
+    // Property to extract GitHub repository URL from ReleaseUrl
+    public string? GitHubRepositoryUrl => ExtractGitHubRepositoryUrl();
+    
+    private string? ExtractGitHubRepositoryUrl()
+    {
+        if (string.IsNullOrEmpty(Config.ReleaseUrl))
+            return null;
+
+        try
+        {
+            var uri = new Uri(Config.ReleaseUrl);
+            
+            // Only handle GitHub URLs
+            if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) &&
+                !uri.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            // Parse different GitHub URL formats:
+            // - https://github.com/owner/repo/releases/tag/v1.0.0
+            // - https://api.github.com/repos/owner/repo/releases/latest
+            // - https://api.github.com/repos/owner/repo/releases
+            var pathParts = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            
+            if (uri.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase))
+            {
+                // API format: /repos/owner/repo/releases[/latest]
+                if (pathParts.Length >= 3 && pathParts[0] == "repos")
+                {
+                    var owner = pathParts[1];
+                    var repo = pathParts[2];
+                    return $"https://github.com/{owner}/{repo}";
+                }
+            }
+            else
+            {
+                // Regular GitHub format: /owner/repo/releases/...
+                if (pathParts.Length >= 2)
+                {
+                    var owner = pathParts[0];
+                    var repo = pathParts[1];
+                    return $"https://github.com/{owner}/{repo}";
+                }
+            }
+        }
+        catch
+        {
+            // Ignore URL parsing errors
+        }
+        
+        return null;
+    }
 }

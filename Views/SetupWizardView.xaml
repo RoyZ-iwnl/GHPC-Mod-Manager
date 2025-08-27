@@ -33,6 +33,48 @@
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 
+                <!-- Step 0: Welcome Page -->
+                <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=0}"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource OutlineVariantBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="{DynamicResource RadiusMedium}" 
+                        Padding="24" Margin="0,16">
+                    <StackPanel HorizontalAlignment="Center">
+                        <!-- App Icon -->
+                        <Image Source="/app.ico" Width="64" Height="64" Margin="0,0,0,20" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        
+                        <!-- Welcome Title -->
+                        <TextBlock Text="{x:Static resources:Strings.WelcomeToGHPCModManager}" 
+                                  FontSize="{DynamicResource HeadlineLarge}" FontWeight="Medium" 
+                                  HorizontalAlignment="Center" Margin="0,0,0,16" 
+                                  Foreground="{DynamicResource OnSurfaceBrush}"/>
+                        
+                        <!-- Welcome Description -->
+                        <TextBlock Text="{x:Static resources:Strings.WelcomeDescription}" 
+                                  FontSize="{DynamicResource BodyLarge}" 
+                                  HorizontalAlignment="Center" TextAlignment="Center" 
+                                  Margin="0,0,0,24" TextWrapping="Wrap" MaxWidth="500"
+                                  Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                        
+                        <!-- Setup Information -->
+                        <Border Background="{DynamicResource SecondaryContainerBrush}" 
+                                BorderBrush="{DynamicResource OutlineBrush}" 
+                                BorderThickness="1" CornerRadius="8" 
+                                Padding="20" MaxWidth="500" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="{x:Static resources:Strings.Attention}" 
+                                          FontSize="{DynamicResource TitleMedium}" FontWeight="Medium"
+                                          Foreground="{DynamicResource OnSecondaryContainerBrush}" Margin="0,0,0,8"/>
+                                <TextBlock Text="{x:Static resources:Strings.BackupModsRecommendation}" 
+                                          FontSize="{DynamicResource BodyMedium}" TextWrapping="Wrap"
+                                          Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                
                 <!-- Step 1: Language Selection -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=1}"
                         Background="{DynamicResource SurfaceBrush}"
@@ -238,10 +280,10 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button Content="{x:Static resources:Strings.Previous}" Command="{Binding BackCommand}" 
                     IsEnabled="{Binding IsBackEnabled}" 
-                    Width="80" Margin="0,0,10,0"/>
+                    Width="90" Margin="0,0,10,0"/>
             <Button Content="{x:Static resources:Strings.Next}" Command="{Binding NextCommand}" 
                     IsEnabled="{Binding IsNextEnabled}" 
-                    Width="80"/>
+                    Width="90"/>
         </StackPanel>
     </Grid>
 </UserControl>

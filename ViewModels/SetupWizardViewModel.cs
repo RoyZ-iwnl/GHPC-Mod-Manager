@@ -19,7 +19,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
 
     [ObservableProperty]
-    private int _currentStep = 1;
+    private int _currentStep = 0;
 
     [ObservableProperty]
     private bool _isNextEnabled = true;
@@ -178,6 +178,10 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         switch (CurrentStep)
         {
+            case 0: // Welcome Page
+                CurrentStep = 1; // Go to Language Selection
+                break;
+
             case 1: // Language Selection
                 // 语言已经通过Apply按钮设置，这里只需要决定下一步
                 if (SelectedLanguage == "zh-CN")
@@ -245,7 +249,7 @@ public partial class SetupWizardViewModel : ObservableObject
     [RelayCommand]
     private async Task BackAsync()
     {
-        if (CurrentStep > 1)
+        if (CurrentStep > 0)
         {
             // Handle special case: if we're on step 3 and we skipped step 2 (network check)
             // for English language, go back to step 1 instead of step 2
@@ -294,7 +298,7 @@ public partial class SetupWizardViewModel : ObservableObject
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://www.dogfight360.com/blog/18682/",
+                FileName = "https://GHPC.DMR.gg/github.html",
                 UseShellExecute = true
             });
             AddToNetworkLog(Strings.NetworkHelpPageOpened);
@@ -522,9 +526,10 @@ public partial class SetupWizardViewModel : ObservableObject
 
     private void UpdateNavigationButtons()
     {
-        IsBackEnabled = CurrentStep > 1;
+        IsBackEnabled = CurrentStep > 0;
         IsNextEnabled = CurrentStep switch
         {
+            0 => true, // Welcome page - always allow next
             3 => !string.IsNullOrEmpty(GameRootPath),
             4 => true, // 总是允许进入下一步：已安装则继续，未安装则进入安装
             5 => SelectedMelonLoaderVersion != null && !IsInstalling,

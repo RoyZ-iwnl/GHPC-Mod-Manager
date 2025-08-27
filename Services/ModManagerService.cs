@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 using GHPC_Mod_Manager.Resources;
 
 namespace GHPC_Mod_Manager.Services;
@@ -32,17 +33,19 @@ public class ModManagerService : IModManagerService
     private readonly INetworkService _networkService;
     private readonly ILoggingService _loggingService;
     private readonly IModI18nService _modI18nService;
+    private readonly IModBackupService _modBackupService;
     private List<ModConfig> _availableMods = new();
     private ModInstallManifest _installManifest = new();
     private Dictionary<string, Dictionary<string, string>> _configComments = new(); // Store comments for each mod
     private Dictionary<string, List<string>> _standaloneComments = new(); // Store standalone comments for each mod
 
-    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService)
+    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService)
     {
         _settingsService = settingsService;
         _networkService = networkService;
         _loggingService = loggingService;
         _modI18nService = modI18nService;
+        _modBackupService = modBackupService;
     }
 
     public async Task<List<ModViewModel>> GetModListAsync()
@@ -192,6 +195,67 @@ public class ModManagerService : IModManagerService
         {
             _loggingService.LogInfo(Strings.Installing, modConfig.Id, version);
 
+            // Check if we can reinstall from backup first (quick install)
+            if (await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version))
+            {
+                _loggingService.LogInfo("Attempting quick reinstall from backup for {0} version {1}", modConfig.Id, version);
+                
+                var quickInstallSuccess = await _modBackupService.ReinstallModFromBackupAsync(modConfig.Id, version);
+                if (quickInstallSuccess)
+                {
+                    // Update install manifest for quick reinstall
+                    await LoadManifestAsync();
+                    var quickGameRootPath = _settingsService.Settings.GameRootPath;
+                    var quickModsPath = Path.Combine(quickGameRootPath, "Mods");
+                    var quickNewFiles = Directory.GetFiles(quickModsPath, "*.dll", SearchOption.AllDirectories)
+                        .Where(f => Path.GetFileName(f).Contains(modConfig.MainBinaryFileName.Replace(".dll", "")))
+                        .Select(f => Path.GetRelativePath(quickGameRootPath, f))
+                        .ToList();
+
+                    var quickInstallInfo = new ModInstallInfo
+                    {
+                        ModId = modConfig.Id,
+                        Version = version,
+                        InstalledFiles = quickNewFiles,
+                        InstallDate = DateTime.Now
+                    };
+
+                    _installManifest.InstalledMods[modConfig.Id] = quickInstallInfo;
+                    await SaveManifestAsync();
+
+                    _loggingService.LogInfo(Strings.ModReinstalledFromBackup, modConfig.Id, version);
+                    return true;
+                }
+            }
+
+            // Standard installation process continues if backup installation fails or doesn't exist
+            // Check for missing dependencies first
+            var (hasMissingRequirements, missingMods) = await CheckModDependenciesAsync(modConfig);
+            if (hasMissingRequirements)
+            {
+                var missingModNames = missingMods.Select(GetModDisplayName).ToList();
+                var currentModName = GetModDisplayName(modConfig.Id);
+                var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
+                
+                MessageBox.Show(message, Strings.ModDependencyMissing, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Check for conflicts
+            var (hasConflicts, conflictingMods) = await CheckModConflictsAsync(modConfig);
+            if (hasConflicts)
+            {
+                var conflictingModNames = conflictingMods.Select(GetModDisplayName).ToList();
+                var currentModName = GetModDisplayName(modConfig.Id);
+                var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
+                
+                var result = MessageBox.Show(message, Strings.ModConflictDetected, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.No)
+                {
+                    return false;
+                }
+            }
+
             var releases = await _networkService.GetGitHubReleasesAsync(
                 GetRepoOwner(modConfig.ReleaseUrl),
                 GetRepoName(modConfig.ReleaseUrl)
@@ -266,8 +330,12 @@ public class ModManagerService : IModManagerService
 
             _loggingService.LogInfo(Strings.UninstallingMod, modId);
 
+            // Create backup before uninstalling
+            await _modBackupService.UninstallModWithBackupAsync(modId, installInfo.Version, installInfo.InstalledFiles);
+
             var gameRootPath = _settingsService.Settings.GameRootPath;
 
+            // Delete files after backup
             foreach (var relativePath in installInfo.InstalledFiles)
             {
                 var fullPath = Path.Combine(gameRootPath, relativePath);
@@ -277,6 +345,7 @@ public class ModManagerService : IModManagerService
                 }
             }
 
+            // Clean up empty directories
             var directories = installInfo.InstalledFiles
                 .Select(f => Path.GetDirectoryName(Path.Combine(gameRootPath, f)))
                 .Where(d => !string.IsNullOrEmpty(d))
@@ -318,38 +387,56 @@ public class ModManagerService : IModManagerService
     {
         try
         {
-            var gameRootPath = _settingsService.Settings.GameRootPath;
-            var modsPath = Path.Combine(gameRootPath, "Mods");
-            
+            await LoadManifestAsync();
+
+            // Get mod files from install manifest
+            List<string> modFiles = new();
+
             // Special handling for translation plugin
             if (modId == "translation_plugin")
             {
                 const string translationPluginFileName = "XUnity.AutoTranslator.Plugin.MelonMod.dll";
-                var modFile = Path.Combine(modsPath, translationPluginFileName);
-                var backupFile = modFile + ".bak";
-                return await ToggleModFileAsync(modFile, backupFile, enable, modId);
+                var gameRootPath = _settingsService.Settings.GameRootPath;
+                var modsPath = Path.Combine(gameRootPath, "Mods");
+                var modFilePath = Path.Combine(modsPath, translationPluginFileName);
+                if (File.Exists(modFilePath))
+                {
+                    modFiles.Add(Path.GetRelativePath(gameRootPath, modFilePath));
+                }
             }
-            
-            // For managed mods, use config info
-            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig != null)
+            // For managed mods, get files from install manifest
+            else if (_installManifest.InstalledMods.TryGetValue(modId, out var installInfo))
             {
-                var modFile = Path.Combine(modsPath, modConfig.MainBinaryFileName);
-                var backupFile = modFile + ".bak";
-                return await ToggleModFileAsync(modFile, backupFile, enable, modId);
+                modFiles = installInfo.InstalledFiles.ToList();
             }
-            
             // For manual mods, derive filename from modId
-            if (modId.StartsWith("manual_"))
+            else if (modId.StartsWith("manual_"))
             {
                 var fileName = modId.Substring("manual_".Length) + ".dll";
-                var modFile = Path.Combine(modsPath, fileName);
-                var backupFile = modFile + ".bak";
-                return await ToggleModFileAsync(modFile, backupFile, enable, modId);
+                var gameRootPath = _settingsService.Settings.GameRootPath;
+                var modsPath = Path.Combine(gameRootPath, "Mods");
+                var modFilePath = Path.Combine(modsPath, fileName);
+                if (File.Exists(modFilePath))
+                {
+                    modFiles.Add(Path.GetRelativePath(gameRootPath, modFilePath));
+                }
             }
 
-            _loggingService.LogError(Strings.ModNotFound, modId);
-            return false;
+            if (!modFiles.Any())
+            {
+                _loggingService.LogError(Strings.ModNotFound, modId);
+                return false;
+            }
+
+            // Use backup service for enable/disable operations
+            if (enable)
+            {
+                return await _modBackupService.EnableModFromBackupAsync(modId);
+            }
+            else
+            {
+                return await _modBackupService.DisableModWithBackupAsync(modId, modFiles);
+            }
         }
         catch (Exception ex)
         {
@@ -468,7 +555,19 @@ public class ModManagerService : IModManagerService
                                 valueAndComment = valueAndComment.Substring(0, commentIndex);
                             }
                             
-                            var value = valueAndComment.Trim().Trim('"');
+                            var value = valueAndComment.Trim();
+                            
+                            // Check if this is a TOML array - starts with [ and ends with ]
+                            if (value.StartsWith("[") && value.EndsWith("]"))
+                            {
+                                // Keep arrays as-is, don't remove quotes
+                                // Arrays should not have outer quotes in TOML
+                            }
+                            else
+                            {
+                                // Remove quotes from regular string values
+                                value = value.Trim('"');
+                            }
 
                             if (bool.TryParse(value, out var boolValue))
                             {
@@ -591,7 +690,19 @@ public class ModManagerService : IModManagerService
                                 valueAndComment = valueAndComment.Substring(0, commentIndex);
                             }
                             
-                            var value = valueAndComment.Trim().Trim('"');
+                            var value = valueAndComment.Trim();
+                            
+                            // Check if this is a TOML array - starts with [ and ends with ]
+                            if (value.StartsWith("[") && value.EndsWith("]"))
+                            {
+                                // Keep arrays as-is, don't remove quotes
+                                // Arrays should not have outer quotes in TOML
+                            }
+                            else
+                            {
+                                // Remove quotes from regular string values
+                                value = value.Trim('"');
+                            }
 
                             object typedValue;
                             if (bool.TryParse(value, out var boolValue))
@@ -673,7 +784,24 @@ public class ModManagerService : IModManagerService
                                 comment = valuePart.Substring(commentIndex);
                             }
 
-                            var formattedValue = newValue is bool ? newValue.ToString().ToLower() : $"\"{newValue}\"";
+                            string formattedValue;
+                            if (newValue is bool)
+                            {
+                                formattedValue = newValue.ToString().ToLower();
+                            }
+                            else
+                            {
+                                var valueStr = newValue.ToString();
+                                // Check if this is a TOML array - starts with [ and ends with ]
+                                if (valueStr.Trim().StartsWith("[") && valueStr.Trim().EndsWith("]"))
+                                {
+                                    formattedValue = valueStr.Trim(); // Keep arrays as-is, no quotes
+                                }
+                                else
+                                {
+                                    formattedValue = $"\"{valueStr}\""; // Wrap strings in quotes
+                                }
+                            }
                             newLines.Add($"\"{key}\" = {formattedValue} {comment}".Trim());
                             continue;
                         }
@@ -873,5 +1001,74 @@ public class ModManagerService : IModManagerService
     public string GetLocalizedConfigComment(string modId, string commentKey)
     {
         return _modI18nService.GetLocalizedComment(modId, commentKey, commentKey);
+    }
+
+    /// <summary>
+    /// Check for mod conflicts before installation
+    /// </summary>
+    public async Task<(bool HasConflicts, List<string> ConflictingMods)> CheckModConflictsAsync(ModConfig modConfig)
+    {
+        var conflictingMods = new List<string>();
+        
+        _loggingService.LogInfo(Strings.CheckingModConflicts, modConfig.Id);
+        
+        if (modConfig.Conflicts?.Any() == true)
+        {
+            foreach (var conflictId in modConfig.Conflicts)
+            {
+                if (_installManifest.InstalledMods.ContainsKey(conflictId))
+                {
+                    conflictingMods.Add(conflictId);
+                    _loggingService.LogWarning(Strings.ConflictFound, conflictId);
+                }
+            }
+        }
+        
+        _loggingService.LogInfo(Strings.ModConflictCheckComplete, modConfig.Id);
+        return (conflictingMods.Any(), conflictingMods);
+    }
+
+    /// <summary>
+    /// Check for missing mod dependencies before installation
+    /// </summary>
+    public async Task<(bool HasMissingRequirements, List<string> MissingMods)> CheckModDependenciesAsync(ModConfig modConfig)
+    {
+        var missingMods = new List<string>();
+        
+        _loggingService.LogInfo(Strings.CheckingModDependencies, modConfig.Id);
+        
+        if (modConfig.Requirements?.Any() == true)
+        {
+            foreach (var requiredId in modConfig.Requirements)
+            {
+                if (!_installManifest.InstalledMods.ContainsKey(requiredId))
+                {
+                    missingMods.Add(requiredId);
+                    _loggingService.LogWarning(Strings.MissingRequirement, requiredId);
+                }
+            }
+        }
+        
+        _loggingService.LogInfo(Strings.ModDependencyCheckComplete, modConfig.Id);
+        return (missingMods.Any(), missingMods);
+    }
+
+    /// <summary>
+    /// Get display name for a mod by ID
+    /// </summary>
+    private string GetModDisplayName(string modId)
+    {
+        // Try to get the display name from available mod configs
+        var availableMods = Task.Run(async () => await _networkService.GetModConfigAsync(_settingsService.Settings.ModConfigUrl)).Result;
+        var modConfig = availableMods.FirstOrDefault(m => m.Id == modId);
+        
+        if (modConfig?.Name != null)
+        {
+            var currentLanguage = _settingsService.Settings.Language;
+            return modConfig.Name.TryGetValue(currentLanguage, out var name) ? name : 
+                   modConfig.Name.TryGetValue("en-US", out var enName) ? enName : modId;
+        }
+        
+        return modId;
     }
 }

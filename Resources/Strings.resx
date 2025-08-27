@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1393,7 +1393,7 @@
     <value>Use proxy service to accelerate GitHub downloads</value>
   </data>
   <data name="GitHubProxyApplied" xml:space="preserve">
-    <value>GitHub proxy applied: {0} -> {1}</value>
+    <value>GitHub proxy applied: {0} -&gt; {1}</value>
   </data>
   <data name="GitHubProxyFailed" xml:space="preserve">
     <value>GitHub proxy failed ({0}), falling back to original URL: {1}</value>
@@ -1408,7 +1408,7 @@
     <value>URL is not a GitHub URL, using original: {0}</value>
   </data>
   <data name="GitHubProxyTransforming" xml:space="preserve">
-    <value>GitHub proxy enabled, transforming URL: {0} -> {1}</value>
+    <value>GitHub proxy enabled, transforming URL: {0} -&gt; {1}</value>
   </data>
   <data name="URLPatternNotSupported" xml:space="preserve">
     <value>URL pattern not supported for proxy, using original: {0} (path: {1})</value>
@@ -1475,5 +1475,158 @@
   </data>
   <data name="PresetDeleteError" xml:space="preserve">
     <value>Preset delete error</value>
+  </data>
+  <data name="NoGitHubUrlAvailable" xml:space="preserve">
+    <value>No GitHub URL available for mod: {0}</value>
+  </data>
+  <data name="OpenedGitHubPage" xml:space="preserve">
+    <value>Opened GitHub page for mod: {0} -&gt; {1}</value>
+  </data>
+  <data name="FailedToOpenGitHubPage" xml:space="preserve">
+    <value>Failed to open GitHub page for mod: {0}</value>
+  </data>
+  <data name="UnableToOpenGitHubPage" xml:space="preserve">
+    <value>Unable to open GitHub page: {0}</value>
+  </data>
+  <data name="ModConflictDetected" xml:space="preserve">
+    <value>Mod conflict detected</value>
+  </data>
+  <data name="ModConflictMessage" xml:space="preserve">
+    <value>The mod '{0}' conflicts with the following installed mods: {1}. Do you want to continue anyway?</value>
+  </data>
+  <data name="ModDependencyMissing" xml:space="preserve">
+    <value>Missing mod dependencies</value>
+  </data>
+  <data name="ModDependencyMessage" xml:space="preserve">
+    <value>The mod '{0}' requires the following mods to be installed first: {1}. Please install them first.</value>
+  </data>
+  <data name="CheckingModConflicts" xml:space="preserve">
+    <value>Checking mod conflicts for: {0}</value>
+  </data>
+  <data name="CheckingModDependencies" xml:space="preserve">
+    <value>Checking mod dependencies for: {0}</value>
+  </data>
+  <data name="ConflictFound" xml:space="preserve">
+    <value>Conflict found with mod: {0}</value>
+  </data>
+  <data name="MissingRequirement" xml:space="preserve">
+    <value>Missing required mod: {0}</value>
+  </data>
+  <data name="ModConflictCheckComplete" xml:space="preserve">
+    <value>Mod conflict check complete for: {0}</value>
+  </data>
+  <data name="ModDependencyCheckComplete" xml:space="preserve">
+    <value>Mod dependency check complete for: {0}</value>
+  </data>
+  <data name="GHPCModManagerWorkingDirectory" xml:space="preserve">
+    <value>GHPC Mod Manager Working Directory</value>
+  </data>
+  <data name="ModBackupDirectoryCreated" xml:space="preserve">
+    <value>Mod backup directory created: {0}</value>
+  </data>
+  <data name="ModBackupDirectoryCreateFailed" xml:space="preserve">
+    <value>Failed to create mod backup directory: {0}</value>
+  </data>
+  <data name="ModDisabledAndBackedUp" xml:space="preserve">
+    <value>Mod disabled and backed up: {0}</value>
+  </data>
+  <data name="ModEnabledFromBackup" xml:space="preserve">
+    <value>Mod enabled from backup: {0}</value>
+  </data>
+  <data name="ModUninstalledAndBackedUp" xml:space="preserve">
+    <value>Mod uninstalled and backed up: {0} (version {1})</value>
+  </data>
+  <data name="ModReinstalledFromBackup" xml:space="preserve">
+    <value>Mod reinstalled from backup: {0} (version {1})</value>
+  </data>
+  <data name="ModBackupNotFound" xml:space="preserve">
+    <value>Mod backup not found: {0}</value>
+  </data>
+  <data name="ModBackupFailed" xml:space="preserve">
+    <value>Failed to backup mod: {0}</value>
+  </data>
+  <data name="ModRestoreFromBackupFailed" xml:space="preserve">
+    <value>Failed to restore mod from backup: {0}</value>
+  </data>
+  <data name="CleanupDownloadedMods" xml:space="preserve">
+    <value>Cleanup Downloaded Mods</value>
+  </data>
+  <data name="CleanupModBackupsSuccessful" xml:space="preserve">
+    <value>Mod backups cleaned up successfully. Freed {0} MB of space.</value>
+  </data>
+  <data name="CleanupModBackupsFailed" xml:space="preserve">
+    <value>Failed to cleanup mod backups: {0}</value>
+  </data>
+  <data name="ConfirmCleanupModBackups" xml:space="preserve">
+    <value>This will delete all backed up mod files. Are you sure?</value>
+  </data>
+  <data name="ConfirmCleanup" xml:space="preserve">
+    <value>Confirm Cleanup</value>
+  </data>
+  <data name="LoadingModConfigFromLocalPath" xml:space="preserve">
+    <value>Loading ModConfig from local path: {0}</value>
+  </data>
+  <data name="ReadingModConfigFrom" xml:space="preserve">
+    <value>Reading ModConfig from: {0}</value>
+  </data>
+  <data name="LoadingTranslationConfigFromLocalPath" xml:space="preserve">
+    <value>Loading TranslationConfig from local path: {0}</value>
+  </data>
+  <data name="ReadingTranslationConfigFrom" xml:space="preserve">
+    <value>Reading TranslationConfig from: {0}</value>
+  </data>
+  <data name="LoadingModI18nConfigFromLocalPath" xml:space="preserve">
+    <value>Loading ModI18nConfig from local path: {0}</value>
+  </data>
+  <data name="ReadingModI18nConfigFrom" xml:space="preserve">
+    <value>Reading ModI18nConfig from: {0}</value>
+  </data>
+  <data name="LocalPathNotFound" xml:space="preserve">
+    <value>Local path not found: {0}</value>
+  </data>
+  <data name="ModConfigJsonNotFound" xml:space="preserve">
+    <value>modconfig.json not found in directory: {0}</value>
+  </data>
+  <data name="TranslationConfigJsonNotFound" xml:space="preserve">
+    <value>translationconfig.json not found in directory: {0}</value>
+  </data>
+  <data name="ModI18nJsonNotFound" xml:space="preserve">
+    <value>mod_i18n.json not found in directory: {0}</value>
+  </data>
+  <data name="GitHubReleasesLoadedFromPersistentCache" xml:space="preserve">
+    <value>GitHub releases loaded from persistent cache: {0}/{1}</value>
+  </data>
+  <data name="UsingStaleGitHubReleasesCache" xml:space="preserve">
+    <value>Using stale GitHub releases cache due to API error: {0}/{1}</value>
+  </data>
+  <data name="Step0WelcomeTitle" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="WelcomeToGHPCModManager" xml:space="preserve">
+    <value>Welcome to GHPC Mod Manager</value>
+  </data>
+  <data name="WelcomeDescription" xml:space="preserve">
+    <value>This wizard will help you set up the mod manager for GHPC (Gunner, HEAT, PC!).</value>
+  </data>
+  <data name="OpenGameRootDirectory" xml:space="preserve">
+    <value>Open Game Directory</value>
+  </data>
+  <data name="GameDirectoryNotSetOrNotFound" xml:space="preserve">
+    <value>Game directory is not set or not found. Please configure the game path in Settings.</value>
+  </data>
+  <data name="OpenedGameRootDirectory" xml:space="preserve">
+    <value>Opened game root directory: {0}</value>
+  </data>
+  <data name="FailedToOpenGameDirectory" xml:space="preserve">
+    <value>Failed to open game directory</value>
+  </data>
+  <data name="UnableToOpenGameDirectory" xml:space="preserve">
+    <value>Unable to open game directory: {0}</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention!</value>
+  </data>
+  <data name="BackupModsRecommendation" xml:space="preserve">
+    <value>If you already have mods installed, we recommend backing up your MODS folder before using this manager. This will ensure you don't lose any manually installed modifications.</value>
   </data>
 </root>

@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="720" d:DesignWidth="1280">
     
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -15,6 +15,8 @@
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:TranslationPluginVisibilityConverter x:Key="TranslationPluginVisibilityConverter"/>
         <converters:ModEnableStateConverter x:Key="ModEnableStateConverter"/>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:StringToInverseVisibilityConverter x:Key="StringToInverseVisibilityConverter"/>
     </UserControl.Resources>
     
     <Grid Background="{DynamicResource BackgroundBrush}">
@@ -107,9 +109,14 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             
-                            <Button Grid.Row="0" Content="{x:Static resources:Strings.Refresh}" Command="{Binding RefreshDataCommand}" 
-                                    HorizontalAlignment="Left" Margin="0,0,0,5" MinWidth="80"
-                                    Style="{DynamicResource FilledButtonStyle}"/>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                                <Button Content="{x:Static resources:Strings.Refresh}" Command="{Binding RefreshDataCommand}" 
+                                        Margin="0,0,5,0" MinWidth="80"
+                                        Style="{DynamicResource FilledButtonStyle}"/>
+                                <Button Content="{x:Static resources:Strings.OpenGameRootDirectory}" Command="{Binding OpenGameRootDirectoryCommand}" 
+                                        MinWidth="120"
+                                        Style="{DynamicResource OutlinedButtonStyle}"/>
+                            </StackPanel>
                             
                             <DataGrid Grid.Row="1" ItemsSource="{Binding Mods}" 
                                       SelectedItem="{Binding SelectedMod}" 
@@ -125,20 +132,39 @@
                                     </Style>
                                 </DataGrid.CellStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="{x:Static resources:Strings.Name}" Binding="{Binding DisplayName}" Width="*" MinWidth="100">
-                                        <DataGridTextColumn.HeaderStyle>
+                                    <DataGridTemplateColumn Header="{x:Static resources:Strings.Name}" Width="*" MinWidth="100">
+                                        <DataGridTemplateColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             </Style>
-                                        </DataGridTextColumn.HeaderStyle>
-                                        <DataGridTextColumn.ElementStyle>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                                <Setter Property="TextWrapping" Value="Wrap"/>
-                                            </Style>
-                                        </DataGridTextColumn.ElementStyle>
-                                    </DataGridTextColumn>
+                                        </DataGridTemplateColumn.HeaderStyle>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <!-- 可点击的超链接 -->
+                                                    <Button Style="{DynamicResource TextButtonStyle}" 
+                                                            Command="{Binding DataContext.OpenModGitHubPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent"
+                                                            Visibility="{Binding GitHubRepositoryUrl, Converter={StaticResource StringToVisibilityConverter}}">
+                                                        <TextBlock Text="{Binding DisplayName}" 
+                                                                   Foreground="{DynamicResource PrimaryBrush}" 
+                                                                   TextDecorations="Underline"
+                                                                   HorizontalAlignment="Center" 
+                                                                   VerticalAlignment="Center" 
+                                                                   TextWrapping="Wrap"/>
+                                                    </Button>
+                                                    <!-- 普通文本 -->
+                                                    <TextBlock Text="{Binding DisplayName}" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center" 
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource OnSurfaceBrush}"
+                                                               Visibility="{Binding GitHubRepositoryUrl, Converter={StaticResource StringToInverseVisibilityConverter}}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="{x:Static resources:Strings.InstalledVersion}" Binding="{Binding InstalledVersion}" Width="145" MinWidth="145">
                                         <DataGridTextColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">

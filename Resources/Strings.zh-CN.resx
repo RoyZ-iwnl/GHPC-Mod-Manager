@@ -1384,7 +1384,7 @@
     <value>应用版本</value>
   </data>
   <data name="GHPCModManager" xml:space="preserve">
-    <value>GHPC 模组管理器</value>
+    <value>GHPC模组管理器</value>
   </data>
   <data name="UseGitHubProxy" xml:space="preserve">
     <value>启用GitHub加速</value>
@@ -1475,5 +1475,158 @@
   </data>
   <data name="PresetDeleteError" xml:space="preserve">
     <value>预设删除错误</value>
+  </data>
+  <data name="NoGitHubUrlAvailable" xml:space="preserve">
+    <value>模组 {0} 没有可用的GitHub链接</value>
+  </data>
+  <data name="OpenedGitHubPage" xml:space="preserve">
+    <value>已打开模组 {0} 的GitHub页面: {1}</value>
+  </data>
+  <data name="FailedToOpenGitHubPage" xml:space="preserve">
+    <value>无法打开模组 {0} 的GitHub页面</value>
+  </data>
+  <data name="UnableToOpenGitHubPage" xml:space="preserve">
+    <value>无法打开GitHub页面: {0}</value>
+  </data>
+  <data name="ModConflictDetected" xml:space="preserve">
+    <value>检测到模组冲突</value>
+  </data>
+  <data name="ModConflictMessage" xml:space="preserve">
+    <value>模组 '{0}' 与以下已安装的模组冲突: {1}。是否仍要继续安装？</value>
+  </data>
+  <data name="ModDependencyMissing" xml:space="preserve">
+    <value>缺少模组依赖</value>
+  </data>
+  <data name="ModDependencyMessage" xml:space="preserve">
+    <value>模组 '{0}' 需要先安装以下模组: {1}。请先安装这些依赖模组。</value>
+  </data>
+  <data name="CheckingModConflicts" xml:space="preserve">
+    <value>正在检查模组冲突: {0}</value>
+  </data>
+  <data name="CheckingModDependencies" xml:space="preserve">
+    <value>正在检查模组依赖: {0}</value>
+  </data>
+  <data name="ConflictFound" xml:space="preserve">
+    <value>发现与模组 {0} 冲突</value>
+  </data>
+  <data name="MissingRequirement" xml:space="preserve">
+    <value>缺少必需的模组: {0}</value>
+  </data>
+  <data name="ModConflictCheckComplete" xml:space="preserve">
+    <value>模组冲突检查完成: {0}</value>
+  </data>
+  <data name="ModDependencyCheckComplete" xml:space="preserve">
+    <value>模组依赖检查完成: {0}</value>
+  </data>
+  <data name="GHPCModManagerWorkingDirectory" xml:space="preserve">
+    <value>GHPC模组管理器工作目录</value>
+  </data>
+  <data name="ModBackupDirectoryCreated" xml:space="preserve">
+    <value>模组备份目录已创建: {0}</value>
+  </data>
+  <data name="ModBackupDirectoryCreateFailed" xml:space="preserve">
+    <value>创建模组备份目录失败: {0}</value>
+  </data>
+  <data name="ModDisabledAndBackedUp" xml:space="preserve">
+    <value>模组已禁用并备份: {0}</value>
+  </data>
+  <data name="ModEnabledFromBackup" xml:space="preserve">
+    <value>模组已从备份启用: {0}</value>
+  </data>
+  <data name="ModUninstalledAndBackedUp" xml:space="preserve">
+    <value>模组已卸载并备份: {0} (版本 {1})</value>
+  </data>
+  <data name="ModReinstalledFromBackup" xml:space="preserve">
+    <value>模组已从备份重新安装: {0} (版本 {1})</value>
+  </data>
+  <data name="ModBackupNotFound" xml:space="preserve">
+    <value>未找到模组备份: {0}</value>
+  </data>
+  <data name="ModBackupFailed" xml:space="preserve">
+    <value>模组备份失败: {0}</value>
+  </data>
+  <data name="ModRestoreFromBackupFailed" xml:space="preserve">
+    <value>从备份恢复模组失败: {0}</value>
+  </data>
+  <data name="CleanupDownloadedMods" xml:space="preserve">
+    <value>清理已下载的模组</value>
+  </data>
+  <data name="CleanupModBackupsSuccessful" xml:space="preserve">
+    <value>模组备份清理成功。释放了 {0} MB 空间。</value>
+  </data>
+  <data name="CleanupModBackupsFailed" xml:space="preserve">
+    <value>清理模组备份失败: {0}</value>
+  </data>
+  <data name="ConfirmCleanupModBackups" xml:space="preserve">
+    <value>这将删除所有备份的模组文件。你确定吗？</value>
+  </data>
+  <data name="ConfirmCleanup" xml:space="preserve">
+    <value>确认清理</value>
+  </data>
+  <data name="LoadingModConfigFromLocalPath" xml:space="preserve">
+    <value>从本地路径加载模组配置: {0}</value>
+  </data>
+  <data name="ReadingModConfigFrom" xml:space="preserve">
+    <value>读取模组配置: {0}</value>
+  </data>
+  <data name="LoadingTranslationConfigFromLocalPath" xml:space="preserve">
+    <value>从本地路径加载翻译配置: {0}</value>
+  </data>
+  <data name="ReadingTranslationConfigFrom" xml:space="preserve">
+    <value>读取翻译配置: {0}</value>
+  </data>
+  <data name="LoadingModI18nConfigFromLocalPath" xml:space="preserve">
+    <value>从本地路径加载模组国际化配置: {0}</value>
+  </data>
+  <data name="ReadingModI18nConfigFrom" xml:space="preserve">
+    <value>读取模组国际化配置: {0}</value>
+  </data>
+  <data name="LocalPathNotFound" xml:space="preserve">
+    <value>未找到本地路径: {0}</value>
+  </data>
+  <data name="ModConfigJsonNotFound" xml:space="preserve">
+    <value>目录中未找到 modconfig.json 文件: {0}</value>
+  </data>
+  <data name="TranslationConfigJsonNotFound" xml:space="preserve">
+    <value>目录中未找到 translationconfig.json 文件: {0}</value>
+  </data>
+  <data name="ModI18nJsonNotFound" xml:space="preserve">
+    <value>目录中未找到 mod_i18n.json 文件: {0}</value>
+  </data>
+  <data name="GitHubReleasesLoadedFromPersistentCache" xml:space="preserve">
+    <value>从持久化缓存加载GitHub发布版本: {0}/{1}</value>
+  </data>
+  <data name="UsingStaleGitHubReleasesCache" xml:space="preserve">
+    <value>由于API错误使用过期的GitHub发布版本缓存: {0}/{1}</value>
+  </data>
+  <data name="Step0WelcomeTitle" xml:space="preserve">
+    <value>欢迎</value>
+  </data>
+  <data name="WelcomeToGHPCModManager" xml:space="preserve">
+    <value>欢迎使用 GHPC模组管理器</value>
+  </data>
+  <data name="WelcomeDescription" xml:space="preserve">
+    <value>此向导将帮助您为 GHPC (Gunner, HEAT, PC!) 设置模组管理器。</value>
+  </data>
+  <data name="OpenGameRootDirectory" xml:space="preserve">
+    <value>打开游戏根目录</value>
+  </data>
+  <data name="GameDirectoryNotSetOrNotFound" xml:space="preserve">
+    <value>游戏目录未设置或未找到。请在设置中配置游戏路径。</value>
+  </data>
+  <data name="OpenedGameRootDirectory" xml:space="preserve">
+    <value>已打开游戏根目录: {0}</value>
+  </data>
+  <data name="FailedToOpenGameDirectory" xml:space="preserve">
+    <value>打开游戏目录失败</value>
+  </data>
+  <data name="UnableToOpenGameDirectory" xml:space="preserve">
+    <value>无法打开游戏目录: {0}</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>注意!</value>
+  </data>
+  <data name="BackupModsRecommendation" xml:space="preserve">
+    <value>如果您已经安装了模组，我们建议在使用此管理器之前备份您的 MODS 文件夹。这将确保您不会丢失任何手动安装的模组。</value>
   </data>
 </root>

@@ -19,6 +19,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly INetworkService _networkService;
     private readonly IModI18nService _modI18nService;
     private readonly IThemeService _themeService;
+    private readonly IModBackupService _modBackupService;
 
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
@@ -58,7 +59,8 @@ public partial class SettingsViewModel : ObservableObject
         ILoggingService loggingService,
         INetworkService networkService,
         IModI18nService modI18nService,
-        IThemeService themeService)
+        IThemeService themeService,
+        IModBackupService modBackupService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -66,6 +68,7 @@ public partial class SettingsViewModel : ObservableObject
         _networkService = networkService;
         _modI18nService = modI18nService;
         _themeService = themeService;
+        _modBackupService = modBackupService;
 
         LoadSettings();
     }
@@ -207,6 +210,40 @@ public partial class SettingsViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.TempFilesCleanError);
             MessageBox.Show(Strings.TempFilesCleanFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
+    private async Task CleanupModBackupsAsync()
+    {
+        try
+        {
+            var result = MessageBox.Show(
+                Strings.ConfirmCleanupModBackups,
+                Strings.ConfirmCleanup,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var freedBytes = await _modBackupService.CleanupModBackupsAsync();
+                var freedMB = (freedBytes / (1024.0 * 1024.0)).ToString("F1");
+                
+                MessageBox.Show(
+                    string.Format(Strings.CleanupModBackupsSuccessful, freedMB),
+                    Strings.Success,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.CleanupModBackupsFailed, ex.Message);
+            MessageBox.Show(
+                string.Format(Strings.CleanupModBackupsFailed, ex.Message),
+                Strings.Error,
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 

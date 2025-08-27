@@ -129,6 +129,9 @@
                             <Button Content="{x:Static resources:Strings.CleanTempFiles}" Command="{Binding CleanTempFilesCommand}" 
                                     MinWidth="120" MaxWidth="150" Margin="0,0,10,0"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
+                            <Button Content="{x:Static resources:Strings.CleanupDownloadedMods}" Command="{Binding CleanupModBackupsCommand}" 
+                                    MinWidth="120" MaxWidth="180" Margin="0,0,10,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                             <Button Content="{x:Static resources:Strings.ViewLogs}" Command="{Binding ShowLogWindowCommand}" 
                                     MinWidth="80" MaxWidth="120"
                                     Style="{DynamicResource TextButtonStyle}"/>

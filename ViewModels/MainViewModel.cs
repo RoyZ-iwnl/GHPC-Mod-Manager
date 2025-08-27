@@ -466,6 +466,61 @@ public partial class MainViewModel : ObservableObject
         _navigationService.NavigateToSettings();
     }
 
+    [RelayCommand]
+    private void OpenModGitHubPage(ModViewModel mod)
+    {
+        if (mod?.GitHubRepositoryUrl == null)
+        {
+            _loggingService.LogWarning(Strings.NoGitHubUrlAvailable, mod?.DisplayName ?? "Unknown");
+            return;
+        }
+
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = mod.GitHubRepositoryUrl,
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+            _loggingService.LogInfo(Strings.OpenedGitHubPage, mod.DisplayName, mod.GitHubRepositoryUrl);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenGitHubPage, mod.DisplayName);
+            MessageBox.Show(string.Format(Strings.UnableToOpenGitHubPage, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenGameRootDirectory()
+    {
+        try
+        {
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            
+            if (string.IsNullOrEmpty(gameRootPath) || !System.IO.Directory.Exists(gameRootPath))
+            {
+                MessageBox.Show(Strings.GameDirectoryNotSetOrNotFound, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = gameRootPath,
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+            _loggingService.LogInfo(Strings.OpenedGameRootDirectory, gameRootPath);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenGameDirectory);
+            MessageBox.Show(string.Format(Strings.UnableToOpenGameDirectory, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private void OnGameRunningStateChanged(object? sender, bool isRunning)
     {
         IsGameRunning = isRunning;
