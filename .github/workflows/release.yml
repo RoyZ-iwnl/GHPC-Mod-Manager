@@ -46,9 +46,9 @@ jobs:
         echo "version=$version" >> $env:GITHUB_OUTPUT
         
         # Check if this is a prerelease version
-        $isPrerelease = $false
+        $isPrerelease = "false"
         if ($version -match '-') {
-          $isPrerelease = $true
+          $isPrerelease = "true"
           Write-Host "Detected prerelease version"
         } else {
           Write-Host "Detected stable release version"
