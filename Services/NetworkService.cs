@@ -67,7 +67,10 @@ public class NetworkService : INetworkService
                 return originalUrl;
             }
 
-            // Apply proxy prefix for supported URL patterns
+            // Get selected proxy server
+            var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+            
+            // Apply proxy prefix for supported URL patterns or git clone URLs
             var path = uri.PathAndQuery;
             var supportedPatterns = new[]
             {
@@ -77,11 +80,12 @@ public class NetworkService : INetworkService
                 "/raw/" // Raw file content (gist support)
             };
 
-            bool isSupported = supportedPatterns.Any(pattern => path.Contains(pattern, StringComparison.OrdinalIgnoreCase));
+            bool isSupported = supportedPatterns.Any(pattern => path.Contains(pattern, StringComparison.OrdinalIgnoreCase)) ||
+                              originalUrl.EndsWith(".git", StringComparison.OrdinalIgnoreCase); // Git clone URLs
             
             if (isSupported)
             {
-                var proxyUrl = $"https://gh.dmr.gg/{originalUrl}";
+                var proxyUrl = $"https://{proxyDomain}/{originalUrl}";
                 _loggingService.LogInfo(Strings.GitHubProxyTransforming, originalUrl, proxyUrl);
                 return proxyUrl;
             }
@@ -96,6 +100,22 @@ public class NetworkService : INetworkService
             _loggingService.LogError(ex, Strings.ErrorApplyingGitHubProxy, originalUrl);
             return originalUrl;
         }
+    }
+
+    /// <summary>
+    /// Get proxy domain based on selected proxy server
+    /// </summary>
+    private string GetProxyDomain(GitHubProxyServer proxyServer)
+    {
+        return proxyServer switch
+        {
+            GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+            GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+            GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+            _ => "gh.dmr.gg"
+        };
     }
 
     public async Task<bool> CheckNetworkConnectionAsync()
@@ -367,7 +387,8 @@ public class NetworkService : INetworkService
                 try
                 {
                     // Test connectivity to proxy first
-                    await TestProxyConnectivityAsync("gh.dmr.gg", cancellationToken);
+                    var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+                    await TestProxyConnectivityAsync(proxyDomain, cancellationToken);
                     return await DownloadFromUrlAsync(finalUrl, progress, cancellationToken);
                 }
                 catch (Exception proxyEx)

@@ -286,12 +286,16 @@ public class ModManagerService : IModManagerService
                 var confirmed = await ShowScriptWarningAsync();
                 if (!confirmed) return false;
 
-                await ExecuteInstallScriptAsync(modConfig.InstallScript_Base64, asset.DownloadUrl, gameRootPath, progress);
+                // Download file first, then pass file path to script
+                var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
+                
+                await ExecuteInstallScriptAsync(modConfig.InstallScript_Base64, tempDownloadPath, gameRootPath, modConfig.MainBinaryFileName, progress);
             }
             else
             {
                 var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
-                await ExtractToModsDirectoryAsync(downloadData, modsPath);
+                await ProcessDownloadedFileAsync(downloadData, asset.Name, modsPath, modConfig.MainBinaryFileName);
             }
 
             var filesAfterInstall = await GetDirectoryFilesAsync(modsPath);
@@ -933,7 +937,57 @@ public class ModManagerService : IModManagerService
         return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories).ToList();
     }
 
-    private async Task ExtractToModsDirectoryAsync(byte[] zipData, string modsPath)
+    private async Task ProcessDownloadedFileAsync(byte[] fileData, string originalFileName, string modsPath, string targetFileName)
+    {
+        var fileExtension = Path.GetExtension(originalFileName).ToLowerInvariant();
+        
+        // Check if it's a compressed archive
+        var compressedExtensions = new[] { ".zip", ".7z", ".rar", ".tar", ".gz", ".tar.gz" };
+        
+        if (compressedExtensions.Contains(fileExtension))
+        {
+            _loggingService.LogInfo("Extracting archive: {0}", originalFileName);
+            await ExtractArchiveToModsDirectoryAsync(fileData, fileExtension, modsPath);
+        }
+        else if (fileExtension == ".dll")
+        {
+            _loggingService.LogInfo("Installing DLL: {0} -> {1}", originalFileName, targetFileName);
+            await InstallDllFileAsync(fileData, modsPath, targetFileName);
+        }
+        else
+        {
+            // For unknown file types, assume it's a binary and copy with target name
+            _loggingService.LogInfo("Installing unknown file type as: {0}", targetFileName);
+            await InstallDllFileAsync(fileData, modsPath, targetFileName);
+        }
+    }
+
+    private async Task InstallDllFileAsync(byte[] fileData, string modsPath, string targetFileName)
+    {
+        var targetPath = Path.Combine(modsPath, targetFileName);
+        await File.WriteAllBytesAsync(targetPath, fileData);
+        _loggingService.LogInfo("DLL installed: {0}", targetPath);
+    }
+
+    private async Task ExtractArchiveToModsDirectoryAsync(byte[] archiveData, string fileExtension, string modsPath)
+    {
+        if (fileExtension == ".zip")
+        {
+            await ExtractZipToModsDirectoryAsync(archiveData, modsPath);
+        }
+        else if (fileExtension == ".7z")
+        {
+            // For 7z files, we'd need SharpCompress or similar library
+            // For now, throw exception with guidance
+            throw new NotSupportedException($"7z archives require additional library support. Please use ZIP format or implement SharpCompress for {fileExtension} support.");
+        }
+        else
+        {
+            throw new NotSupportedException($"Archive format {fileExtension} is not supported. Supported formats: .zip");
+        }
+    }
+
+    private async Task ExtractZipToModsDirectoryAsync(byte[] zipData, string modsPath)
     {
         using var zipStream = new MemoryStream(zipData);
         using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
@@ -968,7 +1022,7 @@ public class ModManagerService : IModManagerService
         });
     }
 
-    private async Task ExecuteInstallScriptAsync(string base64Script, string downloadUrl, string gameRootPath, IProgress<DownloadProgress>? progress)
+    private async Task ExecuteInstallScriptAsync(string base64Script, string downloadedFilePath, string gameRootPath, string targetFileName, IProgress<DownloadProgress>? progress)
     {
         var scriptContent = Encoding.UTF8.GetString(Convert.FromBase64String(base64Script));
         var tempBatFile = Path.Combine(_settingsService.TempPath, $"install_{Guid.NewGuid()}.bat");
@@ -979,7 +1033,7 @@ public class ModManagerService : IModManagerService
         {
             FileName = tempBatFile,
             WorkingDirectory = gameRootPath,
-            Arguments = $"\"{downloadUrl}\"",
+            Arguments = $"\"{downloadedFilePath}\" \"{gameRootPath}\" \"{targetFileName}\"",
             UseShellExecute = false,
             CreateNoWindow = true
         };
@@ -990,7 +1044,19 @@ public class ModManagerService : IModManagerService
             await process.WaitForExitAsync();
         }
         
+        // Clean up temp files
         File.Delete(tempBatFile);
+        if (File.Exists(downloadedFilePath))
+        {
+            File.Delete(downloadedFilePath);
+        }
+    }
+
+    private async Task<string> SaveTempDownloadFileAsync(byte[] downloadData, string originalFileName)
+    {
+        var tempFilePath = Path.Combine(_settingsService.TempPath, $"download_{Guid.NewGuid()}_{originalFileName}");
+        await File.WriteAllBytesAsync(tempFilePath, downloadData);
+        return tempFilePath;
     }
 
     public string GetLocalizedConfigLabel(string modId, string configKey)

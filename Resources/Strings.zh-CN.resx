@@ -1392,6 +1392,24 @@
   <data name="GitHubProxyDescription" xml:space="preserve">
     <value>使用代理服务加速GitHub下载（备用方案，不建议和反代同时使用）</value>
   </data>
+  <data name="GitHubProxyServer" xml:space="preserve">
+    <value>代理服务器</value>
+  </data>
+  <data name="GhDmrGg" xml:space="preserve">
+    <value>gh.dmr.gg (Cloudflare 1)</value>
+  </data>
+  <data name="GhProxyCom" xml:space="preserve">
+    <value>gh-proxy.com (Cloudflare 2)</value>
+  </data>
+  <data name="HkGhProxyCom" xml:space="preserve">
+    <value>hk.gh-proxy.com (香港)</value>
+  </data>
+  <data name="CdnGhProxyCom" xml:space="preserve">
+    <value>cdn.gh-proxy.com (Fastly)</value>
+  </data>
+  <data name="EdgeOneGhProxyCom" xml:space="preserve">
+    <value>edgeone.gh-proxy.com (腾讯云)</value>
+  </data>
   <data name="GitHubProxyApplied" xml:space="preserve">
     <value>已应用GitHub代理: {0} -&gt; {1}</value>
   </data>

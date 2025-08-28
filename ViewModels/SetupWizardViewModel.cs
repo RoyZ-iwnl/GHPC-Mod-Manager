@@ -178,12 +178,12 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         switch (CurrentStep)
         {
-            case 0: // Welcome Page
-                CurrentStep = 1; // Go to Language Selection
+            case 0: // Language Selection
+                // 语言已经通过Apply按钮设置，这里只需要决定下一步
+                CurrentStep = 1; // Go to Welcome Page
                 break;
 
-            case 1: // Language Selection
-                // 语言已经通过Apply按钮设置，这里只需要决定下一步
+            case 1: // Welcome Page  
                 if (SelectedLanguage == "zh-CN")
                 {
                     _loggingService.LogInfo(Strings.EnteringNetworkCheck);
@@ -529,7 +529,8 @@ public partial class SetupWizardViewModel : ObservableObject
         IsBackEnabled = CurrentStep > 0;
         IsNextEnabled = CurrentStep switch
         {
-            0 => true, // Welcome page - always allow next
+            0 => true, // Language Selection - always allow next
+            1 => true, // Welcome page - always allow next
             3 => !string.IsNullOrEmpty(GameRootPath),
             4 => true, // 总是允许进入下一步：已安装则继续，未安装则进入安装
             5 => SelectedMelonLoaderVersion != null && !IsInstalling,

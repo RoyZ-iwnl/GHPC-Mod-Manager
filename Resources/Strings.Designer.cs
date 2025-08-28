@@ -259,6 +259,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 cdn.gh-proxy.com (Fastly) 的本地化字符串。
+        /// </summary>
+        public static string CdnGhProxyCom {
+            get {
+                return ResourceManager.GetString("CdnGhProxyCom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Checking... 的本地化字符串。
         /// </summary>
         public static string Checking {
@@ -997,6 +1006,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 edgeone.gh-proxy.com (Tencent Cloud) 的本地化字符串。
+        /// </summary>
+        public static string EdgeOneGhProxyCom {
+            get {
+                return ResourceManager.GetString("EdgeOneGhProxyCom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Enabled 的本地化字符串。
         /// </summary>
         public static string Enabled {
@@ -1465,6 +1483,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 gh.dmr.gg (Cloudflare 1) 的本地化字符串。
+        /// </summary>
+        public static string GhDmrGg {
+            get {
+                return ResourceManager.GetString("GhDmrGg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 GHPC.exe not found in specified directory 的本地化字符串。
         /// </summary>
         public static string GHPCExeNotFoundInDirectory {
@@ -1488,6 +1515,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GHPCModManagerWorkingDirectory {
             get {
                 return ResourceManager.GetString("GHPCModManagerWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 gh-proxy.com (Cloudflare 2) 的本地化字符串。
+        /// </summary>
+        public static string GhProxyCom {
+            get {
+                return ResourceManager.GetString("GhProxyCom", resourceCulture);
             }
         }
         
@@ -1537,6 +1573,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Proxy Server 的本地化字符串。
+        /// </summary>
+        public static string GitHubProxyServer {
+            get {
+                return ResourceManager.GetString("GitHubProxyServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 GitHub proxy enabled, transforming URL: {0} -&gt; {1} 的本地化字符串。
         /// </summary>
         public static string GitHubProxyTransforming {
@@ -1569,6 +1614,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubReleasesLoadedFromSessionCache {
             get {
                 return ResourceManager.GetString("GitHubReleasesLoadedFromSessionCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 hk.gh-proxy.com (Hong Kong) 的本地化字符串。
+        /// </summary>
+        public static string HkGhProxyCom {
+            get {
+                return ResourceManager.GetString("HkGhProxyCom", resourceCulture);
             }
         }
         

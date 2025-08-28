@@ -33,6 +33,49 @@ public class TranslationManagerService : ITranslationManagerService
         _settingsService = settingsService;
     }
 
+    /// <summary>
+    /// Apply GitHub proxy to git clone URL if enabled
+    /// </summary>
+    private string ApplyGitHubProxyToGitUrl(string gitUrl)
+    {
+        if (!_settingsService.Settings.UseGitHubProxy)
+            return gitUrl;
+
+        try
+        {
+            var uri = new Uri(gitUrl);
+            if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
+                return gitUrl;
+
+            var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+            var proxyUrl = $"https://{proxyDomain}/{gitUrl}";
+            
+            _loggingService.LogInfo("Git Clone proxy applied: {0} -> {1}", gitUrl, proxyUrl);
+            return proxyUrl;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to apply proxy to git URL: {0}", gitUrl);
+            return gitUrl;
+        }
+    }
+
+    /// <summary>
+    /// Get proxy domain based on selected proxy server
+    /// </summary>
+    private string GetProxyDomain(GitHubProxyServer proxyServer)
+    {
+        return proxyServer switch
+        {
+            GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+            GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+            GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+            _ => "gh.dmr.gg"
+        };
+    }
+
     public async Task<bool> IsTranslationInstalledAsync()
     {
         await LoadManifestAsync();
@@ -204,7 +247,7 @@ public class TranslationManagerService : ITranslationManagerService
                 return true;
             };
 
-            Repository.Clone(translationConfig.RepoUrl, tempRepoPath, cloneOptions);
+            Repository.Clone(ApplyGitHubProxyToGitUrl(translationConfig.RepoUrl), tempRepoPath, cloneOptions);
 
             var cloneTime = DateTime.Now;
             progress?.Report(new DownloadProgress 

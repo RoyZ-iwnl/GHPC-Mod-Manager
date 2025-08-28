@@ -40,6 +40,19 @@ public partial class SettingsViewModel : ObservableObject
     private bool _useGitHubProxy = false;
 
     [ObservableProperty]
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+
+    [ObservableProperty]
+    private List<GitHubProxyServer> _availableProxyServers = new() 
+    { 
+        GitHubProxyServer.GhDmrGg, 
+        GitHubProxyServer.GhProxyCom, 
+        GitHubProxyServer.HkGhProxyCom, 
+        GitHubProxyServer.CdnGhProxyCom, 
+        GitHubProxyServer.EdgeOneGhProxyCom 
+    };
+
+    [ObservableProperty]
     private List<string> _availableLanguages = new() { "zh-CN", "en-US" };
 
     [ObservableProperty]
@@ -82,6 +95,7 @@ public partial class SettingsViewModel : ObservableObject
         TranslationConfigUrl = settings.TranslationConfigUrl;
         ModI18nUrl = settings.ModI18nUrl;
         UseGitHubProxy = settings.UseGitHubProxy;
+        GitHubProxyServer = settings.GitHubProxyServer;
         SelectedTheme = settings.Theme; // 加载主题设置
     }
 
@@ -97,6 +111,7 @@ public partial class SettingsViewModel : ObservableObject
             settings.TranslationConfigUrl = TranslationConfigUrl;
             settings.ModI18nUrl = ModI18nUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
+            settings.GitHubProxyServer = GitHubProxyServer;
             settings.Theme = SelectedTheme; // 保存主题设置
 
             await _settingsService.SaveSettingsAsync();

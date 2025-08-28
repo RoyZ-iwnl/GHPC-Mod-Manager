@@ -9,6 +9,16 @@ public enum AppTheme
     Dark    // 深色主题
 }
 
+// GitHub代理服务器枚举
+public enum GitHubProxyServer
+{
+    GhDmrGg,        // gh.dmr.gg (Cloudflare 1)
+    GhProxyCom,     // gh-proxy.com (Cloudflare 2) 
+    HkGhProxyCom,   // hk.gh-proxy.com (Hong Kong)
+    CdnGhProxyCom,  // cdn.gh-proxy.com (Fastly)
+    EdgeOneGhProxyCom // edgeone.gh-proxy.com (Tencent Cloud)
+}
+
 public class AppSettings
 {
     public string Language { get; set; } = "zh-CN";
@@ -19,6 +29,7 @@ public class AppSettings
     public bool IsFirstRun { get; set; } = true;
     public AppTheme Theme { get; set; } = AppTheme.Light; // 主题设置
     public bool UseGitHubProxy { get; set; } = false; // GitHub代理加速设置
+    public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg; // 代理服务器选择
 }
 
 public class ModConfig

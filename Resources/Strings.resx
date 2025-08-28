@@ -1392,6 +1392,24 @@
   <data name="GitHubProxyDescription" xml:space="preserve">
     <value>Use proxy service to accelerate GitHub downloads</value>
   </data>
+  <data name="GitHubProxyServer" xml:space="preserve">
+    <value>Proxy Server</value>
+  </data>
+  <data name="GhDmrGg" xml:space="preserve">
+    <value>gh.dmr.gg (Cloudflare 1)</value>
+  </data>
+  <data name="GhProxyCom" xml:space="preserve">
+    <value>gh-proxy.com (Cloudflare 2)</value>
+  </data>
+  <data name="HkGhProxyCom" xml:space="preserve">
+    <value>hk.gh-proxy.com (Hong Kong)</value>
+  </data>
+  <data name="CdnGhProxyCom" xml:space="preserve">
+    <value>cdn.gh-proxy.com (Fastly)</value>
+  </data>
+  <data name="EdgeOneGhProxyCom" xml:space="preserve">
+    <value>edgeone.gh-proxy.com (Tencent Cloud)</value>
+  </data>
   <data name="GitHubProxyApplied" xml:space="preserve">
     <value>GitHub proxy applied: {0} -&gt; {1}</value>
   </data>
