@@ -12,6 +12,7 @@ public interface IModBackupService
     Task<bool> UninstallModWithBackupAsync(string modId, string version, List<string> modFiles);
     Task<bool> ReinstallModFromBackupAsync(string modId, string version);
     Task<bool> CheckModBackupExistsAsync(string modId, string version);
+    Task<bool> DeleteModBackupAsync(string modId, string version);
     Task<long> CleanupModBackupsAsync();
     string GetBackupRootPath();
 }
@@ -160,9 +161,9 @@ public class ModBackupService : IModBackupService
                 }
                 else
                 {
-                    // Fallback: restore flat files to Mods directory (backward compatibility)
-                    var fileName = backupFileName.Replace('_', Path.DirectorySeparatorChar);
-                    targetPath = Path.Combine(gameRootPath, fileName);
+                    // Fallback: decode the encoded path (backward compatibility)
+                    var decodedPath = backupFileName.Replace('_', Path.DirectorySeparatorChar);
+                    targetPath = Path.Combine(gameRootPath, decodedPath);
                 }
                 
                 // Ensure target directory exists
@@ -173,6 +174,7 @@ public class ModBackupService : IModBackupService
                 }
                 
                 File.Move(backupFile, targetPath);
+                _loggingService.LogInfo("Restored mod file: {0} -> {1}", backupFile, targetPath);
             }
 
             // Clean up empty backup directory
@@ -211,16 +213,27 @@ public class ModBackupService : IModBackupService
                 OriginalFiles = modFiles
             };
 
-            // Copy files to uninstalled backup (copy, not move, so original uninstall logic can delete them)
+            // Copy files to uninstalled backup, preserving directory structure
+            var filePathMapping = new Dictionary<string, string>(); // backupFileName -> originalRelativePath
+            
             foreach (var relativePath in modFiles)
             {
                 var sourceFile = Path.Combine(gameRootPath, relativePath);
                 if (File.Exists(sourceFile))
                 {
-                    var backupFile = Path.Combine(versionedBackupPath, Path.GetFileName(relativePath));
+                    // Preserve directory structure by encoding path separators
+                    var encodedFileName = relativePath.Replace('\\', '_').Replace('/', '_');
+                    var backupFile = Path.Combine(versionedBackupPath, encodedFileName);
+                    
+                    // Store the mapping for restoration
+                    filePathMapping[encodedFileName] = relativePath;
+                    
                     File.Copy(sourceFile, backupFile, true);
                 }
             }
+            
+            // Update backup manifest to include file path mapping
+            backupManifest.FilePathMapping = filePathMapping;
 
             // Save backup manifest
             var manifestPath = Path.Combine(versionedBackupPath, "backup_manifest.json");
@@ -271,16 +284,37 @@ public class ModBackupService : IModBackupService
 
             Directory.CreateDirectory(modsPath);
 
-            // Restore files from backup
+            // Restore files from backup to their original locations
             var backupFiles = Directory.GetFiles(versionedBackupPath, "*", SearchOption.TopDirectoryOnly)
                 .Where(f => Path.GetFileName(f) != "backup_manifest.json")
                 .ToList();
 
             foreach (var backupFile in backupFiles)
             {
-                var fileName = Path.GetFileName(backupFile);
-                var targetFile = Path.Combine(modsPath, fileName);
-                File.Copy(backupFile, targetFile, true);
+                var backupFileName = Path.GetFileName(backupFile);
+                string targetPath;
+                
+                // Try to get original path from manifest file mapping
+                if (backupManifest.FilePathMapping?.TryGetValue(backupFileName, out var originalRelativePath) == true)
+                {
+                    targetPath = Path.Combine(gameRootPath, originalRelativePath);
+                }
+                else
+                {
+                    // Fallback: try to decode from encoded filename
+                    var decodedPath = backupFileName.Replace('_', Path.DirectorySeparatorChar);
+                    targetPath = Path.Combine(gameRootPath, decodedPath);
+                }
+                
+                // Ensure target directory exists
+                var targetDir = Path.GetDirectoryName(targetPath);
+                if (!string.IsNullOrEmpty(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                }
+                
+                File.Copy(backupFile, targetPath, true);
+                _loggingService.LogInfo("Restored mod file: {0} -> {1}", backupFile, targetPath);
             }
 
             _loggingService.LogInfo(Strings.ModReinstalledFromBackup, modId, version);
@@ -372,6 +406,32 @@ public class ModBackupService : IModBackupService
             }
         });
     }
+
+    public async Task<bool> DeleteModBackupAsync(string modId, string version)
+    {
+        try
+        {
+            await InitializeBackupDirectoryAsync();
+            
+            var backupModPath = Path.Combine(_uninstalledPath, $"{modId}_v{version}");
+            
+            if (!Directory.Exists(backupModPath))
+            {
+                _loggingService.LogInfo(Strings.BackupDirectoryNotExists, backupModPath);
+                return true; // Consider it successful if nothing to delete
+            }
+
+            Directory.Delete(backupModPath, true);
+            _loggingService.LogInfo(Strings.DeletedModBackup, modId, version);
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to delete mod backup: {0} version {1}", modId, version);
+            return false;
+        }
+    }
 }
 
 // Backup manifest model
@@ -381,4 +441,5 @@ public class ModBackupManifest
     public string Version { get; set; } = string.Empty;
     public DateTime BackupDate { get; set; }
     public List<string> OriginalFiles { get; set; } = new();
+    public Dictionary<string, string>? FilePathMapping { get; set; } = new(); // backupFileName -> originalRelativePath
 }

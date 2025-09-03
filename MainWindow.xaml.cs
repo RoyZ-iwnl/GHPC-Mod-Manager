@@ -9,6 +9,13 @@ namespace GHPC_Mod_Manager
         {
             InitializeComponent();
             DataContext = viewModel;
+            
+            // Ensure application shuts down when main window closes
+            this.Closing += (s, e) =>
+            {
+                // Cancel any background tasks
+                Application.Current.Shutdown();
+            };
         }
     }
 }

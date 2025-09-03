@@ -35,6 +35,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<ITranslationManagerService, TranslationManagerService>();
                     services.AddSingleton<IModI18nService, ModI18nService>();
                     services.AddSingleton<IModBackupService, ModBackupService>();
+                    services.AddSingleton<IAnnouncementService, AnnouncementService>();
                     
                     services.AddHttpClient<INetworkService, NetworkService>(client =>
                     {
@@ -87,6 +88,7 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<MainViewModel>();
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
+                    services.AddTransient<AnnouncementViewModel>();
 
                     // Views
                     services.AddTransient<MainWindow>();
@@ -124,9 +126,9 @@ namespace GHPC_Mod_Manager
             }
             else
             {
-                // 如果设置是Dark，需要切换主题
+                // 如果设置是Dark，需要切换主题并同步内部状态
                 loggingService.LogInfo("SettingsDarkThemeNeedSwitch");
-                themeService.ApplyTheme(settingsService.Settings.Theme);
+                themeService.SetTheme(settingsService.Settings.Theme);
             }
             
             loggingService.LogInfo("ThemeInitializationComplete", Application.Current.Resources.MergedDictionaries.Count);
@@ -152,14 +154,44 @@ namespace GHPC_Mod_Manager
         {
             if (_host != null)
             {
-                var processService = _host.Services.GetService<IProcessService>();
-                processService?.StopMonitoring();
+                try
+                {
+                    var processService = _host.Services.GetService<IProcessService>();
+                    processService?.StopMonitoring();
 
-                await _host.StopAsync();
-                _host.Dispose();
+                    // Stop any ongoing network operations
+                    var networkService = _host.Services.GetService<INetworkService>();
+                    if (networkService is IDisposable disposableNetwork)
+                    {
+                        disposableNetwork.Dispose();
+                    }
+
+                    // Stop mod manager service
+                    var modManagerService = _host.Services.GetService<IModManagerService>();
+                    if (modManagerService is IDisposable disposableModManager)
+                    {
+                        disposableModManager.Dispose();
+                    }
+
+                    // Stop translation service
+                    var translationService = _host.Services.GetService<ITranslationManagerService>();
+                    if (translationService is IDisposable disposableTranslation)
+                    {
+                        disposableTranslation.Dispose();
+                    }
+
+                    await _host.StopAsync(TimeSpan.FromSeconds(5));
+                    _host.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't prevent shutdown
+                    System.Diagnostics.Debug.WriteLine($"Error during shutdown: {ex.Message}");
+                }
             }
 
-            base.OnExit(e);
+            // Force exit if needed
+            System.Environment.Exit(0);
         }
 
         public static T GetService<T>() where T : class

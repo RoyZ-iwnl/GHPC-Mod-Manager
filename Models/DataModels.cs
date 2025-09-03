@@ -132,12 +132,24 @@ public class ModViewModel
     public bool IsEnabled { get; set; }
     public bool IsManuallyInstalled { get; set; }
     public bool IsTranslationPlugin { get; set; }  // Special flag for translation plugin
+    public bool IsSupportedManualMod { get; set; }  // Manual mod that matches a supported mod
+    public bool IsUnsupportedManualMod { get; set; }  // Manual mod with no matching config
     public ModConfig Config { get; set; } = new();
     
     // Property to determine if this mod has configuration options
     public bool HasConfiguration => IsInstalled && 
                                     !IsTranslationPlugin && 
+                                    (IsSupportedManualMod || !IsManuallyInstalled) &&
                                     !string.IsNullOrEmpty(Config.ConfigSectionName);
+
+    // Property to determine if this mod can be updated
+    public bool CanUpdate => IsInstalled && 
+                            !IsTranslationPlugin && 
+                            !IsManuallyInstalled && 
+                            !string.IsNullOrEmpty(LatestVersion) && 
+                            LatestVersion != GHPC_Mod_Manager.Resources.Strings.Unknown &&
+                            InstalledVersion != LatestVersion &&
+                            InstalledVersion != GHPC_Mod_Manager.Resources.Strings.Manual;
 
     // Property to extract GitHub repository URL from ReleaseUrl
     public string? GitHubRepositoryUrl => ExtractGitHubRepositoryUrl();

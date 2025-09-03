@@ -24,6 +24,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
 
+    partial void OnSelectedLanguageChanged(string value)
+    {
+        // Force disable GitHub proxy when language is English
+        if (value == "en-US")
+        {
+            UseGitHubProxy = false;
+        }
+        
+        // Notify that proxy visibility has changed
+        OnPropertyChanged(nameof(IsGitHubProxyVisible));
+    }
+
     [ObservableProperty]
     private string _gameRootPath = string.Empty;
 
@@ -65,6 +77,8 @@ public partial class SettingsViewModel : ObservableObject
     private List<AppTheme> _availableThemes = new() { AppTheme.Light, AppTheme.Dark };
 
     public string ApplicationVersion => GetApplicationVersion();
+
+    public bool IsGitHubProxyVisible => SelectedLanguage != "en-US";
 
     public SettingsViewModel(
         ISettingsService settingsService,

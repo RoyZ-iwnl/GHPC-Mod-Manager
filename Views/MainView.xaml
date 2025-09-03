@@ -217,7 +217,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="300" MinWidth="250">
+                                    <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="360" MinWidth="300">
                                         <DataGridTemplateColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -237,12 +237,16 @@
                                                             Style="{DynamicResource OutlinedButtonStyle}"
                                                             Visibility="{Binding IsTranslationPlugin, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                     
-                                                    <!-- For Regular Mods, show Install/Uninstall/Toggle/Config buttons -->
+                                                    <!-- For Regular Mods, show Install/Uninstall/Update/Toggle/Config buttons -->
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding IsTranslationPlugin, Converter={StaticResource TranslationPluginVisibilityConverter}}">
                                                         <Button Content="{x:Static resources:Strings.Install}" Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource FilledButtonStyle}"
                                                                 Visibility="{Binding IsInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                        <Button Content="{x:Static resources:Strings.Update}" Command="{Binding DataContext.UpdateModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                CommandParameter="{Binding}" MinWidth="60" Margin="2"
+                                                                Style="{DynamicResource FilledButtonStyle}"
+                                                                Visibility="{Binding CanUpdate, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                         <Button Content="{x:Static resources:Strings.Uninstall}" Command="{Binding DataContext.UninstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource OutlinedButtonStyle}"

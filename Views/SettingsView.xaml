@@ -104,7 +104,7 @@
                         </StackPanel>
                         
                         <!-- GitHub Proxy Settings -->
-                        <StackPanel Margin="0,0,0,10">
+                        <StackPanel Margin="0,0,0,10" Visibility="{Binding IsGitHubProxyVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <CheckBox IsChecked="{Binding UseGitHubProxy}" Margin="0,0,0,5">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>

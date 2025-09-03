@@ -1,0 +1,52 @@
+<Window x:Class="GHPC_Mod_Manager.Views.AnnouncementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        Title="{x:Static resources:Strings.Announcement}"
+        Width="600" Height="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{DynamicResource SurfaceBrush}">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Loading indicator -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar IsIndeterminate="True" Width="200" Height="4" Margin="0,0,0,10"/>
+            <TextBlock Text="{x:Static resources:Strings.LoadingAnnouncement}" 
+                      HorizontalAlignment="Center" FontSize="14"/>
+        </StackPanel>
+
+        <!-- Error message -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <TextBlock Text="{Binding ErrorMessage}" 
+                      HorizontalAlignment="Center" FontSize="14" 
+                      Foreground="Red" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Markdown content -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                      Visibility="{Binding HasContent, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <WebBrowser x:Name="AnnouncementBrowser" 
+                       Margin="0,0,0,10"/>
+        </ScrollViewer>
+
+        <!-- No content message -->
+        <TextBlock Grid.Row="0" Text="No announcement available" 
+                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                  FontSize="14" Foreground="Gray"
+                  Visibility="{Binding HasContent, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+
+        <!-- Close button -->
+        <Button Grid.Row="1" Content="{x:Static resources:Strings.Close}" 
+                Width="100" Height="35" HorizontalAlignment="Right"
+                Style="{DynamicResource FilledButtonStyle}"
+                Click="CloseButton_Click"/>
+    </Grid>
+</Window>

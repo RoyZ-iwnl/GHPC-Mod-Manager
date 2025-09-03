@@ -819,6 +819,12 @@
   <data name="ManualMod" xml:space="preserve">
     <value>手动Mod</value>
   </data>
+  <data name="ManualModUninstall" xml:space="preserve">
+    <value>手动Mod卸载</value>
+  </data>
+  <data name="ManualModUninstallWarning" xml:space="preserve">
+    <value>{0} 是一个手动安装的Mod。您确定要永久删除dll文件吗？此操作无法撤销。</value>
+  </data>
   <data name="UninstallingMod_" xml:space="preserve">
     <value>正在卸载 {0}...</value>
   </data>
@@ -1646,5 +1652,83 @@
   </data>
   <data name="BackupModsRecommendation" xml:space="preserve">
     <value>如果您已经安装了模组，我们建议在使用此管理器之前备份您的 MODS 文件夹。这将确保您不会丢失任何手动安装的模组。</value>
+  </data>
+  <data name="ManualModDeleted" xml:space="preserve">
+    <value>已删除手动MOD文件: {0}</value>
+  </data>
+  <data name="GitHubRateLimitTitle" xml:space="preserve">
+    <value>GitHub API 访问限制</value>
+  </data>
+  <data name="GitHubRateLimitMessage" xml:space="preserve">
+    <value>GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制。</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="UpdateMod" xml:space="preserve">
+    <value>更新MOD</value>
+  </data>
+  <data name="UpdatingMod" xml:space="preserve">
+    <value>正在更新MOD: {0} 从 {1} 到 {2}</value>
+  </data>
+  <data name="ModUpdatedSuccessfully" xml:space="preserve">
+    <value>MOD更新成功: {0}</value>
+  </data>
+  <data name="ModUpdateFailed" xml:space="preserve">
+    <value>MOD更新失败: {0}</value>
+  </data>
+  <data name="BackupDirectoryNotExists" xml:space="preserve">
+    <value>备份目录不存在，无需删除: {0}</value>
+  </data>
+  <data name="DeletedModBackup" xml:space="preserve">
+    <value>已删除MOD备份: {0} 版本 {1}</value>
+  </data>
+  <data name="ExtractingArchive" xml:space="preserve">
+    <value>正在解压归档文件: {0}</value>
+  </data>
+  <data name="Announcement" xml:space="preserve">
+    <value>公告</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>有可用更新</value>
+  </data>
+  <data name="UpdateAvailableMessage" xml:space="preserve">
+    <value>新版本 {0} 可用。您当前使用的是版本 {1}。是否访问下载页面？</value>
+  </data>
+  <data name="VisitDownloadPage" xml:space="preserve">
+    <value>访问下载页面</value>
+  </data>
+  <data name="RemindLater" xml:space="preserve">
+    <value>稍后提醒</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>正在检查更新...</value>
+  </data>
+  <data name="LoadingAnnouncement" xml:space="preserve">
+    <value>正在加载公告...</value>
+  </data>
+  <data name="AnnouncementLoadFailed" xml:space="preserve">
+    <value>加载公告失败</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>检查更新失败</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="FetchingAnnouncementFrom" xml:space="preserve">
+    <value>正在从以下地址获取公告: {0}</value>
+  </data>
+  <data name="AnnouncementLoadedSuccessfully" xml:space="preserve">
+    <value>成功加载 {0} 语言的公告</value>
+  </data>
+  <data name="AnnouncementContentEmpty" xml:space="preserve">
+    <value>{0} 语言的公告内容为空</value>
+  </data>
+  <data name="NoAnnouncementAvailable" xml:space="preserve">
+    <value>没有可用的 {0} 语言公告</value>
+  </data>
+  <data name="AnnouncementFetchFailed" xml:space="preserve">
+    <value>获取公告失败: {0} - {1}</value>
   </data>
 </root>

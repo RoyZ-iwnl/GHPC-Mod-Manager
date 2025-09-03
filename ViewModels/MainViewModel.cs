@@ -194,17 +194,33 @@ public partial class MainViewModel : ObservableObject
             
             if (mod.IsManuallyInstalled)
             {
-                MessageBox.Show(
-                    string.Format(Strings.ManualModUninstallMessage, mod.DisplayName),
-                    Strings.ManualMod,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                // Show warning for manual mods with option to proceed
+                var manualUninstallResult = MessageBox.Show(
+                    string.Format(Strings.ManualModUninstallWarning, mod.DisplayName),
+                    Strings.ManualModUninstall,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                    
+                if (manualUninstallResult != MessageBoxResult.Yes) return;
+                
+                // Use manual uninstall method
+                var success = await _modManagerService.UninstallManualModAsync(mod.Id);
+                
+                if (success)
+                {
+                    StatusMessage = string.Format(Strings.ModUninstalledSuccessfully, mod.DisplayName);
+                    await RefreshDataAsync();
+                }
+                else
+                {
+                    StatusMessage = string.Format(Strings.UninstallFailed, mod.DisplayName);
+                }
                 return;
             }
 
-            var success = await _modManagerService.UninstallModAsync(mod.Id);
+            var normalSuccess = await _modManagerService.UninstallModAsync(mod.Id);
 
-            if (success)
+            if (normalSuccess)
             {
                 StatusMessage = string.Format(Strings.ModUninstalledSuccessfully, mod.DisplayName);
                 await RefreshDataAsync();
@@ -271,6 +287,52 @@ public partial class MainViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.ConfigureModError, mod.Id);
             StatusMessage = string.Format(Strings.OpenConfigWindowFailed, mod.DisplayName);
+        }
+    }
+
+    [RelayCommand]
+    private async Task UpdateModAsync(ModViewModel mod)
+    {
+        if (!mod.CanUpdate)
+        {
+            _loggingService.LogWarning("Cannot update mod: {0}, CanUpdate is false", mod.Id);
+            return;
+        }
+
+        try
+        {
+            IsDownloading = true;
+            StatusMessage = string.Format(Strings.UpdatingMod, mod.DisplayName, mod.InstalledVersion, mod.LatestVersion);
+            
+            var progress = new Progress<DownloadProgress>(downloadProgress =>
+            {
+                var speedText = downloadProgress.GetFormattedSpeed();
+                var progressText = downloadProgress.GetFormattedProgress();
+                var percentage = downloadProgress.ProgressPercentage;
+                
+                StatusMessage = $"{string.Format(Strings.UpdatingMod, mod.DisplayName, mod.InstalledVersion, mod.LatestVersion)} - {percentage:F1}% ({progressText}) - {speedText}";
+            });
+            
+            var success = await _modManagerService.UpdateModAsync(mod.Id, mod.LatestVersion!, progress);
+
+            if (success)
+            {
+                StatusMessage = string.Format(Strings.ModUpdatedSuccessfully, mod.DisplayName);
+                await RefreshDataAsync();
+            }
+            else
+            {
+                StatusMessage = string.Format(Strings.ModUpdateFailed, mod.DisplayName);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUpdateFailed, mod.Id);
+            StatusMessage = string.Format(Strings.ModUpdateFailed, mod.DisplayName);
+        }
+        finally
+        {
+            IsDownloading = false;
         }
     }
 

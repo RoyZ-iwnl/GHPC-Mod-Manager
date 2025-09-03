@@ -819,6 +819,12 @@
   <data name="ManualMod" xml:space="preserve">
     <value>Manual Mod</value>
   </data>
+  <data name="ManualModUninstall" xml:space="preserve">
+    <value>Manual Mod Uninstall</value>
+  </data>
+  <data name="ManualModUninstallWarning" xml:space="preserve">
+    <value>{0} is a manually installed mod. Are you sure you want to permanently delete all dll files? This action cannot be undone.</value>
+  </data>
   <data name="UninstallingMod_" xml:space="preserve">
     <value>Uninstalling {0}...</value>
   </data>
@@ -1646,5 +1652,83 @@
   </data>
   <data name="BackupModsRecommendation" xml:space="preserve">
     <value>If you already have mods installed, we recommend backing up your MODS folder before using this manager. This will ensure you don't lose any manually installed modifications.</value>
+  </data>
+  <data name="ManualModDeleted" xml:space="preserve">
+    <value>Deleted manual mod file: {0}</value>
+  </data>
+  <data name="GitHubRateLimitTitle" xml:space="preserve">
+    <value>GitHub API Rate Limit</value>
+  </data>
+  <data name="GitHubRateLimitMessage" xml:space="preserve">
+    <value>GitHub API rate limit exceeded. Please try again later.</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="UpdateMod" xml:space="preserve">
+    <value>Update Mod</value>
+  </data>
+  <data name="UpdatingMod" xml:space="preserve">
+    <value>Updating mod: {0} from {1} to {2}</value>
+  </data>
+  <data name="ModUpdatedSuccessfully" xml:space="preserve">
+    <value>Mod updated successfully: {0}</value>
+  </data>
+  <data name="ModUpdateFailed" xml:space="preserve">
+    <value>Failed to update mod: {0}</value>
+  </data>
+  <data name="BackupDirectoryNotExists" xml:space="preserve">
+    <value>Backup directory does not exist, nothing to delete: {0}</value>
+  </data>
+  <data name="DeletedModBackup" xml:space="preserve">
+    <value>Deleted mod backup: {0} version {1}</value>
+  </data>
+  <data name="ExtractingArchive" xml:space="preserve">
+    <value>Extracting archive: {0}</value>
+  </data>
+  <data name="Announcement" xml:space="preserve">
+    <value>Announcement</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="UpdateAvailableMessage" xml:space="preserve">
+    <value>A new version {0} is available. You are currently using version {1}. Would you like to visit the download page?</value>
+  </data>
+  <data name="VisitDownloadPage" xml:space="preserve">
+    <value>Visit Download Page</value>
+  </data>
+  <data name="RemindLater" xml:space="preserve">
+    <value>Remind Later</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Checking for updates...</value>
+  </data>
+  <data name="LoadingAnnouncement" xml:space="preserve">
+    <value>Loading announcement...</value>
+  </data>
+  <data name="AnnouncementLoadFailed" xml:space="preserve">
+    <value>Failed to load announcement</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Failed to check for updates</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="FetchingAnnouncementFrom" xml:space="preserve">
+    <value>Fetching announcement from: {0}</value>
+  </data>
+  <data name="AnnouncementLoadedSuccessfully" xml:space="preserve">
+    <value>Successfully loaded announcement for language: {0}</value>
+  </data>
+  <data name="AnnouncementContentEmpty" xml:space="preserve">
+    <value>Announcement content is empty for language: {0}</value>
+  </data>
+  <data name="NoAnnouncementAvailable" xml:space="preserve">
+    <value>No announcement available for language: {0}</value>
+  </data>
+  <data name="AnnouncementFetchFailed" xml:space="preserve">
+    <value>Failed to fetch announcement: {0} - {1}</value>
   </data>
 </root>

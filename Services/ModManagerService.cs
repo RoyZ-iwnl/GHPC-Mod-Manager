@@ -14,7 +14,9 @@ public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync();
     Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null);
+    Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
+    Task<bool> UninstallManualModAsync(string modId);
     Task<bool> EnableModAsync(string modId);
     Task<bool> DisableModAsync(string modId);
     Task<Dictionary<string, object>> GetModConfigurationAsync(string modId);
@@ -80,6 +82,7 @@ public class ModManagerService : IModManagerService
                 {
                     viewModel.IsInstalled = true;
                     viewModel.IsManuallyInstalled = true;
+                    viewModel.IsSupportedManualMod = true;  // This was missing!
                     viewModel.InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual;
                     viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
                 }
@@ -145,6 +148,11 @@ public class ModManagerService : IModManagerService
 
         try
         {
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            var ghpcmmPath = Path.Combine(gameRootPath, "GHPCMM");
+            var disabledPath = Path.Combine(ghpcmmPath, "modbackup", "disabled");
+            
+            // Scan active mods in Mods folder
             var dllFiles = Directory.GetFiles(modsPath, "*.dll", SearchOption.AllDirectories);
             var bakFiles = Directory.GetFiles(modsPath, "*.dll.bak", SearchOption.AllDirectories);
             
@@ -155,7 +163,47 @@ public class ModManagerService : IModManagerService
             
             var uniqueModFiles = allModFiles.Distinct().ToList();
             
-            foreach (var modFile in uniqueModFiles)
+            // Also scan disabled mods in GHPCMM backup folder
+            var disabledModFiles = new List<string>();
+            if (Directory.Exists(disabledPath))
+            {
+                var disabledModDirs = Directory.GetDirectories(disabledPath);
+                foreach (var disabledModDir in disabledModDirs)
+                {
+                    var manifestPath = Path.Combine(disabledModDir, "backup_paths.json");
+                    if (File.Exists(manifestPath))
+                    {
+                        try
+                        {
+                            var manifestJson = await File.ReadAllTextAsync(manifestPath);
+                            var backupManifest = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(manifestJson);
+                            if (backupManifest != null)
+                            {
+                                // Add the original paths of disabled mods
+                                disabledModFiles.AddRange(backupManifest.Values.Select(relativePath => 
+                                    Path.Combine(gameRootPath, relativePath)));
+                            }
+                        }
+                        catch
+                        {
+                            // Fallback: decode from directory name
+                            var modId = Path.GetFileName(disabledModDir);
+                            var backupFiles = Directory.GetFiles(disabledModDir, "*.dll", SearchOption.TopDirectoryOnly);
+                            foreach (var backupFile in backupFiles)
+                            {
+                                var fileName = Path.GetFileName(backupFile);
+                                var decodedPath = fileName.Replace('_', Path.DirectorySeparatorChar);
+                                disabledModFiles.Add(Path.Combine(gameRootPath, decodedPath));
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Combine active and disabled mods for scanning
+            var allFoundMods = uniqueModFiles.Concat(disabledModFiles).Distinct().ToList();
+            
+            foreach (var modFile in allFoundMods)
             {
                 var fileName = Path.GetFileName(modFile);
                 
@@ -171,16 +219,61 @@ public class ModManagerService : IModManagerService
                 if (fileName == "XUnity.AutoTranslator.Plugin.MelonMod.dll")
                     continue;
 
-                modList.Add(new ModViewModel
+                // Check if this manual mod matches any supported mod configuration
+                var matchingConfig = _availableMods.FirstOrDefault(m => m.MainBinaryFileName == fileName);
+                
+                // Determine if mod is currently enabled (exists in Mods folder)
+                var isEnabled = uniqueModFiles.Contains(modFile);
+                
+                if (matchingConfig != null)
                 {
-                    Id = $"manual_{Path.GetFileNameWithoutExtension(fileName)}",
-                    DisplayName = Path.GetFileNameWithoutExtension(fileName),
-                    IsInstalled = true,
-                    IsManuallyInstalled = true,
-                    IsEnabled = IsModEnabled(fileName, modsPath),
-                    InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual,
-                    LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown
-                });
+                    // This is a supported manual mod - create with full config
+                    var supportedManualMod = new ModViewModel
+                    {
+                        Id = matchingConfig.Id,
+                        DisplayName = GetLocalizedName(matchingConfig),
+                        Config = matchingConfig,
+                        IsInstalled = true,
+                        IsManuallyInstalled = true,
+                        IsSupportedManualMod = true,
+                        IsUnsupportedManualMod = false,
+                        IsEnabled = isEnabled,
+                        InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual,
+                        LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown
+                    };
+
+                    // Try to get latest version from GitHub
+                    try
+                    {
+                        var releases = await _networkService.GetGitHubReleasesAsync(
+                            GetRepoOwner(matchingConfig.ReleaseUrl),
+                            GetRepoName(matchingConfig.ReleaseUrl)
+                        );
+                        supportedManualMod.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                    }
+                    catch
+                    {
+                        supportedManualMod.LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown;
+                    }
+                    
+                    modList.Add(supportedManualMod);
+                }
+                else
+                {
+                    // This is an unsupported manual mod - create basic entry
+                    modList.Add(new ModViewModel
+                    {
+                        Id = $"manual_{Path.GetFileNameWithoutExtension(fileName)}",
+                        DisplayName = Path.GetFileNameWithoutExtension(fileName),
+                        IsInstalled = true,
+                        IsManuallyInstalled = true,
+                        IsSupportedManualMod = false,
+                        IsUnsupportedManualMod = true,
+                        IsEnabled = isEnabled,
+                        InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual,
+                        LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown
+                    });
+                }
             }
         }
         catch (Exception ex)
@@ -322,6 +415,148 @@ public class ModManagerService : IModManagerService
         }
     }
 
+    public async Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null)
+    {
+        try
+        {
+            _loggingService.LogInfo(Strings.UpdatingMod, modId, "current", newVersion);
+
+            // Get the mod configuration
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+            if (modConfig == null)
+            {
+                _loggingService.LogError("Mod configuration not found for update: {0}", modId);
+                return false;
+            }
+
+            // Check if mod is currently installed
+            if (!_installManifest.InstalledMods.TryGetValue(modId, out var currentInstallInfo))
+            {
+                _loggingService.LogError("Mod not installed, cannot update: {0}", modId);
+                return false;
+            }
+
+            // Step 1: Download new version first
+            var releases = await _networkService.GetGitHubReleasesAsync(
+                GetRepoOwner(modConfig.ReleaseUrl),
+                GetRepoName(modConfig.ReleaseUrl)
+            );
+
+            var targetRelease = releases.FirstOrDefault(r => r.TagName == newVersion);
+            if (targetRelease == null)
+            {
+                _loggingService.LogError(Strings.ModVersionNotFound, modId, newVersion);
+                return false;
+            }
+
+            var asset = targetRelease.Assets.FirstOrDefault(a => a.Name.Contains(modConfig.TargetFileNameKeyword));
+            if (asset == null)
+            {
+                _loggingService.LogError(Strings.ModAssetNotFound, modId, modConfig.TargetFileNameKeyword);
+                return false;
+            }
+
+            // Download the new version
+            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+
+            // Step 2: Uninstall current version (move to uninstalled backup)
+            await _modBackupService.UninstallModWithBackupAsync(modId, currentInstallInfo.Version, currentInstallInfo.InstalledFiles);
+
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+
+            // Delete current files
+            foreach (var relativePath in currentInstallInfo.InstalledFiles)
+            {
+                var fullPath = Path.Combine(gameRootPath, relativePath);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+
+            // Clean up empty directories
+            var directories = currentInstallInfo.InstalledFiles
+                .Select(f => Path.GetDirectoryName(Path.Combine(gameRootPath, f)))
+                .Where(d => !string.IsNullOrEmpty(d))
+                .Distinct()
+                .OrderByDescending(d => d?.Length ?? 0);
+
+            foreach (var directory in directories)
+            {
+                if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
+                {
+                    Directory.Delete(directory);
+                }
+            }
+
+            // Step 3: Install new version
+            var modsPath = Path.Combine(gameRootPath, "Mods");
+            Directory.CreateDirectory(modsPath);
+
+            var filesBeforeInstall = await GetDirectoryFilesAsync(modsPath);
+
+            if (modConfig.InstallMethod == InstallMethod.Scripted && !string.IsNullOrEmpty(modConfig.InstallScript_Base64))
+            {
+                var confirmed = await ShowScriptWarningAsync();
+                if (!confirmed) 
+                {
+                    // Restore from backup if user cancels
+                    await _modBackupService.ReinstallModFromBackupAsync(modId, currentInstallInfo.Version);
+                    return false;
+                }
+
+                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
+                await ExecuteInstallScriptAsync(modConfig.InstallScript_Base64, tempDownloadPath, gameRootPath, modConfig.MainBinaryFileName, progress);
+            }
+            else
+            {
+                await ProcessDownloadedFileAsync(downloadData, asset.Name, modsPath, modConfig.MainBinaryFileName);
+            }
+
+            var filesAfterInstall = await GetDirectoryFilesAsync(modsPath);
+            var newFiles = filesAfterInstall.Except(filesBeforeInstall).ToList();
+
+            // Step 4: Update install manifest with new version
+            var newInstallInfo = new ModInstallInfo
+            {
+                ModId = modId,
+                Version = newVersion,
+                InstalledFiles = newFiles.Select(f => Path.GetRelativePath(gameRootPath, f)).ToList(),
+                InstallDate = DateTime.Now
+            };
+
+            _installManifest.InstalledMods[modId] = newInstallInfo;
+            await SaveManifestAsync();
+
+            // Step 5: Delete old backup now that new installation is successful
+            await _modBackupService.DeleteModBackupAsync(modId, currentInstallInfo.Version);
+
+            _loggingService.LogInfo(Strings.ModUpdatedSuccessfully, modId);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUpdateFailed, modId);
+            
+            // Try to restore from backup if update failed
+            try
+            {
+                await LoadManifestAsync();
+                if (_installManifest.InstalledMods.TryGetValue(modId, out var backupInfo))
+                {
+                    await _modBackupService.ReinstallModFromBackupAsync(modId, backupInfo.Version);
+                    _loggingService.LogInfo("Restored mod from backup after failed update: {0}", modId);
+                }
+            }
+            catch (Exception restoreEx)
+            {
+                _loggingService.LogError(restoreEx, "Failed to restore mod from backup after failed update: {0}", modId);
+            }
+            
+            return false;
+        }
+    }
+
     public async Task<bool> UninstallModAsync(string modId)
     {
         try
@@ -377,6 +612,98 @@ public class ModManagerService : IModManagerService
         }
     }
 
+    public async Task<bool> UninstallManualModAsync(string modId)
+    {
+        try
+        {
+            _loggingService.LogInfo(Strings.UninstallingMod, modId);
+
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            var modsPath = Path.Combine(gameRootPath, "Mods");
+            
+            List<string> filesToDelete = new();
+            
+            // Handle different types of manual mods
+            if (modId.StartsWith("manual_"))
+            {
+                // Unsupported manual mod
+                var fileName = modId.Substring("manual_".Length) + ".dll";
+                var filePath = Path.Combine(modsPath, fileName);
+                var backupPath = filePath + ".bak";
+                
+                // Check for files in subdirectories
+                var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
+                var foundBackups = Directory.GetFiles(modsPath, fileName + ".bak", SearchOption.AllDirectories);
+                
+                filesToDelete.AddRange(foundFiles);
+                filesToDelete.AddRange(foundBackups);
+            }
+            else
+            {
+                // Supported manual mod - use MainBinaryFileName from config
+                var matchingConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                if (matchingConfig != null)
+                {
+                    var fileName = matchingConfig.MainBinaryFileName;
+                    var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
+                    var foundBackups = Directory.GetFiles(modsPath, fileName + ".bak", SearchOption.AllDirectories);
+                    
+                    filesToDelete.AddRange(foundFiles);
+                    filesToDelete.AddRange(foundBackups);
+                }
+            }
+
+            if (!filesToDelete.Any())
+            {
+                _loggingService.LogError(Strings.ModNotFound, modId);
+                return false;
+            }
+
+            // Delete all found files
+            var deletedDirectories = new HashSet<string>();
+            foreach (var filePath in filesToDelete)
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    _loggingService.LogInfo(GHPC_Mod_Manager.Resources.Strings.ManualModDeleted, filePath);
+                    
+                    // Track directory for cleanup
+                    var directory = Path.GetDirectoryName(filePath);
+                    if (!string.IsNullOrEmpty(directory) && directory != modsPath)
+                    {
+                        deletedDirectories.Add(directory);
+                    }
+                }
+            }
+
+            // Clean up empty directories (restore directory structure if needed)
+            foreach (var directory in deletedDirectories.OrderByDescending(d => d.Length))
+            {
+                try
+                {
+                    if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
+                    {
+                        Directory.Delete(directory);
+                        _loggingService.LogInfo("Removed empty directory: {0}", directory);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogWarning("Could not remove directory {0}: {1}", directory, ex.Message);
+                }
+            }
+
+            _loggingService.LogInfo(Strings.ModUninstalled, modId);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUninstallError, modId);
+            return false;
+        }
+    }
+
     public async Task<bool> EnableModAsync(string modId)
     {
         return await ToggleModAsync(modId, true);
@@ -413,13 +740,37 @@ public class ModManagerService : IModManagerService
             {
                 modFiles = installInfo.InstalledFiles.ToList();
             }
-            // For manual mods, derive filename from modId
-            else if (modId.StartsWith("manual_"))
+            // For manual mods (both supported and unsupported)
+            else if (modId.StartsWith("manual_") || modId.Contains("_manual"))
             {
-                var fileName = modId.Substring("manual_".Length) + ".dll";
                 var gameRootPath = _settingsService.Settings.GameRootPath;
                 var modsPath = Path.Combine(gameRootPath, "Mods");
+                
+                // Find the actual mod file for manual mods
+                string fileName;
+                if (modId.StartsWith("manual_"))
+                {
+                    fileName = modId.Substring("manual_".Length) + ".dll";
+                }
+                else
+                {
+                    // For supported manual mods, find by matching config
+                    var matchingConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                    fileName = matchingConfig?.MainBinaryFileName ?? (modId + ".dll");
+                }
+                
                 var modFilePath = Path.Combine(modsPath, fileName);
+                
+                // Also check subdirectories for the file
+                if (!File.Exists(modFilePath))
+                {
+                    var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
+                    if (foundFiles.Any())
+                    {
+                        modFilePath = foundFiles.First();
+                    }
+                }
+                
                 if (File.Exists(modFilePath))
                 {
                     modFiles.Add(Path.GetRelativePath(gameRootPath, modFilePath));
@@ -789,21 +1140,37 @@ public class ModManagerService : IModManagerService
                             }
 
                             string formattedValue;
-                            if (newValue is bool)
+                            if (newValue is bool boolVal)
                             {
-                                formattedValue = newValue.ToString().ToLower();
+                                formattedValue = boolVal.ToString().ToLower();
+                            }
+                            else if (newValue is int || newValue is long || newValue is float || newValue is double)
+                            {
+                                // Keep numeric values as-is without quotes
+                                formattedValue = newValue.ToString();
                             }
                             else
                             {
                                 var valueStr = newValue.ToString();
-                                // Check if this is a TOML array - starts with [ and ends with ]
-                                if (valueStr.Trim().StartsWith("[") && valueStr.Trim().EndsWith("]"))
+                                
+                                // Try to determine if the original value was numeric
+                                var originalValue = parts[1].Substring(0, commentIndex >= 0 ? commentIndex : parts[1].Length).Trim();
+                                var wasNumeric = IsNumericValue(originalValue.Trim('"') ?? "");
+                                
+                                if (wasNumeric && IsNumericValue(valueStr ?? ""))
                                 {
-                                    formattedValue = valueStr.Trim(); // Keep arrays as-is, no quotes
+                                    // Keep as numeric without quotes
+                                    formattedValue = valueStr;
+                                }
+                                else if (valueStr?.Trim().StartsWith("[") == true && valueStr?.Trim().EndsWith("]") == true)
+                                {
+                                    // Keep arrays as-is, no quotes
+                                    formattedValue = valueStr.Trim();
                                 }
                                 else
                                 {
-                                    formattedValue = $"\"{valueStr}\""; // Wrap strings in quotes
+                                    // Wrap strings in quotes
+                                    formattedValue = $"\"{valueStr}\"";
                                 }
                             }
                             newLines.Add($"\"{key}\" = {formattedValue} {comment}".Trim());
@@ -946,7 +1313,7 @@ public class ModManagerService : IModManagerService
         
         if (compressedExtensions.Contains(fileExtension))
         {
-            _loggingService.LogInfo("Extracting archive: {0}", originalFileName);
+            _loggingService.LogInfo(Strings.ExtractingArchive, originalFileName);
             await ExtractArchiveToModsDirectoryAsync(fileData, fileExtension, modsPath);
         }
         else if (fileExtension == ".dll")
@@ -1136,5 +1503,13 @@ public class ModManagerService : IModManagerService
         }
         
         return modId;
+    }
+
+    private bool IsNumericValue(string value)
+    {
+        return int.TryParse(value, out _) || 
+               long.TryParse(value, out _) || 
+               float.TryParse(value, out _) || 
+               double.TryParse(value, out _);
     }
 }
