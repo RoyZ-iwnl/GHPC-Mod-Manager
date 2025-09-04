@@ -14,9 +14,10 @@ public interface INetworkService
     Task<List<ModConfig>> GetModConfigAsync(string url);
     Task<TranslationConfig> GetTranslationConfigAsync(string url);
     Task<ModI18nManager> GetModI18nConfigAsync(string url);
-    Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName);
+    Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default);
     void ClearCache(); // Clear all cached data
+    void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
 }
 
 public class NetworkService : INetworkService
@@ -25,9 +26,9 @@ public class NetworkService : INetworkService
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     
-    // In-memory cache for API responses during this session
-    private static readonly Dictionary<string, object> _sessionCache = new();
-    private static readonly Dictionary<string, DateTime> _cacheTimestamps = new();
+    
+    // Rate limit tracking
+    private static readonly Dictionary<string, DateTime> _rateLimitBlocks = new();
     
     // Cache expiry times
     private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
@@ -311,56 +312,48 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName)
+    public async Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false)
     {
         try
         {
             var cacheKey = $"github_releases_{repoOwner}_{repoName}";
             
-            // When GitHub proxy is disabled, skip session cache and access directly
-            if (!_settingsService.Settings.UseGitHubProxy)
+            // Check persistent cache first (unless force refresh is requested)
+            if (!forceRefresh)
             {
-                // Check persistent cache only
-                var cached = await GetFromPersistentCacheAsync<List<GitHubRelease>>(cacheKey, _githubApiCacheExpiry);
-                if (cached != null)
+                var cachedReleases = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName);
+                if (cachedReleases != null)
                 {
                     _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromPersistentCache, repoOwner, repoName);
-                    return cached;
+                    return cachedReleases;
                 }
-                
+            }
+            
+            // Check if we're currently rate limited for this repository
+            var rateLimitKey = $"github_api_{repoOwner}_{repoName}";
+            if (_rateLimitBlocks.ContainsKey(rateLimitKey))
+            {
+                _loggingService.LogInfo("Skipping GitHub API request due to previous rate limit for {0}/{1}", repoOwner, repoName);
+                // Try to return stale cache if available
+                var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
+                return staleCache ?? new List<GitHubRelease>();
+            }
+            
+            // Make API request
+            List<GitHubRelease> result;
+            
+            // When GitHub proxy is disabled, access directly
+            if (!_settingsService.Settings.UseGitHubProxy)
+            {
                 var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
                 _loggingService.LogInfo(Strings.FetchingGitHubReleases, url);
                 
                 var json = await _httpClient.GetStringAsync(url);
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
-                var result = releases ?? new List<GitHubRelease>();
-                
-                // Save to persistent cache only
-                await SaveToPersistentCacheAsync(cacheKey, result);
-                
-                return result;
+                result = releases ?? new List<GitHubRelease>();
             }
             else
             {
-                // When GitHub proxy is enabled, use proxy API and session cache
-                // First check session cache for immediate response during current session
-                if (_sessionCache.ContainsKey(cacheKey))
-                {
-                    _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromSessionCache, repoOwner, repoName);
-                    return (List<GitHubRelease>)_sessionCache[cacheKey];
-                }
-                
-                // Check persistent cache
-                var cached = await GetFromPersistentCacheAsync<List<GitHubRelease>>(cacheKey, _githubApiCacheExpiry);
-                if (cached != null)
-                {
-                    _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromPersistentCache, repoOwner, repoName);
-                    // Also store in session cache for faster access during current session
-                    _sessionCache[cacheKey] = cached;
-                    _cacheTimestamps[cacheKey] = DateTime.Now;
-                    return cached;
-                }
-                
                 // Use proxy for GitHub API access
                 var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
                 var url = $"https://{proxyDomain}/https://api.github.com/repos/{repoOwner}/{repoName}/releases";
@@ -368,32 +361,36 @@ public class NetworkService : INetworkService
                 
                 var json = await _httpClient.GetStringAsync(url);
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
-                var result = releases ?? new List<GitHubRelease>();
-                
-                // Save to both session cache and persistent cache
-                _sessionCache[cacheKey] = result;
-                _cacheTimestamps[cacheKey] = DateTime.Now;
-                await SaveToPersistentCacheAsync(cacheKey, result);
-                
-                return result;
+                result = releases ?? new List<GitHubRelease>();
             }
+            
+            // Save to persistent cache
+            await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);
+            
+            return result;
         }
         catch (HttpRequestException httpEx) when (httpEx.Message.Contains("403") || httpEx.Message.Contains("rate limit"))
         {
             _loggingService.LogError(httpEx, Strings.GitHubReleasesFetchError, repoOwner, repoName);
             
+            // Mark this repository as rate limited
+            var rateLimitKey = $"github_api_{repoOwner}_{repoName}";
+            _rateLimitBlocks[rateLimitKey] = DateTime.Now;
+            
             // Show rate limit popup with localized message
             await ShowRateLimitWarningAsync();
             
-            // Try to return from cache as fallback
-            return await GetGitHubReleasesFromCacheFallback(repoOwner, repoName);
+            // Try to return stale cache if available
+            var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
+            return staleCache ?? new List<GitHubRelease>();
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.GitHubReleasesFetchError, repoOwner, repoName);
             
-            // Try to return from cache as fallback
-            return await GetGitHubReleasesFromCacheFallback(repoOwner, repoName);
+            // Try to return stale cache if available
+            var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
+            return staleCache ?? new List<GitHubRelease>();
         }
     }
 
@@ -794,9 +791,8 @@ public class NetworkService : INetworkService
 
     public void ClearCache()
     {
-        // Clear in-memory session cache
-        _sessionCache.Clear();
-        _cacheTimestamps.Clear();
+        // Clear rate limit blocks
+        _rateLimitBlocks.Clear();
         
         // Clear persistent cache files
         var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache");
@@ -816,6 +812,12 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogInfo("All caches cleared (session cache cleared, no persistent cache files found)");
         }
+    }
+
+    public void ClearRateLimitBlocks()
+    {
+        _rateLimitBlocks.Clear();
+        _loggingService.LogInfo("Rate limit blocks cleared - GitHub API requests can now be retried");
     }
 
     private async Task<T?> GetFromPersistentCacheAsync<T>(string cacheKey, TimeSpan cacheExpiry, bool ignoreExpiry = false) where T : class
@@ -1091,27 +1093,118 @@ public class NetworkService : INetworkService
     }
 
     /// <summary>
-    /// Get GitHub releases from cache fallback
+    /// Get GitHub releases from persistent cache with date-based file naming
     /// </summary>
-    private async Task<List<GitHubRelease>> GetGitHubReleasesFromCacheFallback(string repoOwner, string repoName)
+    private async Task<List<GitHubRelease>?> GetGitHubReleasesFromPersistentCacheAsync(string repoOwner, string repoName, bool ignoreExpiry = false)
     {
-        var cacheKey = $"github_releases_{repoOwner}_{repoName}";
-        
-        // Try to return from session cache first (only if proxy is enabled)
-        if (_settingsService.Settings.UseGitHubProxy && _sessionCache.ContainsKey(cacheKey))
+        try
         {
-            return (List<GitHubRelease>)_sessionCache[cacheKey];
+            var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache", "github_releases");
+            Directory.CreateDirectory(cacheDir);
+            
+            var sanitizedRepoName = $"{SanitizeFileName(repoOwner)}_{SanitizeFileName(repoName)}";
+            
+            // Look for cache files for this repository (could be from different dates)
+            var pattern = $"{sanitizedRepoName}_*.json";
+            var cacheFiles = Directory.GetFiles(cacheDir, pattern);
+            
+            // Find the most recent valid cache file
+            foreach (var cacheFile in cacheFiles.OrderByDescending(f => f))
+            {
+                try
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(cacheFile);
+                    var parts = fileName.Split('_');
+                    
+                    // Expected format: {owner}_{repo}_{YYYYMMDD}
+                    if (parts.Length >= 3)
+                    {
+                        var datePart = parts[^1]; // Last part should be date
+                        if (DateTime.TryParseExact(datePart, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var cacheDate))
+                        {
+                            var age = DateTime.Now.Date - cacheDate.Date;
+                            
+                            // Check if cache is still valid (7 days) or if we're ignoring expiry
+                            if (ignoreExpiry || age.TotalDays <= 7)
+                            {
+                                var cacheContent = await File.ReadAllTextAsync(cacheFile);
+                                var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(cacheContent);
+                                
+                                if (releases != null)
+                                {
+                                    _loggingService.LogInfo(Strings.GitHubReleasesLoadedFromSessionCache, repoOwner, repoName);
+                                    return releases;
+                                }
+                            }
+                            else
+                            {
+                                // Cache is expired, delete it
+                                _loggingService.LogInfo("Deleting expired GitHub releases cache for {0}/{1} (age: {2} days)", repoOwner, repoName, age.TotalDays);
+                                File.Delete(cacheFile);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogWarning("Failed to process cache file {0}: {1}", cacheFile, ex.Message);
+                    // Try to delete corrupted cache file
+                    try { File.Delete(cacheFile); } catch { }
+                }
+            }
+            
+            return null;
         }
-        
-        // Try to return stale persistent cache as fallback
-        var staleCache = await GetFromPersistentCacheAsync<List<GitHubRelease>>(cacheKey, _githubApiCacheExpiry, ignoreExpiry: true);
-        if (staleCache != null)
+        catch (Exception ex)
         {
-            _loggingService.LogInfo(Strings.UsingStaleGitHubReleasesCache, repoOwner, repoName);
-            return staleCache;
+            _loggingService.LogWarning("Failed to read GitHub releases from persistent cache for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            return null;
         }
-        
-        return new List<GitHubRelease>();
+    }
+
+    /// <summary>
+    /// Save GitHub releases to persistent cache with date-based file naming
+    /// </summary>
+    private async Task SaveGitHubReleasesToPersistentCacheAsync(string repoOwner, string repoName, List<GitHubRelease> releases)
+    {
+        try
+        {
+            var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache", "github_releases");
+            Directory.CreateDirectory(cacheDir);
+            
+            var sanitizedRepoName = $"{SanitizeFileName(repoOwner)}_{SanitizeFileName(repoName)}";
+            var today = DateTime.Now.ToString("yyyyMMdd");
+            var cacheFile = Path.Combine(cacheDir, $"{sanitizedRepoName}_{today}.json");
+            
+            // Clean up old cache files for this repository first
+            var pattern = $"{sanitizedRepoName}_*.json";
+            var oldCacheFiles = Directory.GetFiles(cacheDir, pattern);
+            foreach (var oldFile in oldCacheFiles)
+            {
+                if (oldFile != cacheFile) // Don't delete the file we're about to create
+                {
+                    try
+                    {
+                        File.Delete(oldFile);
+                        _loggingService.LogInfo("Deleted old GitHub releases cache file: {0}", Path.GetFileName(oldFile));
+                    }
+                    catch (Exception ex)
+                    {
+                        _loggingService.LogWarning("Failed to delete old cache file {0}: {1}", oldFile, ex.Message);
+                    }
+                }
+            }
+            
+            // Save new cache
+            var json = JsonConvert.SerializeObject(releases, Formatting.Indented);
+            await File.WriteAllTextAsync(cacheFile, json);
+            
+            _loggingService.LogInfo("Saved GitHub releases to persistent cache: {0}", Path.GetFileName(cacheFile));
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("Failed to save GitHub releases to persistent cache for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+        }
     }
 }
 

@@ -1,110 +1,52 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -234,9 +176,6 @@
   <data name="ModUninstallError" xml:space="preserve">
     <value>Error uninstalling mod {0}</value>
   </data>
-  <data name="ModConfigNotFound" xml:space="preserve">
-    <value>Mod configuration not found for {0}</value>
-  </data>
   <data name="ModEnabled" xml:space="preserve">
     <value>Mod {0} enabled</value>
   </data>
@@ -345,9 +284,6 @@
   <data name="LanguageSettingError" xml:space="preserve">
     <value>Language Setting Error</value>
   </data>
-  <data name="ModConfiguration" xml:space="preserve">
-    <value>Mod Configuration</value>
-  </data>
   <data name="ConfigurationPresets" xml:space="preserve">
     <value>Configuration Presets</value>
   </data>
@@ -364,7 +300,7 @@
     <value>Save As</value>
   </data>
   <data name="NoConfigurationOptions" xml:space="preserve">
-    <value>No configuration options available</value>
+    <value>Run the game once and exit normally to generate the configuration items</value>
   </data>
   <data name="Apply" xml:space="preserve">
     <value>Apply</value>
@@ -377,12 +313,6 @@
   </data>
   <data name="PresetNameRequired" xml:space="preserve">
     <value>Please enter preset name</value>
-  </data>
-  <data name="PresetLoaded" xml:space="preserve">
-    <value>Preset loaded: {0}</value>
-  </data>
-  <data name="PresetSaved" xml:space="preserve">
-    <value>Preset saved: {0}</value>
   </data>
   <data name="PresetCreated" xml:space="preserve">
     <value>Preset created: {0}</value>
@@ -401,9 +331,6 @@
   </data>
   <data name="ConfigurationSaveError" xml:space="preserve">
     <value>Failed to save configuration</value>
-  </data>
-  <data name="OpenConfigurationWindowError" xml:space="preserve">
-    <value>Failed to open configuration window: {0}</value>
   </data>
   <data name="CopySelected" xml:space="preserve">
     <value>Copy Selected</value>
@@ -552,9 +479,6 @@
   <data name="GameRunning" xml:space="preserve">
     <value>Game Running</value>
   </data>
-  <data name="GameRunningDescription" xml:space="preserve">
-    <value>Mods cannot be operated while the game is running</value>
-  </data>
   <data name="SetupWizardTitle" xml:space="preserve">
     <value>GHPC Mod Manager Setup Wizard</value>
   </data>
@@ -569,12 +493,6 @@
   </data>
   <data name="Step3GameDirectory" xml:space="preserve">
     <value>Step 3: Game Directory</value>
-  </data>
-  <data name="Step4MelonLoader" xml:space="preserve">
-    <value>Step 4: MelonLoader</value>
-  </data>
-  <data name="GameDirectoryPath" xml:space="preserve">
-    <value>Game Directory Path:</value>
   </data>
   <data name="ProgramLogs" xml:space="preserve">
     <value>Program Logs</value>
@@ -654,18 +572,6 @@
   <data name="PresetSaved_" xml:space="preserve">
     <value>Preset saved: {0}</value>
   </data>
-  <data name="ScriptModInstallWarning" xml:space="preserve">
-    <value>WARNING: Script-based mod installation carries security risks. Only install mods from trusted sources.</value>
-  </data>
-  <data name="DoYouWantToContinue" xml:space="preserve">
-    <value>Do you want to continue?</value>
-  </data>
-  <data name="SecurityWarning" xml:space="preserve">
-    <value>Security Warning</value>
-  </data>
-  <data name="InvalidModConfiguration" xml:space="preserve">
-    <value>Invalid mod configuration for {0}</value>
-  </data>
   <data name="SettingsSavedSuccessfully" xml:space="preserve">
     <value>Settings saved successfully</value>
   </data>
@@ -683,12 +589,6 @@
   </data>
   <data name="CannotGetTranslationVersions" xml:space="preserve">
     <value>Cannot get translation component versions</value>
-  </data>
-  <data name="WindowTitle" xml:space="preserve">
-    <value>GHPC Mod Manager</value>
-  </data>
-  <data name="GameIsRunning" xml:space="preserve">
-    <value>Game is running</value>
   </data>
   <data name="ProgramSettings" xml:space="preserve">
     <value>Program Settings</value>
@@ -737,9 +637,6 @@
   </data>
   <data name="ConnectionAbnormal" xml:space="preserve">
     <value>Connection Abnormal</value>
-  </data>
-  <data name="RetryCheck" xml:space="preserve">
-    <value>Retry Check</value>
   </data>
   <data name="NetworkCheckFailedWarning" xml:space="preserve">
     <value>⚠️ Network connection check failed</value>
@@ -813,12 +710,6 @@
   <data name="ConfirmUninstall" xml:space="preserve">
     <value>Confirm Uninstall</value>
   </data>
-  <data name="ManualModUninstallMessage" xml:space="preserve">
-    <value>{0} is a manually installed mod, please go to the game Mods folder to delete related files yourself.</value>
-  </data>
-  <data name="ManualMod" xml:space="preserve">
-    <value>Manual Mod</value>
-  </data>
   <data name="ManualModUninstall" xml:space="preserve">
     <value>Manual Mod Uninstall</value>
   </data>
@@ -839,9 +730,6 @@
   </data>
   <data name="TranslationSystemUninstalledSuccessfully" xml:space="preserve">
     <value>Translation system uninstalled successfully</value>
-  </data>
-  <data name="ViewSolutions" xml:space="preserve">
-    <value>Solutions</value>
   </data>
   <data name="NetworkCheckLog" xml:space="preserve">
     <value>Network Log</value>
@@ -1002,12 +890,6 @@
   <data name="Ready" xml:space="preserve">
     <value>Ready</value>
   </data>
-  <data name="LaunchGame" xml:space="preserve">
-    <value>Launch Game</value>
-  </data>
-  <data name="Complete" xml:space="preserve">
-    <value>Complete</value>
-  </data>
   <data name="FetchingModI18nConfig" xml:space="preserve">
     <value>Fetching mod internationalization config from {0}</value>
   </data>
@@ -1019,12 +901,6 @@
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search:</value>
-  </data>
-  <data name="Items" xml:space="preserve">
-    <value>items</value>
-  </data>
-  <data name="ItemsOf" xml:space="preserve">
-    <value>of</value>
   </data>
   <data name="ModI18nConfigLoadedFromCache" xml:space="preserve">
     <value>Mod I18n configuration loaded from cache</value>
@@ -1082,9 +958,6 @@
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>
-  </data>
-  <data name="LanguageWillTakeEffectAfterApply" xml:space="preserve">
-    <value>Language changes will take effect after clicking Apply</value>
   </data>
   <data name="LanguageWillTakeEffectAfterRestart" xml:space="preserve">
     <value>Application will restart to apply language changes</value>
@@ -1359,29 +1232,11 @@
   <data name="ForcedUIRefreshComplete" xml:space="preserve">
     <value>Forced UI refresh complete</value>
   </data>
-  <data name="AppStartupSettingsTheme" xml:space="preserve">
-    <value>App startup - Theme in settings file: {0}</value>
-  </data>
-  <data name="AppStartupResourceDictionaryCount" xml:space="preserve">
-    <value>App startup - Current resource dictionary count: {0}</value>
-  </data>
-  <data name="SettingsLightThemeConsistent" xml:space="preserve">
-    <value>Settings set to light theme, consistent with App.xaml default, only syncing state</value>
-  </data>
-  <data name="SettingsDarkThemeNeedSwitch" xml:space="preserve">
-    <value>Settings set to dark theme, need to switch from default light theme</value>
-  </data>
-  <data name="ThemeInitializationComplete" xml:space="preserve">
-    <value>Theme initialization complete - Current resource dictionary count: {0}</value>
-  </data>
   <data name="ThemeApplicationError" xml:space="preserve">
     <value>Error occurred while applying theme</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
-  </data>
-  <data name="Version" xml:space="preserve">
-    <value>Version</value>
   </data>
   <data name="ProjectUrl" xml:space="preserve">
     <value>Project URL</value>
@@ -1415,9 +1270,6 @@
   </data>
   <data name="EdgeOneGhProxyCom" xml:space="preserve">
     <value>edgeone.gh-proxy.com (Tencent Cloud)</value>
-  </data>
-  <data name="GitHubProxyApplied" xml:space="preserve">
-    <value>GitHub proxy applied: {0} -&gt; {1}</value>
   </data>
   <data name="GitHubProxyFailed" xml:space="preserve">
     <value>GitHub proxy failed ({0}), falling back to original URL: {1}</value>
@@ -1620,12 +1472,6 @@
   <data name="GitHubReleasesLoadedFromPersistentCache" xml:space="preserve">
     <value>GitHub releases loaded from persistent cache: {0}/{1}</value>
   </data>
-  <data name="UsingStaleGitHubReleasesCache" xml:space="preserve">
-    <value>Using stale GitHub releases cache due to API error: {0}/{1}</value>
-  </data>
-  <data name="Step0WelcomeTitle" xml:space="preserve">
-    <value>Welcome</value>
-  </data>
   <data name="WelcomeToGHPCModManager" xml:space="preserve">
     <value>Welcome to GHPC Mod Manager</value>
   </data>
@@ -1665,9 +1511,6 @@
   <data name="Update" xml:space="preserve">
     <value>Update</value>
   </data>
-  <data name="UpdateMod" xml:space="preserve">
-    <value>Update Mod</value>
-  </data>
   <data name="UpdatingMod" xml:space="preserve">
     <value>Updating mod: {0} from {1} to {2}</value>
   </data>
@@ -1689,29 +1532,11 @@
   <data name="Announcement" xml:space="preserve">
     <value>Announcement</value>
   </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update Available</value>
-  </data>
-  <data name="UpdateAvailableMessage" xml:space="preserve">
-    <value>A new version {0} is available. You are currently using version {1}. Would you like to visit the download page?</value>
-  </data>
-  <data name="VisitDownloadPage" xml:space="preserve">
-    <value>Visit Download Page</value>
-  </data>
-  <data name="RemindLater" xml:space="preserve">
-    <value>Remind Later</value>
-  </data>
-  <data name="CheckingForUpdates" xml:space="preserve">
-    <value>Checking for updates...</value>
-  </data>
   <data name="LoadingAnnouncement" xml:space="preserve">
     <value>Loading announcement...</value>
   </data>
   <data name="AnnouncementLoadFailed" xml:space="preserve">
     <value>Failed to load announcement</value>
-  </data>
-  <data name="UpdateCheckFailed" xml:space="preserve">
-    <value>Failed to check for updates</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
@@ -1730,5 +1555,80 @@
   </data>
   <data name="AnnouncementFetchFailed" xml:space="preserve">
     <value>Failed to fetch announcement: {0} - {1}</value>
+  </data>
+  <data name="ModsCount" xml:space="preserve">
+    <value>{0} mods</value>
+  </data>
+  <data name="ModsFilteredCount" xml:space="preserve">
+    <value>{0} / {1} mods</value>
+  </data>
+  <data name="GettingThemeColorsForCurrentTheme" xml:space="preserve">
+    <value>Getting theme colors for current theme: {0}, isDark: {1}</value>
+  </data>
+  <data name="UsingDarkThemeColors" xml:space="preserve">
+    <value>Using dark theme colors: {0}</value>
+  </data>
+  <data name="UsingLightThemeColors" xml:space="preserve">
+    <value>Using light theme colors: {0}</value>
+  </data>
+  <data name="CheckForModUpdates" xml:space="preserve">
+    <value>Check for Mod Updates</value>
+  </data>
+  <data name="OnlyCheckInstalledMods" xml:space="preserve">
+    <value>Only check installed mods</value>
+  </data>
+  <data name="CheckingForModUpdates" xml:space="preserve">
+    <value>Checking for mod updates...</value>
+  </data>
+  <data name="ModUpdateCheckComplete" xml:space="preserve">
+    <value>Mod update check complete</value>
+  </data>
+  <data name="ModUpdateCheckFailed" xml:space="preserve">
+    <value>Mod update check failed</value>
+  </data>
+  <data name="NoModUpdatesAvailable" xml:space="preserve">
+    <value>No mod updates available</value>
+  </data>
+  <data name="ModUpdatesFound" xml:space="preserve">
+    <value>{0} mod update(s) found</value>
+  </data>
+  <data name="NoModsToCheck" xml:space="preserve">
+    <value>No mods to check for updates</value>
+  </data>
+  <data name="GitHubProxyAcceleration" xml:space="preserve">
+    <value>GitHub Proxy Acceleration</value>
+  </data>
+  <data name="ProxySettingsApplied" xml:space="preserve">
+    <value>Proxy settings applied successfully</value>
+  </data>
+  <data name="GitHubProxyEnabled" xml:space="preserve">
+    <value>GitHub proxy enabled</value>
+  </data>
+  <data name="GitHubProxyDisabled" xml:space="preserve">
+    <value>GitHub proxy disabled</value>
+  </data>
+  <data name="ProxyServerChanged" xml:space="preserve">
+    <value>Proxy server changed to: {0}</value>
+  </data>
+  <data name="ApplyingProxyAndRetesting" xml:space="preserve">
+    <value>Applying proxy settings and retesting network connection...</value>
+  </data>
+  <data name="ApplyProxySettingsFailed" xml:space="preserve">
+    <value>Failed to apply proxy settings: {0}</value>
+  </data>
+  <data name="ThemeInitializationComplete" xml:space="preserve">
+    <value>Theme initialization complete, resource dictionaries: {0}</value>
+  </data>
+  <data name="SettingsLightThemeConsistent" xml:space="preserve">
+    <value>Settings indicate light theme, consistent with app startup</value>
+  </data>
+  <data name="SettingsDarkThemeNeedSwitch" xml:space="preserve">
+    <value>Settings indicate dark theme, switching from light theme</value>
+  </data>
+  <data name="AppStartupResourceDictionaryCount" xml:space="preserve">
+    <value>App startup resource dictionary count: {0}</value>
+  </data>
+  <data name="AppStartupSettingsTheme" xml:space="preserve">
+    <value>App startup settings theme: {0}</value>
   </data>
 </root>

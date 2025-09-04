@@ -2,6 +2,7 @@
 using GHPC_Mod_Manager.ViewModels;
 using GHPC_Mod_Manager.Views;
 using GHPC_Mod_Manager.Models;
+using GHPC_Mod_Manager.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -114,24 +115,24 @@ namespace GHPC_Mod_Manager
             var themeService = _host.Services.GetRequiredService<IThemeService>();
             var loggingService = _host.Services.GetRequiredService<ILoggingService>();
             
-            loggingService.LogInfo("AppStartupSettingsTheme", settingsService.Settings.Theme);
-            loggingService.LogInfo("AppStartupResourceDictionaryCount", Application.Current.Resources.MergedDictionaries.Count);
+            loggingService.LogInfo(Strings.AppStartupSettingsTheme, settingsService.Settings.Theme);
+            loggingService.LogInfo(Strings.AppStartupResourceDictionaryCount, Application.Current.Resources.MergedDictionaries.Count);
             
             // 由于App.xaml已经加载了Light主题，我们需要确保状态正确同步
             if (settingsService.Settings.Theme == AppTheme.Light)
             {
                 // 如果设置是Light，需要同步ThemeService的内部状态但不需要重新加载资源
-                loggingService.LogInfo("SettingsLightThemeConsistent");
+                loggingService.LogInfo(Strings.SettingsLightThemeConsistent);
                 themeService.InitializeWithCurrentState(AppTheme.Light);
             }
             else
             {
                 // 如果设置是Dark，需要切换主题并同步内部状态
-                loggingService.LogInfo("SettingsDarkThemeNeedSwitch");
+                loggingService.LogInfo(Strings.SettingsDarkThemeNeedSwitch);
                 themeService.SetTheme(settingsService.Settings.Theme);
             }
             
-            loggingService.LogInfo("ThemeInitializationComplete", Application.Current.Resources.MergedDictionaries.Count);
+            loggingService.LogInfo(Strings.ThemeInitializationComplete, Application.Current.Resources.MergedDictionaries.Count);
 
             var processService = _host.Services.GetRequiredService<IProcessService>();
             await processService.StartMonitoringAsync();

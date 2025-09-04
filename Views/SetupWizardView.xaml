@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GHPC_Mod_Manager.Views"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             xmlns:models="clr-namespace:GHPC_Mod_Manager.Models"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800">
     
@@ -135,6 +136,39 @@
                                           MinWidth="100" Style="{DynamicResource MaterialToggleButtonStyle}"/>
                         </StackPanel>
                         
+                        <!-- GitHub Proxy Settings -->
+                        <GroupBox Header="{x:Static resources:Strings.GitHubProxyAcceleration}" Margin="0,0,0,15">
+                            <StackPanel Margin="10">
+                                <CheckBox IsChecked="{Binding UseGitHubProxy}" Margin="0,0,0,5">
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>
+                                        <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}" 
+                                                   FontSize="{DynamicResource BodySmall}"
+                                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                                   Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </CheckBox>
+                                
+                                <!-- Proxy Server Selection -->
+                                <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ComboBox SelectedValue="{Binding GitHubProxyServer}" 
+                                                  SelectedValuePath="Tag" 
+                                                  Width="310" HorizontalAlignment="Left" Margin="0,0,10,0">
+                                            <ComboBoxItem Content="{x:Static resources:Strings.GhDmrGg}" Tag="{x:Static models:GitHubProxyServer.GhDmrGg}"/>
+                                            <ComboBoxItem Content="{x:Static resources:Strings.GhProxyCom}" Tag="{x:Static models:GitHubProxyServer.GhProxyCom}"/>
+                                            <ComboBoxItem Content="{x:Static resources:Strings.HkGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.HkGhProxyCom}"/>
+                                            <ComboBoxItem Content="{x:Static resources:Strings.CdnGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.CdnGhProxyCom}"/>
+                                            <ComboBoxItem Content="{x:Static resources:Strings.EdgeOneGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.EdgeOneGhProxyCom}"/>
+                                        </ComboBox>
+                                        <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ApplyProxySettingsCommand}" 
+                                                MinWidth="60" Style="{DynamicResource FilledButtonStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        
                         <!-- Network Check Log -->
                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3" 
                                 Visibility="{Binding ShowNetworkLog, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -150,7 +184,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{x:Static resources:Strings.NetworkCheckLog}" Foreground="White" VerticalAlignment="Center"/>
                                         <Button Content="{x:Static resources:Strings.CopyLog}" Margin="10,0,0,0" Padding="5,2" 
-                                                FontSize="11" Height="20" Width="60"
+                                                FontSize="11" Height="20" Width="65"
                                                 Click="CopyLogButton_Click"
                                                 Tag="{Binding NetworkCheckLog}"/>
                                     </StackPanel>

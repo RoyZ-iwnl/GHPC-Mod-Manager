@@ -26,8 +26,8 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnSelectedLanguageChanged(string value)
     {
-        // Force disable GitHub proxy when language is English
-        if (value == "en-US")
+        // Force disable GitHub proxy when language is not Chinese
+        if (value != "zh-CN")
         {
             UseGitHubProxy = false;
         }
@@ -78,7 +78,7 @@ public partial class SettingsViewModel : ObservableObject
 
     public string ApplicationVersion => GetApplicationVersion();
 
-    public bool IsGitHubProxyVisible => SelectedLanguage != "en-US";
+    public bool IsGitHubProxyVisible => SelectedLanguage == "zh-CN";
 
     public SettingsViewModel(
         ISettingsService settingsService,

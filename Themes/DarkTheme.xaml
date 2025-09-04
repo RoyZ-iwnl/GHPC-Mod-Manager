@@ -5,7 +5,7 @@
     <!-- Material Design 3 深色主题颜色系统 -->
     
     <!-- 主要颜色 -->
-    <Color x:Key="Primary">#D0BCFF</Color>
+    <Color x:Key="Primary">#BB86FC</Color>
     <Color x:Key="OnPrimary">#381E72</Color>
     <Color x:Key="PrimaryContainer">#4F378B</Color>
     <Color x:Key="OnPrimaryContainer">#EADDFF</Color>
@@ -27,7 +27,7 @@
     <Color x:Key="OnSurface">#E6E1E5</Color>
     <Color x:Key="SurfaceVariant">#49454F</Color>
     <Color x:Key="OnSurfaceVariant">#CAC4D0</Color>
-    <Color x:Key="SurfaceTint">#D0BCFF</Color>
+    <Color x:Key="SurfaceTint">#BB86FC</Color>
     <Color x:Key="SurfaceContainer">#211F26</Color>
     
     <!-- 背景颜色 -->

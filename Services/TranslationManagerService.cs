@@ -10,7 +10,7 @@ namespace GHPC_Mod_Manager.Services;
 public interface ITranslationManagerService
 {
     Task<bool> IsTranslationInstalledAsync();
-    Task<List<GitHubRelease>> GetXUnityReleasesAsync();
+    Task<List<GitHubRelease>> GetXUnityReleasesAsync(bool forceRefresh = false);
     Task<bool> InstallTranslationAsync(string xUnityVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UpdateTranslationFilesAsync(IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallTranslationAsync();
@@ -90,11 +90,11 @@ public class TranslationManagerService : ITranslationManagerService
         return File.Exists(autoTranslatorPath) && File.Exists(configPath);
     }
 
-    public async Task<List<GitHubRelease>> GetXUnityReleasesAsync()
+    public async Task<List<GitHubRelease>> GetXUnityReleasesAsync(bool forceRefresh = false)
     {
         try
         {
-            var releases = await _networkService.GetGitHubReleasesAsync("bbepis", "XUnity.AutoTranslator");
+            var releases = await _networkService.GetGitHubReleasesAsync("bbepis", "XUnity.AutoTranslator", forceRefresh);
             
             return releases.Where(r => r.Assets.Any(a => 
                 a.Name.Contains("MelonMod") && 

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
+using System.Linq;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -35,9 +36,19 @@ public partial class MainViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ISettingsService _settingsService;
+    private readonly INetworkService _networkService;
 
     [ObservableProperty]
     private ObservableCollection<ModViewModel> _mods = new();
+
+    [ObservableProperty]
+    private ObservableCollection<ModViewModel> _filteredMods = new();
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
+    private string _filteredModCount = string.Empty;
 
     [ObservableProperty]
     private ModViewModel? _selectedMod;
@@ -66,6 +77,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private int _selectedTabIndex = 0;
 
+    [ObservableProperty]
+    private bool _onlyCheckInstalledMods = true;
+
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
@@ -73,7 +87,8 @@ public partial class MainViewModel : ObservableObject
         INavigationService navigationService,
         ILoggingService loggingService,
         IServiceProvider serviceProvider,
-        ISettingsService settingsService)
+        ISettingsService settingsService,
+        INetworkService networkService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -82,10 +97,20 @@ public partial class MainViewModel : ObservableObject
         _loggingService = loggingService;
         _serviceProvider = serviceProvider;
         _settingsService = settingsService;
+        _networkService = networkService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
         InitializeAsync();
+        
+        // Subscribe to search text changes
+        PropertyChanged += (sender, e) => 
+        {
+            if (e.PropertyName == nameof(SearchText))
+            {
+                FilterAndSortMods();
+            }
+        };
     }
 
     private async void InitializeAsync()
@@ -101,6 +126,9 @@ public partial class MainViewModel : ObservableObject
             IsLoading = true;
             StatusMessage = Strings.RefreshingData;
 
+            // Clear any rate limit blocks to allow fresh API requests
+            _networkService.ClearRateLimitBlocks();
+
             // Load mods
             var modList = await _modManagerService.GetModListAsync();
             Mods.Clear();
@@ -108,6 +136,9 @@ public partial class MainViewModel : ObservableObject
             {
                 Mods.Add(mod);
             }
+            
+            // Apply filtering and sorting
+            FilterAndSortMods();
 
             // Check translation status
             IsTranslationInstalled = await _translationManagerService.IsTranslationInstalledAsync();
@@ -280,7 +311,7 @@ public partial class MainViewModel : ObservableObject
 
             configViewModel.OwnerWindow = configWindow;
             await configViewModel.InitializeAsync(mod.Id, mod.DisplayName);
-            
+
             configWindow.ShowDialog();
         }
         catch (Exception ex)
@@ -583,6 +614,76 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private async Task CheckForModUpdatesAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            StatusMessage = Strings.CheckingForModUpdates;
+
+            var modsToCheck = OnlyCheckInstalledMods 
+                ? Mods.Where(m => m.IsInstalled).ToList()
+                : Mods.ToList();
+
+            if (modsToCheck.Count == 0)
+            {
+                StatusMessage = Strings.NoModsToCheck;
+                return;
+            }
+
+            // Clear any rate limit blocks to allow fresh API requests
+            _networkService.ClearRateLimitBlocks();
+
+            // Get fresh mod list from remote
+            var modList = await _modManagerService.GetModListAsync();
+            
+            int updatesFound = 0;
+            var updatedMods = new List<string>();
+
+            foreach (var mod in modsToCheck)
+            {
+                var latestMod = modList.FirstOrDefault(m => m.Id == mod.Id);
+                if (latestMod != null && mod.IsInstalled && !string.IsNullOrEmpty(mod.InstalledVersion) && !string.IsNullOrEmpty(latestMod.LatestVersion))
+                {
+                    if (mod.InstalledVersion != latestMod.LatestVersion)
+                    {
+                        updatesFound++;
+                        updatedMods.Add($"{mod.DisplayName}: {mod.InstalledVersion} → {latestMod.LatestVersion}");
+                        
+                        // Update the mod's latest version info
+                        mod.LatestVersion = latestMod.LatestVersion;
+                    }
+                }
+            }
+
+            // Apply filtering and sorting to refresh the view
+            FilterAndSortMods();
+
+            StatusMessage = updatesFound > 0 
+                ? string.Format(Strings.ModUpdatesFound, updatesFound)
+                : Strings.NoModUpdatesAvailable;
+
+            _loggingService.LogInfo(Strings.ModUpdateCheckComplete);
+            
+            if (updatesFound > 0)
+            {
+                var updatesList = string.Join("\n", updatedMods);
+                MessageBox.Show($"{string.Format(Strings.ModUpdatesFound, updatesFound)}\n\n{updatesList}", 
+                    Strings.Information, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUpdateCheckFailed);
+            StatusMessage = Strings.ModUpdateCheckFailed;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
     private void OnGameRunningStateChanged(object? sender, bool isRunning)
     {
         IsGameRunning = isRunning;
@@ -598,5 +699,39 @@ public partial class MainViewModel : ObservableObject
     {
         LaunchGameCommand.NotifyCanExecuteChanged();
         OpenSettingsCommand.NotifyCanExecuteChanged();
+    }
+
+    private void FilterAndSortMods()
+    {
+        var allMods = Mods.AsEnumerable();
+        
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var searchLower = SearchText.ToLowerInvariant();
+            allMods = allMods.Where(m => 
+                m.DisplayName.ToLowerInvariant().Contains(searchLower) ||
+                m.Id.ToLowerInvariant().Contains(searchLower));
+        }
+        
+        // Sort: Installed mods first, then by display name
+        var sortedMods = allMods
+            .OrderByDescending(m => m.IsInstalled)
+            .ThenBy(m => m.DisplayName)
+            .ToList();
+        
+        // Update filtered collection
+        FilteredMods.Clear();
+        foreach (var mod in sortedMods)
+        {
+            FilteredMods.Add(mod);
+        }
+        
+        // Update count display
+        var totalCount = Mods.Count;
+        var filteredCount = FilteredMods.Count;
+        FilteredModCount = filteredCount == totalCount ? 
+            string.Format(Strings.ModsCount, totalCount) : 
+            string.Format(Strings.ModsFilteredCount, filteredCount, totalCount);
     }
 }

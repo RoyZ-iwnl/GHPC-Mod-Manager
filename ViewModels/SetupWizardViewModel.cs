@@ -86,6 +86,68 @@ public partial class SetupWizardViewModel : ObservableObject
     [ObservableProperty]
     private bool _showNetworkFailed;
 
+    [ObservableProperty]
+    private bool _useGitHubProxy = false;
+
+    partial void OnUseGitHubProxyChanged(bool value)
+    {
+        // Automatically save proxy settings when changed
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                _settingsService.Settings.UseGitHubProxy = value;
+                await _settingsService.SaveSettingsAsync();
+                
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    var message = value ? Strings.GitHubProxyEnabled : Strings.GitHubProxyDisabled;
+                    AddToNetworkLog(message);
+                });
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, "Failed to save proxy setting change");
+            }
+        });
+    }
+
+    [ObservableProperty]
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+
+    partial void OnGitHubProxyServerChanged(GitHubProxyServer value)
+    {
+        // Automatically save proxy server settings when changed
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                _settingsService.Settings.GitHubProxyServer = value;
+                await _settingsService.SaveSettingsAsync();
+                
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    var message = string.Format(Strings.ProxyServerChanged, value);
+                    AddToNetworkLog(message);
+                });
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, "Failed to save proxy server change");
+            }
+        });
+    }
+
+    [ObservableProperty]
+    private List<GitHubProxyServer> _availableProxyServers = new() 
+    { 
+        GitHubProxyServer.GhDmrGg, 
+        GitHubProxyServer.GhProxyCom, 
+        GitHubProxyServer.HkGhProxyCom, 
+        GitHubProxyServer.CdnGhProxyCom, 
+        GitHubProxyServer.EdgeOneGhProxyCom 
+    };
+
     public SetupWizardViewModel(
         ISettingsService settingsService,
         INavigationService navigationService,
@@ -109,6 +171,11 @@ public partial class SetupWizardViewModel : ObservableObject
     private async void InitializeAsync()
     {
         SelectedLanguage = _settingsService.Settings.Language;
+        
+        // Load existing proxy settings
+        UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
+        GitHubProxyServer = _settingsService.Settings.GitHubProxyServer;
+        
         ClearNetworkLog(); // 清空网络日志
         await CheckNetworkAsync();
     }
@@ -307,6 +374,25 @@ public partial class SetupWizardViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.NetworkHelpOpenError);
             AddToNetworkLog(Strings.NetworkHelpPageOpenFailed);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ApplyProxySettingsAsync()
+    {
+        try
+        {
+            AddToNetworkLog(Strings.ApplyingProxyAndRetesting);
+            
+            // Settings are automatically saved by property change handlers
+            // Just retry network check with new settings
+            await CheckNetworkAsync();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to apply proxy settings");
+            var errorMessage = string.Format(Strings.ApplyProxySettingsFailed, ex.Message);
+            AddToNetworkLog(errorMessage);
         }
     }
 

@@ -85,19 +85,19 @@ public partial class AnnouncementViewModel : ObservableObject
         var isDarkTheme = currentTheme == AppTheme.Dark;
         
         Console.WriteLine($"[DEBUG] AnnouncementViewModel.GetThemeColors() - CurrentTheme: {currentTheme}, IsDark: {isDarkTheme}");
-        _loggingService.LogInfo("Getting theme colors for current theme: {0}, isDark: {1}", currentTheme, isDarkTheme);
+        _loggingService.LogInfo(Strings.GettingThemeColorsForCurrentTheme, currentTheme, isDarkTheme);
         
         if (isDarkTheme)
         {
             var colors = (
                 backgroundColor: "#10101A",     // Dark Surface
                 textColor: "#E6E1E5",         // Dark OnSurface
-                linkColor: "#D0BCFF",         // Dark Primary
+                linkColor: "#BB86FC",         // Dark Primary (better contrast)
                 codeBackgroundColor: "#211F26", // Dark SurfaceContainer
                 borderColor: "#938F99"        // Dark Outline
             );
             Console.WriteLine($"[DEBUG] Using dark theme colors: Background={colors.backgroundColor}, Text={colors.textColor}");
-            _loggingService.LogInfo("Using dark theme colors: {0}", colors.backgroundColor);
+            _loggingService.LogInfo(Strings.UsingDarkThemeColors, colors.backgroundColor);
             return colors;
         }
         else
@@ -110,7 +110,7 @@ public partial class AnnouncementViewModel : ObservableObject
                 borderColor: "#79747E"        // Light Outline
             );
             Console.WriteLine($"[DEBUG] Using light theme colors: Background={colors.backgroundColor}, Text={colors.textColor}");
-            _loggingService.LogInfo("Using light theme colors: {0}", colors.backgroundColor);
+            _loggingService.LogInfo(Strings.UsingLightThemeColors, colors.backgroundColor);
             return colors;
         }
     }

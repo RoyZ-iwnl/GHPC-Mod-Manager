@@ -53,57 +53,55 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 
-                <!-- Preset Controls -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                <!-- Preset Controls and Search in one row -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
                     <ComboBox ItemsSource="{Binding Presets}" 
                               SelectedItem="{Binding SelectedPreset}"
                               DisplayMemberPath="Name"
-                              Width="200" 
-                              Margin="0,0,10,0"
+                              Width="180" 
+                              Margin="0,0,5,0"
                               VerticalContentAlignment="Center"
                               Foreground="{DynamicResource OnSurfaceBrush}"
                               Background="{DynamicResource SurfaceVariantBrush}"
                               BorderBrush="{DynamicResource OutlineBrush}"/>
                     <Button Content="{x:Static resources:Strings.LoadPreset}" 
                            Command="{Binding LoadPresetCommand}" 
-                           Width="80" 
-                           Margin="0,0,5,0"
+                           Width="70" 
+                           Margin="0,0,3,0"
                            Style="{DynamicResource OutlinedButtonStyle}"/>
                     <Button Content="{x:Static resources:Strings.SavePreset}" 
                            Command="{Binding SavePresetCommand}" 
-                           Width="80" 
-                           Margin="0,0,5,0"
+                           Width="70" 
+                           Margin="0,0,3,0"
                            Style="{DynamicResource OutlinedButtonStyle}"/>
                     <Button Content="{x:Static resources:Strings.DeletePreset}" 
                            Command="{Binding DeletePresetCommand}" 
-                           Width="80" 
-                           Margin="0,0,10,0"
+                           Width="70" 
+                           Margin="0,0,5,0"
                            Style="{DynamicResource TextButtonStyle}"/>
                     <TextBox Text="{Binding NewPresetName}" 
-                             Width="150" 
-                             Margin="0,0,5,0"
+                             Width="120" 
+                             Margin="0,0,3,0"
                              VerticalAlignment="Center"
                              Foreground="{DynamicResource OnSurfaceBrush}"
                              Background="{DynamicResource SurfaceVariantBrush}"
                              BorderBrush="{DynamicResource OutlineBrush}"/>
                     <Button Content="{x:Static resources:Strings.SaveAsPreset}" 
                            Command="{Binding SaveAsPresetCommand}" 
-                           Width="100"
+                           Width="85"
+                           Margin="0,0,15,0"
                            Style="{DynamicResource FilledButtonStyle}"/>
-                </StackPanel>
-                
-                <!-- Search Box -->
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+                    
+                    <!-- Search Box -->
                     <TextBlock Text="{x:Static resources:Strings.Search}" 
                               VerticalAlignment="Center" 
                               Margin="0,0,5,0"
                               Foreground="{DynamicResource OnBackgroundBrush}"/>
                     <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="300" 
+                             Width="200" 
                              VerticalAlignment="Center"
                              Margin="0,0,10,0"
                              Foreground="{DynamicResource OnSurfaceBrush}"
@@ -112,11 +110,11 @@
                     <TextBlock Text="{Binding FilteredConfigurationCount}" 
                                VerticalAlignment="Center" 
                                Foreground="{DynamicResource OutlineVariantBrush}" 
-                               Margin="10,0,0,0"/>
+                               Margin="5,0,0,0"/>
                 </StackPanel>
                 
                 <!-- Configuration Options -->
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="5">
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="5">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.NoConfigurationOptions}" 
                                    HorizontalAlignment="Center" 

@@ -409,3 +409,9 @@ assistant-*
 /1.txt
 /*.py
 /*.txt
+
+# Gemini
+.gemini/
+.gemini.db
+.gemini.log
+.geminiignore
