@@ -1,5 +1,4 @@
 using GHPC_Mod_Manager.Models;
-using LibGit2Sharp;
 using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
@@ -17,6 +16,9 @@ public interface ITranslationManagerService
     Task<List<string>> GetAvailableLanguagesAsync();
     Task<string> GetCurrentLanguageAsync();
     Task<bool> SetLanguageAsync(string language);
+    Task<bool> IsTranslationPluginEnabledAsync();
+    Task<bool> SetTranslationPluginEnabledAsync(bool enabled);
+    Task<List<GitHubRelease>> GetTranslationReleasesAsync(bool forceRefresh = false);
 }
 
 public class TranslationManagerService : ITranslationManagerService
@@ -33,49 +35,6 @@ public class TranslationManagerService : ITranslationManagerService
         _settingsService = settingsService;
     }
 
-    /// <summary>
-    /// Apply GitHub proxy to git clone URL if enabled
-    /// </summary>
-    private string ApplyGitHubProxyToGitUrl(string gitUrl)
-    {
-        if (!_settingsService.Settings.UseGitHubProxy)
-            return gitUrl;
-
-        try
-        {
-            var uri = new Uri(gitUrl);
-            if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
-                return gitUrl;
-
-            var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
-            var proxyUrl = $"https://{proxyDomain}/{gitUrl}";
-            
-            _loggingService.LogInfo("Git Clone proxy applied: {0} -> {1}", gitUrl, proxyUrl);
-            return proxyUrl;
-        }
-        catch (Exception ex)
-        {
-            _loggingService.LogError(ex, "Failed to apply proxy to git URL: {0}", gitUrl);
-            return gitUrl;
-        }
-    }
-
-    /// <summary>
-    /// Get proxy domain based on selected proxy server
-    /// </summary>
-    private string GetProxyDomain(GitHubProxyServer proxyServer)
-    {
-        return proxyServer switch
-        {
-            GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
-            GitHubProxyServer.GhProxyCom => "gh-proxy.com",
-            GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
-            GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
-            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
-            _ => "gh.dmr.gg"
-        };
-    }
-
     public async Task<bool> IsTranslationInstalledAsync()
     {
         await LoadManifestAsync();
@@ -85,9 +44,11 @@ public class TranslationManagerService : ITranslationManagerService
             return false;
 
         var autoTranslatorPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
+        var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
         var configPath = Path.Combine(gameRootPath, "AutoTranslator", "Config.ini");
 
-        return File.Exists(autoTranslatorPath) && File.Exists(configPath);
+        // 翻译系统已安装的条件：配置文件存在 且 (主插件文件存在 或 备份插件文件存在)
+        return File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath));
     }
 
     public async Task<List<GitHubRelease>> GetXUnityReleasesAsync(bool forceRefresh = false)
@@ -112,38 +73,76 @@ public class TranslationManagerService : ITranslationManagerService
     {
         try
         {
+            _loggingService.LogInfo("debugtemplog: Starting translation installation: XUnity version {0}", xUnityVersion);
             _loggingService.LogInfo(Strings.InstallingTranslation, xUnityVersion);
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
-            var filesBeforeInstall = await GetDirectoryFilesAsync(gameRootPath);
+            
+            // 创建文件操作追踪器
+            var tracker = new FileOperationTracker(_loggingService, _settingsService);
+            var trackedOps = new TrackedFileOperations(tracker, _loggingService);
+
+            // 开始追踪文件操作
+            tracker.StartTracking($"translation_install_{xUnityVersion}", gameRootPath);
 
             var progressSplit = new ProgressSplitter(progress, 2);
 
             // 1. Install XUnity AutoTranslator
-            var success = await InstallXUnityAutoTranslatorAsync(xUnityVersion, progressSplit.GetProgress(0));
+            _loggingService.LogInfo("debugtemplog: Starting XUnity AutoTranslator installation");
+            var success = await InstallXUnityAutoTranslatorWithTrackingAsync(xUnityVersion, trackedOps, progressSplit.GetProgress(0));
             if (!success) return false;
 
             // 2. Clone translation files
-            success = await CloneTranslationFilesAsync(progressSplit.GetProgress(1));
+            _loggingService.LogInfo("debugtemplog: Starting translation files cloning");
+            success = await CloneTranslationFilesWithTrackingAsync(trackedOps, progressSplit.GetProgress(1));
             if (!success) return false;
 
-            var filesAfterInstall = await GetDirectoryFilesAsync(gameRootPath);
-            var newFiles = filesAfterInstall.Except(filesBeforeInstall).ToList();
+            // 停止追踪并获取结果
+            tracker.StopTracking();
+            var result = tracker.GetResult();
+            var processedFiles = result.GetAllProcessedFiles();
 
-            // Split files into XUnity and translation repo files
+            _loggingService.LogInfo("debugtemplog: Translation installation completed. Total processed files: {0}", processedFiles.Count);
+            foreach (var file in processedFiles)
+            {
+                _loggingService.LogInfo("debugtemplog: Processed file: {0}", file);
+            }
+
+            if (!processedFiles.Any())
+            {
+                _loggingService.LogError("debugtemplog: No files were processed during translation installation");
+                return false;
+            }
+
+            // Split files into XUnity and translation repo files based on their paths
             var modsPath = Path.Combine(gameRootPath, "Mods");
             var autoTranslatorPath = Path.Combine(gameRootPath, "AutoTranslator");
+            var userLibsPath = Path.Combine(gameRootPath, "UserLibs");
 
-            _installManifest.XUnityAutoTranslatorFiles = newFiles
-                .Where(f => f.StartsWith(modsPath) || f.Contains("XUnity") || f.Contains("AutoTranslator"))
-                .Select(f => Path.GetRelativePath(gameRootPath, f))
+            _installManifest.XUnityAutoTranslatorFiles = processedFiles
+                .Where(f => 
+                {
+                    var fullPath = Path.Combine(gameRootPath, f);
+                    return fullPath.StartsWith(modsPath, StringComparison.OrdinalIgnoreCase) || 
+                           fullPath.StartsWith(userLibsPath, StringComparison.OrdinalIgnoreCase) ||
+                           f.Contains("XUnity") || 
+                           Path.GetFileName(f).Equals("Font", StringComparison.OrdinalIgnoreCase);
+                })
                 .ToList();
 
-            _installManifest.TranslationRepoFiles = newFiles
-                .Where(f => f.StartsWith(autoTranslatorPath) && !_installManifest.XUnityAutoTranslatorFiles.Contains(Path.GetRelativePath(gameRootPath, f)))
-                .Select(f => Path.GetRelativePath(gameRootPath, f))
+            _installManifest.TranslationRepoFiles = processedFiles
+                .Where(f => 
+                {
+                    var fullPath = Path.Combine(gameRootPath, f);
+                    return fullPath.StartsWith(autoTranslatorPath, StringComparison.OrdinalIgnoreCase) && 
+                           !_installManifest.XUnityAutoTranslatorFiles.Contains(f);
+                })
                 .ToList();
 
+            _loggingService.LogInfo("debugtemplog: XUnity files: {0}, Translation files: {1}", 
+                _installManifest.XUnityAutoTranslatorFiles.Count, _installManifest.TranslationRepoFiles.Count);
+
+            _installManifest.XUnityVersion = xUnityVersion;
             _installManifest.InstallDate = DateTime.Now;
             await SaveManifestAsync();
 
@@ -157,15 +156,209 @@ public class TranslationManagerService : ITranslationManagerService
         }
     }
 
-    private async Task<bool> InstallXUnityAutoTranslatorAsync(string version, IProgress<DownloadProgress>? progress)
+    public async Task<List<GitHubRelease>> GetTranslationReleasesAsync(bool forceRefresh = false)
     {
         try
         {
+            var translationConfig = await _networkService.GetTranslationConfigAsync(_settingsService.Settings.TranslationConfigUrl);
+            
+            string owner, repoName;
+            
+            // 优先使用新的Owner/RepoName字段，如果为空则从RepoUrl解析
+            if (!string.IsNullOrEmpty(translationConfig.Owner) && !string.IsNullOrEmpty(translationConfig.RepoName))
+            {
+                owner = translationConfig.Owner;
+                repoName = translationConfig.RepoName;
+            }
+            else if (!string.IsNullOrEmpty(translationConfig.RepoUrl))
+            {
+                // 从RepoUrl解析Owner和RepoName
+                var parseResult = ParseGitHubRepoUrl(translationConfig.RepoUrl);
+                if (parseResult == null)
+                {
+                    _loggingService.LogError("debugtemplog: Failed to parse GitHub repo URL: {0}", translationConfig.RepoUrl);
+                    return new List<GitHubRelease>();
+                }
+                owner = parseResult.Value.owner;
+                repoName = parseResult.Value.repoName;
+            }
+            else
+            {
+                _loggingService.LogError("debugtemplog: Translation config Owner/RepoName and RepoUrl are all empty");
+                return new List<GitHubRelease>();
+            }
+
+            var releases = await _networkService.GetGitHubReleasesAsync(owner, repoName, forceRefresh);
+            
+            // 筛选符合命名规范的release (release-YYYYMMDD-HHMMSS)
+            return releases.Where(r => r.TagName.StartsWith("release-") && 
+                                     r.TagName.Length == 23 && // "release-" + "20250922-143025"
+                                     r.Assets.Any(a => a.Name.Contains("ghpc-translation-") && 
+                                                      (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz"))))
+                          .ToList();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationReleasesFetchError);
+            return new List<GitHubRelease>();
+        }
+    }
+
+    /// <summary>
+    /// 解析GitHub仓库URL，提取Owner和RepoName
+    /// </summary>
+    private (string owner, string repoName)? ParseGitHubRepoUrl(string repoUrl)
+    {
+        try
+        {
+            // Handle both HTTPS and Git URLs
+            string httpsUrl = repoUrl;
+            
+            // Convert git:// URLs to https://
+            if (repoUrl.StartsWith("git://"))
+            {
+                httpsUrl = repoUrl.Replace("git://", "https://");
+            }
+            
+            // Convert SSH URLs (git@github.com:owner/repo.git) to HTTPS
+            if (repoUrl.StartsWith("git@"))
+            {
+                var match = System.Text.RegularExpressions.Regex.Match(repoUrl, @"git@([^:]+):(.+)\.git$");
+                if (match.Success)
+                {
+                    var host = match.Groups[1].Value;
+                    var path = match.Groups[2].Value;
+                    httpsUrl = $"https://{host}/{path}";
+                }
+            }
+
+            var uri = new Uri(httpsUrl);
+            if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
+            {
+                _loggingService.LogWarning("debugtemplog: URL is not a GitHub repository: {0}", repoUrl);
+                return null;
+            }
+
+            // Extract owner and repo from path (e.g., "/RoyZ-iwnl/ghpc-translation")
+            var pathParts = uri.AbsolutePath.Trim('/').Split('/');
+            if (pathParts.Length < 2)
+            {
+                _loggingService.LogWarning("debugtemplog: Invalid GitHub repository path: {0}", uri.AbsolutePath);
+                return null;
+            }
+
+            var owner = pathParts[0];
+            var repo = pathParts[1];
+            
+            // Remove .git suffix if present
+            if (repo.EndsWith(".git"))
+            {
+                repo = repo.Substring(0, repo.Length - 4);
+            }
+
+            return (owner, repo);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "debugtemplog: Failed to parse GitHub repo URL: {0}", ex.Message);
+            return null;
+        }
+    }
+
+    public async Task<bool> IsTranslationPluginEnabledAsync()
+    {
+        try
+        {
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrEmpty(gameRootPath))
+                return false;
+
+            var mainPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
+            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+
+            // 如果主文件存在，插件是启用的
+            if (File.Exists(mainPluginPath))
+            {
+                await LoadManifestAsync();
+                _installManifest.IsEnabled = true;
+                await SaveManifestAsync();
+                return true;
+            }
+
+            // 如果备份文件存在，插件是禁用的
+            if (File.Exists(backupPluginPath))
+            {
+                await LoadManifestAsync();
+                _installManifest.IsEnabled = false;
+                await SaveManifestAsync();
+                return false;
+            }
+
+            // 都不存在，说明没有安装
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "debugtemplog: Error checking translation plugin status: {0}", ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> SetTranslationPluginEnabledAsync(bool enabled)
+    {
+        try
+        {
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrEmpty(gameRootPath))
+                return false;
+
+            var mainPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
+            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+
+            if (enabled)
+            {
+                // 启用插件：从.dllbak重命名为.dll
+                if (File.Exists(backupPluginPath) && !File.Exists(mainPluginPath))
+                {
+                    File.Move(backupPluginPath, mainPluginPath);
+                    _loggingService.LogInfo(Strings.TranslationPluginEnabled);
+                }
+            }
+            else
+            {
+                // 禁用插件：从.dll重命名为.dllbak
+                if (File.Exists(mainPluginPath) && !File.Exists(backupPluginPath))
+                {
+                    File.Move(mainPluginPath, backupPluginPath);
+                    _loggingService.LogInfo(Strings.TranslationPluginDisabled);
+                }
+            }
+
+            // 更新manifest状态
+            await LoadManifestAsync();
+            _installManifest.IsEnabled = enabled;
+            await SaveManifestAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationPluginToggleError, ex.Message);
+            return false;
+        }
+    }
+
+    private async Task<bool> InstallXUnityAutoTranslatorWithTrackingAsync(string version, TrackedFileOperations trackedOps, IProgress<DownloadProgress>? progress)
+    {
+        try
+        {
+            _loggingService.LogInfo("debugtemplog: Getting XUnity releases for version {0}", version);
             var releases = await GetXUnityReleasesAsync();
             var targetRelease = releases.FirstOrDefault(r => r.TagName == version);
             
             if (targetRelease == null)
             {
+                _loggingService.LogError("debugtemplog: XUnity version not found: {0}", version);
                 _loggingService.LogError(Strings.XUnityVersionNotFound, version);
                 return false;
             }
@@ -177,128 +370,134 @@ public class TranslationManagerService : ITranslationManagerService
 
             if (asset == null)
             {
+                _loggingService.LogError("debugtemplog: XUnity asset not found for version {0}", version);
                 _loggingService.LogError(Strings.XUnityAssetNotFound);
                 return false;
             }
 
+            _loggingService.LogInfo("debugtemplog: Downloading XUnity asset: {0}", asset.Name);
             var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+            _loggingService.LogInfo("debugtemplog: Downloaded XUnity asset: {0} ({1} bytes)", asset.Name, downloadData.Length);
+            
             var gameRootPath = _settingsService.Settings.GameRootPath;
 
-            using var zipStream = new MemoryStream(downloadData);
-            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
-
-            foreach (var entry in archive.Entries)
-            {
-                if (string.IsNullOrEmpty(entry.Name)) continue;
-
-                var destinationPath = Path.Combine(gameRootPath, entry.FullName);
-                var destinationDir = Path.GetDirectoryName(destinationPath);
-                
-                if (!string.IsNullOrEmpty(destinationDir))
-                {
-                    Directory.CreateDirectory(destinationDir);
-                }
-
-                entry.ExtractToFile(destinationPath, true);
-            }
+            // 使用追踪的ZIP解压操作
+            await trackedOps.ExtractZipAsync(downloadData, gameRootPath);
+            
+            _loggingService.LogInfo("debugtemplog: XUnity AutoTranslator extraction completed using tracked operations");
 
             return true;
         }
         catch (Exception ex)
         {
+            _loggingService.LogError(ex, "debugtemplog: XUnity install error: {0}", ex.Message);
             _loggingService.LogError(ex, Strings.XUnityInstallError);
             return false;
         }
     }
 
-    private async Task<bool> CloneTranslationFilesAsync(IProgress<DownloadProgress>? progress)
+    private async Task<bool> CloneTranslationFilesWithTrackingAsync(TrackedFileOperations trackedOps, IProgress<DownloadProgress>? progress)
     {
         try
         {
+            _loggingService.LogInfo("debugtemplog: Getting translation configuration from {0}", _settingsService.Settings.TranslationConfigUrl);
             var translationConfig = await _networkService.GetTranslationConfigAsync(_settingsService.Settings.TranslationConfigUrl);
-            if (string.IsNullOrEmpty(translationConfig.RepoUrl))
+            
+            string owner, repoName;
+            
+            // 优先使用新的Owner/RepoName字段，如果为空则从RepoUrl解析
+            if (!string.IsNullOrEmpty(translationConfig.Owner) && !string.IsNullOrEmpty(translationConfig.RepoName))
             {
+                owner = translationConfig.Owner;
+                repoName = translationConfig.RepoName;
+            }
+            else if (!string.IsNullOrEmpty(translationConfig.RepoUrl))
+            {
+                // 从RepoUrl解析Owner和RepoName
+                var parseResult = ParseGitHubRepoUrl(translationConfig.RepoUrl);
+                if (parseResult == null)
+                {
+                    _loggingService.LogError("debugtemplog: Failed to parse GitHub repo URL: {0}", translationConfig.RepoUrl);
+                    _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
+                    return false;
+                }
+                owner = parseResult.Value.owner;
+                repoName = parseResult.Value.repoName;
+            }
+            else
+            {
+                _loggingService.LogError("debugtemplog: Translation config Owner/RepoName and RepoUrl are all empty");
                 _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
                 return false;
             }
 
-            var tempRepoPath = Path.Combine(_settingsService.TempPath, $"translation_repo_{Guid.NewGuid()}");
-            var gameRootPath = _settingsService.Settings.GameRootPath;
-
-            // Create a progress tracker for Git clone operation
-            var startTime = DateTime.Now;
-            var estimatedTotalBytes = 10 * 1024 * 1024; // Estimate 10MB for translation files
-            
-            progress?.Report(new DownloadProgress 
-            { 
-                ProgressPercentage = 10,
-                BytesReceived = estimatedTotalBytes * 10 / 100,
-                TotalBytes = estimatedTotalBytes,
-                ElapsedTime = DateTime.Now - startTime,
-                SpeedBytesPerSecond = (estimatedTotalBytes * 10 / 100) / Math.Max(1, (DateTime.Now - startTime).TotalSeconds)
-            });
-
-            // Configure clone options to handle certificate issues in proxy environments
-            var cloneOptions = new CloneOptions();
-            cloneOptions.FetchOptions.CertificateCheck = (certificate, valid, host) => 
+            // 获取翻译仓库的最新Release
+            var releases = await _networkService.GetGitHubReleasesAsync(owner, repoName);
+            if (!releases.Any())
             {
-                // Accept certificates even if revocation status cannot be verified
-                // This is common in proxy environments or when using self-signed certificates
-                return true;
-            };
-
-            Repository.Clone(ApplyGitHubProxyToGitUrl(translationConfig.RepoUrl), tempRepoPath, cloneOptions);
-
-            var cloneTime = DateTime.Now;
-            progress?.Report(new DownloadProgress 
-            { 
-                ProgressPercentage = 70,
-                BytesReceived = estimatedTotalBytes * 70 / 100,
-                TotalBytes = estimatedTotalBytes,
-                ElapsedTime = cloneTime - startTime,
-                SpeedBytesPerSecond = (estimatedTotalBytes * 70 / 100) / Math.Max(1, (cloneTime - startTime).TotalSeconds)
-            });
-
-            await CopyDirectoryAsync(tempRepoPath, gameRootPath, new[] { ".git", ".gitignore", "README.md" });
-
-            var endTime = DateTime.Now;
-            progress?.Report(new DownloadProgress 
-            { 
-                ProgressPercentage = 100,
-                BytesReceived = estimatedTotalBytes,
-                TotalBytes = estimatedTotalBytes,
-                ElapsedTime = endTime - startTime,
-                SpeedBytesPerSecond = estimatedTotalBytes / Math.Max(1, (endTime - startTime).TotalSeconds)
-            });
-
-            // Safe cleanup: Remove .git folder first to avoid locked file issues during directory deletion
-            var gitPath = Path.Combine(tempRepoPath, ".git");
-            if (Directory.Exists(gitPath))
-            {
-                try
-                {
-                    // Force remove read-only attributes and delete .git folder
-                    RemoveGitDirectory(gitPath);
-                }
-                catch (Exception ex)
-                {
-                    _loggingService.LogWarning(Strings.GitDirectoryRemovalWarning, ex.Message);
-                    // Continue anyway, this is not critical for functionality
-                }
+                _loggingService.LogError("debugtemplog: No translation releases found");
+                _loggingService.LogError(Strings.TranslationReleasesFetchError);
+                return false;
             }
 
-            Directory.Delete(tempRepoPath, true);
+            // 筛选符合命名规范的release
+            var validReleases = releases.Where(r => r.TagName.StartsWith("release-") && 
+                                                   r.TagName.Length == 23 && 
+                                                   r.Assets.Any(a => a.Name.Contains("ghpc-translation-") && 
+                                                                    (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz"))))
+                                       .ToList();
 
-            // Update translation config
+            if (!validReleases.Any())
+            {
+                _loggingService.LogError("debugtemplog: No valid translation releases found");
+                _loggingService.LogError(Strings.TranslationReleasesFetchError);
+                return false;
+            }
+
+            var latestRelease = validReleases.First();
+            var targetAssetName = !string.IsNullOrEmpty(translationConfig.TargetAssetName) ? translationConfig.TargetAssetName : ".zip";
+            var targetAsset = latestRelease.Assets.FirstOrDefault(a => 
+                a.Name.Contains("ghpc-translation-") && a.Name.EndsWith(targetAssetName));
+
+            if (targetAsset == null)
+            {
+                _loggingService.LogError("debugtemplog: Translation asset not found in release {0}", latestRelease.TagName);
+                _loggingService.LogError(Strings.TranslationAssetNotFound);
+                return false;
+            }
+
+            _loggingService.LogInfo("debugtemplog: Downloading translation asset: {0} from release {1}", targetAsset.Name, latestRelease.TagName);
+            _loggingService.LogInfo(Strings.DownloadingTranslationRelease, latestRelease.TagName);
+
+            // 下载翻译ZIP文件
+            var zipData = await _networkService.DownloadFileAsync(targetAsset.DownloadUrl, progress);
+            if (zipData == null || zipData.Length == 0)
+            {
+                _loggingService.LogError("debugtemplog: Failed to download translation ZIP file");
+                return false;
+            }
+
+            _loggingService.LogInfo("debugtemplog: Downloaded translation ZIP: {0} bytes", zipData.Length);
+
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+
+            // 使用追踪的ZIP解压操作，排除不需要的文件
+            await trackedOps.ExtractZipAsync(zipData, gameRootPath, new[] { ".git", ".gitignore", "README.md", "LICENSE" });
+            
+            _loggingService.LogInfo("debugtemplog: Translation files extraction completed using tracked operations");
+
+            // 更新翻译配置
             translationConfig.LastUpdated = DateTime.Now;
             var configPath = Path.Combine(_settingsService.AppDataPath, "translationconfig.json");
             var configJson = JsonConvert.SerializeObject(translationConfig, Formatting.Indented);
             await File.WriteAllTextAsync(configPath, configJson);
+            _loggingService.LogInfo("debugtemplog: Updated translation config timestamp");
 
             return true;
         }
         catch (Exception ex)
         {
+            _loggingService.LogError(ex, "debugtemplog: Translation files download error: {0}", ex.Message);
             _loggingService.LogError(ex, Strings.TranslationFilesCloneError);
             return false;
         }
@@ -308,11 +507,15 @@ public class TranslationManagerService : ITranslationManagerService
     {
         try
         {
+            _loggingService.LogInfo("debugtemplog: Starting translation files update");
             _loggingService.LogInfo(Strings.UpdatingTranslationFiles);
+
+            await LoadManifestAsync();
 
             // Remove existing translation files
             if (_installManifest.TranslationRepoFiles.Any())
             {
+                _loggingService.LogInfo("debugtemplog: Removing {0} existing translation files", _installManifest.TranslationRepoFiles.Count);
                 var gameRootPath = _settingsService.Settings.GameRootPath;
                 foreach (var relativePath in _installManifest.TranslationRepoFiles)
                 {
@@ -320,14 +523,42 @@ public class TranslationManagerService : ITranslationManagerService
                     if (File.Exists(fullPath))
                     {
                         File.Delete(fullPath);
+                        _loggingService.LogInfo("debugtemplog: Removed existing translation file: {0}", relativePath);
                     }
                 }
             }
 
-            // Re-clone translation files
-            var success = await CloneTranslationFilesAsync(progress);
+            // 创建文件操作追踪器用于更新操作
+            var gameRootPath2 = _settingsService.Settings.GameRootPath;
+            var tracker = new FileOperationTracker(_loggingService, _settingsService);
+            var trackedOps = new TrackedFileOperations(tracker, _loggingService);
+
+            // 开始追踪文件操作
+            tracker.StartTracking($"translation_update_{DateTime.Now:yyyyMMdd_HHmmss}", gameRootPath2);
+
+            // Re-clone translation files using tracking
+            _loggingService.LogInfo("debugtemplog: Re-cloning translation files with tracking");
+            var success = await CloneTranslationFilesWithTrackingAsync(trackedOps, progress);
+            
             if (success)
             {
+                // 停止追踪并获取结果
+                tracker.StopTracking();
+                var result = tracker.GetResult();
+                var processedFiles = result.GetAllProcessedFiles();
+
+                _loggingService.LogInfo("debugtemplog: Translation update completed. Total processed files: {0}", processedFiles.Count);
+
+                // 更新manifest中的翻译文件列表
+                var autoTranslatorPath = Path.Combine(gameRootPath2, "AutoTranslator");
+                _installManifest.TranslationRepoFiles = processedFiles
+                    .Where(f => 
+                    {
+                        var fullPath = Path.Combine(gameRootPath2, f);
+                        return fullPath.StartsWith(autoTranslatorPath, StringComparison.OrdinalIgnoreCase);
+                    })
+                    .ToList();
+
                 await SaveManifestAsync();
                 _loggingService.LogInfo(Strings.TranslationFilesUpdated);
             }
@@ -336,6 +567,7 @@ public class TranslationManagerService : ITranslationManagerService
         }
         catch (Exception ex)
         {
+            _loggingService.LogError(ex, "debugtemplog: Translation update error: {0}", ex.Message);
             _loggingService.LogError(ex, Strings.TranslationUpdateError);
             return false;
         }
@@ -596,32 +828,43 @@ public class TranslationManagerService : ITranslationManagerService
             _loggingService.LogInfo(Strings.DirectoryCopyCreateDirectory, relativePath);
         }
 
-        // Copy files from allowed directories only
-        foreach (var dirPath in new[] { sourceDir }.Concat(allowedDirectories))
+        // Copy files from allowed directories only - run on background thread to avoid UI blocking
+        await Task.Run(() =>
         {
-            foreach (var filePath in Directory.GetFiles(dirPath, "*", SearchOption.TopDirectoryOnly))
+            try
             {
-                var relativePath = Path.GetRelativePath(sourceDir, filePath);
-                
-                // Double-check file exclusion
-                if (ShouldExcludePath(relativePath, excludePatterns))
+                foreach (var dirPath in new[] { sourceDir }.Concat(allowedDirectories))
                 {
-                    _loggingService.LogInfo(Strings.DirectoryCopySkipFile, relativePath);
-                    continue;
-                }
+                    foreach (var filePath in Directory.GetFiles(dirPath, "*", SearchOption.TopDirectoryOnly))
+                    {
+                        var relativePath = Path.GetRelativePath(sourceDir, filePath);
+                        
+                        // Double-check file exclusion
+                        if (ShouldExcludePath(relativePath, excludePatterns))
+                        {
+                            _loggingService.LogInfo(Strings.DirectoryCopySkipFile, relativePath);
+                            continue;
+                        }
 
-                var destFilePath = Path.Combine(destinationDir, relativePath);
-                var destDir = Path.GetDirectoryName(destFilePath);
-                
-                if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
-                {
-                    Directory.CreateDirectory(destDir);
+                        var destFilePath = Path.Combine(destinationDir, relativePath);
+                        var destDir = Path.GetDirectoryName(destFilePath);
+                        
+                        if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
+                        {
+                            Directory.CreateDirectory(destDir);
+                        }
+                        
+                        File.Copy(filePath, destFilePath, true);
+                        _loggingService.LogInfo(Strings.DirectoryCopyFile, relativePath);
+                    }
                 }
-                
-                File.Copy(filePath, destFilePath, true);
-                _loggingService.LogInfo(Strings.DirectoryCopyFile, relativePath);
             }
-        }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, "Directory copy failed: {0}", ex.Message);
+                throw;
+            }
+        });
         
         _loggingService.LogInfo(Strings.DirectoryCopyComplete);
     }

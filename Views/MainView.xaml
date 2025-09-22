@@ -270,6 +270,10 @@
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource FilledButtonStyle}"
                                                                 Visibility="{Binding IsInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                        <Button Content="{x:Static resources:Strings.Reinstall}" Command="{Binding DataContext.ReinstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                CommandParameter="{Binding}" MinWidth="60" Margin="2"
+                                                                Style="{DynamicResource FilledButtonStyle}"
+                                                                Visibility="{Binding CanReinstall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                         <Button Content="{x:Static resources:Strings.Update}" Command="{Binding DataContext.UpdateModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource FilledButtonStyle}"
@@ -277,7 +281,8 @@
                                                         <Button Content="{x:Static resources:Strings.Uninstall}" Command="{Binding DataContext.UninstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource OutlinedButtonStyle}"
-                                                                Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                                Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                IsEnabled="{Binding CanUninstall}"/>
                                                         <Button Content="{x:Static resources:Strings.Toggle}" Command="{Binding DataContext.ToggleModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                                 CommandParameter="{Binding}" MinWidth="60" Margin="2"
                                                                 Style="{DynamicResource OutlinedButtonStyle}"
@@ -341,6 +346,29 @@
                                             CommandParameter="{Binding CurrentTranslationLanguage}"
                                             MinWidth="80"
                                             Style="{DynamicResource FilledButtonStyle}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        
+                        <GroupBox Header="翻译插件控制" 
+                                  Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Margin="10">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <TextBlock Text="插件状态：" VerticalAlignment="Center" MinWidth="100" Margin="0,0,10,0"/>
+                                    <TextBlock Text="已启用" Foreground="Green" VerticalAlignment="Center"
+                                               Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <TextBlock Text="已禁用" Foreground="Red" VerticalAlignment="Center"
+                                               Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="启用翻译插件" Command="{Binding ToggleTranslationPluginCommand}" 
+                                            MinWidth="140" Margin="0,0,10,0"
+                                            Style="{DynamicResource FilledButtonStyle}"
+                                            Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                    <Button Content="禁用翻译插件" Command="{Binding ToggleTranslationPluginCommand}" 
+                                            MinWidth="140"
+                                            Style="{DynamicResource OutlinedButtonStyle}"
+                                            Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                             </StackPanel>
                         </GroupBox>

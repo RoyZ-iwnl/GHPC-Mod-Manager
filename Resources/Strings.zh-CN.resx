@@ -1604,9 +1604,6 @@
   <data name="GitHubProxyEnabled" xml:space="preserve">
     <value>GitHub代理已启用</value>
   </data>
-  <data name="GitHubProxyDisabled" xml:space="preserve">
-    <value>GitHub代理已禁用</value>
-  </data>
   <data name="ProxyServerChanged" xml:space="preserve">
     <value>代理服务器已更改为: {0}</value>
   </data>
@@ -1630,5 +1627,65 @@
   </data>
   <data name="AppStartupSettingsTheme" xml:space="preserve">
     <value>应用启动设置主题: {0}</value>
+  </data>
+  <data name="TranslationPluginEnabled" xml:space="preserve">
+    <value>翻译插件已启用</value>
+  </data>
+  <data name="TranslationPluginDisabled" xml:space="preserve">
+    <value>翻译插件已禁用</value>
+  </data>
+  <data name="TranslationPluginToggleFailed" xml:space="preserve">
+    <value>翻译插件切换失败</value>
+  </data>
+  <data name="TestingNetworkConnectionThroughProxy" xml:space="preserve">
+    <value>正在通过GitHub代理测试网络连接: {0}</value>
+  </data>
+  <data name="TestingDirectNetworkConnection" xml:space="preserve">
+    <value>正在测试直连网络连接: {0}</value>
+  </data>
+  <data name="NetworkTestSuccessfulViaProxy" xml:space="preserve">
+    <value>网络连接测试通过代理成功</value>
+  </data>
+  <data name="NetworkTestSuccessfulViaDirect" xml:space="preserve">
+    <value>网络连接测试通过直连成功</value>
+  </data>
+  <data name="NetworkTestStatusCode" xml:space="preserve">
+    <value>网络连接测试返回状态码: {0}</value>
+  </data>
+  <data name="NetworkTestFailed" xml:space="preserve">
+    <value>网络连接测试失败: {0}</value>
+  </data>
+  <data name="Reinstall" xml:space="preserve">
+    <value>重装</value>
+  </data>
+  <data name="TranslationPluginEnabled" xml:space="preserve">
+    <value>翻译插件已启用</value>
+  </data>
+  <data name="TranslationPluginDisabled" xml:space="preserve">
+    <value>翻译插件已禁用</value>
+  </data>
+  <data name="EnableTranslationPlugin" xml:space="preserve">
+    <value>启用翻译插件</value>
+  </data>
+  <data name="DisableTranslationPlugin" xml:space="preserve">
+    <value>禁用翻译插件</value>
+  </data>
+  <data name="TranslationPluginStatus" xml:space="preserve">
+    <value>翻译插件状态</value>
+  </data>
+  <data name="TranslationPluginToggleError" xml:space="preserve">
+    <value>切换翻译插件状态时出错: {0}</value>
+  </data>
+  <data name="TranslationReleasesFetchError" xml:space="preserve">
+    <value>获取翻译发布版本时出错</value>
+  </data>
+  <data name="TranslationAssetNotFound" xml:space="preserve">
+    <value>发布版本中未找到翻译资源文件</value>
+  </data>
+  <data name="DownloadingTranslationRelease" xml:space="preserve">
+    <value>正在下载翻译发布版本: {0}</value>
+  </data>
+  <data name="TranslationPluginToggleFailed" xml:space="preserve">
+    <value>切换翻译插件失败</value>
   </data>
 </root>

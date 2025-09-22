@@ -124,14 +124,39 @@ public class NetworkService : INetworkService
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Head, "https://api.github.com");
+            var testUrl = "https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
+            
+            // Apply GitHub proxy if enabled
+            if (_settingsService.Settings.UseGitHubProxy)
+            {
+                var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+                testUrl = $"https://{proxyDomain}/https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
+                _loggingService.LogInfo(Strings.TestingNetworkConnectionThroughProxy, testUrl);
+            }
+            else
+            {
+                _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
+            }
+            
+            var request = new HttpRequestMessage(HttpMethod.Head, testUrl);
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
             
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _loggingService.LogInfo(_settingsService.Settings.UseGitHubProxy ? Strings.NetworkTestSuccessfulViaProxy : Strings.NetworkTestSuccessfulViaDirect);
+            }
+            else
+            {
+                _loggingService.LogWarning(Strings.NetworkTestStatusCode, response.StatusCode);
+            }
+            
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
+            _loggingService.LogError(ex, Strings.NetworkTestFailed, ex.Message);
             _loggingService.LogError(ex, Strings.NetworkCheckFailed);
             return false;
         }

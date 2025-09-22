@@ -1604,9 +1604,6 @@
   <data name="GitHubProxyEnabled" xml:space="preserve">
     <value>GitHub proxy enabled</value>
   </data>
-  <data name="GitHubProxyDisabled" xml:space="preserve">
-    <value>GitHub proxy disabled</value>
-  </data>
   <data name="ProxyServerChanged" xml:space="preserve">
     <value>Proxy server changed to: {0}</value>
   </data>
@@ -1630,5 +1627,65 @@
   </data>
   <data name="AppStartupSettingsTheme" xml:space="preserve">
     <value>App startup settings theme: {0}</value>
+  </data>
+  <data name="TranslationPluginEnabled" xml:space="preserve">
+    <value>Translation plugin enabled</value>
+  </data>
+  <data name="TranslationPluginDisabled" xml:space="preserve">
+    <value>Translation plugin disabled</value>
+  </data>
+  <data name="TranslationPluginToggleFailed" xml:space="preserve">
+    <value>Translation plugin toggle failed</value>
+  </data>
+  <data name="TestingNetworkConnectionThroughProxy" xml:space="preserve">
+    <value>Testing network connection through GitHub proxy: {0}</value>
+  </data>
+  <data name="TestingDirectNetworkConnection" xml:space="preserve">
+    <value>Testing direct network connection to: {0}</value>
+  </data>
+  <data name="NetworkTestSuccessfulViaProxy" xml:space="preserve">
+    <value>Network connectivity test successful via proxy</value>
+  </data>
+  <data name="NetworkTestSuccessfulViaDirect" xml:space="preserve">
+    <value>Network connectivity test successful via direct connection</value>
+  </data>
+  <data name="NetworkTestStatusCode" xml:space="preserve">
+    <value>Network connectivity test returned status code: {0}</value>
+  </data>
+  <data name="NetworkTestFailed" xml:space="preserve">
+    <value>Network connectivity test failed: {0}</value>
+  </data>
+  <data name="Reinstall" xml:space="preserve">
+    <value>Reinstall</value>
+  </data>
+  <data name="TranslationPluginEnabled" xml:space="preserve">
+    <value>Translation Plugin Enabled</value>
+  </data>
+  <data name="TranslationPluginDisabled" xml:space="preserve">
+    <value>Translation Plugin Disabled</value>
+  </data>
+  <data name="EnableTranslationPlugin" xml:space="preserve">
+    <value>Enable Translation Plugin</value>
+  </data>
+  <data name="DisableTranslationPlugin" xml:space="preserve">
+    <value>Disable Translation Plugin</value>
+  </data>
+  <data name="TranslationPluginStatus" xml:space="preserve">
+    <value>Translation Plugin Status</value>
+  </data>
+  <data name="TranslationPluginToggleError" xml:space="preserve">
+    <value>Error toggling translation plugin: {0}</value>
+  </data>
+  <data name="TranslationReleasesFetchError" xml:space="preserve">
+    <value>Error fetching translation releases</value>
+  </data>
+  <data name="TranslationAssetNotFound" xml:space="preserve">
+    <value>Translation asset not found in release</value>
+  </data>
+  <data name="DownloadingTranslationRelease" xml:space="preserve">
+    <value>Downloading translation release: {0}</value>
+  </data>
+  <data name="TranslationPluginToggleFailed" xml:space="preserve">
+    <value>Failed to toggle translation plugin</value>
   </data>
 </root>

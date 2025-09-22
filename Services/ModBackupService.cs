@@ -86,6 +86,13 @@ public class ModBackupService : IModBackupService
             // Create manifest to track original file paths
             var backupManifest = new Dictionary<string, string>();
 
+            // If modFiles is empty, this indicates files couldn't be found in the upper layer
+            // This should be rare since ToggleModAsync now handles file discovery for manual mods
+            if (!modFiles.Any())
+            {
+                _loggingService.LogWarning("No files provided for mod backup: {0}. This might indicate the mod files couldn't be located.", modId);
+            }
+
             // Move files to disabled backup, preserving directory structure
             foreach (var relativePath in modFiles)
             {
@@ -101,6 +108,13 @@ public class ModBackupService : IModBackupService
                     
                     File.Move(sourceFile, backupFile);
                 }
+            }
+            
+            // If no files were found/moved, this might indicate the mod is already disabled or not found
+            if (!backupManifest.Any())
+            {
+                _loggingService.LogWarning("No files found to disable for mod: {0}", modId);
+                return false;
             }
             
             // Save backup manifest
@@ -144,10 +158,21 @@ public class ModBackupService : IModBackupService
                 backupManifest = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(manifestJson) ?? new Dictionary<string, string>();
             }
             
-            // Restore files from disabled backup to their original locations
+            // Get actual backup files (exclude json)
             var backupFiles = Directory.GetFiles(modBackupPath, "*", SearchOption.TopDirectoryOnly)
                 .Where(f => Path.GetFileName(f) != "backup_paths.json")
                 .ToList();
+                
+            // If no backup files exist, clean up and return false
+            if (!backupFiles.Any())
+            {
+                _loggingService.LogWarning("No backup files found for mod: {0}, cleaning up backup directory", modId);
+                if (Directory.Exists(modBackupPath))
+                {
+                    Directory.Delete(modBackupPath, true);
+                }
+                return false;
+            }
                 
             foreach (var backupFile in backupFiles)
             {
@@ -398,7 +423,7 @@ public class ModBackupService : IModBackupService
             try
             {
                 return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
-                    .Sum(file => new FileInfo(file).Length);
+                    .Sum(file => new System.IO.FileInfo(file).Length);
             }
             catch
             {

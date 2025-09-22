@@ -55,6 +55,9 @@ public enum InstallMethod
 public class TranslationConfig
 {
     public string RepoUrl { get; set; } = string.Empty;
+    public string Owner { get; set; } = string.Empty;
+    public string RepoName { get; set; } = string.Empty;
+    public string TargetAssetName { get; set; } = ".zip";
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }
 
@@ -76,6 +79,8 @@ public class TranslationInstallManifest
     public List<string> XUnityAutoTranslatorFiles { get; set; } = new();
     public List<string> TranslationRepoFiles { get; set; } = new();
     public DateTime InstallDate { get; set; } = DateTime.Now;
+    public string XUnityVersion { get; set; } = string.Empty;
+    public bool IsEnabled { get; set; } = true;
 }
 
 public class GitHubRelease
@@ -150,6 +155,16 @@ public class ModViewModel
                             LatestVersion != GHPC_Mod_Manager.Resources.Strings.Unknown &&
                             InstalledVersion != LatestVersion &&
                             InstalledVersion != GHPC_Mod_Manager.Resources.Strings.Manual;
+    
+    // Property to determine if this mod can be reinstalled (for supported manual mods)
+    public bool CanReinstall => IsInstalled &&
+                                IsManuallyInstalled &&
+                                IsSupportedManualMod &&
+                                !IsTranslationPlugin;
+
+    // Property to determine if this mod can be uninstalled
+    // Only allow uninstall when mod is installed AND enabled (since disabled mods are moved out of directory)
+    public bool CanUninstall => IsInstalled && IsEnabled && !IsTranslationPlugin;
 
     // Property to extract GitHub repository URL from ReleaseUrl
     public string? GitHubRepositoryUrl => ExtractGitHubRepositoryUrl();

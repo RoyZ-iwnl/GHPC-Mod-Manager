@@ -34,6 +34,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IMelonLoaderService, MelonLoaderService>();
                     services.AddSingleton<IModManagerService, ModManagerService>();
                     services.AddSingleton<ITranslationManagerService, TranslationManagerService>();
+                    services.AddSingleton<ITranslationBackupService, TranslationBackupService>();
                     services.AddSingleton<IModI18nService, ModI18nService>();
                     services.AddSingleton<IModBackupService, ModBackupService>();
                     services.AddSingleton<IAnnouncementService, AnnouncementService>();

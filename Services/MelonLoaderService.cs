@@ -139,7 +139,7 @@ public class MelonLoaderService : IMelonLoaderService
             }
             
             // 验证写入的文件大小
-            var fileInfo = new FileInfo(tempFile);
+            var fileInfo = new System.IO.FileInfo(tempFile);
             if (fileInfo.Length != downloadData.Length)
             {
                 _loggingService.LogError(Strings.FileSizeMismatch, downloadData.Length, fileInfo.Length);

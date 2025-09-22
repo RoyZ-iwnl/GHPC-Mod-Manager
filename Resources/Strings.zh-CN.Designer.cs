@@ -22,14 +22,14 @@ namespace GHPC_Mod_Manager.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Strings {
+    public class Strings_zh_CN {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Strings() {
+        internal Strings_zh_CN() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace GHPC_Mod_Manager.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GHPC_Mod_Manager.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GHPC_Mod_Manager.Resources.Strings_zh_CN", typeof(Strings_zh_CN).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to About.
+        ///   Looks up a localized string similar to 关于.
         /// </summary>
         public static string About {
             get {
@@ -70,7 +70,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Actions.
+        ///   Looks up a localized string similar to 操作.
         /// </summary>
         public static string Actions {
             get {
@@ -79,7 +79,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All caches cleared successfully.
+        ///   Looks up a localized string similar to 所有缓存清理成功.
         /// </summary>
         public static string AllCachesClearedSuccessfully {
             get {
@@ -88,7 +88,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copied all {0} log entries to clipboard.
+        ///   Looks up a localized string similar to 已复制全部 {0} 条日志到剪贴板.
         /// </summary>
         public static string AllLogsCopiedToClipboard {
             get {
@@ -97,7 +97,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Announcement.
+        ///   Looks up a localized string similar to 公告.
         /// </summary>
         public static string Announcement {
             get {
@@ -106,7 +106,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Announcement content is empty for language: {0}.
+        ///   Looks up a localized string similar to {0} 语言的公告内容为空.
         /// </summary>
         public static string AnnouncementContentEmpty {
             get {
@@ -115,7 +115,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to fetch announcement: {0} - {1}.
+        ///   Looks up a localized string similar to 获取公告失败: {0} - {1}.
         /// </summary>
         public static string AnnouncementFetchFailed {
             get {
@@ -124,7 +124,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Successfully loaded announcement for language: {0}.
+        ///   Looks up a localized string similar to 成功加载 {0} 语言的公告.
         /// </summary>
         public static string AnnouncementLoadedSuccessfully {
             get {
@@ -133,7 +133,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load announcement.
+        ///   Looks up a localized string similar to 加载公告失败.
         /// </summary>
         public static string AnnouncementLoadFailed {
             get {
@@ -142,7 +142,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application Version.
+        ///   Looks up a localized string similar to 应用版本.
         /// </summary>
         public static string ApplicationVersion {
             get {
@@ -151,7 +151,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply.
+        ///   Looks up a localized string similar to 应用.
         /// </summary>
         public static string Apply {
             get {
@@ -160,7 +160,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applying proxy settings and retesting network connection....
+        ///   Looks up a localized string similar to 正在应用代理设置并重新检测网络连接....
         /// </summary>
         public static string ApplyingProxyAndRetesting {
             get {
@@ -169,7 +169,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error applying language setting.
+        ///   Looks up a localized string similar to 应用语言设置错误.
         /// </summary>
         public static string ApplyLanguageError {
             get {
@@ -178,7 +178,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to apply proxy settings: {0}.
+        ///   Looks up a localized string similar to 应用代理设置失败: {0}.
         /// </summary>
         public static string ApplyProxySettingsFailed {
             get {
@@ -187,7 +187,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ApplyTheme started - Target theme: {0}.
+        ///   Looks up a localized string similar to 应用主题开始 - 目标主题: {0}.
         /// </summary>
         public static string ApplyThemeStarted {
             get {
@@ -196,7 +196,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App startup resource dictionary count: {0}.
+        ///   Looks up a localized string similar to 应用启动资源字典数量: {0}.
         /// </summary>
         public static string AppStartupResourceDictionaryCount {
             get {
@@ -205,7 +205,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App startup settings theme: {0}.
+        ///   Looks up a localized string similar to 应用启动设置主题: {0}.
         /// </summary>
         public static string AppStartupSettingsTheme {
             get {
@@ -214,7 +214,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Theme:.
+        ///   Looks up a localized string similar to 主题:.
         /// </summary>
         public static string AppTheme {
             get {
@@ -223,7 +223,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attention!.
+        ///   Looks up a localized string similar to 注意!.
         /// </summary>
         public static string Attention {
             get {
@@ -232,7 +232,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AutoTranslator configuration file not found.
+        ///   Looks up a localized string similar to 未找到AutoTranslator配置文件.
         /// </summary>
         public static string AutoTranslatorConfigNotFound {
             get {
@@ -241,7 +241,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Available Mods.
+        ///   Looks up a localized string similar to 可用Mod.
         /// </summary>
         public static string AvailableMods {
             get {
@@ -250,7 +250,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading available mods.
+        ///   Looks up a localized string similar to 加载可用Mod列表时出错.
         /// </summary>
         public static string AvailableModsLoadError {
             get {
@@ -259,7 +259,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back to Main.
+        ///   Looks up a localized string similar to 返回主界面.
         /// </summary>
         public static string BackToMain {
             get {
@@ -268,7 +268,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Backup directory does not exist, nothing to delete: {0}.
+        ///   Looks up a localized string similar to 备份目录不存在，无需删除: {0}.
         /// </summary>
         public static string BackupDirectoryNotExists {
             get {
@@ -277,7 +277,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you already have mods installed, we recommend backing up your MODS folder before using this manager. This will ensure you don&apos;t lose any manually installed modifications..
+        ///   Looks up a localized string similar to 如果您已经安装了模组，我们建议在使用此管理器之前备份您的 MODS 文件夹。这将确保您不会丢失任何手动安装的模组。.
         /// </summary>
         public static string BackupModsRecommendation {
             get {
@@ -286,7 +286,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse....
+        ///   Looks up a localized string similar to 浏览....
         /// </summary>
         public static string Browse {
             get {
@@ -295,7 +295,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to 取消.
         /// </summary>
         public static string Cancel {
             get {
@@ -304,7 +304,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot get MelonLoader version list.
+        ///   Looks up a localized string similar to 无法获取MelonLoader版本列表.
         /// </summary>
         public static string CannotGetMelonLoaderVersions {
             get {
@@ -313,7 +313,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot get mod version information.
+        ///   Looks up a localized string similar to 无法获取Mod版本信息.
         /// </summary>
         public static string CannotGetModVersionInfo {
             get {
@@ -322,7 +322,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot get translation component versions.
+        ///   Looks up a localized string similar to 无法获取翻译组件版本.
         /// </summary>
         public static string CannotGetTranslationVersions {
             get {
@@ -340,7 +340,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check for Mod Updates.
+        ///   Looks up a localized string similar to 检查模组更新.
         /// </summary>
         public static string CheckForModUpdates {
             get {
@@ -349,7 +349,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking....
+        ///   Looks up a localized string similar to 检测中....
         /// </summary>
         public static string Checking {
             get {
@@ -358,7 +358,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking for mod updates....
+        ///   Looks up a localized string similar to 正在检查模组更新....
         /// </summary>
         public static string CheckingForModUpdates {
             get {
@@ -367,7 +367,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking mod conflicts for: {0}.
+        ///   Looks up a localized string similar to 正在检查模组冲突: {0}.
         /// </summary>
         public static string CheckingModConflicts {
             get {
@@ -376,7 +376,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking mod dependencies for: {0}.
+        ///   Looks up a localized string similar to 正在检查模组依赖: {0}.
         /// </summary>
         public static string CheckingModDependencies {
             get {
@@ -385,7 +385,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking network connection status....
+        ///   Looks up a localized string similar to 正在检测网络连接状态....
         /// </summary>
         public static string CheckingNetworkConnectionStatus {
             get {
@@ -403,7 +403,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0} completed: {1} bytes.
+        ///   Looks up a localized string similar to 块 {0} 完成: {1} 字节.
         /// </summary>
         public static string ChunkCompleted {
             get {
@@ -412,7 +412,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0} copied to offset {1}.
+        ///   Looks up a localized string similar to 块 {0} 已复制到偏移 {1}.
         /// </summary>
         public static string ChunkCopiedToOffset {
             get {
@@ -421,7 +421,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0} failed to download.
+        ///   Looks up a localized string similar to 块 {0} 下载失败.
         /// </summary>
         public static string ChunkDownloadFailed {
             get {
@@ -430,7 +430,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to download chunk {0} after {1} attempts.
+        ///   Looks up a localized string similar to 块 {0} 在 {1} 次尝试后下载失败.
         /// </summary>
         public static string ChunkDownloadMaxRetriesExceeded {
             get {
@@ -439,7 +439,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0}: bytes {1}-{2} (expected size: {3} bytes).
+        ///   Looks up a localized string similar to 块 {0}: 字节范围 {1}-{2}（预期大小: {3} 字节）.
         /// </summary>
         public static string ChunkDownloadRange {
             get {
@@ -448,7 +448,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0} failed (attempt {1}/{2}), retrying in {3}ms: {4}.
+        ///   Looks up a localized string similar to 块 {0} 失败（第 {1}/{2} 次尝试），{3}毫秒后重试: {4}.
         /// </summary>
         public static string ChunkFailedRetrying {
             get {
@@ -457,7 +457,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk {0} validation: {1} bytes.
+        ///   Looks up a localized string similar to 块 {0} 验证: {1} 字节.
         /// </summary>
         public static string ChunkValidation {
             get {
@@ -466,7 +466,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clean Temp Files.
+        ///   Looks up a localized string similar to 清理临时文件.
         /// </summary>
         public static string CleanTempFiles {
             get {
@@ -475,7 +475,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cleanup Downloaded Mods.
+        ///   Looks up a localized string similar to 清理已下载的模组.
         /// </summary>
         public static string CleanupDownloadedMods {
             get {
@@ -484,7 +484,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to cleanup mod backups: {0}.
+        ///   Looks up a localized string similar to 清理模组备份失败: {0}.
         /// </summary>
         public static string CleanupModBackupsFailed {
             get {
@@ -493,7 +493,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod backups cleaned up successfully. Freed {0} MB of space..
+        ///   Looks up a localized string similar to 模组备份清理成功。释放了 {0} MB 空间。.
         /// </summary>
         public static string CleanupModBackupsSuccessful {
             get {
@@ -502,7 +502,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cleanup temp file failed: {0}.
+        ///   Looks up a localized string similar to 清理临时文件失败: {0}.
         /// </summary>
         public static string CleanupTempFileFailed {
             get {
@@ -511,7 +511,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clear Logs.
+        ///   Looks up a localized string similar to 清空日志.
         /// </summary>
         public static string ClearLogs {
             get {
@@ -520,7 +520,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to • Click Retry Check to retry network connection.
+        ///   Looks up a localized string similar to • 点击 重新检测重试网络连接.
         /// </summary>
         public static string ClickRetryToRetry {
             get {
@@ -529,7 +529,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to • Click Show Log to view detailed detection process.
+        ///   Looks up a localized string similar to • 点击 显示日志 查看详细的检测过程.
         /// </summary>
         public static string ClickShowLogForDetails {
             get {
@@ -538,7 +538,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to select and copy comment text.
+        ///   Looks up a localized string similar to 点击选择并复制注释内容.
         /// </summary>
         public static string ClickToSelectAndCopyComment {
             get {
@@ -547,7 +547,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to • Click View Solutions to see network troubleshooting guide.
+        ///   Looks up a localized string similar to • 点击 了解解决方案 查看网络问题排查指南.
         /// </summary>
         public static string ClickViewSolutions {
             get {
@@ -556,7 +556,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
+        ///   Looks up a localized string similar to 关闭.
         /// </summary>
         public static string Close {
             get {
@@ -565,7 +565,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration file does not exist: {0}.
+        ///   Looks up a localized string similar to 配置文件不存在: {0}.
         /// </summary>
         public static string ConfigFileNotExists {
             get {
@@ -574,7 +574,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration read complete: {0}, total {1} items.
+        ///   Looks up a localized string similar to 配置读取完成: {0}, 共 {1} 项.
         /// </summary>
         public static string ConfigReadComplete {
             get {
@@ -583,7 +583,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Config read ordered complete.
+        ///   Looks up a localized string similar to 配置有序读取完成.
         /// </summary>
         public static string ConfigReadOrderedComplete {
             get {
@@ -592,7 +592,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration - {0}.
+        ///   Looks up a localized string similar to 配置 - {0}.
         /// </summary>
         public static string ConfigurationFor {
             get {
@@ -601,7 +601,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loaded {0} configuration items.
+        ///   Looks up a localized string similar to 已加载 {0} 个配置项.
         /// </summary>
         public static string ConfigurationItemsLoaded {
             get {
@@ -610,7 +610,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration load error.
+        ///   Looks up a localized string similar to 配置加载错误.
         /// </summary>
         public static string ConfigurationLoadError {
             get {
@@ -619,7 +619,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration load failed.
+        ///   Looks up a localized string similar to 配置加载失败.
         /// </summary>
         public static string ConfigurationLoadFailed {
             get {
@@ -628,7 +628,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration Presets.
+        ///   Looks up a localized string similar to 配置预设.
         /// </summary>
         public static string ConfigurationPresets {
             get {
@@ -637,7 +637,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration refresh complete.
+        ///   Looks up a localized string similar to 配置刷新完成.
         /// </summary>
         public static string ConfigurationRefreshComplete {
             get {
@@ -646,7 +646,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration refresh error.
+        ///   Looks up a localized string similar to 配置刷新错误.
         /// </summary>
         public static string ConfigurationRefreshError {
             get {
@@ -655,7 +655,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration saved.
+        ///   Looks up a localized string similar to 配置已保存.
         /// </summary>
         public static string ConfigurationSaved {
             get {
@@ -664,7 +664,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to save configuration.
+        ///   Looks up a localized string similar to 配置保存失败.
         /// </summary>
         public static string ConfigurationSaveError {
             get {
@@ -673,7 +673,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configurations refreshed successfully!.
+        ///   Looks up a localized string similar to 配置刷新成功！.
         /// </summary>
         public static string ConfigurationsRefreshedSuccessfully {
             get {
@@ -682,7 +682,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure.
+        ///   Looks up a localized string similar to 配置.
         /// </summary>
         public static string Configure {
             get {
@@ -691,7 +691,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure mod error.
+        ///   Looks up a localized string similar to 配置模组错误.
         /// </summary>
         public static string ConfigureModError {
             get {
@@ -700,7 +700,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Cleanup.
+        ///   Looks up a localized string similar to 确认清理.
         /// </summary>
         public static string ConfirmCleanup {
             get {
@@ -709,7 +709,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This will delete all backed up mod files. Are you sure?.
+        ///   Looks up a localized string similar to 这将删除所有备份的模组文件。你确定吗？.
         /// </summary>
         public static string ConfirmCleanupModBackups {
             get {
@@ -718,7 +718,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Delete.
+        ///   Looks up a localized string similar to 确认删除.
         /// </summary>
         public static string ConfirmDelete {
             get {
@@ -727,7 +727,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete preset &apos;{0}&apos;?.
+        ///   Looks up a localized string similar to 确定要删除预设 &apos;{0}&apos; 吗？.
         /// </summary>
         public static string ConfirmDeletePreset {
             get {
@@ -736,7 +736,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Uninstall.
+        ///   Looks up a localized string similar to 确认卸载.
         /// </summary>
         public static string ConfirmUninstall {
             get {
@@ -745,7 +745,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to uninstall {0}?.
+        ///   Looks up a localized string similar to 确定要卸载 {0} 吗？.
         /// </summary>
         public static string ConfirmUninstallMod {
             get {
@@ -754,7 +754,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to uninstall the translation system?.
+        ///   Looks up a localized string similar to 确定要卸载翻译系统吗？.
         /// </summary>
         public static string ConfirmUninstallTranslation {
             get {
@@ -763,7 +763,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Conflict found with mod: {0}.
+        ///   Looks up a localized string similar to 发现与模组 {0} 冲突.
         /// </summary>
         public static string ConflictFound {
             get {
@@ -772,7 +772,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection Abnormal.
+        ///   Looks up a localized string similar to 连接异常.
         /// </summary>
         public static string ConnectionAbnormal {
             get {
@@ -781,7 +781,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection Abnormal.
+        ///   Looks up a localized string similar to 连接异常.
         /// </summary>
         public static string ConnectionAbnormalResult {
             get {
@@ -790,7 +790,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection Normal.
+        ///   Looks up a localized string similar to 连接正常.
         /// </summary>
         public static string ConnectionNormal {
             get {
@@ -799,7 +799,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection Normal.
+        ///   Looks up a localized string similar to 连接正常.
         /// </summary>
         public static string ConnectionNormalResult {
             get {
@@ -808,7 +808,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Later.
+        ///   Looks up a localized string similar to • 或继续安装，稍后手动配置网络.
         /// </summary>
         public static string ContinueAndConfigureLater {
             get {
@@ -817,7 +817,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy All.
+        ///   Looks up a localized string similar to 复制全部.
         /// </summary>
         public static string CopyAll {
             get {
@@ -826,7 +826,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy failed: {0}.
+        ///   Looks up a localized string similar to 复制失败: {0}.
         /// </summary>
         public static string CopyFailed {
             get {
@@ -835,7 +835,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Log.
+        ///   Looks up a localized string similar to 复制日志.
         /// </summary>
         public static string CopyLog {
             get {
@@ -844,7 +844,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Selected.
+        ///   Looks up a localized string similar to 复制选中.
         /// </summary>
         public static string CopySelected {
             get {
@@ -853,7 +853,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Success.
+        ///   Looks up a localized string similar to 复制成功.
         /// </summary>
         public static string CopySuccess {
             get {
@@ -862,7 +862,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to copy to clipboard: {0}.
+        ///   Looks up a localized string similar to 复制到剪贴板失败: {0}.
         /// </summary>
         public static string CopyToClipboardError {
             get {
@@ -871,7 +871,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Language.
+        ///   Looks up a localized string similar to 当前语言.
         /// </summary>
         public static string CurrentLanguage {
             get {
@@ -880,7 +880,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error getting current translation language.
+        ///   Looks up a localized string similar to 获取当前翻译语言时出错.
         /// </summary>
         public static string CurrentLanguageError {
             get {
@@ -889,7 +889,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dark Theme.
+        ///   Looks up a localized string similar to 深色主题.
         /// </summary>
         public static string DarkTheme {
             get {
@@ -898,7 +898,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data refresh complete.
+        ///   Looks up a localized string similar to 数据刷新完成.
         /// </summary>
         public static string DataRefreshComplete {
             get {
@@ -907,7 +907,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error refreshing data.
+        ///   Looks up a localized string similar to 刷新数据时出错.
         /// </summary>
         public static string DataRefreshError {
             get {
@@ -916,7 +916,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data refresh failed.
+        ///   Looks up a localized string similar to 数据刷新失败.
         /// </summary>
         public static string DataRefreshFailed {
             get {
@@ -925,7 +925,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source Configuration.
+        ///   Looks up a localized string similar to 数据源配置.
         /// </summary>
         public static string DataSourceConfiguration {
             get {
@@ -934,7 +934,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deleted mod backup: {0} version {1}.
+        ///   Looks up a localized string similar to 已删除MOD备份: {0} 版本 {1}.
         /// </summary>
         public static string DeletedModBackup {
             get {
@@ -943,7 +943,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to 删除.
         /// </summary>
         public static string DeletePreset {
             get {
@@ -952,7 +952,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: Could not access subdirectories in {0}: {1}.
+        ///   Looks up a localized string similar to 警告: 未能访问子目录 {0}: {1}.
         /// </summary>
         public static string DirectoryAccessWarning {
             get {
@@ -961,7 +961,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Directory copy completed.
+        ///   Looks up a localized string similar to 目录复制完成.
         /// </summary>
         public static string DirectoryCopyComplete {
             get {
@@ -970,7 +970,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating directory: {0}.
+        ///   Looks up a localized string similar to 创建目录: {0}.
         /// </summary>
         public static string DirectoryCopyCreateDirectory {
             get {
@@ -979,7 +979,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exclude patterns: {0}.
+        ///   Looks up a localized string similar to 排除模式: {0}.
         /// </summary>
         public static string DirectoryCopyExcludePatterns {
             get {
@@ -988,7 +988,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copying file: {0}.
+        ///   Looks up a localized string similar to 复制文件: {0}.
         /// </summary>
         public static string DirectoryCopyFile {
             get {
@@ -997,7 +997,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipping file: {0}.
+        ///   Looks up a localized string similar to 跳过文件: {0}.
         /// </summary>
         public static string DirectoryCopySkipFile {
             get {
@@ -1006,7 +1006,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipping directory tree: {0}.
+        ///   Looks up a localized string similar to 跳过目录树: {0}.
         /// </summary>
         public static string DirectoryCopySkipTree {
             get {
@@ -1015,7 +1015,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting directory copy: {0} -&gt; {1}.
+        ///   Looks up a localized string similar to 开始复制目录: {0} -&gt; {1}.
         /// </summary>
         public static string DirectoryCopyStarted {
             get {
@@ -1024,7 +1024,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable Translation Plugin.
+        ///   Looks up a localized string similar to 禁用翻译插件.
         /// </summary>
         public static string DisableTranslationPlugin {
             get {
@@ -1033,7 +1033,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to - DNS resolution problem.
+        ///   Looks up a localized string similar to - DNS解析问题.
         /// </summary>
         public static string DNSResolutionProblem {
             get {
@@ -1042,7 +1042,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to dobby.dll exists: {0}.
+        ///   Looks up a localized string similar to dobby.dll 存在: {0}.
         /// </summary>
         public static string DobbyDllExists {
             get {
@@ -1051,7 +1051,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download completed: {0}.
+        ///   Looks up a localized string similar to 下载完成: {0}.
         /// </summary>
         public static string DownloadCompleted {
             get {
@@ -1060,7 +1060,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloaded file data is empty.
+        ///   Looks up a localized string similar to 下载的文件数据为空.
         /// </summary>
         public static string DownloadedFileDataEmpty {
             get {
@@ -1069,7 +1069,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download error: {0}.
+        ///   Looks up a localized string similar to 下载错误: {0}.
         /// </summary>
         public static string DownloadError {
             get {
@@ -1078,7 +1078,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloading translation release: {0}.
+        ///   Looks up a localized string similar to 正在下载翻译发布版本: {0}.
         /// </summary>
         public static string DownloadingTranslationRelease {
             get {
@@ -1087,7 +1087,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Size mismatch! Expected: {0}, Downloaded: {1}.
+        ///   Looks up a localized string similar to 大小不匹配！预期: {0}，已下载: {1}.
         /// </summary>
         public static string DownloadSizeMismatch {
             get {
@@ -1096,7 +1096,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloaded size mismatch: expected {0}, got {1}.
+        ///   Looks up a localized string similar to 下载大小不匹配：期望 {0}，得到 {1}.
         /// </summary>
         public static string DownloadSizeMismatchException {
             get {
@@ -1105,7 +1105,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download started: {0}.
+        ///   Looks up a localized string similar to 开始下载: {0}.
         /// </summary>
         public static string DownloadStarted {
             get {
@@ -1114,7 +1114,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to edgeone.gh-proxy.com (Tencent Cloud).
+        ///   Looks up a localized string similar to edgeone.gh-proxy.com (腾讯云).
         /// </summary>
         public static string EdgeOneGhProxyCom {
             get {
@@ -1123,7 +1123,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabled.
+        ///   Looks up a localized string similar to 启用.
         /// </summary>
         public static string Enabled {
             get {
@@ -1132,7 +1132,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Translation Plugin.
+        ///   Looks up a localized string similar to 启用翻译插件.
         /// </summary>
         public static string EnableTranslationPlugin {
             get {
@@ -1150,7 +1150,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entering network check step.
+        ///   Looks up a localized string similar to 进入网络检测步骤.
         /// </summary>
         public static string EnteringNetworkCheck {
             get {
@@ -1159,7 +1159,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to 错误.
         /// </summary>
         public static string Error {
             get {
@@ -1168,7 +1168,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error applying GitHub proxy to URL: {0}.
+        ///   Looks up a localized string similar to 应用GitHub代理到URL时出错: {0}.
         /// </summary>
         public static string ErrorApplyingGitHubProxy {
             get {
@@ -1177,7 +1177,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exited.
+        ///   Looks up a localized string similar to 已退出.
         /// </summary>
         public static string Exited {
             get {
@@ -1186,7 +1186,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting archive: {0}.
+        ///   Looks up a localized string similar to 正在解压归档文件: {0}.
         /// </summary>
         public static string ExtractingArchive {
             get {
@@ -1195,7 +1195,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting file: {0} -&gt; {1}.
+        ///   Looks up a localized string similar to 解压文件: {0} -&gt; {1}.
         /// </summary>
         public static string ExtractingFile {
             get {
@@ -1204,7 +1204,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to apply language setting.
+        ///   Looks up a localized string similar to 应用语言设置失败.
         /// </summary>
         public static string FailedToApplyLanguageSetting {
             get {
@@ -1213,7 +1213,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to clear persistent cache: {0}.
+        ///   Looks up a localized string similar to 清理持久缓存失败: {0}.
         /// </summary>
         public static string FailedToClearPersistentCache {
             get {
@@ -1222,7 +1222,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open game directory.
+        ///   Looks up a localized string similar to 打开游戏目录失败.
         /// </summary>
         public static string FailedToOpenGameDirectory {
             get {
@@ -1231,7 +1231,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open GitHub page for mod: {0}.
+        ///   Looks up a localized string similar to 无法打开模组 {0} 的GitHub页面.
         /// </summary>
         public static string FailedToOpenGitHubPage {
             get {
@@ -1240,7 +1240,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to read cache for {0}: {1}.
+        ///   Looks up a localized string similar to 读取 {0} 的缓存失败: {1}.
         /// </summary>
         public static string FailedToReadCache {
             get {
@@ -1249,7 +1249,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to restart application. Please restart manually.
+        ///   Looks up a localized string similar to 重启应用程序失败。请手动重启.
         /// </summary>
         public static string FailedToRestartApplication {
             get {
@@ -1258,7 +1258,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to save cache for {0}: {1}.
+        ///   Looks up a localized string similar to 保存 {0} 的缓存失败: {1}.
         /// </summary>
         public static string FailedToSaveCache {
             get {
@@ -1267,7 +1267,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching announcement from: {0}.
+        ///   Looks up a localized string similar to 正在从以下地址获取公告: {0}.
         /// </summary>
         public static string FetchingAnnouncementFrom {
             get {
@@ -1276,7 +1276,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching GitHub releases from {0}.
+        ///   Looks up a localized string similar to 正在从 {0} 获取GitHub版本信息.
         /// </summary>
         public static string FetchingGitHubReleases {
             get {
@@ -1285,7 +1285,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching mod configuration from {0}.
+        ///   Looks up a localized string similar to 正在从 {0} 获取Mod配置.
         /// </summary>
         public static string FetchingModConfig {
             get {
@@ -1294,7 +1294,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching mod internationalization config from {0}.
+        ///   Looks up a localized string similar to 正在从 {0} 获取Mod翻译配置.
         /// </summary>
         public static string FetchingModI18nConfig {
             get {
@@ -1303,7 +1303,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching translation configuration from {0}.
+        ///   Looks up a localized string similar to 正在从 {0} 获取翻译配置.
         /// </summary>
         public static string FetchingTranslationConfig {
             get {
@@ -1312,7 +1312,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File download completed, size: {0} bytes.
+        ///   Looks up a localized string similar to 文件下载完成，大小: {0} 字节.
         /// </summary>
         public static string FileDownloadCompleted {
             get {
@@ -1321,7 +1321,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File extraction failed: {0}.
+        ///   Looks up a localized string similar to 文件解压失败: {0}.
         /// </summary>
         public static string FileExtractionFailed {
             get {
@@ -1330,7 +1330,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File extraction successful: {0}.
+        ///   Looks up a localized string similar to 文件解压成功: {0}.
         /// </summary>
         public static string FileExtractionSuccess {
             get {
@@ -1339,7 +1339,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File write size mismatch, expected: {0}, actual: {1}.
+        ///   Looks up a localized string similar to 文件写入大小不匹配，期望: {0}，实际: {1}.
         /// </summary>
         public static string FileSizeMismatch {
             get {
@@ -1348,7 +1348,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File verification successful, size: {0} bytes.
+        ///   Looks up a localized string similar to 文件验证成功，大小: {0} 字节.
         /// </summary>
         public static string FileVerificationSuccess {
             get {
@@ -1357,7 +1357,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to - Firewall blocking connection.
+        ///   Looks up a localized string similar to - 防火墙阻止连接.
         /// </summary>
         public static string FirewallBlocking {
             get {
@@ -1366,7 +1366,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Forced UI refresh complete.
+        ///   Looks up a localized string similar to UI强制刷新完成.
         /// </summary>
         public static string ForcedUIRefreshComplete {
             get {
@@ -1375,7 +1375,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Refresh Cloud Configurations.
+        ///   Looks up a localized string similar to 强制刷新云端配置.
         /// </summary>
         public static string ForceRefreshCloudConfigurations {
             get {
@@ -1384,7 +1384,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Found configuration section: {0}.
+        ///   Looks up a localized string similar to 找到配置段: {0}.
         /// </summary>
         public static string FoundConfigSection {
             get {
@@ -1393,7 +1393,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Found standalone comment.
+        ///   Looks up a localized string similar to 发现独立注释.
         /// </summary>
         public static string FoundStandaloneComment {
             get {
@@ -1402,7 +1402,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game directory is not set or not found. Please configure the game path in Settings..
+        ///   Looks up a localized string similar to 游戏目录未设置或未找到。请在设置中配置游戏路径。.
         /// </summary>
         public static string GameDirectoryNotSetOrNotFound {
             get {
@@ -1411,7 +1411,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC.exe not found at {0}.
+        ///   Looks up a localized string similar to 在 {0} 未找到GHPC.exe.
         /// </summary>
         public static string GameExeNotFound {
             get {
@@ -1420,7 +1420,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game exited, verifying installation....
+        ///   Looks up a localized string similar to 游戏已退出，正在验证安装....
         /// </summary>
         public static string GameExitedVerifyingInstall {
             get {
@@ -1429,7 +1429,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error launching game.
+        ///   Looks up a localized string similar to 启动游戏错误.
         /// </summary>
         public static string GameLaunchError {
             get {
@@ -1438,7 +1438,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred while launching game.
+        ///   Looks up a localized string similar to 启动游戏时发生错误.
         /// </summary>
         public static string GameLaunchErrorOccurred {
             get {
@@ -1447,7 +1447,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to launch game.
+        ///   Looks up a localized string similar to 启动游戏失败.
         /// </summary>
         public static string GameLaunchFailed {
             get {
@@ -1456,7 +1456,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game Path.
+        ///   Looks up a localized string similar to 游戏路径.
         /// </summary>
         public static string GamePath {
             get {
@@ -1465,7 +1465,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game path not set. Please configure in Settings..
+        ///   Looks up a localized string similar to 游戏路径未设置。请在设置中配置。.
         /// </summary>
         public static string GamePathNotSet {
             get {
@@ -1474,7 +1474,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Root Directory:.
+        ///   Looks up a localized string similar to 游戏根目录：.
         /// </summary>
         public static string GameRootDirectory {
             get {
@@ -1483,7 +1483,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game root directory: {0}.
+        ///   Looks up a localized string similar to 游戏根目录: {0}.
         /// </summary>
         public static string GameRootDirectoryPath {
             get {
@@ -1492,7 +1492,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game Running.
+        ///   Looks up a localized string similar to 游戏运行中.
         /// </summary>
         public static string GameRunning {
             get {
@@ -1501,7 +1501,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game running, cannot operate.
+        ///   Looks up a localized string similar to 游戏运行中，无法操作.
         /// </summary>
         public static string GameRunningCannotOperate {
             get {
@@ -1510,7 +1510,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game process started.
+        ///   Looks up a localized string similar to 游戏进程已启动.
         /// </summary>
         public static string GameStarted {
             get {
@@ -1519,7 +1519,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game started, please run to main menu and exit via menu..
+        ///   Looks up a localized string similar to 游戏已启动，请运行至主菜单后点击菜单中的退出。.
         /// </summary>
         public static string GameStartedRunToMainMenu {
             get {
@@ -1528,7 +1528,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game started successfully.
+        ///   Looks up a localized string similar to 游戏启动成功.
         /// </summary>
         public static string GameStartedSuccessfully {
             get {
@@ -1537,7 +1537,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game Status:.
+        ///   Looks up a localized string similar to 游戏状态：.
         /// </summary>
         public static string GameStatus {
             get {
@@ -1546,7 +1546,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game stop error.
+        ///   Looks up a localized string similar to 游戏停止错误.
         /// </summary>
         public static string GameStopError {
             get {
@@ -1555,7 +1555,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to stop game.
+        ///   Looks up a localized string similar to 停止游戏失败.
         /// </summary>
         public static string GameStopFailed {
             get {
@@ -1564,7 +1564,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game process stopped.
+        ///   Looks up a localized string similar to 游戏进程已停止.
         /// </summary>
         public static string GameStopped {
             get {
@@ -1573,7 +1573,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game stopped successfully.
+        ///   Looks up a localized string similar to 游戏停止成功.
         /// </summary>
         public static string GameStoppedSuccessfully {
             get {
@@ -1582,7 +1582,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generated.
+        ///   Looks up a localized string similar to 已生成.
         /// </summary>
         public static string Generated {
             get {
@@ -1591,7 +1591,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting theme colors for current theme: {0}, isDark: {1}.
+        ///   Looks up a localized string similar to 从主题获取主题色: {0}, isDark: {1}.
         /// </summary>
         public static string GettingThemeColorsForCurrentTheme {
             get {
@@ -1609,7 +1609,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC.exe not found in specified directory.
+        ///   Looks up a localized string similar to 指定目录中未找到GHPC.exe.
         /// </summary>
         public static string GHPCExeNotFoundInDirectory {
             get {
@@ -1618,7 +1618,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC Mod Manager.
+        ///   Looks up a localized string similar to GHPC模组管理器.
         /// </summary>
         public static string GHPCModManager {
             get {
@@ -1627,7 +1627,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC Mod Manager Working Directory.
+        ///   Looks up a localized string similar to GHPC模组管理器工作目录.
         /// </summary>
         public static string GHPCModManagerWorkingDirectory {
             get {
@@ -1645,7 +1645,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not completely remove .git directory: {0}.
+        ///   Looks up a localized string similar to 不能完整移除.git目录: {0}.
         /// </summary>
         public static string GitDirectoryRemovalWarning {
             get {
@@ -1654,7 +1654,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub Proxy Acceleration.
+        ///   Looks up a localized string similar to GitHub代理加速.
         /// </summary>
         public static string GitHubProxyAcceleration {
             get {
@@ -1663,7 +1663,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use proxy service to accelerate GitHub downloads.
+        ///   Looks up a localized string similar to 使用代理服务加速GitHub下载（备用方案，不建议和反代同时使用）.
         /// </summary>
         public static string GitHubProxyDescription {
             get {
@@ -1672,7 +1672,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub proxy disabled, using original URL: {0}.
+        ///   Looks up a localized string similar to GitHub代理已禁用，使用原始URL: {0}.
         /// </summary>
         public static string GitHubProxyDisabled {
             get {
@@ -1681,7 +1681,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub proxy enabled.
+        ///   Looks up a localized string similar to GitHub代理已启用.
         /// </summary>
         public static string GitHubProxyEnabled {
             get {
@@ -1690,7 +1690,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub proxy failed ({0}), falling back to original URL: {1}.
+        ///   Looks up a localized string similar to GitHub代理失败 ({0})，回退到原始URL: {1}.
         /// </summary>
         public static string GitHubProxyFailed {
             get {
@@ -1699,7 +1699,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy Server.
+        ///   Looks up a localized string similar to 代理服务器.
         /// </summary>
         public static string GitHubProxyServer {
             get {
@@ -1708,7 +1708,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub proxy enabled, transforming URL: {0} -&gt; {1}.
+        ///   Looks up a localized string similar to GitHub代理已启用，转换URL: {0} -&gt; {1}.
         /// </summary>
         public static string GitHubProxyTransforming {
             get {
@@ -1717,7 +1717,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub API rate limit exceeded. Please try again later..
+        ///   Looks up a localized string similar to GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制。.
         /// </summary>
         public static string GitHubRateLimitMessage {
             get {
@@ -1726,7 +1726,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub API Rate Limit.
+        ///   Looks up a localized string similar to GitHub API 访问限制.
         /// </summary>
         public static string GitHubRateLimitTitle {
             get {
@@ -1735,7 +1735,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching GitHub releases for {0}/{1}.
+        ///   Looks up a localized string similar to 获取 {0}/{1} 的GitHub版本信息时出错.
         /// </summary>
         public static string GitHubReleasesFetchError {
             get {
@@ -1744,7 +1744,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub releases loaded from persistent cache: {0}/{1}.
+        ///   Looks up a localized string similar to 从持久化缓存加载GitHub发布版本: {0}/{1}.
         /// </summary>
         public static string GitHubReleasesLoadedFromPersistentCache {
             get {
@@ -1753,7 +1753,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub releases loaded from session cache for {0}/{1}.
+        ///   Looks up a localized string similar to 从会话缓存加载 {0}/{1} 的GitHub版本信息.
         /// </summary>
         public static string GitHubReleasesLoadedFromSessionCache {
             get {
@@ -1762,7 +1762,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hk.gh-proxy.com (Hong Kong).
+        ///   Looks up a localized string similar to hk.gh-proxy.com (香港).
         /// </summary>
         public static string HkGhProxyCom {
             get {
@@ -1771,7 +1771,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Information.
+        ///   Looks up a localized string similar to 提示.
         /// </summary>
         public static string Information {
             get {
@@ -1780,7 +1780,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install.
+        ///   Looks up a localized string similar to 安装.
         /// </summary>
         public static string Install {
             get {
@@ -1789,7 +1789,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to 状态.
         /// </summary>
         public static string InstallationStatus {
             get {
@@ -1798,7 +1798,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installed.
+        ///   Looks up a localized string similar to 已安装.
         /// </summary>
         public static string Installed {
             get {
@@ -1807,7 +1807,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installed Version.
+        ///   Looks up a localized string similar to 已安装版本.
         /// </summary>
         public static string InstalledVersion {
             get {
@@ -1816,7 +1816,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} installation failed.
+        ///   Looks up a localized string similar to {0} 安装失败.
         /// </summary>
         public static string InstallFailed {
             get {
@@ -1825,7 +1825,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing {0}....
+        ///   Looks up a localized string similar to 正在安装 {0}....
         /// </summary>
         public static string Installing {
             get {
@@ -1834,7 +1834,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing MelonLoader....
+        ///   Looks up a localized string similar to 正在安装MelonLoader....
         /// </summary>
         public static string InstallingMelonLoader {
             get {
@@ -1843,7 +1843,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing translation system version {0}.
+        ///   Looks up a localized string similar to 正在安装翻译系统版本 {0}.
         /// </summary>
         public static string InstallingTranslation {
             get {
@@ -1852,7 +1852,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing translation system....
+        ///   Looks up a localized string similar to 正在安装翻译系统....
         /// </summary>
         public static string InstallingTranslationSystem {
             get {
@@ -1861,7 +1861,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} installed successfully.
+        ///   Looks up a localized string similar to {0} 安装成功.
         /// </summary>
         public static string InstallSuccessful {
             get {
@@ -1870,7 +1870,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installation successful! Now need to run the game once to complete all settings..
+        ///   Looks up a localized string similar to 安装成功！现在需要运行一次游戏来完成全部设置。.
         /// </summary>
         public static string InstallSuccessNeedGameRun {
             get {
@@ -1879,7 +1879,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install.
+        ///   Looks up a localized string similar to 安装翻译系统.
         /// </summary>
         public static string InstallTranslationSystem {
             get {
@@ -1888,7 +1888,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloaded file is not a valid ZIP file, header: {0}.
+        ///   Looks up a localized string similar to 下载的文件不是有效的 ZIP 文件，文件头: {0}.
         /// </summary>
         public static string InvalidZipFileHeader {
             get {
@@ -1897,7 +1897,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} items.
+        ///   Looks up a localized string similar to {0} 项.
         /// </summary>
         public static string ItemsCount {
             get {
@@ -1906,7 +1906,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} / {1} items.
+        ///   Looks up a localized string similar to {0} / {1} 项.
         /// </summary>
         public static string ItemsCountOfTotal {
             get {
@@ -1915,7 +1915,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language Changed.
+        ///   Looks up a localized string similar to 语言已更改.
         /// </summary>
         public static string LanguageChanged {
             get {
@@ -1924,7 +1924,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language setting saved. The application will restart to apply changes. Continue?.
+        ///   Looks up a localized string similar to 语言设置已保存。应用程序将重启以应用更改。是否继续？.
         /// </summary>
         public static string LanguageChangedConfirmRestart {
             get {
@@ -1933,7 +1933,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error getting available languages.
+        ///   Looks up a localized string similar to 获取可用语言列表时出错.
         /// </summary>
         public static string LanguageListError {
             get {
@@ -1942,7 +1942,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language selected: {0}.
+        ///   Looks up a localized string similar to 语言选择: {0}.
         /// </summary>
         public static string LanguageSelected {
             get {
@@ -1951,7 +1951,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language Selection.
+        ///   Looks up a localized string similar to 语言选择.
         /// </summary>
         public static string LanguageSelection {
             get {
@@ -1960,7 +1960,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language Setting Error.
+        ///   Looks up a localized string similar to 应用语言设置错误.
         /// </summary>
         public static string LanguageSettingError {
             get {
@@ -1969,7 +1969,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language Settings.
+        ///   Looks up a localized string similar to 语言设置.
         /// </summary>
         public static string LanguageSettings {
             get {
@@ -1978,7 +1978,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application will restart to apply language changes.
+        ///   Looks up a localized string similar to 应用程序将重启以应用语言更改.
         /// </summary>
         public static string LanguageWillTakeEffectAfterRestart {
             get {
@@ -1987,7 +1987,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Latest Version.
+        ///   Looks up a localized string similar to 最新版本.
         /// </summary>
         public static string LatestVersion {
             get {
@@ -1996,7 +1996,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launch game error.
+        ///   Looks up a localized string similar to 启动游戏错误.
         /// </summary>
         public static string LaunchGameError {
             get {
@@ -2005,7 +2005,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launching game: {0}.
+        ///   Looks up a localized string similar to 正在启动游戏: {0}.
         /// </summary>
         public static string LaunchingGame {
             get {
@@ -2014,7 +2014,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Level.
+        ///   Looks up a localized string similar to 级别.
         /// </summary>
         public static string Level {
             get {
@@ -2023,7 +2023,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Light Theme.
+        ///   Looks up a localized string similar to 浅色主题.
         /// </summary>
         public static string LightTheme {
             get {
@@ -2032,7 +2032,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading announcement....
+        ///   Looks up a localized string similar to 正在加载公告....
         /// </summary>
         public static string LoadingAnnouncement {
             get {
@@ -2041,7 +2041,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading ModConfig from local path: {0}.
+        ///   Looks up a localized string similar to 从本地路径加载模组配置: {0}.
         /// </summary>
         public static string LoadingModConfigFromLocalPath {
             get {
@@ -2050,7 +2050,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading ModI18nConfig from local path: {0}.
+        ///   Looks up a localized string similar to 从本地路径加载模组国际化配置: {0}.
         /// </summary>
         public static string LoadingModI18nConfigFromLocalPath {
             get {
@@ -2059,7 +2059,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading theme resource: {0}.
+        ///   Looks up a localized string similar to 加载主题资源: {0}.
         /// </summary>
         public static string LoadingThemeResource {
             get {
@@ -2068,7 +2068,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading TranslationConfig from local path: {0}.
+        ///   Looks up a localized string similar to 从本地路径加载翻译配置: {0}.
         /// </summary>
         public static string LoadingTranslationConfigFromLocalPath {
             get {
@@ -2077,7 +2077,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load.
+        ///   Looks up a localized string similar to 加载.
         /// </summary>
         public static string LoadPreset {
             get {
@@ -2086,7 +2086,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local path not found: {0}.
+        ///   Looks up a localized string similar to 未找到本地路径: {0}.
         /// </summary>
         public static string LocalPathNotFound {
             get {
@@ -2095,7 +2095,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log content copied to clipboard.
+        ///   Looks up a localized string similar to 日志内容已复制到剪贴板.
         /// </summary>
         public static string LogContentCopiedToClipboard {
             get {
@@ -2104,7 +2104,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copied {0} log entries to clipboard.
+        ///   Looks up a localized string similar to 已复制 {0} 条日志到剪贴板.
         /// </summary>
         public static string LogsCopiedToClipboard {
             get {
@@ -2113,7 +2113,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maintenance Tools.
+        ///   Looks up a localized string similar to 维护工具.
         /// </summary>
         public static string MaintenanceTools {
             get {
@@ -2122,7 +2122,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading mod install manifest.
+        ///   Looks up a localized string similar to 加载Mod安装清单时出错.
         /// </summary>
         public static string ManifestLoadError {
             get {
@@ -2131,7 +2131,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error saving mod install manifest.
+        ///   Looks up a localized string similar to 保存Mod安装清单时出错.
         /// </summary>
         public static string ManifestSaveError {
             get {
@@ -2140,7 +2140,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manual.
+        ///   Looks up a localized string similar to 手动.
         /// </summary>
         public static string Manual {
             get {
@@ -2149,7 +2149,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deleted manual mod file: {0}.
+        ///   Looks up a localized string similar to 已删除手动MOD文件: {0}.
         /// </summary>
         public static string ManualModDeleted {
             get {
@@ -2158,7 +2158,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error scanning for manual mods.
+        ///   Looks up a localized string similar to 扫描手动安装的Mod时出错.
         /// </summary>
         public static string ManualModScanError {
             get {
@@ -2167,7 +2167,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manual Mod Uninstall.
+        ///   Looks up a localized string similar to 手动Mod卸载.
         /// </summary>
         public static string ManualModUninstall {
             get {
@@ -2176,7 +2176,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is a manually installed mod. Are you sure you want to permanently delete all dll files? This action cannot be undone..
+        ///   Looks up a localized string similar to {0} 是一个手动安装的Mod。您确定要永久删除dll文件吗？此操作无法撤销。.
         /// </summary>
         public static string ManualModUninstallWarning {
             get {
@@ -2185,7 +2185,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader asset not found for version {0}.
+        ///   Looks up a localized string similar to 未找到MelonLoader版本 {0} 的安装文件.
         /// </summary>
         public static string MelonLoaderAssetNotFound {
             get {
@@ -2194,7 +2194,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error checking MelonLoader installation.
+        ///   Looks up a localized string similar to 检查MelonLoader安装时出错.
         /// </summary>
         public static string MelonLoaderCheckError {
             get {
@@ -2203,7 +2203,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error checking MelonLoader directories.
+        ///   Looks up a localized string similar to 检查MelonLoader目录时出错.
         /// </summary>
         public static string MelonLoaderDirCheckError {
             get {
@@ -2212,7 +2212,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader directory exists: {0}.
+        ///   Looks up a localized string similar to MelonLoader 目录存在: {0}.
         /// </summary>
         public static string MelonLoaderDirectoryExists {
             get {
@@ -2221,7 +2221,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred during MelonLoader installation.
+        ///   Looks up a localized string similar to MelonLoader安装过程中发生错误.
         /// </summary>
         public static string MelonLoaderInstallationError {
             get {
@@ -2230,7 +2230,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader version {0} installed successfully.
+        ///   Looks up a localized string similar to MelonLoader版本 {0} 安装成功.
         /// </summary>
         public static string MelonLoaderInstalled {
             get {
@@ -2239,7 +2239,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader is installed but missing key directories. Please run the game at least once to the main menu and exit to generate required files..
+        ///   Looks up a localized string similar to MelonLoader已安装，但缺少关键目录。请至少完整运行一次游戏至主菜单后退出，以便生成所需文件。.
         /// </summary>
         public static string MelonLoaderInstalledButMissingDirs {
             get {
@@ -2248,7 +2248,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error installing MelonLoader.
+        ///   Looks up a localized string similar to 安装MelonLoader错误.
         /// </summary>
         public static string MelonLoaderInstallError {
             get {
@@ -2257,7 +2257,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader installation failed.
+        ///   Looks up a localized string similar to MelonLoader安装失败.
         /// </summary>
         public static string MelonLoaderInstallFailed {
             get {
@@ -2266,7 +2266,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader Installation Status:.
+        ///   Looks up a localized string similar to MelonLoader 安装状态：.
         /// </summary>
         public static string MelonLoaderInstallStatus {
             get {
@@ -2275,7 +2275,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader installation successful! Now need to run the game to complete setup..
+        ///   Looks up a localized string similar to MelonLoader安装成功！现在需要运行游戏来完成设置。.
         /// </summary>
         public static string MelonLoaderInstallSuccessNeedGameRun {
             get {
@@ -2284,7 +2284,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader installation verification failed.
+        ///   Looks up a localized string similar to MelonLoader 安装验证失败.
         /// </summary>
         public static string MelonLoaderInstallVerificationFailed {
             get {
@@ -2293,7 +2293,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader is not installed, will proceed to installation step..
+        ///   Looks up a localized string similar to MelonLoader未安装，将进入安装步骤。.
         /// </summary>
         public static string MelonLoaderNotInstalledNote {
             get {
@@ -2302,7 +2302,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching MelonLoader releases.
+        ///   Looks up a localized string similar to 获取MelonLoader版本信息时出错.
         /// </summary>
         public static string MelonLoaderReleasesFetchError {
             get {
@@ -2311,7 +2311,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading MelonLoader releases.
+        ///   Looks up a localized string similar to 加载MelonLoader版本错误.
         /// </summary>
         public static string MelonLoaderReleasesLoadError {
             get {
@@ -2320,7 +2320,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader version {0} not found.
+        ///   Looks up a localized string similar to 未找到MelonLoader版本 {0}.
         /// </summary>
         public static string MelonLoaderVersionNotFound {
             get {
@@ -2329,7 +2329,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message.
+        ///   Looks up a localized string similar to 消息.
         /// </summary>
         public static string Message {
             get {
@@ -2338,7 +2338,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing required mod: {0}.
+        ///   Looks up a localized string similar to 缺少必需的模组: {0}.
         /// </summary>
         public static string MissingRequirement {
             get {
@@ -2347,7 +2347,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} asset {1} not found.
+        ///   Looks up a localized string similar to 未找到Mod {0} 的安装文件 {1}.
         /// </summary>
         public static string ModAssetNotFound {
             get {
@@ -2356,7 +2356,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod backup directory created: {0}.
+        ///   Looks up a localized string similar to 模组备份目录已创建: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
             get {
@@ -2365,7 +2365,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to create mod backup directory: {0}.
+        ///   Looks up a localized string similar to 创建模组备份目录失败: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreateFailed {
             get {
@@ -2374,7 +2374,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to backup mod: {0}.
+        ///   Looks up a localized string similar to 模组备份失败: {0}.
         /// </summary>
         public static string ModBackupFailed {
             get {
@@ -2383,7 +2383,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod backup not found: {0}.
+        ///   Looks up a localized string similar to 未找到模组备份: {0}.
         /// </summary>
         public static string ModBackupNotFound {
             get {
@@ -2392,7 +2392,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching mod configuration from {0}.
+        ///   Looks up a localized string similar to 从 {0} 获取Mod配置时出错.
         /// </summary>
         public static string ModConfigFetchError {
             get {
@@ -2401,7 +2401,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modconfig.json not found in directory: {0}.
+        ///   Looks up a localized string similar to 目录中未找到 modconfig.json 文件: {0}.
         /// </summary>
         public static string ModConfigJsonNotFound {
             get {
@@ -2410,7 +2410,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod configuration loaded from cache.
+        ///   Looks up a localized string similar to 从缓存加载Mod配置.
         /// </summary>
         public static string ModConfigLoadedFromCache {
             get {
@@ -2419,7 +2419,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error reading configuration for mod {0}.
+        ///   Looks up a localized string similar to 读取Mod {0} 配置时出错.
         /// </summary>
         public static string ModConfigReadError {
             get {
@@ -2428,7 +2428,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration read failed: {0} - no section name.
+        ///   Looks up a localized string similar to 配置读取失败: {0} - 无配置段名称.
         /// </summary>
         public static string ModConfigReadFailedNoSection {
             get {
@@ -2437,7 +2437,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod config read ordered error.
+        ///   Looks up a localized string similar to 模组配置有序读取错误.
         /// </summary>
         public static string ModConfigReadOrderedError {
             get {
@@ -2446,7 +2446,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration saved for mod {0}.
+        ///   Looks up a localized string similar to Mod {0} 配置保存成功.
         /// </summary>
         public static string ModConfigSaved {
             get {
@@ -2455,7 +2455,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error saving configuration for mod {0}.
+        ///   Looks up a localized string similar to 保存Mod {0} 配置时出错.
         /// </summary>
         public static string ModConfigSaveError {
             get {
@@ -2464,7 +2464,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod Configuration URL:.
+        ///   Looks up a localized string similar to Mod配置URL：.
         /// </summary>
         public static string ModConfigURL {
             get {
@@ -2473,7 +2473,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod conflict check complete for: {0}.
+        ///   Looks up a localized string similar to 模组冲突检查完成: {0}.
         /// </summary>
         public static string ModConflictCheckComplete {
             get {
@@ -2482,7 +2482,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod conflict detected.
+        ///   Looks up a localized string similar to 检测到模组冲突.
         /// </summary>
         public static string ModConflictDetected {
             get {
@@ -2491,7 +2491,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The mod &apos;{0}&apos; conflicts with the following installed mods: {1}. Do you want to continue anyway?.
+        ///   Looks up a localized string similar to 模组 &apos;{0}&apos; 与以下已安装的模组冲突: {1}。是否仍要继续安装？.
         /// </summary>
         public static string ModConflictMessage {
             get {
@@ -2500,7 +2500,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod dependency check complete for: {0}.
+        ///   Looks up a localized string similar to 模组依赖检查完成: {0}.
         /// </summary>
         public static string ModDependencyCheckComplete {
             get {
@@ -2509,7 +2509,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The mod &apos;{0}&apos; requires the following mods to be installed first: {1}. Please install them first..
+        ///   Looks up a localized string similar to 模组 &apos;{0}&apos; 需要先安装以下模组: {1}。请先安装这些依赖模组。.
         /// </summary>
         public static string ModDependencyMessage {
             get {
@@ -2518,7 +2518,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing mod dependencies.
+        ///   Looks up a localized string similar to 缺少模组依赖.
         /// </summary>
         public static string ModDependencyMissing {
             get {
@@ -2527,7 +2527,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} disabled.
+        ///   Looks up a localized string similar to Mod {0} 已禁用.
         /// </summary>
         public static string ModDisabled {
             get {
@@ -2536,7 +2536,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod disabled and backed up: {0}.
+        ///   Looks up a localized string similar to 模组已禁用并备份: {0}.
         /// </summary>
         public static string ModDisabledAndBackedUp {
             get {
@@ -2545,7 +2545,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} disabled.
+        ///   Looks up a localized string similar to {0} 已禁用.
         /// </summary>
         public static string ModDisabledStatus {
             get {
@@ -2554,7 +2554,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} disable failed.
+        ///   Looks up a localized string similar to {0} 禁用失败.
         /// </summary>
         public static string ModDisableFailed {
             get {
@@ -2563,7 +2563,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} enabled.
+        ///   Looks up a localized string similar to Mod {0} 已启用.
         /// </summary>
         public static string ModEnabled {
             get {
@@ -2572,7 +2572,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod enabled from backup: {0}.
+        ///   Looks up a localized string similar to 模组已从备份启用: {0}.
         /// </summary>
         public static string ModEnabledFromBackup {
             get {
@@ -2581,7 +2581,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} enabled.
+        ///   Looks up a localized string similar to {0} 已启用.
         /// </summary>
         public static string ModEnabledStatus {
             get {
@@ -2590,7 +2590,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} enable failed.
+        ///   Looks up a localized string similar to {0} 启用失败.
         /// </summary>
         public static string ModEnableFailed {
             get {
@@ -2599,7 +2599,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading mod I18n configuration from cache.
+        ///   Looks up a localized string similar to 从缓存加载Mod翻译配置时出错.
         /// </summary>
         public static string ModI18nConfigCacheLoadError {
             get {
@@ -2608,7 +2608,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ModI18nConfig is empty or not accessible - check the cloud URL.
+        ///   Looks up a localized string similar to ModI18n配置为空或无法访问 - 请检查云端URL.
         /// </summary>
         public static string ModI18nConfigEmptyOrInaccessible {
             get {
@@ -2617,7 +2617,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching mod internationalization config from {0}.
+        ///   Looks up a localized string similar to 从 {0} 获取Mod翻译配置时出错.
         /// </summary>
         public static string ModI18nConfigFetchError {
             get {
@@ -2626,7 +2626,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod I18n configuration loaded from cache.
+        ///   Looks up a localized string similar to 从缓存加载Mod翻译配置.
         /// </summary>
         public static string ModI18nConfigLoadedFromCache {
             get {
@@ -2635,7 +2635,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod I18n configuration refreshed from remote.
+        ///   Looks up a localized string similar to Mod翻译配置已从远程更新.
         /// </summary>
         public static string ModI18nConfigRefreshed {
             get {
@@ -2644,7 +2644,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ModI18nConfig refreshed - {0} mod configurations loaded.
+        ///   Looks up a localized string similar to ModI18n配置已刷新 - 加载了 {0} 个模组配置.
         /// </summary>
         public static string ModI18nConfigRefreshedWithCount {
             get {
@@ -2653,7 +2653,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error refreshing mod I18n configuration.
+        ///   Looks up a localized string similar to 刷新Mod翻译配置时出错.
         /// </summary>
         public static string ModI18nConfigRefreshError {
             get {
@@ -2662,7 +2662,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod I18n Config URL:.
+        ///   Looks up a localized string similar to Mod翻译配置URL：.
         /// </summary>
         public static string ModI18nConfigURL {
             get {
@@ -2671,7 +2671,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to mod_i18n.json not found in directory: {0}.
+        ///   Looks up a localized string similar to 目录中未找到 mod_i18n.json 文件: {0}.
         /// </summary>
         public static string ModI18nJsonNotFound {
             get {
@@ -2680,7 +2680,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} version {1} installed successfully.
+        ///   Looks up a localized string similar to Mod {0} 版本 {1} 安装成功.
         /// </summary>
         public static string ModInstalled {
             get {
@@ -2689,7 +2689,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error installing mod {0} version {1}.
+        ///   Looks up a localized string similar to 安装Mod {0} 版本 {1} 时出错.
         /// </summary>
         public static string ModInstallError {
             get {
@@ -2698,7 +2698,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod Management.
+        ///   Looks up a localized string similar to Mod 管理.
         /// </summary>
         public static string ModManagement {
             get {
@@ -2707,7 +2707,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod not found.
+        ///   Looks up a localized string similar to 模组未找到.
         /// </summary>
         public static string ModNotFound {
             get {
@@ -2716,7 +2716,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} is not installed.
+        ///   Looks up a localized string similar to Mod {0} 未安装.
         /// </summary>
         public static string ModNotInstalled {
             get {
@@ -2725,7 +2725,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod reinstalled from backup: {0} (version {1}).
+        ///   Looks up a localized string similar to 模组已从备份重新安装: {0} (版本 {1}).
         /// </summary>
         public static string ModReinstalledFromBackup {
             get {
@@ -2734,7 +2734,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to restore mod from backup: {0}.
+        ///   Looks up a localized string similar to 从备份恢复模组失败: {0}.
         /// </summary>
         public static string ModRestoreFromBackupFailed {
             get {
@@ -2743,7 +2743,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} mods.
+        ///   Looks up a localized string similar to 共 {0} 个Mod.
         /// </summary>
         public static string ModsCount {
             get {
@@ -2752,7 +2752,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} / {1} mods.
+        ///   Looks up a localized string similar to 第 {0} / {1} 个Mod.
         /// </summary>
         public static string ModsFilteredCount {
             get {
@@ -2761,7 +2761,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error toggling mod {0} to {1}.
+        ///   Looks up a localized string similar to 切换Mod {0} 到 {1} 时出错.
         /// </summary>
         public static string ModToggleError {
             get {
@@ -2770,7 +2770,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod toggle file error.
+        ///   Looks up a localized string similar to 模组切换文件错误.
         /// </summary>
         public static string ModToggleFileError {
             get {
@@ -2779,7 +2779,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} uninstalled successfully.
+        ///   Looks up a localized string similar to Mod {0} 卸载成功.
         /// </summary>
         public static string ModUninstalled {
             get {
@@ -2788,7 +2788,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod uninstalled and backed up: {0} (version {1}).
+        ///   Looks up a localized string similar to 模组已卸载并备份: {0} (版本 {1}).
         /// </summary>
         public static string ModUninstalledAndBackedUp {
             get {
@@ -2797,7 +2797,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} uninstalled successfully.
+        ///   Looks up a localized string similar to {0} 卸载成功.
         /// </summary>
         public static string ModUninstalledSuccessfully {
             get {
@@ -2806,7 +2806,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error uninstalling mod {0}.
+        ///   Looks up a localized string similar to 卸载Mod {0} 时出错.
         /// </summary>
         public static string ModUninstallError {
             get {
@@ -2815,7 +2815,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod update check complete.
+        ///   Looks up a localized string similar to 模组更新检查完成.
         /// </summary>
         public static string ModUpdateCheckComplete {
             get {
@@ -2824,7 +2824,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod update check failed.
+        ///   Looks up a localized string similar to 模组更新检查失败.
         /// </summary>
         public static string ModUpdateCheckFailed {
             get {
@@ -2833,7 +2833,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod updated successfully: {0}.
+        ///   Looks up a localized string similar to MOD更新成功: {0}.
         /// </summary>
         public static string ModUpdatedSuccessfully {
             get {
@@ -2842,7 +2842,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to update mod: {0}.
+        ///   Looks up a localized string similar to MOD更新失败: {0}.
         /// </summary>
         public static string ModUpdateFailed {
             get {
@@ -2851,7 +2851,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} mod update(s) found.
+        ///   Looks up a localized string similar to 发现 {0} 个模组更新.
         /// </summary>
         public static string ModUpdatesFound {
             get {
@@ -2860,7 +2860,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} version {1} not found.
+        ///   Looks up a localized string similar to 未找到Mod {0} 版本 {1}.
         /// </summary>
         public static string ModVersionNotFound {
             get {
@@ -2869,7 +2869,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multi-threaded download completed successfully: {0} bytes.
+        ///   Looks up a localized string similar to 多线程下载成功完成: {0} 字节.
         /// </summary>
         public static string MultiThreadedDownloadCompleted {
             get {
@@ -2878,7 +2878,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to 名称.
         /// </summary>
         public static string Name {
             get {
@@ -2887,7 +2887,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Need to run game to generate necessary directories.
+        ///   Looks up a localized string similar to 需要运行游戏来生成必要目录.
         /// </summary>
         public static string NeedRunGameToGenerateDirs {
             get {
@@ -2896,7 +2896,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network check complete - Result: {0}.
+        ///   Looks up a localized string similar to 网络检测完成 - 结果: {0}.
         /// </summary>
         public static string NetworkCheckComplete {
             get {
@@ -2905,7 +2905,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network check exception occurred.
+        ///   Looks up a localized string similar to 网络检测异常发生.
         /// </summary>
         public static string NetworkCheckException {
             get {
@@ -2914,7 +2914,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✗ Network connection check failed.
+        ///   Looks up a localized string similar to ✗ 网络连接检测失败.
         /// </summary>
         public static string NetworkCheckFailed {
             get {
@@ -2923,7 +2923,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to May not be able to download mods and translation files normally. You can:.
+        ///   Looks up a localized string similar to 可能无法正常下载Mod和翻译文件。您可以：.
         /// </summary>
         public static string NetworkCheckFailedDescription {
             get {
@@ -2932,7 +2932,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚠️ Network connection check failed.
+        ///   Looks up a localized string similar to ⚠️ 网络连接检测失败.
         /// </summary>
         public static string NetworkCheckFailedWarning {
             get {
@@ -2941,7 +2941,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network Log.
+        ///   Looks up a localized string similar to 网络检测日志.
         /// </summary>
         public static string NetworkCheckLog {
             get {
@@ -2950,7 +2950,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network check result: {0}.
+        ///   Looks up a localized string similar to 网络检测结果：{0}.
         /// </summary>
         public static string NetworkCheckResult {
             get {
@@ -2959,7 +2959,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ✓ Network connection check successful.
+        ///   Looks up a localized string similar to ✓ 网络连接检测成功.
         /// </summary>
         public static string NetworkCheckSuccessful {
             get {
@@ -2968,7 +2968,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error opening network help page.
+        ///   Looks up a localized string similar to 打开网络帮助页面错误.
         /// </summary>
         public static string NetworkHelpOpenError {
             get {
@@ -2977,7 +2977,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network help page opened.
+        ///   Looks up a localized string similar to 已打开网络帮助页面.
         /// </summary>
         public static string NetworkHelpPageOpened {
             get {
@@ -2986,7 +2986,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open network help page.
+        ///   Looks up a localized string similar to 打开网络帮助页面失败.
         /// </summary>
         public static string NetworkHelpPageOpenFailed {
             get {
@@ -2995,7 +2995,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Solutions.
+        ///   Looks up a localized string similar to 了解解决方案.
         /// </summary>
         public static string NetworkHelpSolution {
             get {
@@ -3004,7 +3004,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network Status:.
+        ///   Looks up a localized string similar to 网络状态：.
         /// </summary>
         public static string NetworkStatus {
             get {
@@ -3013,7 +3013,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network connectivity test failed: {0}.
+        ///   Looks up a localized string similar to 网络连接测试失败: {0}.
         /// </summary>
         public static string NetworkTestFailed {
             get {
@@ -3022,7 +3022,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network connectivity test returned status code: {0}.
+        ///   Looks up a localized string similar to 网络连接测试返回状态码: {0}.
         /// </summary>
         public static string NetworkTestStatusCode {
             get {
@@ -3031,7 +3031,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network connectivity test successful via direct connection.
+        ///   Looks up a localized string similar to 网络连接测试通过直连成功.
         /// </summary>
         public static string NetworkTestSuccessfulViaDirect {
             get {
@@ -3040,7 +3040,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network connectivity test successful via proxy.
+        ///   Looks up a localized string similar to 网络连接测试通过代理成功.
         /// </summary>
         public static string NetworkTestSuccessfulViaProxy {
             get {
@@ -3049,7 +3049,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next.
+        ///   Looks up a localized string similar to 下一步.
         /// </summary>
         public static string Next {
             get {
@@ -3058,7 +3058,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No announcement available for language: {0}.
+        ///   Looks up a localized string similar to 没有可用的 {0} 语言公告.
         /// </summary>
         public static string NoAnnouncementAvailable {
             get {
@@ -3067,7 +3067,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run the game once and exit normally to generate the configuration items.
+        ///   Looks up a localized string similar to 运行一次游戏并正常退出以生成配置项.
         /// </summary>
         public static string NoConfigurationOptions {
             get {
@@ -3076,7 +3076,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No game process to stop.
+        ///   Looks up a localized string similar to 没有游戏进程需要停止.
         /// </summary>
         public static string NoGameProcessToStop {
             get {
@@ -3085,7 +3085,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No GitHub URL available for mod: {0}.
+        ///   Looks up a localized string similar to 模组 {0} 没有可用的GitHub链接.
         /// </summary>
         public static string NoGitHubUrlAvailable {
             get {
@@ -3094,7 +3094,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No log content to copy.
+        ///   Looks up a localized string similar to 没有日志内容可复制.
         /// </summary>
         public static string NoLogContentToCopy {
             get {
@@ -3103,7 +3103,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No logs to copy.
+        ///   Looks up a localized string similar to 没有日志可以复制.
         /// </summary>
         public static string NoLogsToCopy {
             get {
@@ -3112,7 +3112,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mods to check for updates.
+        ///   Looks up a localized string similar to 没有模组需要检查更新.
         /// </summary>
         public static string NoModsToCheck {
             get {
@@ -3121,7 +3121,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mod updates available.
+        ///   Looks up a localized string similar to 暂无模组更新.
         /// </summary>
         public static string NoModUpdatesAvailable {
             get {
@@ -3130,7 +3130,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Generated.
+        ///   Looks up a localized string similar to 未生成.
         /// </summary>
         public static string NotGenerated {
             get {
@@ -3139,7 +3139,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Installed.
+        ///   Looks up a localized string similar to 未安装.
         /// </summary>
         public static string NotInstalled {
             get {
@@ -3148,7 +3148,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Running.
+        ///   Looks up a localized string similar to 未运行.
         /// </summary>
         public static string NotRunning {
             get {
@@ -3157,7 +3157,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK.
+        ///   Looks up a localized string similar to 确定.
         /// </summary>
         public static string OK {
             get {
@@ -3166,7 +3166,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only check installed mods.
+        ///   Looks up a localized string similar to 仅检查已安装模组.
         /// </summary>
         public static string OnlyCheckInstalledMods {
             get {
@@ -3175,7 +3175,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open config window: {0}.
+        ///   Looks up a localized string similar to 打开配置窗口失败: {0}.
         /// </summary>
         public static string OpenConfigWindowFailed {
             get {
@@ -3184,7 +3184,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opened game root directory: {0}.
+        ///   Looks up a localized string similar to 已打开游戏根目录: {0}.
         /// </summary>
         public static string OpenedGameRootDirectory {
             get {
@@ -3193,7 +3193,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opened GitHub page for mod: {0} -&gt; {1}.
+        ///   Looks up a localized string similar to 已打开模组 {0} 的GitHub页面: {1}.
         /// </summary>
         public static string OpenedGitHubPage {
             get {
@@ -3202,7 +3202,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Game Directory.
+        ///   Looks up a localized string similar to 打开游戏根目录.
         /// </summary>
         public static string OpenGameRootDirectory {
             get {
@@ -3211,7 +3211,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open project URL error.
+        ///   Looks up a localized string similar to 打开项目URL错误.
         /// </summary>
         public static string OpenProjectUrlError {
             get {
@@ -3220,7 +3220,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please run the game again.
+        ///   Looks up a localized string similar to 请重新运行游戏.
         /// </summary>
         public static string PleaseRunGameAgain {
             get {
@@ -3229,7 +3229,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select game directory.
+        ///   Looks up a localized string similar to 请选择游戏目录.
         /// </summary>
         public static string PleaseSelectGameDirectory {
             get {
@@ -3238,7 +3238,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select GHPC.exe file.
+        ///   Looks up a localized string similar to 请选择GHPC.exe文件.
         /// </summary>
         public static string PleaseSelectGHPCExe {
             get {
@@ -3247,7 +3247,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select GHPC Location.
+        ///   Looks up a localized string similar to 请选择GHPC.exe文件所在位置：.
         /// </summary>
         public static string PleaseSelectGHPCLocation {
             get {
@@ -3256,7 +3256,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select MelonLoader version.
+        ///   Looks up a localized string similar to 请选择MelonLoader版本.
         /// </summary>
         public static string PleaseSelectMelonLoaderVersion {
             get {
@@ -3265,7 +3265,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Possible reasons:.
+        ///   Looks up a localized string similar to 可能原因:.
         /// </summary>
         public static string PossibleReasons {
             get {
@@ -3274,7 +3274,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preparing to remove {0} theme resource dictionaries.
+        ///   Looks up a localized string similar to 准备移除 {0} 个主题资源字典.
         /// </summary>
         public static string PreparingToRemoveResourceDictionaries {
             get {
@@ -3283,7 +3283,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset created: {0}.
+        ///   Looks up a localized string similar to 已创建预设: {0}.
         /// </summary>
         public static string PresetCreated {
             get {
@@ -3292,7 +3292,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset create error.
+        ///   Looks up a localized string similar to 预设创建错误.
         /// </summary>
         public static string PresetCreateError {
             get {
@@ -3301,7 +3301,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset creation failed.
+        ///   Looks up a localized string similar to 预设创建失败.
         /// </summary>
         public static string PresetCreationFailed {
             get {
@@ -3310,7 +3310,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset deleted: {0}.
+        ///   Looks up a localized string similar to 已删除预设: {0}.
         /// </summary>
         public static string PresetDeleted {
             get {
@@ -3319,7 +3319,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset delete error.
+        ///   Looks up a localized string similar to 预设删除错误.
         /// </summary>
         public static string PresetDeleteError {
             get {
@@ -3328,7 +3328,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset deletion failed.
+        ///   Looks up a localized string similar to 预设删除失败.
         /// </summary>
         public static string PresetDeletionFailed {
             get {
@@ -3337,7 +3337,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset loaded: {0}.
+        ///   Looks up a localized string similar to 已加载预设: {0}.
         /// </summary>
         public static string PresetLoaded_ {
             get {
@@ -3346,7 +3346,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset load error.
+        ///   Looks up a localized string similar to 预设加载错误.
         /// </summary>
         public static string PresetLoadError {
             get {
@@ -3355,7 +3355,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset load failed.
+        ///   Looks up a localized string similar to 预设加载失败.
         /// </summary>
         public static string PresetLoadFailed {
             get {
@@ -3364,7 +3364,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter preset name.
+        ///   Looks up a localized string similar to 请输入预设名称.
         /// </summary>
         public static string PresetNameRequired {
             get {
@@ -3373,7 +3373,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset saved: {0}.
+        ///   Looks up a localized string similar to 已保存预设: {0}.
         /// </summary>
         public static string PresetSaved_ {
             get {
@@ -3382,7 +3382,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset save error.
+        ///   Looks up a localized string similar to 预设保存错误.
         /// </summary>
         public static string PresetSaveError {
             get {
@@ -3391,7 +3391,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preset save failed.
+        ///   Looks up a localized string similar to 预设保存失败.
         /// </summary>
         public static string PresetSaveFailed {
             get {
@@ -3400,7 +3400,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Previous.
+        ///   Looks up a localized string similar to 上一步.
         /// </summary>
         public static string Previous {
             get {
@@ -3409,7 +3409,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error checking game process.
+        ///   Looks up a localized string similar to 检查游戏进程时出错.
         /// </summary>
         public static string ProcessCheckError {
             get {
@@ -3418,7 +3418,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process monitoring started.
+        ///   Looks up a localized string similar to 进程监控已启动.
         /// </summary>
         public static string ProcessMonitoringStarted {
             get {
@@ -3427,7 +3427,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process monitoring stopped.
+        ///   Looks up a localized string similar to 进程监控已停止.
         /// </summary>
         public static string ProcessMonitoringStopped {
             get {
@@ -3436,7 +3436,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process stop error.
+        ///   Looks up a localized string similar to 进程停止错误.
         /// </summary>
         public static string ProcessStopError {
             get {
@@ -3445,7 +3445,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language:.
+        ///   Looks up a localized string similar to 程序语言：.
         /// </summary>
         public static string ProgramLanguage {
             get {
@@ -3454,7 +3454,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program Logs.
+        ///   Looks up a localized string similar to 程序日志.
         /// </summary>
         public static string ProgramLogs {
             get {
@@ -3463,7 +3463,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program Settings.
+        ///   Looks up a localized string similar to 程序设置.
         /// </summary>
         public static string ProgramSettings {
             get {
@@ -3472,7 +3472,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project URL.
+        ///   Looks up a localized string similar to 项目地址.
         /// </summary>
         public static string ProjectUrl {
             get {
@@ -3481,7 +3481,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy connectivity test failed for {0}: {1}.
+        ///   Looks up a localized string similar to 代理连通性测试失败 {0}: {1}.
         /// </summary>
         public static string ProxyConnectivityTestFailed {
             get {
@@ -3490,7 +3490,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy connectivity test successful for {0}.
+        ///   Looks up a localized string similar to 代理连通性测试成功: {0}.
         /// </summary>
         public static string ProxyConnectivityTestSuccessful {
             get {
@@ -3499,7 +3499,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy server changed to: {0}.
+        ///   Looks up a localized string similar to 代理服务器已更改为: {0}.
         /// </summary>
         public static string ProxyServerChanged {
             get {
@@ -3508,7 +3508,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to - Proxy server configuration problem.
+        ///   Looks up a localized string similar to - 代理服务器配置问题.
         /// </summary>
         public static string ProxyServerConfigProblem {
             get {
@@ -3517,7 +3517,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy settings applied successfully.
+        ///   Looks up a localized string similar to 代理设置已成功应用.
         /// </summary>
         public static string ProxySettingsApplied {
             get {
@@ -3526,7 +3526,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range request support test: {0}.
+        ///   Looks up a localized string similar to 范围请求支持测试: {0}.
         /// </summary>
         public static string RangeRequestSupportTest {
             get {
@@ -3535,7 +3535,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range request test failed: {0}, falling back to single-threaded download.
+        ///   Looks up a localized string similar to 范围请求测试失败: {0}，回退到单线程下载.
         /// </summary>
         public static string RangeRequestTestFailed {
             get {
@@ -3544,7 +3544,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read configuration item: {0} = {1}{2}.
+        ///   Looks up a localized string similar to 读取配置项: {0} = {1}{2}.
         /// </summary>
         public static string ReadConfigItem {
             get {
@@ -3553,7 +3553,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading ModConfig from: {0}.
+        ///   Looks up a localized string similar to 读取模组配置: {0}.
         /// </summary>
         public static string ReadingModConfigFrom {
             get {
@@ -3562,7 +3562,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading ModI18nConfig from: {0}.
+        ///   Looks up a localized string similar to 读取模组国际化配置: {0}.
         /// </summary>
         public static string ReadingModI18nConfigFrom {
             get {
@@ -3571,7 +3571,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading TranslationConfig from: {0}.
+        ///   Looks up a localized string similar to 读取翻译配置: {0}.
         /// </summary>
         public static string ReadingTranslationConfigFrom {
             get {
@@ -3580,7 +3580,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ready.
+        ///   Looks up a localized string similar to 就绪.
         /// </summary>
         public static string Ready {
             get {
@@ -3589,7 +3589,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh.
+        ///   Looks up a localized string similar to 刷新.
         /// </summary>
         public static string Refresh {
             get {
@@ -3598,7 +3598,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh failed. Check logs for details..
+        ///   Looks up a localized string similar to 刷新失败。请查看日志以获取详细信息。.
         /// </summary>
         public static string RefreshFailedCheckLogs {
             get {
@@ -3607,7 +3607,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refreshing....
+        ///   Looks up a localized string similar to 刷新中....
         /// </summary>
         public static string Refreshing {
             get {
@@ -3616,7 +3616,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refreshing data....
+        ///   Looks up a localized string similar to 正在刷新数据....
         /// </summary>
         public static string RefreshingData {
             get {
@@ -3625,7 +3625,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reinstall.
+        ///   Looks up a localized string similar to 重装.
         /// </summary>
         public static string Reinstall {
             get {
@@ -3634,7 +3634,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removed {0} theme resource dictionaries.
+        ///   Looks up a localized string similar to 已移除 {0} 个主题资源字典.
         /// </summary>
         public static string RemovedResourceDictionaries {
             get {
@@ -3643,7 +3643,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing resource dictionary: {0}.
+        ///   Looks up a localized string similar to 移除资源字典: {0}.
         /// </summary>
         public static string RemovingResourceDictionary {
             get {
@@ -3652,7 +3652,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Required Directory Status:.
+        ///   Looks up a localized string similar to 必要目录状态：.
         /// </summary>
         public static string RequiredDirectoryStatus {
             get {
@@ -3661,7 +3661,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error restarting application.
+        ///   Looks up a localized string similar to 重启应用程序错误.
         /// </summary>
         public static string RestartApplicationError {
             get {
@@ -3670,7 +3670,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retry Network Check.
+        ///   Looks up a localized string similar to 重新检测.
         /// </summary>
         public static string RetryNetworkCheck {
             get {
@@ -3679,7 +3679,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running.
+        ///   Looks up a localized string similar to 运行中.
         /// </summary>
         public static string Running {
             get {
@@ -3688,7 +3688,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save As.
+        ///   Looks up a localized string similar to 另存为.
         /// </summary>
         public static string SaveAsPreset {
             get {
@@ -3697,7 +3697,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to 保存.
         /// </summary>
         public static string SavePreset {
             get {
@@ -3706,7 +3706,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Settings.
+        ///   Looks up a localized string similar to 保存设置.
         /// </summary>
         public static string SaveSettings {
             get {
@@ -3715,7 +3715,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WARNING: This mod uses scripts for installation, which may pose unknown risks to your system. Please ensure you trust the source of this mod. Do you want to continue?.
+        ///   Looks up a localized string similar to 警告：此Mod使用脚本进行安装，可能对您的系统造成未知风险。请确保您信任此Mod的来源。是否继续？.
         /// </summary>
         public static string ScriptModSecurityWarning {
             get {
@@ -3724,7 +3724,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search:.
+        ///   Looks up a localized string similar to 搜索：.
         /// </summary>
         public static string Search {
             get {
@@ -3733,7 +3733,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching for configuration section: {0}.
+        ///   Looks up a localized string similar to 查找配置段: {0}.
         /// </summary>
         public static string SearchingForConfigSection {
             get {
@@ -3742,7 +3742,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Security Warning.
+        ///   Looks up a localized string similar to 安全警告.
         /// </summary>
         public static string SecurityWarningTitle {
             get {
@@ -3751,7 +3751,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select GHPC.exe file.
+        ///   Looks up a localized string similar to 选择GHPC.exe文件.
         /// </summary>
         public static string SelectGHPCExeFile {
             get {
@@ -3760,7 +3760,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select the interface language:.
+        ///   Looks up a localized string similar to 请选择程序界面语言：.
         /// </summary>
         public static string SelectInterfaceLanguage {
             get {
@@ -3769,7 +3769,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select log entries to copy.
+        ///   Looks up a localized string similar to 请先选择要复制的日志条目.
         /// </summary>
         public static string SelectLogsToCompany {
             get {
@@ -3778,7 +3778,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error setting translation language to {0}.
+        ///   Looks up a localized string similar to 设置翻译语言为 {0} 时出错.
         /// </summary>
         public static string SetLanguageError {
             get {
@@ -3787,7 +3787,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SetTheme called - Requested theme: {0}, Current theme: {1}.
+        ///   Looks up a localized string similar to 设置主题调用 - 请求主题: {0}, 当前主题: {1}.
         /// </summary>
         public static string SetThemeCalled {
             get {
@@ -3796,7 +3796,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings.
+        ///   Looks up a localized string similar to 设置.
         /// </summary>
         public static string Settings {
             get {
@@ -3805,7 +3805,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings indicate dark theme, switching from light theme.
+        ///   Looks up a localized string similar to 设置显示暗色主题，正在从浅色主题切换.
         /// </summary>
         public static string SettingsDarkThemeNeedSwitch {
             get {
@@ -3814,7 +3814,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings indicate light theme, consistent with app startup.
+        ///   Looks up a localized string similar to 设置显示浅色主题，与应用启动状态一致.
         /// </summary>
         public static string SettingsLightThemeConsistent {
             get {
@@ -3823,7 +3823,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings loaded successfully.
+        ///   Looks up a localized string similar to 设置加载成功.
         /// </summary>
         public static string SettingsLoaded {
             get {
@@ -3832,7 +3832,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading settings.
+        ///   Looks up a localized string similar to 设置加载错误.
         /// </summary>
         public static string SettingsLoadError {
             get {
@@ -3841,7 +3841,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings file not found, using defaults.
+        ///   Looks up a localized string similar to 设置文件未找到，使用默认设置.
         /// </summary>
         public static string SettingsNotFound {
             get {
@@ -3850,7 +3850,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings saved successfully.
+        ///   Looks up a localized string similar to 设置保存成功.
         /// </summary>
         public static string SettingsSaved {
             get {
@@ -3859,7 +3859,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings saved successfully.
+        ///   Looks up a localized string similar to 设置保存成功.
         /// </summary>
         public static string SettingsSavedSuccessfully {
             get {
@@ -3868,7 +3868,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error saving settings.
+        ///   Looks up a localized string similar to 设置保存错误.
         /// </summary>
         public static string SettingsSaveError {
             get {
@@ -3877,7 +3877,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings save failed.
+        ///   Looks up a localized string similar to 设置保存失败.
         /// </summary>
         public static string SettingsSaveFailed {
             get {
@@ -3886,7 +3886,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup complete!.
+        ///   Looks up a localized string similar to 设置完成！.
         /// </summary>
         public static string SetupComplete {
             get {
@@ -3895,7 +3895,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup not complete, please rerun the game and ensure it reaches the main menu.
+        ///   Looks up a localized string similar to 设置未完成，请重新运行游戏并确保到达主菜单.
         /// </summary>
         public static string SetupIncompleteWarning {
             get {
@@ -3904,7 +3904,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC Mod Manager Setup Wizard.
+        ///   Looks up a localized string similar to GHPC Mod Manager 初始化向导.
         /// </summary>
         public static string SetupWizardTitle {
             get {
@@ -3913,7 +3913,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Log.
+        ///   Looks up a localized string similar to 显示日志.
         /// </summary>
         public static string ShowLog {
             get {
@@ -3922,7 +3922,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipping directory: {0}.
+        ///   Looks up a localized string similar to 跳过目录: {0}.
         /// </summary>
         public static string SkippingDirectory {
             get {
@@ -3931,7 +3931,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipping network check, proceeding to game directory setup.
+        ///   Looks up a localized string similar to 跳过网络检测，直接进入游戏目录设置.
         /// </summary>
         public static string SkippingNetworkCheck {
             get {
@@ -3940,7 +3940,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start.
+        ///   Looks up a localized string similar to 开始游戏.
         /// </summary>
         public static string StartGame {
             get {
@@ -3949,7 +3949,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting forced UI refresh.
+        ///   Looks up a localized string similar to 开始强制刷新UI.
         /// </summary>
         public static string StartingForcedUIRefresh {
             get {
@@ -3958,7 +3958,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting game....
+        ///   Looks up a localized string similar to 正在启动游戏....
         /// </summary>
         public static string StartingGame {
             get {
@@ -3967,7 +3967,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting multi-threaded download: {0} threads, chunk size: {1} bytes.
+        ///   Looks up a localized string similar to 开始多线程下载: {0} 个线程，块大小: {1} 字节.
         /// </summary>
         public static string StartingMultiThreadedDownload {
             get {
@@ -3976,7 +3976,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting network connection check.
+        ///   Looks up a localized string similar to 开始网络连接检测.
         /// </summary>
         public static string StartingNetworkConnectionCheck {
             get {
@@ -3985,7 +3985,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to 状态.
         /// </summary>
         public static string Status {
             get {
@@ -3994,7 +3994,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} status toggle failed.
+        ///   Looks up a localized string similar to {0} 状态切换失败.
         /// </summary>
         public static string StatusToggleFailed {
             get {
@@ -4003,7 +4003,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 1: Language Selection.
+        ///   Looks up a localized string similar to 步骤 1: 选择语言.
         /// </summary>
         public static string Step1LanguageSelection {
             get {
@@ -4012,7 +4012,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 2: Network Check.
+        ///   Looks up a localized string similar to 步骤 2: 网络检查.
         /// </summary>
         public static string Step2NetworkCheck {
             get {
@@ -4021,7 +4021,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 3: Game Directory.
+        ///   Looks up a localized string similar to 步骤 3: 游戏目录.
         /// </summary>
         public static string Step3GameDirectory {
             get {
@@ -4030,7 +4030,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 4: MelonLoader Environment Check.
+        ///   Looks up a localized string similar to 步骤 4: MelonLoader 环境检测.
         /// </summary>
         public static string Step4MelonLoaderCheck {
             get {
@@ -4039,7 +4039,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 5: Install MelonLoader.
+        ///   Looks up a localized string similar to 步骤 5: 安装 MelonLoader.
         /// </summary>
         public static string Step5InstallMelonLoader {
             get {
@@ -4048,7 +4048,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 6: First Run Guide.
+        ///   Looks up a localized string similar to 步骤 6: 首次运行引导.
         /// </summary>
         public static string Step6FirstRunGuide {
             get {
@@ -4057,7 +4057,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step 7: Wait for Game Exit.
+        ///   Looks up a localized string similar to 步骤 7: 等待游戏退出.
         /// </summary>
         public static string Step7WaitGameExit {
             get {
@@ -4066,7 +4066,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop.
+        ///   Looks up a localized string similar to 停止游戏.
         /// </summary>
         public static string StopGame {
             get {
@@ -4075,7 +4075,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop game error.
+        ///   Looks up a localized string similar to 停止游戏错误.
         /// </summary>
         public static string StopGameError {
             get {
@@ -4084,7 +4084,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stopping game....
+        ///   Looks up a localized string similar to 正在停止游戏....
         /// </summary>
         public static string StoppingGame {
             get {
@@ -4093,7 +4093,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Success.
+        ///   Looks up a localized string similar to 成功.
         /// </summary>
         public static string Success {
             get {
@@ -4102,7 +4102,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suggest retrying or checking network settings.
+        ///   Looks up a localized string similar to 建议尝试重新检测或检查网络设置.
         /// </summary>
         public static string SuggestRetryOrCheckSettings {
             get {
@@ -4111,7 +4111,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temp file deleted.
+        ///   Looks up a localized string similar to 临时文件已删除.
         /// </summary>
         public static string TempFileDeleted {
             get {
@@ -4120,7 +4120,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temp file does not exist: {0}.
+        ///   Looks up a localized string similar to 临时文件不存在: {0}.
         /// </summary>
         public static string TempFileNotExists {
             get {
@@ -4129,7 +4129,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temp file path: {0}.
+        ///   Looks up a localized string similar to 临时文件路径: {0}.
         /// </summary>
         public static string TempFilePath {
             get {
@@ -4138,7 +4138,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporary files cleaned successfully.
+        ///   Looks up a localized string similar to 临时文件清理成功.
         /// </summary>
         public static string TempFilesCleaned {
             get {
@@ -4147,7 +4147,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporary files cleaned.
+        ///   Looks up a localized string similar to 临时文件清理完成.
         /// </summary>
         public static string TempFilesCleaned_ {
             get {
@@ -4156,7 +4156,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error cleaning temporary files.
+        ///   Looks up a localized string similar to 清理临时文件时出错.
         /// </summary>
         public static string TempFilesCleanError {
             get {
@@ -4165,7 +4165,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporary files clean failed.
+        ///   Looks up a localized string similar to 临时文件清理失败.
         /// </summary>
         public static string TempFilesCleanFailed {
             get {
@@ -4174,7 +4174,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Testing direct network connection to: {0}.
+        ///   Looks up a localized string similar to 正在测试直连网络连接: {0}.
         /// </summary>
         public static string TestingDirectNetworkConnection {
             get {
@@ -4183,7 +4183,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Testing network connection through GitHub proxy: {0}.
+        ///   Looks up a localized string similar to 正在通过GitHub代理测试网络连接: {0}.
         /// </summary>
         public static string TestingNetworkConnectionThroughProxy {
             get {
@@ -4192,7 +4192,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred while applying theme.
+        ///   Looks up a localized string similar to 应用主题时发生错误.
         /// </summary>
         public static string ThemeApplicationError {
             get {
@@ -4201,7 +4201,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Theme initialization complete, resource dictionaries: {0}.
+        ///   Looks up a localized string similar to 主题初始化完成，资源字典数量: {0}.
         /// </summary>
         public static string ThemeInitializationComplete {
             get {
@@ -4210,7 +4210,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Theme resource applied: {0}, Total resource dictionaries: {1}.
+        ///   Looks up a localized string similar to 主题资源已应用: {0}, 资源字典总数: {1}.
         /// </summary>
         public static string ThemeResourceApplied {
             get {
@@ -4219,7 +4219,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThemeService constructor - Initial theme: {0}.
+        ///   Looks up a localized string similar to 主题服务构造函数 - 初始主题: {0}.
         /// </summary>
         public static string ThemeServiceConstructor {
             get {
@@ -4228,7 +4228,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InitializeWithCurrentState - Syncing state to: {0}.
+        ///   Looks up a localized string similar to 初始化当前状态 - 同步状态至: {0}.
         /// </summary>
         public static string ThemeServiceInitializeState {
             get {
@@ -4237,7 +4237,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Theme Settings.
+        ///   Looks up a localized string similar to 主题设置.
         /// </summary>
         public static string ThemeSettings {
             get {
@@ -4246,7 +4246,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Theme switched to: {0}.
+        ///   Looks up a localized string similar to 主题已切换至: {0}.
         /// </summary>
         public static string ThemeSwitched {
             get {
@@ -4255,7 +4255,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time.
+        ///   Looks up a localized string similar to 时间.
         /// </summary>
         public static string Time {
             get {
@@ -4264,7 +4264,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tip.
+        ///   Looks up a localized string similar to 提示.
         /// </summary>
         public static string Tip {
             get {
@@ -4273,7 +4273,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Toggle.
+        ///   Looks up a localized string similar to 切换.
         /// </summary>
         public static string Toggle {
             get {
@@ -4282,7 +4282,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation asset not found in release.
+        ///   Looks up a localized string similar to 发布版本中未找到翻译资源文件.
         /// </summary>
         public static string TranslationAssetNotFound {
             get {
@@ -4291,7 +4291,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching translation configuration from {0}.
+        ///   Looks up a localized string similar to 从 {0} 获取翻译配置时出错.
         /// </summary>
         public static string TranslationConfigFetchError {
             get {
@@ -4300,7 +4300,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to translationconfig.json not found in directory: {0}.
+        ///   Looks up a localized string similar to 目录中未找到 translationconfig.json 文件: {0}.
         /// </summary>
         public static string TranslationConfigJsonNotFound {
             get {
@@ -4309,7 +4309,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation configuration loaded from cache.
+        ///   Looks up a localized string similar to 从缓存加载翻译配置.
         /// </summary>
         public static string TranslationConfigLoadedFromCache {
             get {
@@ -4318,7 +4318,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Configuration URL:.
+        ///   Looks up a localized string similar to 翻译配置URL：.
         /// </summary>
         public static string TranslationConfigURL {
             get {
@@ -4327,7 +4327,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error cloning translation files.
+        ///   Looks up a localized string similar to 克隆翻译文件时出错.
         /// </summary>
         public static string TranslationFilesCloneError {
             get {
@@ -4336,7 +4336,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation files updated successfully.
+        ///   Looks up a localized string similar to 翻译文件更新成功.
         /// </summary>
         public static string TranslationFilesUpdated {
             get {
@@ -4345,7 +4345,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation files update failed.
+        ///   Looks up a localized string similar to 翻译文件更新失败.
         /// </summary>
         public static string TranslationFilesUpdateFailed {
             get {
@@ -4354,7 +4354,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation files updated successfully.
+        ///   Looks up a localized string similar to 翻译文件更新成功.
         /// </summary>
         public static string TranslationFilesUpdateSuccessful {
             get {
@@ -4363,7 +4363,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system installed successfully.
+        ///   Looks up a localized string similar to 翻译系统安装成功.
         /// </summary>
         public static string TranslationInstalled {
             get {
@@ -4372,7 +4372,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error installing translation system.
+        ///   Looks up a localized string similar to 安装翻译系统时出错.
         /// </summary>
         public static string TranslationInstallError {
             get {
@@ -4381,7 +4381,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation language set to {0}.
+        ///   Looks up a localized string similar to 翻译语言已设置为 {0}.
         /// </summary>
         public static string TranslationLanguageSet {
             get {
@@ -4390,7 +4390,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation language set error.
+        ///   Looks up a localized string similar to 翻译语言设置错误.
         /// </summary>
         public static string TranslationLanguageSetError {
             get {
@@ -4399,7 +4399,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation language setting failed.
+        ///   Looks up a localized string similar to 翻译语言设置失败.
         /// </summary>
         public static string TranslationLanguageSetFailed {
             get {
@@ -4408,7 +4408,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation language set to: {0}.
+        ///   Looks up a localized string similar to 翻译语言已设置为: {0}.
         /// </summary>
         public static string TranslationLanguageSetTo {
             get {
@@ -4417,7 +4417,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Management.
+        ///   Looks up a localized string similar to 翻译管理.
         /// </summary>
         public static string TranslationManagement {
             get {
@@ -4426,7 +4426,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error loading translation install manifest.
+        ///   Looks up a localized string similar to 加载翻译安装清单时出错.
         /// </summary>
         public static string TranslationManifestLoadError {
             get {
@@ -4435,7 +4435,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error saving translation install manifest.
+        ///   Looks up a localized string similar to 保存翻译安装清单时出错.
         /// </summary>
         public static string TranslationManifestSaveError {
             get {
@@ -4444,7 +4444,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin.
+        ///   Looks up a localized string similar to 翻译插件.
         /// </summary>
         public static string TranslationPlugin {
             get {
@@ -4453,7 +4453,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin Disabled.
+        ///   Looks up a localized string similar to 翻译插件已禁用.
         /// </summary>
         public static string TranslationPluginDisabled {
             get {
@@ -4462,7 +4462,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin Enabled.
+        ///   Looks up a localized string similar to 翻译插件已启用.
         /// </summary>
         public static string TranslationPluginEnabled {
             get {
@@ -4471,7 +4471,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin Status.
+        ///   Looks up a localized string similar to 翻译插件状态.
         /// </summary>
         public static string TranslationPluginStatus {
             get {
@@ -4480,7 +4480,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error toggling translation plugin: {0}.
+        ///   Looks up a localized string similar to 切换翻译插件状态时出错: {0}.
         /// </summary>
         public static string TranslationPluginToggleError {
             get {
@@ -4489,7 +4489,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to toggle translation plugin.
+        ///   Looks up a localized string similar to 切换翻译插件失败.
         /// </summary>
         public static string TranslationPluginToggleFailed {
             get {
@@ -4498,7 +4498,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching translation releases.
+        ///   Looks up a localized string similar to 获取翻译发布版本时出错.
         /// </summary>
         public static string TranslationReleasesFetchError {
             get {
@@ -4507,7 +4507,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation repository URL is empty.
+        ///   Looks up a localized string similar to 翻译仓库URL为空.
         /// </summary>
         public static string TranslationRepoUrlEmpty {
             get {
@@ -4516,7 +4516,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation System.
+        ///   Looks up a localized string similar to 翻译系统.
         /// </summary>
         public static string TranslationSystem {
             get {
@@ -4525,7 +4525,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system installation failed.
+        ///   Looks up a localized string similar to 翻译系统安装失败.
         /// </summary>
         public static string TranslationSystemInstallFailed {
             get {
@@ -4534,7 +4534,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system installed successfully.
+        ///   Looks up a localized string similar to 翻译系统安装成功.
         /// </summary>
         public static string TranslationSystemInstallSuccessful {
             get {
@@ -4543,7 +4543,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system uninstalled successfully.
+        ///   Looks up a localized string similar to 翻译系统卸载成功.
         /// </summary>
         public static string TranslationSystemUninstalledSuccessfully {
             get {
@@ -4552,7 +4552,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system uninstall failed.
+        ///   Looks up a localized string similar to 翻译系统卸载失败.
         /// </summary>
         public static string TranslationSystemUninstallFailed {
             get {
@@ -4561,7 +4561,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation system uninstalled successfully.
+        ///   Looks up a localized string similar to 翻译系统卸载成功.
         /// </summary>
         public static string TranslationUninstalled {
             get {
@@ -4570,7 +4570,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error uninstalling translation system.
+        ///   Looks up a localized string similar to 卸载翻译系统时出错.
         /// </summary>
         public static string TranslationUninstallError {
             get {
@@ -4579,7 +4579,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error updating translation files.
+        ///   Looks up a localized string similar to 更新翻译文件时出错.
         /// </summary>
         public static string TranslationUpdateError {
             get {
@@ -4588,7 +4588,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trying to read configuration file: {0}.
+        ///   Looks up a localized string similar to 尝试读取配置文件: {0}.
         /// </summary>
         public static string TryingToReadConfigFile {
             get {
@@ -4597,7 +4597,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to open game directory: {0}.
+        ///   Looks up a localized string similar to 无法打开游戏目录: {0}.
         /// </summary>
         public static string UnableToOpenGameDirectory {
             get {
@@ -4606,7 +4606,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to open GitHub page: {0}.
+        ///   Looks up a localized string similar to 无法打开GitHub页面: {0}.
         /// </summary>
         public static string UnableToOpenGitHubPage {
             get {
@@ -4615,7 +4615,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall.
+        ///   Looks up a localized string similar to 卸载.
         /// </summary>
         public static string Uninstall {
             get {
@@ -4624,7 +4624,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} uninstall failed.
+        ///   Looks up a localized string similar to {0} 卸载失败.
         /// </summary>
         public static string UninstallFailed {
             get {
@@ -4633,7 +4633,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstalling mod {0}.
+        ///   Looks up a localized string similar to 正在卸载Mod {0}.
         /// </summary>
         public static string UninstallingMod {
             get {
@@ -4642,7 +4642,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstalling {0}....
+        ///   Looks up a localized string similar to 正在卸载 {0}....
         /// </summary>
         public static string UninstallingMod_ {
             get {
@@ -4651,7 +4651,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstalling translation system.
+        ///   Looks up a localized string similar to 正在卸载翻译系统.
         /// </summary>
         public static string UninstallingTranslation {
             get {
@@ -4660,7 +4660,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstalling translation system....
+        ///   Looks up a localized string similar to 正在卸载翻译系统....
         /// </summary>
         public static string UninstallingTranslationSystem {
             get {
@@ -4669,7 +4669,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall.
+        ///   Looks up a localized string similar to 卸载翻译系统.
         /// </summary>
         public static string UninstallTranslationSystem {
             get {
@@ -4678,7 +4678,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown.
+        ///   Looks up a localized string similar to 未知.
         /// </summary>
         public static string Unknown {
             get {
@@ -4687,7 +4687,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to - Unstable network connection.
+        ///   Looks up a localized string similar to - 网络连接不稳定.
         /// </summary>
         public static string UnstableNetworkConnection {
             get {
@@ -4696,7 +4696,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update.
+        ///   Looks up a localized string similar to 更新.
         /// </summary>
         public static string Update {
             get {
@@ -4705,7 +4705,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update.
+        ///   Looks up a localized string similar to 更新翻译文件.
         /// </summary>
         public static string UpdateTranslationFiles {
             get {
@@ -4714,7 +4714,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating mod: {0} from {1} to {2}.
+        ///   Looks up a localized string similar to 正在更新MOD: {0} 从 {1} 到 {2}.
         /// </summary>
         public static string UpdatingMod {
             get {
@@ -4723,7 +4723,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating translation files....
+        ///   Looks up a localized string similar to 正在更新翻译文件....
         /// </summary>
         public static string UpdatingTranslationFiles {
             get {
@@ -4732,7 +4732,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to URL is not a GitHub URL, using original: {0}.
+        ///   Looks up a localized string similar to URL不是GitHub链接，使用原始链接: {0}.
         /// </summary>
         public static string URLNotGitHub {
             get {
@@ -4741,7 +4741,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to URL pattern not supported for proxy, using original: {0} (path: {1}).
+        ///   Looks up a localized string similar to URL模式不支持代理，使用原始链接: {0} (路径: {1}).
         /// </summary>
         public static string URLPatternNotSupported {
             get {
@@ -4750,7 +4750,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable GitHub Acceleration.
+        ///   Looks up a localized string similar to 启用GitHub加速.
         /// </summary>
         public static string UseGitHubProxy {
             get {
@@ -4759,7 +4759,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User clicked retry network check.
+        ///   Looks up a localized string similar to 用户点击重试网络检测.
         /// </summary>
         public static string UserClickedRetryNetworkCheck {
             get {
@@ -4768,7 +4768,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using dark theme colors: {0}.
+        ///   Looks up a localized string similar to 使用暗色主题色: {0}.
         /// </summary>
         public static string UsingDarkThemeColors {
             get {
@@ -4777,7 +4777,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using light theme colors: {0}.
+        ///   Looks up a localized string similar to 使用亮色主题色: {0}.
         /// </summary>
         public static string UsingLightThemeColors {
             get {
@@ -4786,7 +4786,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using multi-threaded download (file size: {0} bytes).
+        ///   Looks up a localized string similar to 使用多线程下载（文件大小: {0} 字节）.
         /// </summary>
         public static string UsingMultiThreadedDownload {
             get {
@@ -4795,7 +4795,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using single-threaded download ({0}, file size: {1} bytes).
+        ///   Looks up a localized string similar to 使用单线程下载（{0}，文件大小: {1} 字节）.
         /// </summary>
         public static string UsingSingleThreadedDownload {
             get {
@@ -4804,7 +4804,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verifying installation result:.
+        ///   Looks up a localized string similar to 验证安装结果:.
         /// </summary>
         public static string VerifyingInstallationResult {
             get {
@@ -4813,7 +4813,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to version.dll exists: {0}.
+        ///   Looks up a localized string similar to version.dll 存在: {0}.
         /// </summary>
         public static string VersionDllExists {
             get {
@@ -4822,7 +4822,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Logs.
+        ///   Looks up a localized string similar to 查看日志.
         /// </summary>
         public static string ViewLogs {
             get {
@@ -4831,7 +4831,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning.
+        ///   Looks up a localized string similar to 警告.
         /// </summary>
         public static string Warning {
             get {
@@ -4840,7 +4840,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This wizard will help you set up the mod manager for GHPC (Gunner, HEAT, PC!)..
+        ///   Looks up a localized string similar to 此向导将帮助您为 GHPC (Gunner, HEAT, PC!) 设置模组管理器。.
         /// </summary>
         public static string WelcomeDescription {
             get {
@@ -4849,7 +4849,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to GHPC Mod Manager.
+        ///   Looks up a localized string similar to 欢迎使用 GHPC模组管理器.
         /// </summary>
         public static string WelcomeToGHPCModManager {
             get {
@@ -4858,7 +4858,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XUnity AutoTranslator asset not found.
+        ///   Looks up a localized string similar to 未找到XUnity AutoTranslator安装文件.
         /// </summary>
         public static string XUnityAssetNotFound {
             get {
@@ -4867,7 +4867,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error installing XUnity AutoTranslator.
+        ///   Looks up a localized string similar to 安装XUnity AutoTranslator时出错.
         /// </summary>
         public static string XUnityInstallError {
             get {
@@ -4876,7 +4876,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error fetching XUnity AutoTranslator releases.
+        ///   Looks up a localized string similar to 获取XUnity AutoTranslator版本信息时出错.
         /// </summary>
         public static string XUnityReleasesFetchError {
             get {
@@ -4885,7 +4885,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XUnity AutoTranslator version {0} not found.
+        ///   Looks up a localized string similar to 未找到XUnity AutoTranslator版本 {0}.
         /// </summary>
         public static string XUnityVersionNotFound {
             get {
@@ -4894,7 +4894,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ZIP file is empty, no entries found.
+        ///   Looks up a localized string similar to ZIP 文件为空，没有找到任何条目.
         /// </summary>
         public static string ZipFileEmpty {
             get {
@@ -4903,7 +4903,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ZIP file opened successfully, entry count: {0}.
+        ///   Looks up a localized string similar to ZIP 文件打开成功，条目数量: {0}.
         /// </summary>
         public static string ZipFileOpenSuccess {
             get {
@@ -4912,7 +4912,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ZIP file processing error: {0}.
+        ///   Looks up a localized string similar to ZIP 文件处理出错: {0}.
         /// </summary>
         public static string ZipProcessingError {
             get {

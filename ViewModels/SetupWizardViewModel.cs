@@ -17,6 +17,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IProcessService _processService;
     private readonly ILoggingService _loggingService;
+    private bool _isInitializing = true;
 
     [ObservableProperty]
     private int _currentStep = 0;
@@ -91,6 +92,10 @@ public partial class SetupWizardViewModel : ObservableObject
 
     partial void OnUseGitHubProxyChanged(bool value)
     {
+        // Skip auto-save during initial loading to prevent overwriting settings
+        if (_isInitializing)
+            return;
+            
         // Automatically save proxy settings when changed
         _ = Task.Run(async () =>
         {
@@ -117,6 +122,10 @@ public partial class SetupWizardViewModel : ObservableObject
 
     partial void OnGitHubProxyServerChanged(GitHubProxyServer value)
     {
+        // Skip auto-save during initial loading to prevent overwriting settings
+        if (_isInitializing)
+            return;
+            
         // Automatically save proxy server settings when changed
         _ = Task.Run(async () =>
         {
@@ -175,6 +184,9 @@ public partial class SetupWizardViewModel : ObservableObject
         // Load existing proxy settings
         UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
         GitHubProxyServer = _settingsService.Settings.GitHubProxyServer;
+        
+        // Mark initialization as complete after setting all values
+        _isInitializing = false;
         
         ClearNetworkLog(); // 清空网络日志
         await CheckNetworkAsync();

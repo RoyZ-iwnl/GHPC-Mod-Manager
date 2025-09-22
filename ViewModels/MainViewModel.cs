@@ -31,6 +31,7 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly IModManagerService _modManagerService;
     private readonly ITranslationManagerService _translationManagerService;
+    private readonly ITranslationBackupService _translationBackupService;
     private readonly IProcessService _processService;
     private readonly INavigationService _navigationService;
     private readonly ILoggingService _loggingService;
@@ -60,6 +61,9 @@ public partial class MainViewModel : ObservableObject
     private bool _isTranslationInstalled;
 
     [ObservableProperty]
+    private bool _isTranslationPluginEnabled;
+
+    [ObservableProperty]
     private List<string> _availableLanguages = new();
 
     [ObservableProperty]
@@ -83,6 +87,7 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
+        ITranslationBackupService translationBackupService,
         IProcessService processService,
         INavigationService navigationService,
         ILoggingService loggingService,
@@ -92,6 +97,7 @@ public partial class MainViewModel : ObservableObject
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
+        _translationBackupService = translationBackupService;
         _processService = processService;
         _navigationService = navigationService;
         _loggingService = loggingService;
@@ -142,6 +148,7 @@ public partial class MainViewModel : ObservableObject
 
             // Check translation status
             IsTranslationInstalled = await _translationManagerService.IsTranslationInstalledAsync();
+            IsTranslationPluginEnabled = await _translationManagerService.IsTranslationPluginEnabledAsync();
 
             if (IsTranslationInstalled)
             {
@@ -368,6 +375,60 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task ReinstallModAsync(ModViewModel mod)
+    {
+        if (!mod.CanReinstall)
+        {
+            _loggingService.LogWarning("Cannot reinstall mod: {0}, CanReinstall is false", mod.Id);
+            return;
+        }
+
+        if (mod.LatestVersion == null || mod.LatestVersion == "Unknown")
+        {
+            MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        try
+        {
+            IsDownloading = true;
+            StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
+            
+            var progress = new Progress<DownloadProgress>(downloadProgress =>
+            {
+                var speedText = downloadProgress.GetFormattedSpeed();
+                var progressText = downloadProgress.GetFormattedProgress();
+                var percentage = downloadProgress.ProgressPercentage;
+                
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {percentage:F1}% ({progressText}) - {speedText}";
+            });
+            
+            // Reinstall the mod using the regular installation method
+            // This will convert it from manually installed to managed
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress);
+
+            if (success)
+            {
+                StatusMessage = string.Format(Strings.InstallSuccessful, mod.DisplayName);
+                await RefreshDataAsync();
+            }
+            else
+            {
+                StatusMessage = string.Format(Strings.InstallFailed, mod.DisplayName);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModInstallError, mod.Id);
+            StatusMessage = string.Format(Strings.InstallFailed, mod.DisplayName);
+        }
+        finally
+        {
+            IsDownloading = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task InstallTranslationAsync()
     {
         try
@@ -498,6 +559,47 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private async Task ToggleTranslationPluginAsync()
+    {
+        try
+        {
+            if (IsTranslationPluginEnabled)
+            {
+                StatusMessage = Strings.DisableTranslationPlugin;
+                var success = await _translationManagerService.SetTranslationPluginEnabledAsync(false);
+                if (success)
+                {
+                    StatusMessage = Strings.TranslationPluginDisabled;
+                    await RefreshDataAsync();
+                }
+                else
+                {
+                    StatusMessage = Strings.TranslationPluginToggleFailed;
+                }
+            }
+            else
+            {
+                StatusMessage = Strings.EnableTranslationPlugin;
+                var success = await _translationManagerService.SetTranslationPluginEnabledAsync(true);
+                if (success)
+                {
+                    StatusMessage = Strings.TranslationPluginEnabled;
+                    await RefreshDataAsync();
+                }
+                else
+                {
+                    StatusMessage = Strings.TranslationPluginToggleFailed;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationPluginToggleError, ex.Message);
+            StatusMessage = Strings.TranslationPluginToggleFailed;
+        }
+    }
+
     [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task LaunchGameAsync()
     {
@@ -623,8 +725,8 @@ public partial class MainViewModel : ObservableObject
             StatusMessage = Strings.CheckingForModUpdates;
 
             var modsToCheck = OnlyCheckInstalledMods 
-                ? Mods.Where(m => m.IsInstalled).ToList()
-                : Mods.ToList();
+                ? Mods.Where(m => m.IsInstalled && !(m.IsManuallyInstalled && m.IsUnsupportedManualMod)).ToList()
+                : Mods.Where(m => !(m.IsManuallyInstalled && m.IsUnsupportedManualMod)).ToList();
 
             if (modsToCheck.Count == 0)
             {
