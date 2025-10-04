@@ -20,6 +20,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IModI18nService _modI18nService;
     private readonly IThemeService _themeService;
     private readonly IModBackupService _modBackupService;
+    private readonly IUpdateService _updateService;
 
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
@@ -52,16 +53,16 @@ public partial class SettingsViewModel : ObservableObject
     private bool _useGitHubProxy = false;
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.EdgeOneGhProxyCom;
 
     [ObservableProperty]
-    private List<GitHubProxyServer> _availableProxyServers = new() 
-    { 
-        GitHubProxyServer.GhDmrGg, 
-        GitHubProxyServer.GhProxyCom, 
-        GitHubProxyServer.HkGhProxyCom, 
-        GitHubProxyServer.CdnGhProxyCom, 
-        GitHubProxyServer.EdgeOneGhProxyCom 
+    private List<GitHubProxyServer> _availableProxyServers = new()
+    {
+        GitHubProxyServer.EdgeOneGhProxyCom,
+        GitHubProxyServer.GhDmrGg,
+        GitHubProxyServer.GhProxyCom,
+        GitHubProxyServer.HkGhProxyCom,
+        GitHubProxyServer.CdnGhProxyCom
     };
 
     [ObservableProperty]
@@ -76,6 +77,20 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private List<AppTheme> _availableThemes = new() { AppTheme.Light, AppTheme.Dark };
 
+    [ObservableProperty]
+    private UpdateChannel _selectedUpdateChannel = UpdateChannel.Stable;
+
+    partial void OnSelectedUpdateChannelChanged(UpdateChannel value)
+    {
+        // Auto-save when update channel changes
+        var settings = _settingsService.Settings;
+        settings.UpdateChannel = value;
+        _ = _settingsService.SaveSettingsAsync();
+    }
+
+    [ObservableProperty]
+    private List<UpdateChannel> _availableUpdateChannels = new() { UpdateChannel.Stable, UpdateChannel.Beta };
+
     public string ApplicationVersion => GetApplicationVersion();
 
     public bool IsGitHubProxyVisible => SelectedLanguage == "zh-CN";
@@ -87,7 +102,8 @@ public partial class SettingsViewModel : ObservableObject
         INetworkService networkService,
         IModI18nService modI18nService,
         IThemeService themeService,
-        IModBackupService modBackupService)
+        IModBackupService modBackupService,
+        IUpdateService updateService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -96,6 +112,7 @@ public partial class SettingsViewModel : ObservableObject
         _modI18nService = modI18nService;
         _themeService = themeService;
         _modBackupService = modBackupService;
+        _updateService = updateService;
 
         LoadSettings();
     }
@@ -111,6 +128,7 @@ public partial class SettingsViewModel : ObservableObject
         UseGitHubProxy = settings.UseGitHubProxy;
         GitHubProxyServer = settings.GitHubProxyServer;
         SelectedTheme = settings.Theme; // 加载主题设置
+        SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
     }
 
     [RelayCommand]
@@ -127,6 +145,7 @@ public partial class SettingsViewModel : ObservableObject
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = GitHubProxyServer;
             settings.Theme = SelectedTheme; // 保存主题设置
+            settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
 
             await _settingsService.SaveSettingsAsync();
             
@@ -318,6 +337,56 @@ public partial class SettingsViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.OpenProjectUrlError);
+        }
+    }
+
+    [RelayCommand]
+    private async Task CheckForAppUpdatesAsync()
+    {
+        try
+        {
+            _loggingService.LogInfo("Checking for application updates...");
+
+            var currentVersion = _updateService.GetCurrentVersion();
+            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+
+            if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
+            {
+                var result = MessageBox.Show(
+                    $"{Strings.NewVersionAvailable} {latestVersion}\n{Strings.ApplicationVersion}: {currentVersion}\n\n{Strings.DoYouWantToDownloadAndInstall}",
+                    Strings.CheckForUpdates,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    var progress = new Progress<DownloadProgress>(downloadProgress =>
+                    {
+                        var speedText = downloadProgress.GetFormattedSpeed();
+                        var progressText = downloadProgress.GetFormattedProgress();
+                        var percentage = downloadProgress.ProgressPercentage;
+
+                        _loggingService.LogInfo(Strings.DownloadingUpdateProgress, latestVersion, percentage.ToString("F1"), progressText, speedText);
+                    });
+
+                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress);
+
+                    if (!success)
+                    {
+                        MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    // If success, the application will exit and restart
+                }
+            }
+            else
+            {
+                MessageBox.Show(string.Format(Strings.YouAreUsingLatestVersion, currentVersion), Strings.CheckForUpdates, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Application update check failed");
+            MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

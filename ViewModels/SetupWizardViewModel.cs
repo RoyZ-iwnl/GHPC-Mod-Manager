@@ -118,14 +118,14 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.EdgeOneGhProxyCom;
 
     partial void OnGitHubProxyServerChanged(GitHubProxyServer value)
     {
         // Skip auto-save during initial loading to prevent overwriting settings
         if (_isInitializing)
             return;
-            
+
         // Automatically save proxy server settings when changed
         _ = Task.Run(async () =>
         {
@@ -133,7 +133,7 @@ public partial class SetupWizardViewModel : ObservableObject
             {
                 _settingsService.Settings.GitHubProxyServer = value;
                 await _settingsService.SaveSettingsAsync();
-                
+
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     var message = string.Format(Strings.ProxyServerChanged, value);
@@ -148,13 +148,13 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private List<GitHubProxyServer> _availableProxyServers = new() 
-    { 
-        GitHubProxyServer.GhDmrGg, 
-        GitHubProxyServer.GhProxyCom, 
-        GitHubProxyServer.HkGhProxyCom, 
-        GitHubProxyServer.CdnGhProxyCom, 
-        GitHubProxyServer.EdgeOneGhProxyCom 
+    private List<GitHubProxyServer> _availableProxyServers = new()
+    {
+        GitHubProxyServer.EdgeOneGhProxyCom,
+        GitHubProxyServer.GhDmrGg,
+        GitHubProxyServer.GhProxyCom,
+        GitHubProxyServer.HkGhProxyCom,
+        GitHubProxyServer.CdnGhProxyCom
     };
 
     public SetupWizardViewModel(
@@ -283,6 +283,8 @@ public partial class SetupWizardViewModel : ObservableObject
                 if (await ValidateGameDirectoryAsync())
                 {
                     CurrentStep = 4;
+                    // Start preloading MelonLoader releases in background
+                    _ = Task.Run(async () => await LoadMelonLoaderReleasesAsync());
                     await CheckMelonLoaderAsync();
                 }
                 break;

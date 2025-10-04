@@ -38,6 +38,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IServiceProvider _serviceProvider;
     private readonly ISettingsService _settingsService;
     private readonly INetworkService _networkService;
+    private readonly IUpdateService _updateService;
 
     [ObservableProperty]
     private ObservableCollection<ModViewModel> _mods = new();
@@ -64,6 +65,12 @@ public partial class MainViewModel : ObservableObject
     private bool _isTranslationPluginEnabled;
 
     [ObservableProperty]
+    private bool _isTranslationManuallyInstalled;
+
+    [ObservableProperty]
+    private bool _isTranslationUpdateAvailable;
+
+    [ObservableProperty]
     private List<string> _availableLanguages = new();
 
     [ObservableProperty]
@@ -84,6 +91,15 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _onlyCheckInstalledMods = true;
 
+    [ObservableProperty]
+    private bool _isAppUpdateAvailable;
+
+    [ObservableProperty]
+    private string _latestAppVersion = string.Empty;
+
+    [ObservableProperty]
+    private string _latestAppDownloadUrl = string.Empty;
+
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
@@ -93,7 +109,8 @@ public partial class MainViewModel : ObservableObject
         ILoggingService loggingService,
         IServiceProvider serviceProvider,
         ISettingsService settingsService,
-        INetworkService networkService)
+        INetworkService networkService,
+        IUpdateService updateService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -104,6 +121,7 @@ public partial class MainViewModel : ObservableObject
         _serviceProvider = serviceProvider;
         _settingsService = settingsService;
         _networkService = networkService;
+        _updateService = updateService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -122,6 +140,47 @@ public partial class MainViewModel : ObservableObject
     private async void InitializeAsync()
     {
         await RefreshDataAsync();
+
+        // Check for app updates silently after initial data load
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(2000); // Brief delay to avoid slowing down initial load
+                await CheckForAppUpdatesSilentlyAsync();
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogWarning($"Startup update check error: {ex.Message}");
+            }
+        });
+    }
+
+    /// <summary>
+    /// Silently check for app updates on startup (called from App.xaml.cs)
+    /// </summary>
+    public async Task CheckForAppUpdatesSilentlyAsync()
+    {
+        try
+        {
+            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+
+            if (hasUpdate && !string.IsNullOrEmpty(latestVersion))
+            {
+                IsAppUpdateAvailable = true;
+                LatestAppVersion = latestVersion;
+                LatestAppDownloadUrl = downloadUrl ?? string.Empty;
+            }
+            else
+            {
+                IsAppUpdateAvailable = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning($"Silent update check failed: {ex.Message}");
+            // Silently fail - don't bother the user
+        }
     }
 
     [RelayCommand]
@@ -148,7 +207,9 @@ public partial class MainViewModel : ObservableObject
 
             // Check translation status
             IsTranslationInstalled = await _translationManagerService.IsTranslationInstalledAsync();
+            IsTranslationManuallyInstalled = await _translationManagerService.IsTranslationManuallyInstalledAsync();
             IsTranslationPluginEnabled = await _translationManagerService.IsTranslationPluginEnabledAsync();
+            IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
 
             if (IsTranslationInstalled)
             {
@@ -428,7 +489,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task InstallTranslationAsync()
     {
         try
@@ -478,7 +539,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task UpdateTranslationAsync()
     {
         try
@@ -490,6 +551,9 @@ public partial class MainViewModel : ObservableObject
             {
                 StatusMessage = Strings.TranslationFilesUpdateSuccessful;
                 await RefreshDataAsync();
+                
+                // 更新完成后重新检查更新状态
+                IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
             }
             else
             {
@@ -503,7 +567,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task UninstallTranslationAsync()
     {
         var result = MessageBox.Show(
@@ -536,7 +600,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task SetTranslationLanguageAsync(string language)
     {
         try
@@ -559,7 +623,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task ToggleTranslationPluginAsync()
     {
         try
@@ -717,6 +781,35 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task CheckForTranslationUpdatesAsync()
+    {
+        try
+        {
+            StatusMessage = Strings.CheckingTranslationUpdates;
+            
+            // Check if translation is installed first
+            if (!await _translationManagerService.IsTranslationInstalledAsync())
+            {
+                StatusMessage = Strings.TranslationSystemNotInstalled;
+                return;
+            }
+
+            IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+            
+            StatusMessage = IsTranslationUpdateAvailable 
+                ? Strings.TranslationUpdateAvailable
+                : Strings.NoTranslationUpdatesAvailable;
+                
+            _loggingService.LogInfo(StatusMessage);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationUpdateCheckError);
+            StatusMessage = Strings.TranslationUpdateCheckError;
+        }
+    }
+
+    [RelayCommand]
     private async Task CheckForModUpdatesAsync()
     {
         try
@@ -738,7 +831,7 @@ public partial class MainViewModel : ObservableObject
             _networkService.ClearRateLimitBlocks();
 
             // Get fresh mod list from remote
-            var modList = await _modManagerService.GetModListAsync();
+            var modList = await _modManagerService.GetModListAsync(forceRefresh: true);
             
             int updatesFound = 0;
             var updatedMods = new List<string>();
@@ -786,6 +879,128 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private async Task CheckForAppUpdatesAsync()
+    {
+        try
+        {
+            StatusMessage = "Checking for application updates...";
+            _loggingService.LogInfo("Checking for application updates...");
+
+            var currentVersion = _updateService.GetCurrentVersion();
+            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+
+            if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
+            {
+                var result = MessageBox.Show(
+                    $"New version available: {latestVersion}\nCurrent version: {currentVersion}\n\nDo you want to download and install the update?",
+                    "Update Available",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    IsDownloading = true;
+                    StatusMessage = $"Downloading update {latestVersion}...";
+
+                    var progress = new Progress<DownloadProgress>(downloadProgress =>
+                    {
+                        var speedText = downloadProgress.GetFormattedSpeed();
+                        var progressText = downloadProgress.GetFormattedProgress();
+                        var percentage = downloadProgress.ProgressPercentage;
+
+                        StatusMessage = $"Downloading update {latestVersion} - {percentage:F1}% ({progressText}) - {speedText}";
+                    });
+
+                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress);
+
+                    if (!success)
+                    {
+                        StatusMessage = "Update download failed";
+                        MessageBox.Show("Failed to download or install the update. Please try again later.", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    // If success, the application will exit and restart
+                }
+                else
+                {
+                    StatusMessage = "Update cancelled";
+                }
+            }
+            else
+            {
+                StatusMessage = "No updates available";
+                MessageBox.Show($"You are using the latest version ({currentVersion})", "No Updates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Application update check failed");
+            StatusMessage = "Update check failed";
+            MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsDownloading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DownloadAndInstallAppUpdateAsync()
+    {
+        try
+        {
+            if (!IsAppUpdateAvailable || string.IsNullOrEmpty(LatestAppDownloadUrl))
+            {
+                _loggingService.LogWarning("No update available to download");
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"{Strings.NewVersionAvailable} {LatestAppVersion}\n{Strings.ApplicationVersion}: {_updateService.GetCurrentVersion()}\n\n{Strings.DoYouWantToDownloadAndInstall}",
+                Strings.CheckForUpdates,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Information);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                IsDownloading = true;
+                StatusMessage = string.Format(Strings.DownloadingUpdate, LatestAppVersion);
+
+                var progress = new Progress<DownloadProgress>(downloadProgress =>
+                {
+                    var speedText = downloadProgress.GetFormattedSpeed();
+                    var progressText = downloadProgress.GetFormattedProgress();
+                    var percentage = downloadProgress.ProgressPercentage;
+
+                    StatusMessage = string.Format(Strings.DownloadingUpdateProgress, LatestAppVersion, percentage.ToString("F1"), progressText, speedText);
+                });
+
+                var success = await _updateService.DownloadAndInstallUpdateAsync(LatestAppDownloadUrl, LatestAppVersion, progress);
+
+                if (!success)
+                {
+                    StatusMessage = Strings.UpdateDownloadFailed;
+                    MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                // If success, the application will exit and restart
+            }
+            else
+            {
+                StatusMessage = Strings.UpdateCancelled;
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.UpdateInstallFailed);
+            StatusMessage = Strings.UpdateDownloadFailed;
+            MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsDownloading = false;
+        }
+    }
+
     private void OnGameRunningStateChanged(object? sender, bool isRunning)
     {
         IsGameRunning = isRunning;
@@ -801,6 +1016,11 @@ public partial class MainViewModel : ObservableObject
     {
         LaunchGameCommand.NotifyCanExecuteChanged();
         OpenSettingsCommand.NotifyCanExecuteChanged();
+        InstallTranslationCommand.NotifyCanExecuteChanged();
+        UpdateTranslationCommand.NotifyCanExecuteChanged();
+        UninstallTranslationCommand.NotifyCanExecuteChanged();
+        SetTranslationLanguageCommand.NotifyCanExecuteChanged();
+        ToggleTranslationPluginCommand.NotifyCanExecuteChanged();
     }
 
     private void FilterAndSortMods()

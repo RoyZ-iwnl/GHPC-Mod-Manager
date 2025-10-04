@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
              mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="1280">
+             d:DesignHeight="900" d:DesignWidth="1600">
     
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -22,10 +22,11 @@
     <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Header -->
         <Grid Grid.Row="0" Background="{DynamicResource SurfaceVariantBrush}" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
@@ -87,14 +88,58 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            
-            <Button Grid.Column="2" Content="{x:Static resources:Strings.Settings}" Command="{Binding OpenSettingsCommand}" 
+
+            <Button Grid.Column="2" Content="{x:Static resources:Strings.Settings}" Command="{Binding OpenSettingsCommand}"
                     Margin="10" MinWidth="80"
                     Style="{DynamicResource TextButtonStyle}"/>
         </Grid>
-        
+
+        <!-- Update Available Banner -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource PrimaryBrush}"
+                Padding="12,8"
+                Margin="10,0,10,10"
+                CornerRadius="{DynamicResource RadiusSmall}"
+                Visibility="{Binding IsAppUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                          Text="⚠"
+                          FontSize="20"
+                          Margin="0,0,10,0"
+                          VerticalAlignment="Center"
+                          Foreground="{DynamicResource OnPrimaryBrush}"/>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold"
+                              Foreground="{DynamicResource OnPrimaryBrush}">
+                        <Run Text="{x:Static resources:Strings.NewVersionAvailable}"/>
+                        <Run Text=" "/>
+                        <Run Text="{Binding LatestAppVersion, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Text="{x:Static resources:Strings.ClickToDownloadAndInstall}"
+                              FontSize="{DynamicResource LabelSmall}"
+                              Foreground="{DynamicResource OnPrimaryBrush}"
+                              Opacity="0.9"/>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Content="{x:Static resources:Strings.CheckForUpdates}"
+                        Command="{Binding DownloadAndInstallAppUpdateCommand}"
+                        Margin="10,0,0,0"
+                        Style="{DynamicResource FilledButtonStyle}"
+                        Background="{DynamicResource OnPrimaryBrush}"
+                        Foreground="{DynamicResource PrimaryBrush}"/>
+            </Grid>
+        </Border>
+
         <!-- Main Content -->
-        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" 
+        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedTabIndex}" 
                     Background="{DynamicResource SurfaceBrush}"
                     IsEnabled="{Binding IsGameRunning, Converter={StaticResource InverseBooleanConverter}}">
             
@@ -244,7 +289,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="360" MinWidth="300">
+                                    <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="380" MinWidth="300">
                                         <DataGridTemplateColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -310,7 +355,7 @@
                         <GroupBox Header="{x:Static resources:Strings.TranslationSystem}" Margin="0,0,0,20">
                             <StackPanel Margin="10">
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="{x:Static resources:Strings.InstallationStatus}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.InstallationStatus}" VerticalAlignment="Center" MinWidth="100" Margin="0,0,10,0"/>
                                     <TextBlock Text="{x:Static resources:Strings.Installed}" Foreground="Green" VerticalAlignment="Center"
                                                Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <TextBlock Text="{x:Static resources:Strings.NotInstalled}" Foreground="Red" VerticalAlignment="Center"
@@ -350,22 +395,22 @@
                             </StackPanel>
                         </GroupBox>
                         
-                        <GroupBox Header="翻译插件控制" 
+                        <GroupBox Header="{x:Static resources:Strings.TranslationPluginControl}"
                                   Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Margin="10">
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="插件状态：" VerticalAlignment="Center" MinWidth="100" Margin="0,0,10,0"/>
-                                    <TextBlock Text="已启用" Foreground="Green" VerticalAlignment="Center"
+                                    <TextBlock Text="{x:Static resources:Strings.PluginStatus}" VerticalAlignment="Center" MinWidth="100" Margin="0,0,10,0"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Enabled}" Foreground="Green" VerticalAlignment="Center"
                                                Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Text="已禁用" Foreground="Red" VerticalAlignment="Center"
+                                    <TextBlock Text="{x:Static resources:Strings.Disabled}" Foreground="Red" VerticalAlignment="Center"
                                                Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="启用翻译插件" Command="{Binding ToggleTranslationPluginCommand}" 
+                                    <Button Content="{x:Static resources:Strings.EnableTranslationPlugin}" Command="{Binding ToggleTranslationPluginCommand}"
                                             MinWidth="140" Margin="0,0,10,0"
                                             Style="{DynamicResource FilledButtonStyle}"
                                             Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                    <Button Content="禁用翻译插件" Command="{Binding ToggleTranslationPluginCommand}" 
+                                    <Button Content="{x:Static resources:Strings.DisableTranslationPlugin}" Command="{Binding ToggleTranslationPluginCommand}"
                                             MinWidth="140"
                                             Style="{DynamicResource OutlinedButtonStyle}"
                                             Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -378,7 +423,7 @@
         </TabControl>
         
         <!-- Game Running Overlay -->
-        <Grid Grid.Row="1" Background="{DynamicResource ScrimBrush}" 
+        <Grid Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource ScrimBrush}" 
               Opacity="0.8"
               Visibility="{Binding IsGameRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
             
@@ -405,7 +450,7 @@
         </Grid>
         
         <!-- Status Bar -->
-        <StatusBar Grid.Row="2" Height="32" Style="{DynamicResource MaterialStatusBarStyle}">
+        <StatusBar Grid.Row="3" Height="32" Style="{DynamicResource MaterialStatusBarStyle}">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding StatusMessage}" 

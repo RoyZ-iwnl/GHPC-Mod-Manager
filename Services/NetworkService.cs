@@ -29,6 +29,8 @@ public class NetworkService : INetworkService
     
     // Rate limit tracking
     private static readonly Dictionary<string, DateTime> _rateLimitBlocks = new();
+    private static DateTime _lastRateLimitWarning = DateTime.MinValue;
+    private const int RateLimitWarningCooldownMinutes = 5; // Show warning at most once every 5 minutes
     
     // Cache expiry times
     private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
@@ -388,10 +390,13 @@ public class NetworkService : INetworkService
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 result = releases ?? new List<GitHubRelease>();
             }
-            
-            // Save to persistent cache
-            await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);
-            
+
+            // Save to persistent cache (only if not force refresh)
+            if (!forceRefresh)
+            {
+                await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);
+            }
+
             return result;
         }
         catch (HttpRequestException httpEx) when (httpEx.Message.Contains("403") || httpEx.Message.Contains("rate limit"))
@@ -621,104 +626,136 @@ public class NetworkService : INetworkService
 
     private async Task<byte[]> DownloadFileMultiThreadedAsync(string url, long totalBytes, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
     {
-        // GitHub-optimized parameters
-        const int maxThreads = 4; // Conservative for GitHub's rate limiting
-        const int minChunkSize = 1024 * 1024; // 1MB minimum chunk size
-        
-        // Calculate optimal chunk size and thread count
-        var chunkSize = Math.Max(minChunkSize, totalBytes / maxThreads);
-        var actualThreads = (int)Math.Min(maxThreads, (totalBytes + chunkSize - 1) / chunkSize);
-        
-        _loggingService.LogInfo(Strings.StartingMultiThreadedDownload, actualThreads, $"{chunkSize:N0}");
+        // IDM-style parameters: dynamic thread count and smaller chunks
+        const int idealChunkSize = 512 * 1024; // 512KB chunks for better granularity
+        const int minChunkSize = 256 * 1024;   // 256KB minimum
+        const int maxChunkSize = 2 * 1024 * 1024; // 2MB maximum
+        const int maxConcurrentThreads = 16; // Maximum concurrent connections
 
-        var chunks = new byte[actualThreads][];
-        var chunkSizes = new long[actualThreads]; // Track actual chunk sizes for validation
-        var downloadTasks = new List<Task>();
+        // Calculate chunk size based on file size
+        var chunkSize = idealChunkSize;
+        if (totalBytes < 10 * 1024 * 1024) // < 10MB
+        {
+            chunkSize = minChunkSize;
+        }
+        else if (totalBytes > 100 * 1024 * 1024) // > 100MB
+        {
+            chunkSize = maxChunkSize;
+        }
+
+        // Calculate total number of chunks
+        var totalChunks = (int)Math.Ceiling((double)totalBytes / chunkSize);
+
+        // Calculate optimal thread count (but don't exceed maxConcurrentThreads)
+        var optimalThreads = Math.Min(maxConcurrentThreads, Math.Max(4, totalChunks / 4));
+
+        _loggingService.LogInfo(Strings.StartingIdmDownload, totalChunks, optimalThreads, $"{chunkSize:N0}");
+
+        // Work queue pattern: chunks to download
+        var chunkQueue = new Queue<ChunkDownloadTask>();
+        for (int i = 0; i < totalChunks; i++)
+        {
+            var startByte = (long)i * chunkSize;
+            var endByte = Math.Min(startByte + chunkSize - 1, totalBytes - 1);
+            chunkQueue.Enqueue(new ChunkDownloadTask
+            {
+                ChunkIndex = i,
+                StartByte = startByte,
+                EndByte = endByte
+            });
+        }
+
+        // Storage for downloaded chunks
+        var chunks = new byte[totalChunks][];
         var progressLock = new object();
+        var queueLock = new object();
         var completedBytes = 0L;
         var startTime = DateTime.Now;
         var lastUpdateTime = startTime;
         var lastCompletedBytes = 0L;
 
-        // Create download tasks for each chunk with exact byte ranges
-        for (int i = 0; i < actualThreads; i++)
+        // Worker thread function
+        async Task WorkerThread()
         {
-            var chunkIndex = i;
-            var startByte = (long)chunkIndex * chunkSize;
-            var endByte = Math.Min(startByte + chunkSize - 1, totalBytes - 1);
-            var expectedChunkSize = endByte - startByte + 1;
-            
-            // Special handling for the last chunk to ensure we get all bytes
-            if (chunkIndex == actualThreads - 1)
+            while (true)
             {
-                endByte = totalBytes - 1; // Ensure last chunk goes to the very end
-                expectedChunkSize = endByte - startByte + 1;
-            }
-            
-            _loggingService.LogInfo(Strings.ChunkDownloadRange, chunkIndex, startByte, endByte, $"{expectedChunkSize:N0}");
-            
-            var task = DownloadChunkAsync(url, startByte, endByte, chunkIndex, chunks, 
-                (bytesReceived) => 
+                ChunkDownloadTask? task;
+                lock (queueLock)
                 {
-                    lock (progressLock)
+                    if (chunkQueue.Count == 0)
+                        break;
+                    task = chunkQueue.Dequeue();
+                }
+
+                // Download this chunk
+                await DownloadChunkAsync(url, task.StartByte, task.EndByte, task.ChunkIndex, chunks,
+                    (bytesReceived) =>
                     {
-                        completedBytes += bytesReceived;
-                        if (progress != null)
+                        lock (progressLock)
                         {
-                            var currentTime = DateTime.Now;
-                            var elapsedTime = currentTime - startTime;
-                            
-                            // Calculate speed (update every 100ms to avoid too frequent updates)
-                            var speedBytesPerSecond = 0.0;
-                            if (elapsedTime.TotalSeconds > 0.1)
+                            completedBytes += bytesReceived;
+                            if (progress != null)
                             {
-                                var timeSinceLastUpdate = currentTime - lastUpdateTime;
-                                if (timeSinceLastUpdate.TotalMilliseconds >= 100)
+                                var currentTime = DateTime.Now;
+                                var elapsedTime = currentTime - startTime;
+
+                                // Calculate speed (update every 100ms to avoid too frequent updates)
+                                var speedBytesPerSecond = 0.0;
+                                if (elapsedTime.TotalSeconds > 0.1)
                                 {
-                                    var bytesSinceLastUpdate = completedBytes - lastCompletedBytes;
-                                    if (timeSinceLastUpdate.TotalSeconds > 0)
+                                    var timeSinceLastUpdate = currentTime - lastUpdateTime;
+                                    if (timeSinceLastUpdate.TotalMilliseconds >= 100)
                                     {
-                                        speedBytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.TotalSeconds;
+                                        var bytesSinceLastUpdate = completedBytes - lastCompletedBytes;
+                                        if (timeSinceLastUpdate.TotalSeconds > 0)
+                                        {
+                                            speedBytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.TotalSeconds;
+                                        }
+                                        lastUpdateTime = currentTime;
+                                        lastCompletedBytes = completedBytes;
                                     }
-                                    lastUpdateTime = currentTime;
-                                    lastCompletedBytes = completedBytes;
+                                    else
+                                    {
+                                        speedBytesPerSecond = completedBytes / elapsedTime.TotalSeconds;
+                                    }
                                 }
-                                else
+
+                                var percentage = (double)completedBytes / totalBytes * 100;
+                                var estimatedTimeRemaining = TimeSpan.Zero;
+                                if (speedBytesPerSecond > 0)
                                 {
-                                    speedBytesPerSecond = completedBytes / elapsedTime.TotalSeconds;
+                                    var remainingBytes = totalBytes - completedBytes;
+                                    estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
                                 }
-                            }
 
-                            var percentage = (double)completedBytes / totalBytes * 100;
-                            var estimatedTimeRemaining = TimeSpan.Zero;
-                            if (speedBytesPerSecond > 0)
-                            {
-                                var remainingBytes = totalBytes - completedBytes;
-                                estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
+                                progress.Report(new DownloadProgress
+                                {
+                                    BytesReceived = completedBytes,
+                                    TotalBytes = totalBytes,
+                                    ProgressPercentage = percentage,
+                                    SpeedBytesPerSecond = speedBytesPerSecond,
+                                    ElapsedTime = elapsedTime,
+                                    EstimatedTimeRemaining = estimatedTimeRemaining
+                                });
                             }
-
-                            progress.Report(new DownloadProgress
-                            {
-                                BytesReceived = completedBytes,
-                                TotalBytes = totalBytes,
-                                ProgressPercentage = percentage,
-                                SpeedBytesPerSecond = speedBytesPerSecond,
-                                ElapsedTime = elapsedTime,
-                                EstimatedTimeRemaining = estimatedTimeRemaining
-                            });
                         }
-                    }
-                }, cancellationToken);
-            
-            downloadTasks.Add(task);
+                    }, cancellationToken);
+            }
         }
 
-        // Wait for all downloads to complete
-        await Task.WhenAll(downloadTasks);
+        // Start worker threads
+        var workerTasks = new List<Task>();
+        for (int i = 0; i < optimalThreads; i++)
+        {
+            workerTasks.Add(Task.Run(WorkerThread, cancellationToken));
+        }
+
+        // Wait for all workers to complete
+        await Task.WhenAll(workerTasks);
 
         // Validate all chunks were downloaded correctly
         var totalDownloaded = 0L;
-        for (int i = 0; i < actualThreads; i++)
+        for (int i = 0; i < totalChunks; i++)
         {
             if (chunks[i] == null)
             {
@@ -738,8 +775,8 @@ public class NetworkService : INetworkService
         // Combine all chunks in correct order
         var result = new byte[totalBytes];
         var offset = 0L;
-        
-        for (int i = 0; i < actualThreads; i++)
+
+        for (int i = 0; i < totalChunks; i++)
         {
             var chunk = chunks[i];
             Array.Copy(chunk, 0, result, offset, chunk.Length);
@@ -1102,10 +1139,23 @@ public class NetworkService : INetworkService
     }
 
     /// <summary>
-    /// Show rate limit warning popup with localized message
+    /// Show rate limit warning popup with localized message (with debounce logic)
     /// </summary>
     private async Task ShowRateLimitWarningAsync()
     {
+        // Check if we've shown a warning recently (within cooldown period)
+        var timeSinceLastWarning = DateTime.Now - _lastRateLimitWarning;
+        if (timeSinceLastWarning.TotalMinutes < RateLimitWarningCooldownMinutes)
+        {
+            // Log instead of showing popup
+            _loggingService.LogWarning(Strings.GitHubRateLimitMessage);
+            return;
+        }
+
+        // Update last warning timestamp
+        _lastRateLimitWarning = DateTime.Now;
+
+        // Show the warning popup
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             MessageBox.Show(
@@ -1211,7 +1261,6 @@ public class NetworkService : INetworkService
                     try
                     {
                         File.Delete(oldFile);
-                        _loggingService.LogInfo("Deleted old GitHub releases cache file: {0}", Path.GetFileName(oldFile));
                     }
                     catch (Exception ex)
                     {
@@ -1223,8 +1272,6 @@ public class NetworkService : INetworkService
             // Save new cache
             var json = JsonConvert.SerializeObject(releases, Formatting.Indented);
             await File.WriteAllTextAsync(cacheFile, json);
-            
-            _loggingService.LogInfo("Saved GitHub releases to persistent cache: {0}", Path.GetFileName(cacheFile));
         }
         catch (Exception ex)
         {
@@ -1269,4 +1316,12 @@ public class CacheItem<T>
 {
     public T Data { get; set; } = default!;
     public DateTime Timestamp { get; set; }
+}
+
+// Helper class for chunk download work queue
+internal class ChunkDownloadTask
+{
+    public int ChunkIndex { get; set; }
+    public long StartByte { get; set; }
+    public long EndByte { get; set; }
 }

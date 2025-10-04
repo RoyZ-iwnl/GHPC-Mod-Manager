@@ -13,6 +13,7 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:UpdateChannelDisplayConverter x:Key="UpdateChannelDisplayConverter"/>
     </UserControl.Resources>
     
     <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
@@ -163,14 +164,34 @@
                 <!-- About -->
                 <GroupBox Header="{x:Static resources:Strings.About}" Margin="0,0,0,15">
                     <StackPanel Margin="10">
+                        <!-- Update Channel -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.UpdateChannel}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
+                            <ComboBox ItemsSource="{Binding AvailableUpdateChannels}"
+                                      SelectedItem="{Binding SelectedUpdateChannel, Mode=TwoWay}"
+                                      MinWidth="250">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource UpdateChannelDisplayConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Application Version and Check for Updates -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <TextBlock Text="{x:Static resources:Strings.ApplicationVersion}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding ApplicationVersion}" VerticalAlignment="Center" FontWeight="Medium" MinWidth="100" Margin="0,0,10,0"/>
+                            <Button Content="{x:Static resources:Strings.CheckForUpdates}"
+                                    Command="{Binding CheckForAppUpdatesCommand}"
+                                    Style="{DynamicResource OutlinedButtonStyle}"
+                                    MinWidth="120"
+                                    Margin="10,0,0,0"/>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <TextBlock Text="{x:Static resources:Strings.ProjectUrl}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <Button Style="{DynamicResource TextButtonStyle}" 
+                            <Button Style="{DynamicResource TextButtonStyle}"
                                     Command="{Binding OpenProjectUrlCommand}"
                                     Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent">
                                 <TextBlock Foreground="{DynamicResource PrimaryBrush}" TextDecorations="Underline">

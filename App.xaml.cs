@@ -38,6 +38,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IModI18nService, ModI18nService>();
                     services.AddSingleton<IModBackupService, ModBackupService>();
                     services.AddSingleton<IAnnouncementService, AnnouncementService>();
+                    services.AddSingleton<IUpdateService, UpdateService>();
                     
                     services.AddHttpClient<INetworkService, NetworkService>(client =>
                     {
