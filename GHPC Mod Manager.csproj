@@ -12,14 +12,14 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     
     <!-- Version Information -->
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.10</AssemblyVersion>
-    <FileVersion>1.0.1.10</FileVersion>
-    <InformationalVersion>1.0.1</InformationalVersion>
+    <Version>1.1.0-beta.1</Version>
+    <AssemblyVersion>1.1.0.24</AssemblyVersion>
+    <FileVersion>1.1.0.24</FileVersion>
+    <InformationalVersion>1.1.0-beta.1</InformationalVersion>
     <Product>GHPC Mod Manager</Product>
     <Description>A comprehensive mod management tool for GHPC (Gunner, HEAT, PC!)</Description>
     <Copyright>Copyright © 2025</Copyright>
-    <Company>DMR.gg</Company>
+    <Company>GHPC.DMR.gg</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,6 +46,14 @@
 
   <ItemGroup>
     <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

@@ -142,6 +142,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application update available: {0}.
+        /// </summary>
+        public static string ApplicationUpdateAvailable {
+            get {
+                return ResourceManager.GetString("ApplicationUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application Version.
         /// </summary>
         public static string ApplicationVersion {
@@ -286,6 +295,87 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cleaning up....
+        /// </summary>
+        public static string BatchCleaningUp {
+            get {
+                return ResourceManager.GetString("BatchCleaningUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to copy update file.
+        /// </summary>
+        public static string BatchCopyFailed {
+            get {
+                return ResourceManager.GetString("BatchCopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to extract update package.
+        /// </summary>
+        public static string BatchExtractFailed {
+            get {
+                return ResourceManager.GetString("BatchExtractFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extracting update package....
+        /// </summary>
+        public static string BatchExtractingUpdate {
+            get {
+                return ResourceManager.GetString("BatchExtractingUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing update....
+        /// </summary>
+        public static string BatchInstallingUpdate {
+            get {
+                return ResourceManager.GetString("BatchInstallingUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restarting application....
+        /// </summary>
+        public static string BatchRestartingApp {
+            get {
+                return ResourceManager.GetString("BatchRestartingApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update completed successfully!.
+        /// </summary>
+        public static string BatchUpdateCompleted {
+            get {
+                return ResourceManager.GetString("BatchUpdateCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC Mod Manager Update.
+        /// </summary>
+        public static string BatchUpdateTitle {
+            get {
+                return ResourceManager.GetString("BatchUpdateTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for application to close....
+        /// </summary>
+        public static string BatchWaitingForClose {
+            get {
+                return ResourceManager.GetString("BatchWaitingForClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse....
         /// </summary>
         public static string Browse {
@@ -349,6 +439,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check for Updates.
+        /// </summary>
+        public static string CheckForUpdates {
+            get {
+                return ResourceManager.GetString("CheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking....
         /// </summary>
         public static string Checking {
@@ -390,6 +489,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string CheckingNetworkConnectionStatus {
             get {
                 return ResourceManager.GetString("CheckingNetworkConnectionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking for translation updates....
+        /// </summary>
+        public static string CheckingTranslationUpdates {
+            get {
+                return ResourceManager.GetString("CheckingTranslationUpdates", resourceCulture);
             }
         }
         
@@ -534,6 +642,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ClickShowLogForDetails {
             get {
                 return ResourceManager.GetString("ClickShowLogForDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click &apos;Check for Updates&apos; button to download and install.
+        /// </summary>
+        public static string ClickToDownloadAndInstall {
+            get {
+                return ResourceManager.GetString("ClickToDownloadAndInstall", resourceCulture);
             }
         }
         
@@ -1024,6 +1141,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string Disabled {
+            get {
+                return ResourceManager.GetString("Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable Translation Plugin.
         /// </summary>
         public static string DisableTranslationPlugin {
@@ -1087,6 +1213,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading update: {0}.
+        /// </summary>
+        public static string DownloadingUpdate {
+            get {
+                return ResourceManager.GetString("DownloadingUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading update {0} - {1}% ({2}) - {3}.
+        /// </summary>
+        public static string DownloadingUpdateProgress {
+            get {
+                return ResourceManager.GetString("DownloadingUpdateProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size mismatch! Expected: {0}, Downloaded: {1}.
         /// </summary>
         public static string DownloadSizeMismatch {
@@ -1110,6 +1254,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DownloadStarted {
             get {
                 return ResourceManager.GetString("DownloadStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to download and install the update?.
+        /// </summary>
+        public static string DoYouWantToDownloadAndInstall {
+            get {
+                return ResourceManager.GetString("DoYouWantToDownloadAndInstall", resourceCulture);
             }
         }
         
@@ -1186,6 +1339,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string ExportLogs {
+            get {
+                return ResourceManager.GetString("ExportLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extracting archive: {0}.
         /// </summary>
         public static string ExtractingArchive {
@@ -1218,6 +1380,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToClearPersistentCache {
             get {
                 return ResourceManager.GetString("FailedToClearPersistentCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to download or install the update. Please try again later..
+        /// </summary>
+        public static string FailedToDownloadOrInstall {
+            get {
+                return ResourceManager.GetString("FailedToDownloadOrInstall", resourceCulture);
             }
         }
         
@@ -1353,6 +1524,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FileVerificationSuccess {
             get {
                 return ResourceManager.GetString("FileVerificationSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter:.
+        /// </summary>
+        public static string Filter {
+            get {
+                return ResourceManager.GetString("Filter", resourceCulture);
             }
         }
         
@@ -3049,6 +3229,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New version available:.
+        /// </summary>
+        public static string NewVersionAvailable {
+            get {
+                return ResourceManager.GetString("NewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string Next {
@@ -3072,6 +3261,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NoConfigurationOptions {
             get {
                 return ResourceManager.GetString("NoConfigurationOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No downloadable asset found for update.
+        /// </summary>
+        public static string NoDownloadableAsset {
+            get {
+                return ResourceManager.GetString("NoDownloadableAsset", resourceCulture);
             }
         }
         
@@ -3130,6 +3328,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No releases found.
+        /// </summary>
+        public static string NoReleasesFound {
+            get {
+                return ResourceManager.GetString("NoReleasesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No stable releases found.
+        /// </summary>
+        public static string NoStableReleasesFound {
+            get {
+                return ResourceManager.GetString("NoStableReleasesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Generated.
         /// </summary>
         public static string NotGenerated {
@@ -3144,6 +3360,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NotInstalled {
             get {
                 return ResourceManager.GetString("NotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No translation updates available.
+        /// </summary>
+        public static string NoTranslationUpdatesAvailable {
+            get {
+                return ResourceManager.GetString("NoTranslationUpdatesAvailable", resourceCulture);
             }
         }
         
@@ -3261,6 +3486,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string PleaseSelectMelonLoaderVersion {
             get {
                 return ResourceManager.GetString("PleaseSelectMelonLoaderVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin Status.
+        /// </summary>
+        public static string PluginStatus {
+            get {
+                return ResourceManager.GetString("PluginStatus", resourceCulture);
             }
         }
         
@@ -3967,6 +4201,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Starting IDM-mode download: {0} chunks, {1} threads, chunk size: {2} bytes.
+        /// </summary>
+        public static string StartingIdmDownload {
+            get {
+                return ResourceManager.GetString("StartingIdmDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting multi-threaded download: {0} threads, chunk size: {1} bytes.
         /// </summary>
         public static string StartingMultiThreadedDownload {
@@ -4327,11 +4570,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removed existing translation file: {0}.
+        /// </summary>
+        public static string TranslationFileRemoved {
+            get {
+                return ResourceManager.GetString("TranslationFileRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error cloning translation files.
         /// </summary>
         public static string TranslationFilesCloneError {
             get {
                 return ResourceManager.GetString("TranslationFilesCloneError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing {0} existing translation files.
+        /// </summary>
+        public static string TranslationFilesRemoved {
+            get {
+                return ResourceManager.GetString("TranslationFilesRemoved", resourceCulture);
             }
         }
         
@@ -4359,6 +4620,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationFilesUpdateSuccessful {
             get {
                 return ResourceManager.GetString("TranslationFilesUpdateSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting translation installation: XUnity version {0}.
+        /// </summary>
+        public static string TranslationInstallationStarted {
+            get {
+                return ResourceManager.GetString("TranslationInstallationStarted", resourceCulture);
             }
         }
         
@@ -4453,7 +4723,16 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin Disabled.
+        ///   Looks up a localized string similar to Translation Plugin Control.
+        /// </summary>
+        public static string TranslationPluginControl {
+            get {
+                return ResourceManager.GetString("TranslationPluginControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation plugin disabled.
         /// </summary>
         public static string TranslationPluginDisabled {
             get {
@@ -4462,7 +4741,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Translation Plugin Enabled.
+        ///   Looks up a localized string similar to Translation plugin enabled.
         /// </summary>
         public static string TranslationPluginEnabled {
             get {
@@ -4489,7 +4768,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to toggle translation plugin.
+        ///   Looks up a localized string similar to Translation plugin toggle failed.
         /// </summary>
         public static string TranslationPluginToggleFailed {
             get {
@@ -4503,6 +4782,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationReleasesFetchError {
             get {
                 return ResourceManager.GetString("TranslationReleasesFetchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error getting latest translation release time.
+        /// </summary>
+        public static string TranslationReleaseTimeError {
+            get {
+                return ResourceManager.GetString("TranslationReleaseTimeError", resourceCulture);
             }
         }
         
@@ -4543,6 +4831,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Translation system is not installed.
+        /// </summary>
+        public static string TranslationSystemNotInstalled {
+            get {
+                return ResourceManager.GetString("TranslationSystemNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Translation system uninstalled successfully.
         /// </summary>
         public static string TranslationSystemUninstalledSuccessfully {
@@ -4561,6 +4858,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to parse release timestamp from filename.
+        /// </summary>
+        public static string TranslationTimestampParseError {
+            get {
+                return ResourceManager.GetString("TranslationTimestampParseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Translation system uninstalled successfully.
         /// </summary>
         public static string TranslationUninstalled {
@@ -4575,6 +4881,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationUninstallError {
             get {
                 return ResourceManager.GetString("TranslationUninstallError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation update available.
+        /// </summary>
+        public static string TranslationUpdateAvailable {
+            get {
+                return ResourceManager.GetString("TranslationUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error checking translation update availability.
+        /// </summary>
+        public static string TranslationUpdateCheckError {
+            get {
+                return ResourceManager.GetString("TranslationUpdateCheckError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation update check - Installed: {0}, Latest: {1}, Update available: {2}.
+        /// </summary>
+        public static string TranslationUpdateCheckResult {
+            get {
+                return ResourceManager.GetString("TranslationUpdateCheckResult", resourceCulture);
             }
         }
         
@@ -4701,6 +5034,78 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update available: {0} (Current: {1}).
+        /// </summary>
+        public static string UpdateAvailable {
+            get {
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update cancelled.
+        /// </summary>
+        public static string UpdateCancelled {
+            get {
+                return ResourceManager.GetString("UpdateCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Channel:.
+        /// </summary>
+        public static string UpdateChannel {
+            get {
+                return ResourceManager.GetString("UpdateChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beta (includes all versions).
+        /// </summary>
+        public static string UpdateChannelBeta {
+            get {
+                return ResourceManager.GetString("UpdateChannelBeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stable.
+        /// </summary>
+        public static string UpdateChannelStable {
+            get {
+                return ResourceManager.GetString("UpdateChannelStable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update downloaded: {0}.
+        /// </summary>
+        public static string UpdateDownloaded {
+            get {
+                return ResourceManager.GetString("UpdateDownloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update download failed.
+        /// </summary>
+        public static string UpdateDownloadFailed {
+            get {
+                return ResourceManager.GetString("UpdateDownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update install failed.
+        /// </summary>
+        public static string UpdateInstallFailed {
+            get {
+                return ResourceManager.GetString("UpdateInstallFailed", resourceCulture);
             }
         }
         
@@ -4890,6 +5295,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string XUnityVersionNotFound {
             get {
                 return ResourceManager.GetString("XUnityVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are using the latest version ({0}).
+        /// </summary>
+        public static string YouAreUsingLatestVersion {
+            get {
+                return ResourceManager.GetString("YouAreUsingLatestVersion", resourceCulture);
             }
         }
         

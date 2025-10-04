@@ -13,21 +13,39 @@
     <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
-            <Button Content="{x:Static resources:Strings.CopySelected}" Click="CopySelectedButton_Click" 
+            <Button Content="{x:Static resources:Strings.ExportLogs}" Click="ExportLogsButton_Click"
                     Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.CopyAll}" Click="CopyAllButton_Click" 
+            <Button Content="{x:Static resources:Strings.CopySelected}" Click="CopySelectedButton_Click"
                     Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.ClearLogs}" Click="ClearLogsButton_Click" 
+            <Button Content="{x:Static resources:Strings.CopyAll}" Click="CopyAllButton_Click"
+                    Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
+            <Button Content="{x:Static resources:Strings.ClearLogs}" Click="ClearLogsButton_Click"
                     Width="100" Style="{DynamicResource FilledButtonStyle}"/>
         </StackPanel>
-        
+
+        <!-- Filter Panel -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,10" HorizontalAlignment="Left">
+            <TextBlock Text="{x:Static resources:Strings.Filter}" VerticalAlignment="Center" Margin="0,0,10,0"
+                       Foreground="{DynamicResource OnBackgroundBrush}"/>
+            <CheckBox Name="ShowInfoCheckBox" Content="{x:Static resources:Strings.Information}" IsChecked="True"
+                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
+                      Margin="0,0,15,0" Foreground="{DynamicResource OnBackgroundBrush}"/>
+            <CheckBox Name="ShowWarningCheckBox" Content="{x:Static resources:Strings.Warning}" IsChecked="True"
+                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
+                      Margin="0,0,15,0" Foreground="{DynamicResource OnBackgroundBrush}"/>
+            <CheckBox Name="ShowErrorCheckBox" Content="{x:Static resources:Strings.Error}" IsChecked="True"
+                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
+                      Foreground="{DynamicResource OnBackgroundBrush}"/>
+        </StackPanel>
+
         <!-- Log Content -->
-        <ListView Grid.Row="1" Name="LogListView" Margin="10,0,10,10"
+        <ListView Grid.Row="2" Name="LogListView" Margin="10,0,10,10"
                   Background="{DynamicResource SurfaceBrush}"
                   Foreground="{DynamicResource OnSurfaceBrush}">
             <ListView.View>

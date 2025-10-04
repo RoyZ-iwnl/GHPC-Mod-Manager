@@ -12,7 +12,7 @@ namespace GHPC_Mod_Manager.Services;
 
 public interface IModManagerService
 {
-    Task<List<ModViewModel>> GetModListAsync();
+    Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
     Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null);
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
@@ -50,11 +50,11 @@ public class ModManagerService : IModManagerService
         _modBackupService = modBackupService;
     }
 
-    public async Task<List<ModViewModel>> GetModListAsync()
+    public async Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false)
     {
         await LoadManifestAsync();
         await LoadAvailableModsAsync();
-        
+
         var result = new List<ModViewModel>();
         var gameRootPath = _settingsService.Settings.GameRootPath;
         var modsPath = Path.Combine(gameRootPath, "Mods");
@@ -92,7 +92,8 @@ public class ModManagerService : IModManagerService
             {
                 var releases = await _networkService.GetGitHubReleasesAsync(
                     GetRepoOwner(modConfig.ReleaseUrl),
-                    GetRepoName(modConfig.ReleaseUrl)
+                    GetRepoName(modConfig.ReleaseUrl),
+                    forceRefresh
                 );
                 viewModel.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
             }
@@ -105,7 +106,7 @@ public class ModManagerService : IModManagerService
         }
 
         await ScanManualModsAsync(result, modsPath);
-        
+
         return result;
     }
 
@@ -344,8 +345,6 @@ public class ModManagerService : IModManagerService
             var modsPath = Path.Combine(gameRootPath, "Mods");
             Directory.CreateDirectory(modsPath);
 
-            _loggingService.LogInfo("debugtemplog: Starting mod installation: {0} version {1}", modConfig.Id, version);
-
             // 创建文件操作追踪器
             var tracker = new FileOperationTracker(_loggingService, _settingsService);
             var trackedOps = new TrackedFileOperations(tracker, _loggingService);
@@ -354,21 +353,18 @@ public class ModManagerService : IModManagerService
             tracker.StartTracking($"mod_install_{modConfig.Id}_{version}", modsPath);
 
             var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
-            _loggingService.LogInfo("debugtemplog: Downloaded mod file: {0} ({1} bytes)", asset.Name, downloadData.Length);
 
             if (modConfig.InstallMethod == InstallMethod.Scripted && !string.IsNullOrEmpty(modConfig.InstallScript_Base64))
             {
                 var confirmed = await ShowScriptWarningAsync();
                 if (!confirmed) return false;
 
-                _loggingService.LogInfo("debugtemplog: Using scripted installation method");
                 var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
                 
                 await ExecuteInstallScriptWithTrackingAsync(modConfig.InstallScript_Base64, tempDownloadPath, gameRootPath, modConfig.MainBinaryFileName, tracker, progress);
             }
             else if (asset.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
-                _loggingService.LogInfo("debugtemplog: Using direct DLL installation method");
                 // 单个DLL文件直接复制
                 var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
                 var targetPath = Path.Combine(modsPath, asset.Name);
@@ -379,7 +375,6 @@ public class ModManagerService : IModManagerService
             }
             else
             {
-                _loggingService.LogInfo("debugtemplog: Using ZIP extraction installation method");
                 await trackedOps.ExtractZipAsync(downloadData, modsPath);
             }
 
@@ -388,15 +383,9 @@ public class ModManagerService : IModManagerService
             var result = tracker.GetResult();
             var processedFiles = result.GetAllProcessedFiles();
 
-            _loggingService.LogInfo("debugtemplog: Installation completed. Total processed files: {0}", processedFiles.Count);
-            foreach (var file in processedFiles)
-            {
-                _loggingService.LogInfo("debugtemplog: Processed file: {0}", file);
-            }
-
             if (!processedFiles.Any())
             {
-                _loggingService.LogError("debugtemplog: No files were processed during installation of {0}", modConfig.Id);
+                _loggingService.LogError("No files were processed during installation of {0}", modConfig.Id);
                 return false;
             }
 
@@ -1423,17 +1412,13 @@ public class ModManagerService : IModManagerService
 
     private async Task ExecuteInstallScriptWithTrackingAsync(string base64Script, string downloadedFilePath, string gameRootPath, string targetFileName, IFileOperationTracker tracker, IProgress<DownloadProgress>? progress)
     {
-        _loggingService.LogInfo("debugtemplog: Starting scripted installation with tracking");
-        
         // 记录脚本执行前的文件状态
         var filesBeforeScript = new Dictionary<string, DateTime>();
         await RecordDirectoryStateAsync(gameRootPath, filesBeforeScript);
-        _loggingService.LogInfo("debugtemplog: Recorded {0} files before script execution", filesBeforeScript.Count);
 
         var scriptContent = Encoding.UTF8.GetString(Convert.FromBase64String(base64Script));
         var tempBatFile = Path.Combine(_settingsService.TempPath, $"install_{Guid.NewGuid()}.bat");
-        
-        _loggingService.LogInfo("debugtemplog: Created temp script file: {0}", tempBatFile);
+
         await File.WriteAllTextAsync(tempBatFile, scriptContent);
         
         var processInfo = new System.Diagnostics.ProcessStartInfo
@@ -1445,31 +1430,27 @@ public class ModManagerService : IModManagerService
             CreateNoWindow = true
         };
 
-        _loggingService.LogInfo("debugtemplog: Executing script: {0} with args: {1}", tempBatFile, processInfo.Arguments);
         var scriptStartTime = DateTime.Now;
 
         using var process = System.Diagnostics.Process.Start(processInfo);
         if (process != null)
         {
             await process.WaitForExitAsync();
-            _loggingService.LogInfo("debugtemplog: Script execution completed with exit code: {0}", process.ExitCode);
         }
         else
         {
-            _loggingService.LogError("debugtemplog: Failed to start script process");
+            _loggingService.LogError("Failed to start script process");
         }
         
         // 检测脚本执行后文件的变化
         var filesAfterScript = new Dictionary<string, DateTime>();
         await RecordDirectoryStateAsync(gameRootPath, filesAfterScript);
-        _loggingService.LogInfo("debugtemplog: Recorded {0} files after script execution", filesAfterScript.Count);
 
         // 分析脚本创建/修改的文件
-        int detectedChanges = 0;
         foreach (var (filePath, lastWriteTime) in filesAfterScript)
         {
             var relativePath = Path.GetRelativePath(gameRootPath, filePath);
-            
+
             if (!filesBeforeScript.ContainsKey(filePath))
             {
                 // 新创建的文件
@@ -1480,8 +1461,6 @@ public class ModManagerService : IModManagerService
                     TargetPath = filePath,
                     FileSize = File.Exists(filePath) ? new System.IO.FileInfo(filePath).Length : 0
                 });
-                detectedChanges++;
-                _loggingService.LogInfo("debugtemplog: Script created new file: {0}", relativePath);
             }
             else if (lastWriteTime > scriptStartTime)
             {
@@ -1493,21 +1472,15 @@ public class ModManagerService : IModManagerService
                     TargetPath = filePath,
                     FileSize = File.Exists(filePath) ? new System.IO.FileInfo(filePath).Length : 0
                 });
-                detectedChanges++;
-                _loggingService.LogInfo("debugtemplog: Script modified existing file: {0}", relativePath);
             }
         }
 
-        _loggingService.LogInfo("debugtemplog: Script execution analysis completed. Detected {0} file changes", detectedChanges);
-        
         // Clean up temp files
         File.Delete(tempBatFile);
         if (File.Exists(downloadedFilePath))
         {
             File.Delete(downloadedFilePath);
         }
-        
-        _loggingService.LogInfo("debugtemplog: Script execution cleanup completed");
     }
 
     private async Task RecordDirectoryStateAsync(string directory, Dictionary<string, DateTime> fileStates)
@@ -1519,11 +1492,10 @@ public class ModManagerService : IModManagerService
             {
                 fileStates[file] = File.GetLastWriteTime(file);
             }
-            _loggingService.LogInfo("debugtemplog: Recorded state for {0} files in {1}", files.Length, directory);
         }
         catch (Exception ex)
         {
-            _loggingService.LogError("debugtemplog: Error recording directory state for {0}: {1}", directory, ex.Message);
+            _loggingService.LogError("Error recording directory state for {0}: {1}", directory, ex.Message);
         }
     }
 

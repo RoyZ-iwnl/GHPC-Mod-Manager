@@ -1,52 +1,110 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="resheader">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -1112,6 +1170,9 @@
   <data name="ChunkCompleted" xml:space="preserve">
     <value>Chunk {0} completed: {1} bytes</value>
   </data>
+  <data name="StartingIdmDownload" xml:space="preserve">
+    <value>Starting IDM-mode download: {0} chunks, {1} threads, chunk size: {2} bytes</value>
+  </data>
   <data name="ChunkFailedRetrying" xml:space="preserve">
     <value>Chunk {0} failed (attempt {1}/{2}), retrying in {3}ms: {4}</value>
   </data>
@@ -1658,12 +1719,6 @@
   <data name="Reinstall" xml:space="preserve">
     <value>Reinstall</value>
   </data>
-  <data name="TranslationPluginEnabled" xml:space="preserve">
-    <value>Translation Plugin Enabled</value>
-  </data>
-  <data name="TranslationPluginDisabled" xml:space="preserve">
-    <value>Translation Plugin Disabled</value>
-  </data>
   <data name="EnableTranslationPlugin" xml:space="preserve">
     <value>Enable Translation Plugin</value>
   </data>
@@ -1685,7 +1740,139 @@
   <data name="DownloadingTranslationRelease" xml:space="preserve">
     <value>Downloading translation release: {0}</value>
   </data>
-  <data name="TranslationPluginToggleFailed" xml:space="preserve">
-    <value>Failed to toggle translation plugin</value>
+  <data name="TranslationUpdateAvailable" xml:space="preserve">
+    <value>Translation update available</value>
+  </data>
+  <data name="CheckingTranslationUpdates" xml:space="preserve">
+    <value>Checking for translation updates...</value>
+  </data>
+  <data name="NoTranslationUpdatesAvailable" xml:space="preserve">
+    <value>No translation updates available</value>
+  </data>
+  <data name="TranslationInstallationStarted" xml:space="preserve">
+    <value>Starting translation installation: XUnity version {0}</value>
+  </data>
+  <data name="TranslationUpdateCheckResult" xml:space="preserve">
+    <value>Translation update check - Installed: {0}, Latest: {1}, Update available: {2}</value>
+  </data>
+  <data name="TranslationUpdateCheckError" xml:space="preserve">
+    <value>Error checking translation update availability</value>
+  </data>
+  <data name="TranslationReleaseTimeError" xml:space="preserve">
+    <value>Error getting latest translation release time</value>
+  </data>
+  <data name="TranslationTimestampParseError" xml:space="preserve">
+    <value>Failed to parse release timestamp from filename</value>
+  </data>
+  <data name="TranslationFilesRemoved" xml:space="preserve">
+    <value>Removing {0} existing translation files</value>
+  </data>
+  <data name="TranslationFileRemoved" xml:space="preserve">
+    <value>Removed existing translation file: {0}</value>
+  </data>
+  <data name="TranslationSystemNotInstalled" xml:space="preserve">
+    <value>Translation system is not installed</value>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Check for Updates</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>New version available:</value>
+  </data>
+  <data name="ClickToDownloadAndInstall" xml:space="preserve">
+    <value>Click 'Check for Updates' button to download and install</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="ExportLogs" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available: {0} (Current: {1})</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Downloading update: {0}</value>
+  </data>
+  <data name="UpdateDownloaded" xml:space="preserve">
+    <value>Update downloaded: {0}</value>
+  </data>
+  <data name="ApplicationUpdateAvailable" xml:space="preserve">
+    <value>Application update available: {0}</value>
+  </data>
+  <data name="DownloadingUpdateProgress" xml:space="preserve">
+    <value>Downloading update {0} - {1}% ({2}) - {3}</value>
+  </data>
+  <data name="NoReleasesFound" xml:space="preserve">
+    <value>No releases found</value>
+  </data>
+  <data name="NoStableReleasesFound" xml:space="preserve">
+    <value>No stable releases found</value>
+  </data>
+  <data name="NoDownloadableAsset" xml:space="preserve">
+    <value>No downloadable asset found for update</value>
+  </data>
+  <data name="BatchUpdateTitle" xml:space="preserve">
+    <value>GHPC Mod Manager Update</value>
+  </data>
+  <data name="BatchWaitingForClose" xml:space="preserve">
+    <value>Waiting for application to close...</value>
+  </data>
+  <data name="BatchExtractingUpdate" xml:space="preserve">
+    <value>Extracting update package...</value>
+  </data>
+  <data name="BatchExtractFailed" xml:space="preserve">
+    <value>Failed to extract update package</value>
+  </data>
+  <data name="BatchInstallingUpdate" xml:space="preserve">
+    <value>Installing update...</value>
+  </data>
+  <data name="BatchCopyFailed" xml:space="preserve">
+    <value>Failed to copy update file</value>
+  </data>
+  <data name="BatchUpdateCompleted" xml:space="preserve">
+    <value>Update completed successfully!</value>
+  </data>
+  <data name="BatchRestartingApp" xml:space="preserve">
+    <value>Restarting application...</value>
+  </data>
+  <data name="BatchCleaningUp" xml:space="preserve">
+    <value>Cleaning up...</value>
+  </data>
+  <data name="UpdateChannel" xml:space="preserve">
+    <value>Update Channel:</value>
+  </data>
+  <data name="UpdateChannelStable" xml:space="preserve">
+    <value>Stable</value>
+  </data>
+  <data name="UpdateChannelBeta" xml:space="preserve">
+    <value>Beta (includes all versions)</value>
+  </data>
+  <data name="DoYouWantToDownloadAndInstall" xml:space="preserve">
+    <value>Do you want to download and install the update?</value>
+  </data>
+  <data name="FailedToDownloadOrInstall" xml:space="preserve">
+    <value>Failed to download or install the update. Please try again later.</value>
+  </data>
+  <data name="YouAreUsingLatestVersion" xml:space="preserve">
+    <value>You are using the latest version ({0})</value>
+  </data>
+  <data name="UpdateDownloadFailed" xml:space="preserve">
+    <value>Update download failed</value>
+  </data>
+  <data name="UpdateCancelled" xml:space="preserve">
+    <value>Update cancelled</value>
+  </data>
+  <data name="UpdateInstallFailed" xml:space="preserve">
+    <value>Update install failed</value>
+  </data>
+  <data name="TranslationPluginControl" xml:space="preserve">
+    <value>Translation Plugin Control</value>
+  </data>
+  <data name="PluginStatus" xml:space="preserve">
+    <value>Plugin Status</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Disabled</value>
   </data>
 </root>

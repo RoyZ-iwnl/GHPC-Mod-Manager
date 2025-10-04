@@ -12,11 +12,18 @@ public enum AppTheme
 // GitHub代理服务器枚举
 public enum GitHubProxyServer
 {
-    GhDmrGg,        // gh.dmr.gg (Cloudflare 1)
-    GhProxyCom,     // gh-proxy.com (Cloudflare 2) 
-    HkGhProxyCom,   // hk.gh-proxy.com (Hong Kong)
-    CdnGhProxyCom,  // cdn.gh-proxy.com (Fastly)
-    EdgeOneGhProxyCom // edgeone.gh-proxy.com (Tencent Cloud)
+    EdgeOneGhProxyCom, // edgeone.gh-proxy.com (Tencent Cloud)
+    GhDmrGg,          // gh.dmr.gg (Cloudflare 1)
+    GhProxyCom,       // gh-proxy.com (Cloudflare 2)
+    HkGhProxyCom,     // hk.gh-proxy.com (Hong Kong)
+    CdnGhProxyCom     // cdn.gh-proxy.com (Fastly)
+}
+
+// 更新通道枚举
+public enum UpdateChannel
+{
+    Stable,  // 稳定版：只包含正式版本（不含任何字母）
+    Beta     // 测试版：包含所有版本（正式版+预发布版）
 }
 
 public class AppSettings
@@ -29,7 +36,8 @@ public class AppSettings
     public bool IsFirstRun { get; set; } = true;
     public AppTheme Theme { get; set; } = AppTheme.Light; // 主题设置
     public bool UseGitHubProxy { get; set; } = false; // GitHub代理加速设置
-    public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg; // 代理服务器选择
+    public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.EdgeOneGhProxyCom; // 代理服务器选择
+    public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Stable; // 更新通道选择
 }
 
 public class ModConfig
