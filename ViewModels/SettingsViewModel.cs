@@ -22,6 +22,9 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IModBackupService _modBackupService;
     private readonly IUpdateService _updateService;
 
+    private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
+    private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
+
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
 
@@ -32,7 +35,8 @@ public partial class SettingsViewModel : ObservableObject
         {
             UseGitHubProxy = false;
         }
-        
+
+        OnPropertyChanged(nameof(IsChineseLanguage));
         // Notify that proxy visibility has changed
         OnPropertyChanged(nameof(IsGitHubProxyVisible));
     }
@@ -93,7 +97,9 @@ public partial class SettingsViewModel : ObservableObject
 
     public string ApplicationVersion => GetApplicationVersion();
 
-    public bool IsGitHubProxyVisible => SelectedLanguage == "zh-CN";
+    public bool IsChineseLanguage => SelectedLanguage == "zh-CN";
+
+    public bool IsGitHubProxyVisible => IsChineseLanguage;
 
     public SettingsViewModel(
         ISettingsService settingsService,
@@ -324,6 +330,40 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenFollowBilibili()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = BilibiliSpaceUrl,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenBilibili);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenGhpcCommunity()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = GhpcCommunityUrl,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenGhpcCommunity);
+        }
+    }
+
+    [RelayCommand]
     private void OpenProjectUrl()
     {
         try
@@ -345,7 +385,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         try
         {
-            _loggingService.LogInfo("Checking for application updates...");
+            _loggingService.LogInfo(Strings.CheckingForApplicationUpdates);
 
             var currentVersion = _updateService.GetCurrentVersion();
             var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();

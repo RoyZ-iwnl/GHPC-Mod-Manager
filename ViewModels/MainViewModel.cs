@@ -29,6 +29,10 @@ public partial class ConfigurationItem : ObservableObject
 
 public partial class MainViewModel : ObservableObject
 {
+    // Static flag to ensure startup update check runs only once per application session
+    private static bool _hasPerformedStartupUpdateCheck = false;
+    private static readonly object _updateCheckLock = new object();
+
     private readonly IModManagerService _modManagerService;
     private readonly ITranslationManagerService _translationManagerService;
     private readonly ITranslationBackupService _translationBackupService;
@@ -141,19 +145,33 @@ public partial class MainViewModel : ObservableObject
     {
         await RefreshDataAsync();
 
-        // Check for app updates silently after initial data load
-        _ = Task.Run(async () =>
+        // Check for app updates silently on first MainViewModel initialization only
+        // Subsequent checks should be triggered manually by user in Settings
+        bool shouldCheckForUpdates = false;
+        lock (_updateCheckLock)
         {
-            try
+            if (!_hasPerformedStartupUpdateCheck)
             {
-                await Task.Delay(2000); // Brief delay to avoid slowing down initial load
-                await CheckForAppUpdatesSilentlyAsync();
+                _hasPerformedStartupUpdateCheck = true;
+                shouldCheckForUpdates = true;
             }
-            catch (Exception ex)
+        }
+
+        if (shouldCheckForUpdates)
+        {
+            _ = Task.Run(async () =>
             {
-                _loggingService.LogWarning($"Startup update check error: {ex.Message}");
-            }
-        });
+                try
+                {
+                    await Task.Delay(2000); // Brief delay to avoid slowing down initial load
+                    await CheckForAppUpdatesSilentlyAsync();
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogWarning($"Startup update check error: {ex.Message}");
+                }
+            });
+        }
     }
 
     /// <summary>
@@ -394,7 +412,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (!mod.CanUpdate)
         {
-            _loggingService.LogWarning("Cannot update mod: {0}, CanUpdate is false", mod.Id);
+            _loggingService.LogWarning(Strings.CannotUpdateModCanUpdateFalse, mod.Id);
             return;
         }
 
@@ -440,7 +458,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (!mod.CanReinstall)
         {
-            _loggingService.LogWarning("Cannot reinstall mod: {0}, CanReinstall is false", mod.Id);
+            _loggingService.LogWarning(Strings.CannotReinstallModCanReinstallFalse, mod.Id);
             return;
         }
 
@@ -542,6 +560,17 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task UpdateTranslationAsync()
     {
+        // Check if translation was manually installed
+        if (IsTranslationManuallyInstalled)
+        {
+            MessageBox.Show(
+                Strings.CannotUpdateManuallyInstalledTranslation,
+                Strings.Error,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
         try
         {
             StatusMessage = Strings.UpdatingTranslationFiles;
@@ -551,7 +580,7 @@ public partial class MainViewModel : ObservableObject
             {
                 StatusMessage = Strings.TranslationFilesUpdateSuccessful;
                 await RefreshDataAsync();
-                
+
                 // 更新完成后重新检查更新状态
                 IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
             }
@@ -570,6 +599,17 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private async Task UninstallTranslationAsync()
     {
+        // Check if translation was manually installed
+        if (IsTranslationManuallyInstalled)
+        {
+            MessageBox.Show(
+                Strings.CannotUninstallManuallyInstalledTranslation,
+                Strings.Error,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
         var result = MessageBox.Show(
             Strings.ConfirmUninstallTranslation,
             Strings.ConfirmUninstall,
@@ -817,7 +857,7 @@ public partial class MainViewModel : ObservableObject
             IsLoading = true;
             StatusMessage = Strings.CheckingForModUpdates;
 
-            var modsToCheck = OnlyCheckInstalledMods 
+            var modsToCheck = OnlyCheckInstalledMods
                 ? Mods.Where(m => m.IsInstalled && !(m.IsManuallyInstalled && m.IsUnsupportedManualMod)).ToList()
                 : Mods.Where(m => !(m.IsManuallyInstalled && m.IsUnsupportedManualMod)).ToList();
 
@@ -830,41 +870,62 @@ public partial class MainViewModel : ObservableObject
             // Clear any rate limit blocks to allow fresh API requests
             _networkService.ClearRateLimitBlocks();
 
-            // Get fresh mod list from remote
-            var modList = await _modManagerService.GetModListAsync(forceRefresh: true);
-            
             int updatesFound = 0;
             var updatedMods = new List<string>();
 
+            // 只对筛选后的Mod检查版本更新
             foreach (var mod in modsToCheck)
             {
-                var latestMod = modList.FirstOrDefault(m => m.Id == mod.Id);
-                if (latestMod != null && mod.IsInstalled && !string.IsNullOrEmpty(mod.InstalledVersion) && !string.IsNullOrEmpty(latestMod.LatestVersion))
+                if (mod.Config == null || string.IsNullOrEmpty(mod.Config.ReleaseUrl))
+                    continue;
+
+                try
                 {
-                    if (mod.InstalledVersion != latestMod.LatestVersion)
+                    // 直接使用ReleaseUrl（已经是完整的API URL）
+                    var releases = await _networkService.GetGitHubReleasesAsync(
+                        GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl),
+                        GetRepoNameFromApiUrl(mod.Config.ReleaseUrl),
+                        forceRefresh: true
+                    );
+
+                    var latestVersion = releases.FirstOrDefault()?.TagName;
+
+                    if (!string.IsNullOrEmpty(latestVersion))
                     {
-                        updatesFound++;
-                        updatedMods.Add($"{mod.DisplayName}: {mod.InstalledVersion} → {latestMod.LatestVersion}");
-                        
-                        // Update the mod's latest version info
-                        mod.LatestVersion = latestMod.LatestVersion;
+                        // 更新Mod的最新版本
+                        mod.LatestVersion = latestVersion;
+
+                        // 检查是否有更新
+                        if (mod.IsInstalled &&
+                            !string.IsNullOrEmpty(mod.InstalledVersion) &&
+                            mod.InstalledVersion != latestVersion &&
+                            mod.InstalledVersion != Strings.Manual)
+                        {
+                            updatesFound++;
+                            updatedMods.Add($"{mod.DisplayName}: {mod.InstalledVersion} → {latestVersion}");
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    // 单个Mod检查失败不影响其他Mod
+                    _loggingService.LogWarning(Strings.FailedToCheckModUpdate, mod.DisplayName, ex.Message);
                 }
             }
 
             // Apply filtering and sorting to refresh the view
             FilterAndSortMods();
 
-            StatusMessage = updatesFound > 0 
+            StatusMessage = updatesFound > 0
                 ? string.Format(Strings.ModUpdatesFound, updatesFound)
                 : Strings.NoModUpdatesAvailable;
 
             _loggingService.LogInfo(Strings.ModUpdateCheckComplete);
-            
+
             if (updatesFound > 0)
             {
                 var updatesList = string.Join("\n", updatedMods);
-                MessageBox.Show($"{string.Format(Strings.ModUpdatesFound, updatesFound)}\n\n{updatesList}", 
+                MessageBox.Show($"{string.Format(Strings.ModUpdatesFound, updatesFound)}\n\n{updatesList}",
                     Strings.Information, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -879,13 +940,29 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    // 从GitHub API URL提取owner（与ModManagerService中的实现一致）
+    private string GetRepoOwnerFromApiUrl(string apiUrl)
+    {
+        // https://api.github.com/repos/owner/repo/releases/latest
+        var segments = new Uri(apiUrl).AbsolutePath.Trim('/').Split('/');
+        return segments.Length >= 2 ? segments[1] : "";
+    }
+
+    // 从GitHub API URL提取repo name（与ModManagerService中的实现一致）
+    private string GetRepoNameFromApiUrl(string apiUrl)
+    {
+        // https://api.github.com/repos/owner/repo/releases/latest
+        var segments = new Uri(apiUrl).AbsolutePath.Trim('/').Split('/');
+        return segments.Length >= 3 ? segments[2] : "";
+    }
+
     [RelayCommand]
     private async Task CheckForAppUpdatesAsync()
     {
         try
         {
-            StatusMessage = "Checking for application updates...";
-            _loggingService.LogInfo("Checking for application updates...");
+            StatusMessage = Strings.CheckingForApplicationUpdates;
+            _loggingService.LogInfo(Strings.CheckingForApplicationUpdates);
 
             var currentVersion = _updateService.GetCurrentVersion();
             var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
@@ -951,7 +1028,7 @@ public partial class MainViewModel : ObservableObject
         {
             if (!IsAppUpdateAvailable || string.IsNullOrEmpty(LatestAppDownloadUrl))
             {
-                _loggingService.LogWarning("No update available to download");
+                _loggingService.LogWarning(Strings.NoUpdateAvailableToDownload);
                 return;
             }
 

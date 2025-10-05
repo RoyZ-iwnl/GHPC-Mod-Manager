@@ -90,7 +90,7 @@ public class ModBackupService : IModBackupService
             // This should be rare since ToggleModAsync now handles file discovery for manual mods
             if (!modFiles.Any())
             {
-                _loggingService.LogWarning("No files provided for mod backup: {0}. This might indicate the mod files couldn't be located.", modId);
+                _loggingService.LogWarning(Strings.NoFilesProvidedForModBackup, modId);
             }
 
             // Move files to disabled backup, preserving directory structure
@@ -109,11 +109,11 @@ public class ModBackupService : IModBackupService
                     File.Move(sourceFile, backupFile);
                 }
             }
-            
+
             // If no files were found/moved, this might indicate the mod is already disabled or not found
             if (!backupManifest.Any())
             {
-                _loggingService.LogWarning("No files found to disable for mod: {0}", modId);
+                _loggingService.LogWarning(Strings.NoFilesFoundToDisableForMod, modId);
                 return false;
             }
             
@@ -166,7 +166,7 @@ public class ModBackupService : IModBackupService
             // If no backup files exist, clean up and return false
             if (!backupFiles.Any())
             {
-                _loggingService.LogWarning("No backup files found for mod: {0}, cleaning up backup directory", modId);
+                _loggingService.LogWarning(Strings.NoBackupFilesFoundCleaningUp, modId);
                 if (Directory.Exists(modBackupPath))
                 {
                     Directory.Delete(modBackupPath, true);
@@ -197,9 +197,9 @@ public class ModBackupService : IModBackupService
                 {
                     Directory.CreateDirectory(targetDir);
                 }
-                
+
                 File.Move(backupFile, targetPath);
-                _loggingService.LogInfo("Restored mod file: {0} -> {1}", backupFile, targetPath);
+                _loggingService.LogInfo(Strings.RestoredModFile, backupFile, targetPath);
             }
 
             // Clean up empty backup directory
@@ -337,9 +337,9 @@ public class ModBackupService : IModBackupService
                 {
                     Directory.CreateDirectory(targetDir);
                 }
-                
+
                 File.Copy(backupFile, targetPath, true);
-                _loggingService.LogInfo("Restored mod file: {0} -> {1}", backupFile, targetPath);
+                _loggingService.LogInfo(Strings.RestoredModFile, backupFile, targetPath);
             }
 
             _loggingService.LogInfo(Strings.ModReinstalledFromBackup, modId, version);

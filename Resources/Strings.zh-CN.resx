@@ -1656,6 +1656,9 @@
   <data name="NoModsToCheck" xml:space="preserve">
     <value>没有模组需要检查更新</value>
   </data>
+  <data name="FailedToCheckModUpdate" xml:space="preserve">
+    <value>检查 {0} 更新失败: {1}</value>
+  </data>
   <data name="GitHubProxyAcceleration" xml:space="preserve">
     <value>GitHub代理加速</value>
   </data>
@@ -1874,5 +1877,314 @@
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>已禁用</value>
+  </data>
+  <data name="WorkStealingDetectedSlowChunk" xml:space="preserve">
+    <value>工作窃取: 检测到慢分块 {0} - 速度: {1:F2} MB/s (平均: {2:F2} MB/s), 进度: {3:F1}%, 耗时: {4:F1}秒</value>
+  </data>
+  <data name="WorkStealingSavedPartialData" xml:space="preserve">
+    <value>工作窃取: 从分块 {0} 保存部分数据 ({1:N0} 字节) 为分块 {2}</value>
+  </data>
+  <data name="WorkStealingNoPartialData" xml:space="preserve">
+    <value>工作窃取: 分块 {0} 被窃取但没有部分数据</value>
+  </data>
+  <data name="WorkStealingSplitRange" xml:space="preserve">
+    <value>工作窃取: 将 {0:N0} 字节拆分为 {1} 个小块</value>
+  </data>
+  <data name="WorkStealingSplitChunkInfo" xml:space="preserve">
+    <value>工作窃取: 分块 {0}: {1:N0} - {2:N0} ({3:N0} 字节)</value>
+  </data>
+  <data name="ChunkCancelledWithData" xml:space="preserve">
+    <value>分块 {0} 下载中被取消，已保存 {1:N0} 字节</value>
+  </data>
+  <data name="ChunkVirtualValidation" xml:space="preserve">
+    <value>分块 {0} (虚拟): {1:N0} 字节</value>
+  </data>
+  <data name="ChunkVirtualEmpty" xml:space="preserve">
+    <value>分块 {0} (虚拟): 空数据，已忽略</value>
+  </data>
+  <data name="DownloadStatisticsDifference" xml:space="preserve">
+    <value>下载统计差异: 预期 {0:N0}, 实际 {1:N0}, 差异 {2:N0}</value>
+  </data>
+  <data name="DownloadStatisticsNote" xml:space="preserve">
+    <value>如果文件完整性校验通过，此差异是统计问题，不影响文件正确性</value>
+  </data>
+  <data name="ChunkMergedToOffset" xml:space="preserve">
+    <value>分块 {0}: 合并到偏移 {1:N0} - {2:N0} ({3:N0} 字节)</value>
+  </data>
+  <data name="WorkStealingDownloadComplete" xml:space="preserve">
+    <value>工作窃取下载完成: {0:N0} 字节, {1} 总分块数, {2} 已完成, {3} 已取消</value>
+  </data>
+  <data name="RateLimitBlocksCleared" xml:space="preserve">
+    <value>速率限制已清除 - GitHub API 请求现在可以重试</value>
+  </data>
+  <data name="SkippingGitHubApiDueToRateLimit" xml:space="preserve">
+    <value>由于之前的速率限制，跳过 GitHub API 请求：{0}/{1}</value>
+  </data>
+  <data name="AllCachesClearedNoFiles" xml:space="preserve">
+    <value>所有缓存已清除（会话缓存已清除，未找到持久化缓存文件）</value>
+  </data>
+  <data name="DeletingExpiredGitHubCache" xml:space="preserve">
+    <value>删除过期的 GitHub releases 缓存：{0}/{1}（已过期 {2} 天）</value>
+  </data>
+  <data name="FileOperationTrackerInit" xml:space="preserve">
+    <value>文件操作追踪器已初始化</value>
+  </data>
+  <data name="FileOperationTrackingStarted" xml:space="preserve">
+    <value>开始文件操作追踪：{0} 在 {1}</value>
+  </data>
+  <data name="FileOperationTrackingNotStarted" xml:space="preserve">
+    <value>无法记录操作 - 追踪未启动</value>
+  </data>
+  <data name="FileOperationRecorded" xml:space="preserve">
+    <value>已记录文件操作 #{0}: {1} {2} -> {3} (大小: {4} 字节)</value>
+  </data>
+  <data name="FileOperationTrackingStopped" xml:space="preserve">
+    <value>停止文件操作追踪：{0}，记录了 {1} 个操作，耗时 {2}毫秒</value>
+  </data>
+  <data name="FileOperationListHeader" xml:space="preserve">
+    <value>{0} 的所有记录操作：</value>
+  </data>
+  <data name="FileOperationListItem" xml:space="preserve">
+    <value>[{0}] {1}: {2} ({3} 字节)</value>
+  </data>
+  <data name="FileOperationGetResult" xml:space="preserve">
+    <value>调用 GetResult：{0}，{1} 个文件总数，{2} 个新文件，{3} 个覆盖文件</value>
+  </data>
+  <data name="TrackedFileOperationsInit" xml:space="preserve">
+    <value>追踪文件操作已初始化</value>
+  </data>
+  <data name="ZipExtractionStarting" xml:space="preserve">
+    <value>开始 ZIP 解压到 {0}，数据大小：{1} 字节，排除模式：[{2}]</value>
+  </data>
+  <data name="ZipArchiveOpened" xml:space="preserve">
+    <value>ZIP 存档已打开，条目总数：{0}</value>
+  </data>
+  <data name="ZipSkippingDirectory" xml:space="preserve">
+    <value>跳过目录条目：{0}</value>
+  </data>
+  <data name="ZipExcludingByPattern" xml:space="preserve">
+    <value>根据模式排除文件：{0}</value>
+  </data>
+  <data name="ZipProcessingEntry" xml:space="preserve">
+    <value>处理 ZIP 条目：{0} -> {1}</value>
+  </data>
+  <data name="ZipCreatedDirectory" xml:space="preserve">
+    <value>已创建目录：{0}</value>
+  </data>
+  <data name="ZipOverwritingFile" xml:space="preserve">
+    <value>将覆盖现有文件：{0}（原始哈希：{1}）</value>
+  </data>
+  <data name="ZipCreatingNewFile" xml:space="preserve">
+    <value>创建新文件：{0}</value>
+  </data>
+  <data name="ZipExtractedSuccessfully" xml:space="preserve">
+    <value>成功解压：{0} ({1} 字节)</value>
+  </data>
+  <data name="ZipExtractFailed" xml:space="preserve">
+    <value>解压失败 {0}: {1}</value>
+  </data>
+  <data name="ZipExtractionCompleted" xml:space="preserve">
+    <value>ZIP 解压完成。已处理：{0}，已跳过：{1}，条目总数：{2}</value>
+  </data>
+  <data name="FileCopyStarting" xml:space="preserve">
+    <value>开始文件复制：{0} -> {1}</value>
+  </data>
+  <data name="FileCopySourceNotFound" xml:space="preserve">
+    <value>源文件不存在：{0}</value>
+  </data>
+  <data name="FileCopyOverwriting" xml:space="preserve">
+    <value>将覆盖现有文件：{0}（原始哈希：{1}）</value>
+  </data>
+  <data name="FileCopyCreatingNew" xml:space="preserve">
+    <value>创建新文件：{0}</value>
+  </data>
+  <data name="FileCopyEnsuredDirectory" xml:space="preserve">
+    <value>确保目标目录存在：{0}</value>
+  </data>
+  <data name="FileCopySuccess" xml:space="preserve">
+    <value>成功复制文件：{0} ({1} 字节)</value>
+  </data>
+  <data name="FileCopyFailed" xml:space="preserve">
+    <value>文件复制失败 {0} -> {1}: {2}</value>
+  </data>
+  <data name="DirectoryCopyStarting" xml:space="preserve">
+    <value>开始目录复制：{0} -> {1}，排除模式：[{2}]</value>
+  </data>
+  <data name="DirectoryCopySourceNotFound" xml:space="preserve">
+    <value>源目录不存在：{0}</value>
+  </data>
+  <data name="DirectoryCopyCompleted" xml:space="preserve">
+    <value>目录复制完成：{0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyProcessing" xml:space="preserve">
+    <value>处理目录：{0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyFoundFiles" xml:space="preserve">
+    <value>在 {1} 中找到 {0} 个文件</value>
+  </data>
+  <data name="DirectoryCopyExcludingFile" xml:space="preserve">
+    <value>根据模式排除文件：{0}</value>
+  </data>
+  <data name="DirectoryCopyingFile" xml:space="preserve">
+    <value>复制文件：{0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyFoundSubdirs" xml:space="preserve">
+    <value>在 {1} 中找到 {0} 个子目录</value>
+  </data>
+  <data name="DirectoryCopyExcludingDir" xml:space="preserve">
+    <value>根据模式排除目录：{0}</value>
+  </data>
+  <data name="DirectoryCopyRecursing" xml:space="preserve">
+    <value>递归进入子目录：{0} -> {1}</value>
+  </data>
+  <data name="HashCalculating" xml:space="preserve">
+    <value>计算文件哈希：{0}</value>
+  </data>
+  <data name="HashCalculated" xml:space="preserve">
+    <value>哈希已计算：{0} = {1}</value>
+  </data>
+  <data name="HashCalculationFailed" xml:space="preserve">
+    <value>哈希计算失败：{0} - {1}</value>
+  </data>
+  <data name="NoFilesProvidedForModBackup" xml:space="preserve">
+    <value>未提供模组备份文件：{0}。这可能表示无法找到模组文件。</value>
+  </data>
+  <data name="NoFilesFoundToDisableForMod" xml:space="preserve">
+    <value>未找到要禁用的模组文件：{0}</value>
+  </data>
+  <data name="NoBackupFilesFoundCleaningUp" xml:space="preserve">
+    <value>未找到模组 {0} 的备份文件，正在清理备份目录</value>
+  </data>
+  <data name="RestoredModFile" xml:space="preserve">
+    <value>已恢复模组文件：{0} -> {1}</value>
+  </data>
+  <data name="CannotUpdateModCanUpdateFalse" xml:space="preserve">
+    <value>无法更新模组：{0}，CanUpdate 为 false</value>
+  </data>
+  <data name="CannotReinstallModCanReinstallFalse" xml:space="preserve">
+    <value>无法重新安装模组：{0}，CanReinstall 为 false</value>
+  </data>
+  <data name="CheckingForApplicationUpdates" xml:space="preserve">
+    <value>正在检查应用程序更新...</value>
+  </data>
+  <data name="NoUpdateAvailableToDownload" xml:space="preserve">
+    <value>没有可用的更新可下载</value>
+  </data>
+  <data name="AttemptingQuickReinstallFromBackup" xml:space="preserve">
+    <value>尝试从备份快速重新安装 {0} 版本 {1}</value>
+  </data>
+  <data name="NoFilesProcessedDuringInstallation" xml:space="preserve">
+    <value>在安装 {0} 期间未处理任何文件</value>
+  </data>
+  <data name="ModConfigNotFoundForUpdate" xml:space="preserve">
+    <value>未找到要更新的模组配置：{0}</value>
+  </data>
+  <data name="ModNotInstalledCannotUpdate" xml:space="preserve">
+    <value>模组未安装，无法更新：{0}</value>
+  </data>
+  <data name="RestoredModFromBackupAfterFailedUpdate" xml:space="preserve">
+    <value>更新失败后从备份恢复模组：{0}</value>
+  </data>
+  <data name="ModDisabledMovingBackupToUninstalled" xml:space="preserve">
+    <value>模组 {0} 当前已禁用，正在将禁用备份移至卸载备份</value>
+  </data>
+  <data name="MovedDisabledBackupToUninstalled" xml:space="preserve">
+    <value>已将禁用备份移至卸载备份：{0}</value>
+  </data>
+  <data name="ManualModDisabledMovingBackup" xml:space="preserve">
+    <value>手动模组 {0} 当前已禁用，正在将禁用备份移至卸载备份</value>
+  </data>
+  <data name="MovedDisabledManualModBackup" xml:space="preserve">
+    <value>已将禁用的手动模组备份移至卸载备份：{0}</value>
+  </data>
+  <data name="RemovedEmptyDirectory" xml:space="preserve">
+    <value>已删除空目录：{0}</value>
+  </data>
+  <data name="CouldNotRemoveDirectory" xml:space="preserve">
+    <value>无法删除目录 {0}：{1}</value>
+  </data>
+  <data name="ProcessingManualModToggle" xml:space="preserve">
+    <value>正在处理手动模组切换：{0}</value>
+  </data>
+  <data name="FailedToStartScriptProcess" xml:space="preserve">
+    <value>启动脚本进程失败</value>
+  </data>
+  <data name="ErrorRecordingDirectoryState" xml:space="preserve">
+    <value>记录目录状态时出错 {0}：{1}</value>
+  </data>
+  <data name="FailedToProcessCacheFile" xml:space="preserve">
+    <value>处理缓存文件失败 {0}：{1}</value>
+  </data>
+  <data name="FailedToReadGitHubReleasesFromCache" xml:space="preserve">
+    <value>从持久缓存读取 GitHub 发布版本失败 {0}/{1}：{2}</value>
+  </data>
+  <data name="FailedToDeleteOldCacheFile" xml:space="preserve">
+    <value>删除旧缓存文件失败 {0}：{1}</value>
+  </data>
+  <data name="FailedToSaveGitHubReleasesToCache" xml:space="preserve">
+    <value>将 GitHub 发布版本保存到持久缓存失败 {0}/{1}：{2}</value>
+  </data>
+  <data name="URLIsNotGitHubRepository" xml:space="preserve">
+    <value>URL 不是 GitHub 仓库：{0}</value>
+  </data>
+  <data name="InvalidGitHubRepositoryPath" xml:space="preserve">
+    <value>无效的 GitHub 仓库路径：{0}</value>
+  </data>
+  <data name="FailedToDownloadTranslationZip" xml:space="preserve">
+    <value>下载翻译 ZIP 文件失败</value>
+  </data>
+  <data name="TranslationBackupDirectoryInitialized" xml:space="preserve">
+    <value>翻译备份目录已初始化：{0}</value>
+  </data>
+  <data name="NoTranslationFilesFoundToDisable" xml:space="preserve">
+    <value>未找到要禁用的翻译文件</value>
+  </data>
+  <data name="MovedTranslationFileToBackup" xml:space="preserve">
+    <value>已将翻译文件移至备份：{0} -> {1}</value>
+  </data>
+  <data name="TranslationSystemDisabledAndBackedUp" xml:space="preserve">
+    <value>翻译系统已禁用并备份</value>
+  </data>
+  <data name="TranslationSystemAlreadyEnabled" xml:space="preserve">
+    <value>翻译系统已经启用</value>
+  </data>
+  <data name="NoTranslationBackupFoundPleaseInstall" xml:space="preserve">
+    <value>未找到翻译备份且翻译未安装。请先安装翻译系统。</value>
+  </data>
+  <data name="TranslationBackupManifestEmpty" xml:space="preserve">
+    <value>翻译备份清单为空或无效</value>
+  </data>
+  <data name="RestoredTranslationFile" xml:space="preserve">
+    <value>已恢复翻译文件：{0} -> {1}</value>
+  </data>
+  <data name="TranslationSystemEnabledFromBackup" xml:space="preserve">
+    <value>翻译系统已从备份启用</value>
+  </data>
+  <data name="FailedToReadTranslationInstallManifest" xml:space="preserve">
+    <value>读取翻译安装清单失败：{0}</value>
+  </data>
+  <data name="UsingFallbackMethodToDetectTranslationFiles" xml:space="preserve">
+    <value>使用备用方法检测翻译文件</value>
+  </data>
+  <data name="LaunchingUpdateScript" xml:space="preserve">
+    <value>正在启动更新脚本...</value>
+  </data>
+  <data name="CannotUpdateManuallyInstalledTranslation" xml:space="preserve">
+    <value>无法更新手动安装的翻译。此翻译不是通过模组管理器安装的。如需启用更新功能，请手动卸载后通过模组管理器重新安装。</value>
+  </data>
+  <data name="CannotUninstallManuallyInstalledTranslation" xml:space="preserve">
+    <value>无法卸载手动安装的翻译。此翻译不是通过模组管理器安装的。如需卸载，请手动删除相关文件。</value>
+  </data>
+  <data name="FollowBilibili" xml:space="preserve">
+    <value>B站关注我</value>
+  </data>
+  <data name="JoinGhpcCommunity" xml:space="preserve">
+    <value>GHPC交流群</value>
+  </data>
+  <data name="FailedToOpenBilibili" xml:space="preserve">
+    <value>打开B站失败</value>
+  </data>
+  <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
+    <value>打开GHPC交流群页面失败</value>
   </data>
 </root>

@@ -1656,6 +1656,9 @@
   <data name="NoModsToCheck" xml:space="preserve">
     <value>No mods to check for updates</value>
   </data>
+  <data name="FailedToCheckModUpdate" xml:space="preserve">
+    <value>Failed to check update for {0}: {1}</value>
+  </data>
   <data name="GitHubProxyAcceleration" xml:space="preserve">
     <value>GitHub Proxy Acceleration</value>
   </data>
@@ -1874,5 +1877,314 @@
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Disabled</value>
+  </data>
+  <data name="WorkStealingDetectedSlowChunk" xml:space="preserve">
+    <value>Work Stealing: Detected slow chunk {0} - Speed: {1:F2} MB/s (Avg: {2:F2} MB/s), Progress: {3:F1}%, Elapsed: {4:F1}s</value>
+  </data>
+  <data name="WorkStealingSavedPartialData" xml:space="preserve">
+    <value>Work Stealing: Saved partial data from chunk {0} ({1:N0} bytes) as chunk {2}</value>
+  </data>
+  <data name="WorkStealingNoPartialData" xml:space="preserve">
+    <value>Work Stealing: Chunk {0} was stolen but has no partial data</value>
+  </data>
+  <data name="WorkStealingSplitRange" xml:space="preserve">
+    <value>Work Stealing: Split {0:N0} bytes into {1} smaller chunks</value>
+  </data>
+  <data name="WorkStealingSplitChunkInfo" xml:space="preserve">
+    <value>Work Stealing: Chunk {0}: {1:N0} - {2:N0} ({3:N0} bytes)</value>
+  </data>
+  <data name="ChunkCancelledWithData" xml:space="preserve">
+    <value>Chunk {0} cancelled during download, saved {1:N0} bytes</value>
+  </data>
+  <data name="ChunkVirtualValidation" xml:space="preserve">
+    <value>Chunk {0} (virtual): {1:N0} bytes</value>
+  </data>
+  <data name="ChunkVirtualEmpty" xml:space="preserve">
+    <value>Chunk {0} (virtual): Empty data, ignored</value>
+  </data>
+  <data name="DownloadStatisticsDifference" xml:space="preserve">
+    <value>Download statistics difference: Expected {0:N0}, Actual {1:N0}, Diff {2:N0}</value>
+  </data>
+  <data name="DownloadStatisticsNote" xml:space="preserve">
+    <value>If file integrity check passes, this difference is a statistics issue and does not affect file correctness</value>
+  </data>
+  <data name="ChunkMergedToOffset" xml:space="preserve">
+    <value>Chunk {0}: Merged to offset {1:N0} - {2:N0} ({3:N0} bytes)</value>
+  </data>
+  <data name="WorkStealingDownloadComplete" xml:space="preserve">
+    <value>Work Stealing download completed: {0:N0} bytes, {1} total chunks, {2} completed, {3} cancelled</value>
+  </data>
+  <data name="RateLimitBlocksCleared" xml:space="preserve">
+    <value>Rate limit blocks cleared - GitHub API requests can now be retried</value>
+  </data>
+  <data name="SkippingGitHubApiDueToRateLimit" xml:space="preserve">
+    <value>Skipping GitHub API request due to previous rate limit for {0}/{1}</value>
+  </data>
+  <data name="AllCachesClearedNoFiles" xml:space="preserve">
+    <value>All caches cleared (session cache cleared, no persistent cache files found)</value>
+  </data>
+  <data name="DeletingExpiredGitHubCache" xml:space="preserve">
+    <value>Deleting expired GitHub releases cache for {0}/{1} (age: {2} days)</value>
+  </data>
+  <data name="FileOperationTrackerInit" xml:space="preserve">
+    <value>FileOperationTracker initialized</value>
+  </data>
+  <data name="FileOperationTrackingStarted" xml:space="preserve">
+    <value>Started file operation tracking: {0} in {1}</value>
+  </data>
+  <data name="FileOperationTrackingNotStarted" xml:space="preserve">
+    <value>Cannot record operation - tracking not started</value>
+  </data>
+  <data name="FileOperationRecorded" xml:space="preserve">
+    <value>Recorded file operation #{0}: {1} {2} -> {3} (size: {4} bytes)</value>
+  </data>
+  <data name="FileOperationTrackingStopped" xml:space="preserve">
+    <value>Stopped file operation tracking: {0}, recorded {1} operations in {2}ms</value>
+  </data>
+  <data name="FileOperationListHeader" xml:space="preserve">
+    <value>All recorded operations for {0}:</value>
+  </data>
+  <data name="FileOperationListItem" xml:space="preserve">
+    <value>[{0}] {1}: {2} ({3} bytes)</value>
+  </data>
+  <data name="FileOperationGetResult" xml:space="preserve">
+    <value>GetResult called for {0}: {1} total files, {2} new files, {3} overwritten files</value>
+  </data>
+  <data name="TrackedFileOperationsInit" xml:space="preserve">
+    <value>TrackedFileOperations initialized</value>
+  </data>
+  <data name="ZipExtractionStarting" xml:space="preserve">
+    <value>Starting ZIP extraction to {0}, data size: {1} bytes, exclude patterns: [{2}]</value>
+  </data>
+  <data name="ZipArchiveOpened" xml:space="preserve">
+    <value>ZIP archive opened, total entries: {0}</value>
+  </data>
+  <data name="ZipSkippingDirectory" xml:space="preserve">
+    <value>Skipping directory entry: {0}</value>
+  </data>
+  <data name="ZipExcludingByPattern" xml:space="preserve">
+    <value>Excluding file due to pattern: {0}</value>
+  </data>
+  <data name="ZipProcessingEntry" xml:space="preserve">
+    <value>Processing ZIP entry: {0} -> {1}</value>
+  </data>
+  <data name="ZipCreatedDirectory" xml:space="preserve">
+    <value>Created directory: {0}</value>
+  </data>
+  <data name="ZipOverwritingFile" xml:space="preserve">
+    <value>Will overwrite existing file: {0} (original hash: {1})</value>
+  </data>
+  <data name="ZipCreatingNewFile" xml:space="preserve">
+    <value>Creating new file: {0}</value>
+  </data>
+  <data name="ZipExtractedSuccessfully" xml:space="preserve">
+    <value>Successfully extracted: {0} ({1} bytes)</value>
+  </data>
+  <data name="ZipExtractFailed" xml:space="preserve">
+    <value>Failed to extract {0}: {1}</value>
+  </data>
+  <data name="ZipExtractionCompleted" xml:space="preserve">
+    <value>ZIP extraction completed. Processed: {0}, Skipped: {1}, Total entries: {2}</value>
+  </data>
+  <data name="FileCopyStarting" xml:space="preserve">
+    <value>Starting file copy: {0} -> {1}</value>
+  </data>
+  <data name="FileCopySourceNotFound" xml:space="preserve">
+    <value>Source file does not exist: {0}</value>
+  </data>
+  <data name="FileCopyOverwriting" xml:space="preserve">
+    <value>Will overwrite existing file: {0} (original hash: {1})</value>
+  </data>
+  <data name="FileCopyCreatingNew" xml:space="preserve">
+    <value>Creating new file: {0}</value>
+  </data>
+  <data name="FileCopyEnsuredDirectory" xml:space="preserve">
+    <value>Ensured target directory exists: {0}</value>
+  </data>
+  <data name="FileCopySuccess" xml:space="preserve">
+    <value>Successfully copied file: {0} ({1} bytes)</value>
+  </data>
+  <data name="FileCopyFailed" xml:space="preserve">
+    <value>Failed to copy file {0} -> {1}: {2}</value>
+  </data>
+  <data name="DirectoryCopyStarting" xml:space="preserve">
+    <value>Starting directory copy: {0} -> {1}, exclude patterns: [{2}]</value>
+  </data>
+  <data name="DirectoryCopySourceNotFound" xml:space="preserve">
+    <value>Source directory does not exist: {0}</value>
+  </data>
+  <data name="DirectoryCopyCompleted" xml:space="preserve">
+    <value>Directory copy completed: {0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyProcessing" xml:space="preserve">
+    <value>Processing directory: {0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyFoundFiles" xml:space="preserve">
+    <value>Found {0} files in {1}</value>
+  </data>
+  <data name="DirectoryCopyExcludingFile" xml:space="preserve">
+    <value>Excluding file due to pattern: {0}</value>
+  </data>
+  <data name="DirectoryCopyingFile" xml:space="preserve">
+    <value>Copying file: {0} -> {1}</value>
+  </data>
+  <data name="DirectoryCopyFoundSubdirs" xml:space="preserve">
+    <value>Found {0} subdirectories in {1}</value>
+  </data>
+  <data name="DirectoryCopyExcludingDir" xml:space="preserve">
+    <value>Excluding directory due to pattern: {0}</value>
+  </data>
+  <data name="DirectoryCopyRecursing" xml:space="preserve">
+    <value>Recursing into subdirectory: {0} -> {1}</value>
+  </data>
+  <data name="HashCalculating" xml:space="preserve">
+    <value>Calculating hash for file: {0}</value>
+  </data>
+  <data name="HashCalculated" xml:space="preserve">
+    <value>Hash calculated for {0}: {1}</value>
+  </data>
+  <data name="HashCalculationFailed" xml:space="preserve">
+    <value>Failed to calculate hash for {0}: {1}</value>
+  </data>
+  <data name="NoFilesProvidedForModBackup" xml:space="preserve">
+    <value>No files provided for mod backup: {0}. This might indicate the mod files couldn't be located.</value>
+  </data>
+  <data name="NoFilesFoundToDisableForMod" xml:space="preserve">
+    <value>No files found to disable for mod: {0}</value>
+  </data>
+  <data name="NoBackupFilesFoundCleaningUp" xml:space="preserve">
+    <value>No backup files found for mod: {0}, cleaning up backup directory</value>
+  </data>
+  <data name="RestoredModFile" xml:space="preserve">
+    <value>Restored mod file: {0} -> {1}</value>
+  </data>
+  <data name="CannotUpdateModCanUpdateFalse" xml:space="preserve">
+    <value>Cannot update mod: {0}, CanUpdate is false</value>
+  </data>
+  <data name="CannotReinstallModCanReinstallFalse" xml:space="preserve">
+    <value>Cannot reinstall mod: {0}, CanReinstall is false</value>
+  </data>
+  <data name="CheckingForApplicationUpdates" xml:space="preserve">
+    <value>Checking for application updates...</value>
+  </data>
+  <data name="NoUpdateAvailableToDownload" xml:space="preserve">
+    <value>No update available to download</value>
+  </data>
+  <data name="AttemptingQuickReinstallFromBackup" xml:space="preserve">
+    <value>Attempting quick reinstall from backup for {0} version {1}</value>
+  </data>
+  <data name="NoFilesProcessedDuringInstallation" xml:space="preserve">
+    <value>No files were processed during installation of {0}</value>
+  </data>
+  <data name="ModConfigNotFoundForUpdate" xml:space="preserve">
+    <value>Mod configuration not found for update: {0}</value>
+  </data>
+  <data name="ModNotInstalledCannotUpdate" xml:space="preserve">
+    <value>Mod not installed, cannot update: {0}</value>
+  </data>
+  <data name="RestoredModFromBackupAfterFailedUpdate" xml:space="preserve">
+    <value>Restored mod from backup after failed update: {0}</value>
+  </data>
+  <data name="ModDisabledMovingBackupToUninstalled" xml:space="preserve">
+    <value>Mod {0} is currently disabled, moving disabled backup to uninstalled backup</value>
+  </data>
+  <data name="MovedDisabledBackupToUninstalled" xml:space="preserve">
+    <value>Moved disabled backup to uninstalled backup: {0}</value>
+  </data>
+  <data name="ManualModDisabledMovingBackup" xml:space="preserve">
+    <value>Manual mod {0} is currently disabled, moving disabled backup to uninstalled backup</value>
+  </data>
+  <data name="MovedDisabledManualModBackup" xml:space="preserve">
+    <value>Moved disabled manual mod backup to uninstalled backup: {0}</value>
+  </data>
+  <data name="RemovedEmptyDirectory" xml:space="preserve">
+    <value>Removed empty directory: {0}</value>
+  </data>
+  <data name="CouldNotRemoveDirectory" xml:space="preserve">
+    <value>Could not remove directory {0}: {1}</value>
+  </data>
+  <data name="ProcessingManualModToggle" xml:space="preserve">
+    <value>Processing manual mod toggle for: {0}</value>
+  </data>
+  <data name="FailedToStartScriptProcess" xml:space="preserve">
+    <value>Failed to start script process</value>
+  </data>
+  <data name="ErrorRecordingDirectoryState" xml:space="preserve">
+    <value>Error recording directory state for {0}: {1}</value>
+  </data>
+  <data name="FailedToProcessCacheFile" xml:space="preserve">
+    <value>Failed to process cache file {0}: {1}</value>
+  </data>
+  <data name="FailedToReadGitHubReleasesFromCache" xml:space="preserve">
+    <value>Failed to read GitHub releases from persistent cache for {0}/{1}: {2}</value>
+  </data>
+  <data name="FailedToDeleteOldCacheFile" xml:space="preserve">
+    <value>Failed to delete old cache file {0}: {1}</value>
+  </data>
+  <data name="FailedToSaveGitHubReleasesToCache" xml:space="preserve">
+    <value>Failed to save GitHub releases to persistent cache for {0}/{1}: {2}</value>
+  </data>
+  <data name="URLIsNotGitHubRepository" xml:space="preserve">
+    <value>URL is not a GitHub repository: {0}</value>
+  </data>
+  <data name="InvalidGitHubRepositoryPath" xml:space="preserve">
+    <value>Invalid GitHub repository path: {0}</value>
+  </data>
+  <data name="FailedToDownloadTranslationZip" xml:space="preserve">
+    <value>Failed to download translation ZIP file</value>
+  </data>
+  <data name="TranslationBackupDirectoryInitialized" xml:space="preserve">
+    <value>Translation backup directory initialized: {0}</value>
+  </data>
+  <data name="NoTranslationFilesFoundToDisable" xml:space="preserve">
+    <value>No translation files found to disable</value>
+  </data>
+  <data name="MovedTranslationFileToBackup" xml:space="preserve">
+    <value>Moved translation file to backup: {0} -> {1}</value>
+  </data>
+  <data name="TranslationSystemDisabledAndBackedUp" xml:space="preserve">
+    <value>Translation system disabled and backed up</value>
+  </data>
+  <data name="TranslationSystemAlreadyEnabled" xml:space="preserve">
+    <value>Translation system is already enabled</value>
+  </data>
+  <data name="NoTranslationBackupFoundPleaseInstall" xml:space="preserve">
+    <value>No translation backup found and translation is not installed. Please install the translation system first.</value>
+  </data>
+  <data name="TranslationBackupManifestEmpty" xml:space="preserve">
+    <value>Translation backup manifest is empty or invalid</value>
+  </data>
+  <data name="RestoredTranslationFile" xml:space="preserve">
+    <value>Restored translation file: {0} -> {1}</value>
+  </data>
+  <data name="TranslationSystemEnabledFromBackup" xml:space="preserve">
+    <value>Translation system enabled from backup</value>
+  </data>
+  <data name="FailedToReadTranslationInstallManifest" xml:space="preserve">
+    <value>Failed to read translation install manifest: {0}</value>
+  </data>
+  <data name="UsingFallbackMethodToDetectTranslationFiles" xml:space="preserve">
+    <value>Using fallback method to detect translation files</value>
+  </data>
+  <data name="LaunchingUpdateScript" xml:space="preserve">
+    <value>Launching update script...</value>
+  </data>
+  <data name="CannotUpdateManuallyInstalledTranslation" xml:space="preserve">
+    <value>Cannot update manually installed translation. This translation was not installed through Mod Manager. Please uninstall it manually and reinstall through Mod Manager to enable update functionality.</value>
+  </data>
+  <data name="CannotUninstallManuallyInstalledTranslation" xml:space="preserve">
+    <value>Cannot uninstall manually installed translation. This translation was not installed through Mod Manager. Please uninstall it manually if needed.</value>
+  </data>
+  <data name="FollowBilibili" xml:space="preserve">
+    <value>Follow on Bilibili</value>
+  </data>
+  <data name="JoinGhpcCommunity" xml:space="preserve">
+    <value>GHPC QQ Community</value>
+  </data>
+  <data name="FailedToOpenBilibili" xml:space="preserve">
+    <value>Failed to open Bilibili</value>
+  </data>
+  <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
+    <value>Failed to open GHPC community page</value>
   </data>
 </root>

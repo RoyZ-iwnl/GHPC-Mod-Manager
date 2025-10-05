@@ -264,7 +264,7 @@ public class ModManagerService : IModManagerService
             // Check if we can reinstall from backup first (quick install)
             if (await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version))
             {
-                _loggingService.LogInfo("Attempting quick reinstall from backup for {0} version {1}", modConfig.Id, version);
+                _loggingService.LogInfo(Strings.AttemptingQuickReinstallFromBackup, modConfig.Id, version);
                 
                 var quickInstallSuccess = await _modBackupService.ReinstallModFromBackupAsync(modConfig.Id, version);
                 if (quickInstallSuccess)
@@ -385,7 +385,7 @@ public class ModManagerService : IModManagerService
 
             if (!processedFiles.Any())
             {
-                _loggingService.LogError("No files were processed during installation of {0}", modConfig.Id);
+                _loggingService.LogError(Strings.NoFilesProcessedDuringInstallation, modConfig.Id);
                 return false;
             }
 
@@ -420,14 +420,14 @@ public class ModManagerService : IModManagerService
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
             if (modConfig == null)
             {
-                _loggingService.LogError("Mod configuration not found for update: {0}", modId);
+                _loggingService.LogError(Strings.ModConfigNotFoundForUpdate, modId);
                 return false;
             }
 
             // Check if mod is currently installed
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var currentInstallInfo))
             {
-                _loggingService.LogError("Mod not installed, cannot update: {0}", modId);
+                _loggingService.LogError(Strings.ModNotInstalledCannotUpdate, modId);
                 return false;
             }
 
@@ -557,7 +557,7 @@ public class ModManagerService : IModManagerService
                 if (_installManifest.InstalledMods.TryGetValue(modId, out var backupInfo))
                 {
                     await _modBackupService.ReinstallModFromBackupAsync(modId, backupInfo.Version);
-                    _loggingService.LogInfo("Restored mod from backup after failed update: {0}", modId);
+                    _loggingService.LogInfo(Strings.RestoredModFromBackupAfterFailedUpdate, modId);
                 }
             }
             catch (Exception restoreEx)
@@ -588,7 +588,7 @@ public class ModManagerService : IModManagerService
             // Check if mod is currently disabled (has backup in disabled folder)
             if (Directory.Exists(disabledBackupPath))
             {
-                _loggingService.LogInfo("Mod {0} is currently disabled, moving disabled backup to uninstalled backup", modId);
+                _loggingService.LogInfo(Strings.ModDisabledMovingBackupToUninstalled, modId);
                 
                 // Create uninstalled backup directory
                 Directory.CreateDirectory(Path.GetDirectoryName(uninstalledBackupPath)!);
@@ -613,7 +613,7 @@ public class ModManagerService : IModManagerService
                 var manifestJson = System.Text.Json.JsonSerializer.Serialize(backupManifest, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
                 await File.WriteAllTextAsync(manifestPath, manifestJson);
                 
-                _loggingService.LogInfo("Moved disabled backup to uninstalled backup: {0}", modId);
+                _loggingService.LogInfo(Strings.MovedDisabledBackupToUninstalled, modId);
             }
             else
             {
@@ -673,7 +673,7 @@ public class ModManagerService : IModManagerService
             // Check if mod is currently disabled (has backup in disabled folder)
             if (Directory.Exists(disabledBackupPath))
             {
-                _loggingService.LogInfo("Manual mod {0} is currently disabled, moving disabled backup to uninstalled backup", modId);
+                _loggingService.LogInfo(Strings.ManualModDisabledMovingBackup, modId);
                 
                 // Create uninstalled backup directory
                 Directory.CreateDirectory(Path.GetDirectoryName(uninstalledBackupPath)!);
@@ -698,7 +698,7 @@ public class ModManagerService : IModManagerService
                 var manifestJson = System.Text.Json.JsonSerializer.Serialize(backupManifest, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
                 await File.WriteAllTextAsync(manifestPath, manifestJson);
                 
-                _loggingService.LogInfo("Moved disabled manual mod backup to uninstalled backup: {0}", modId);
+                _loggingService.LogInfo(Strings.MovedDisabledManualModBackup, modId);
             }
             else
             {
@@ -803,12 +803,12 @@ public class ModManagerService : IModManagerService
                         if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
                         {
                             Directory.Delete(directory);
-                            _loggingService.LogInfo("Removed empty directory: {0}", directory);
+                            _loggingService.LogInfo(Strings.RemovedEmptyDirectory, directory);
                         }
                     }
                     catch (Exception ex)
                     {
-                        _loggingService.LogWarning("Could not remove directory {0}: {1}", directory, ex.Message);
+                        _loggingService.LogWarning(Strings.CouldNotRemoveDirectory, directory, ex.Message);
                     }
                 }
             }
@@ -855,7 +855,7 @@ public class ModManagerService : IModManagerService
             // For manual mods, try to find the actual files based on mod type
             else if (isManualMod)
             {
-                _loggingService.LogInfo("Processing manual mod toggle for: {0}", modId);
+                _loggingService.LogInfo(Strings.ProcessingManualModToggle, modId);
                 
                 var gameRootPath = _settingsService.Settings.GameRootPath;
                 var modsPath = Path.Combine(gameRootPath, "Mods");
@@ -1439,7 +1439,7 @@ public class ModManagerService : IModManagerService
         }
         else
         {
-            _loggingService.LogError("Failed to start script process");
+            _loggingService.LogError(Strings.FailedToStartScriptProcess);
         }
         
         // 检测脚本执行后文件的变化
@@ -1495,7 +1495,7 @@ public class ModManagerService : IModManagerService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError("Error recording directory state for {0}: {1}", directory, ex.Message);
+            _loggingService.LogError(Strings.ErrorRecordingDirectoryState, directory, ex.Message);
         }
     }
 

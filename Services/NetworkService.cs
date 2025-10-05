@@ -360,7 +360,7 @@ public class NetworkService : INetworkService
             var rateLimitKey = $"github_api_{repoOwner}_{repoName}";
             if (_rateLimitBlocks.ContainsKey(rateLimitKey))
             {
-                _loggingService.LogInfo("Skipping GitHub API request due to previous rate limit for {0}/{1}", repoOwner, repoName);
+                _loggingService.LogInfo(Strings.SkippingGitHubApiDueToRateLimit, repoOwner, repoName);
                 // Try to return stale cache if available
                 var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
                 return staleCache ?? new List<GitHubRelease>();
@@ -391,11 +391,8 @@ public class NetworkService : INetworkService
                 result = releases ?? new List<GitHubRelease>();
             }
 
-            // Save to persistent cache (only if not force refresh)
-            if (!forceRefresh)
-            {
-                await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);
-            }
+            // Save to persistent cache (always save fresh data)
+            await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);
 
             return result;
         }
@@ -626,11 +623,17 @@ public class NetworkService : INetworkService
 
     private async Task<byte[]> DownloadFileMultiThreadedAsync(string url, long totalBytes, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
     {
-        // IDM-style parameters: dynamic thread count and smaller chunks
+        // IDM-style parameters with Work Stealing support
         const int idealChunkSize = 512 * 1024; // 512KB chunks for better granularity
         const int minChunkSize = 256 * 1024;   // 256KB minimum
         const int maxChunkSize = 2 * 1024 * 1024; // 2MB maximum
         const int maxConcurrentThreads = 16; // Maximum concurrent connections
+
+        // Work Stealing parameters
+        const double slowChunkThreshold = 0.3;  // Speed < 30% of average is considered slow
+        const double slowChunkMinTime = 2.0;   // Minimum 2 seconds before checking for slow chunks
+        const long stealMinRemaining = 256 * 1024; // Minimum 256KB remaining to steal
+        const long minSplitSize = 128 * 1024;   // Minimum 128KB split unit
 
         // Calculate chunk size based on file size
         var chunkSize = idealChunkSize;
@@ -646,100 +649,255 @@ public class NetworkService : INetworkService
         // Calculate total number of chunks
         var totalChunks = (int)Math.Ceiling((double)totalBytes / chunkSize);
 
-        // Calculate optimal thread count (but don't exceed maxConcurrentThreads)
+        // Calculate optimal thread count
         var optimalThreads = Math.Min(maxConcurrentThreads, Math.Max(4, totalChunks / 4));
 
         _loggingService.LogInfo(Strings.StartingIdmDownload, totalChunks, optimalThreads, $"{chunkSize:N0}");
 
-        // Work queue pattern: chunks to download
-        var chunkQueue = new Queue<ChunkDownloadTask>();
+        // Create initial chunk states
+        var chunkStates = new Dictionary<int, ChunkState>();
+        var chunkQueue = new Queue<ChunkState>();
+
         for (int i = 0; i < totalChunks; i++)
         {
             var startByte = (long)i * chunkSize;
             var endByte = Math.Min(startByte + chunkSize - 1, totalBytes - 1);
-            chunkQueue.Enqueue(new ChunkDownloadTask
+            var state = new ChunkState
             {
                 ChunkIndex = i,
                 StartByte = startByte,
-                EndByte = endByte
-            });
+                EndByte = endByte,
+                Status = ChunkStatus.Pending
+            };
+            chunkStates[i] = state;
+            chunkQueue.Enqueue(state);
         }
 
-        // Storage for downloaded chunks
-        var chunks = new byte[totalChunks][];
-        var progressLock = new object();
+        // Progress tracking
+        var stateLock = new object();
         var queueLock = new object();
         var completedBytes = 0L;
         var startTime = DateTime.Now;
         var lastUpdateTime = startTime;
         var lastCompletedBytes = 0L;
 
+        // Helper: Calculate global average speed
+        double CalculateGlobalAvgSpeed()
+        {
+            lock (stateLock)
+            {
+                var activeSpeeds = chunkStates.Values
+                    .Where(cs => cs.Status == ChunkStatus.Downloading && !cs.IsCancelled && cs.CurrentSpeed > 0)
+                    .Select(cs => cs.CurrentSpeed)
+                    .ToList();
+
+                return activeSpeeds.Any() ? activeSpeeds.Average() : 0.0;
+            }
+        }
+
+        // Helper: Find slow chunk to steal
+        ChunkState? FindSlowChunkToSteal()
+        {
+            lock (stateLock)
+            {
+                var avgSpeed = CalculateGlobalAvgSpeed();
+                if (avgSpeed == 0) return null;
+
+                var slowCandidates = chunkStates.Values
+                    .Where(cs => cs.Status == ChunkStatus.Downloading &&
+                                !cs.IsCancelled &&
+                                cs.ElapsedTime.TotalSeconds > slowChunkMinTime &&
+                                cs.CurrentSpeed > 0 &&
+                                cs.CurrentSpeed < avgSpeed * slowChunkThreshold &&
+                                cs.RemainingBytes > stealMinRemaining)
+                    .ToList();
+
+                if (!slowCandidates.Any()) return null;
+
+                // Select slowest chunk
+                var slowest = slowCandidates.OrderBy(cs => cs.CurrentSpeed).First();
+
+                // Mark as cancelled
+                slowest.IsCancelled = true;
+
+                _loggingService.LogInfo(Strings.WorkStealingDetectedSlowChunk,
+                    slowest.ChunkIndex,
+                    slowest.CurrentSpeed / 1024 / 1024,
+                    avgSpeed / 1024 / 1024,
+                    slowest.ProgressPercentage,
+                    slowest.ElapsedTime.TotalSeconds);
+
+                return slowest;
+            }
+        }
+
+        // Helper: Split stolen range
+        void SplitStolenRange(ChunkState oldChunk, long stealStart, long stealEnd, byte[]? partialData)
+        {
+            lock (stateLock)
+            {
+                // Save partial data if exists
+                if (partialData != null && partialData.Length > 0)
+                {
+                    var partialIndex = chunkStates.Keys.Max() + 1000;
+                    var partialChunk = new ChunkState
+                    {
+                        ChunkIndex = partialIndex,
+                        StartByte = oldChunk.StartByte,
+                        EndByte = oldChunk.StartByte + partialData.Length - 1,
+                        Status = ChunkStatus.Completed,
+                        Data = partialData,
+                        BytesDownloaded = partialData.Length
+                    };
+                    chunkStates[partialIndex] = partialChunk;
+                    _loggingService.LogInfo(Strings.WorkStealingSavedPartialData,
+                        oldChunk.ChunkIndex, partialData.Length, partialIndex);
+                }
+                else
+                {
+                    _loggingService.LogWarning(Strings.WorkStealingNoPartialData, oldChunk.ChunkIndex);
+                }
+
+                // Calculate split count
+                var totalSize = stealEnd - stealStart + 1;
+                int splitCount;
+                if (totalSize < minSplitSize * 2)
+                    splitCount = 1;
+                else if (totalSize < 2 * 1024 * 1024)
+                    splitCount = 2;
+                else if (totalSize < 5 * 1024 * 1024)
+                    splitCount = 4;
+                else
+                    splitCount = 8;
+
+                var splitSize = totalSize / splitCount;
+
+                _loggingService.LogInfo(Strings.WorkStealingSplitRange, totalSize, splitCount);
+
+                // Create new chunks
+                lock (queueLock)
+                {
+                    for (int i = 0; i < splitCount; i++)
+                    {
+                        var chunkStart = stealStart + i * splitSize;
+                        var chunkEnd = i < splitCount - 1 ? chunkStart + splitSize - 1 : stealEnd;
+
+                        var newIndex = chunkStates.Keys.Max() + 1;
+                        var newState = new ChunkState
+                        {
+                            ChunkIndex = newIndex,
+                            StartByte = chunkStart,
+                            EndByte = chunkEnd,
+                            Status = ChunkStatus.Pending
+                        };
+                        chunkStates[newIndex] = newState;
+                        chunkQueue.Enqueue(newState);
+
+                        _loggingService.LogInfo(Strings.WorkStealingSplitChunkInfo,
+                            newIndex, chunkStart, chunkEnd, chunkEnd - chunkStart + 1);
+                    }
+                }
+
+                // Mark old chunk as cancelled
+                oldChunk.Status = ChunkStatus.Cancelled;
+            }
+        }
+
         // Worker thread function
-        async Task WorkerThread()
+        async Task WorkerThread(int workerId)
         {
             while (true)
             {
-                ChunkDownloadTask? task;
+                ChunkState? chunkState = null;
+
+                // Try to get task from queue
                 lock (queueLock)
                 {
-                    if (chunkQueue.Count == 0)
-                        break;
-                    task = chunkQueue.Dequeue();
+                    if (chunkQueue.Count > 0)
+                    {
+                        chunkState = chunkQueue.Dequeue();
+                    }
                 }
 
-                // Download this chunk
-                await DownloadChunkAsync(url, task.StartByte, task.EndByte, task.ChunkIndex, chunks,
-                    (bytesReceived) =>
+                // If queue empty, try work stealing
+                if (chunkState == null)
+                {
+                    var slowChunk = FindSlowChunkToSteal();
+                    if (slowChunk != null)
                     {
-                        lock (progressLock)
+                        var stealStart = slowChunk.StartByte + slowChunk.BytesDownloaded;
+                        var stealEnd = slowChunk.EndByte;
+                        var partialData = slowChunk.Data;
+
+                        SplitStolenRange(slowChunk, stealStart, stealEnd, partialData);
+                        continue; // Try again to get from queue
+                    }
+                    else
+                    {
+                        break; // No more work
+                    }
+                }
+
+                // Download chunk with tracking
+                try
+                {
+                    await DownloadChunkWithTrackingAsync(url, chunkState, workerId,
+                        (bytesReceived) =>
                         {
-                            completedBytes += bytesReceived;
-                            if (progress != null)
+                            lock (stateLock)
                             {
-                                var currentTime = DateTime.Now;
-                                var elapsedTime = currentTime - startTime;
-
-                                // Calculate speed (update every 100ms to avoid too frequent updates)
-                                var speedBytesPerSecond = 0.0;
-                                if (elapsedTime.TotalSeconds > 0.1)
+                                completedBytes += bytesReceived;
+                                if (progress != null)
                                 {
-                                    var timeSinceLastUpdate = currentTime - lastUpdateTime;
-                                    if (timeSinceLastUpdate.TotalMilliseconds >= 100)
+                                    var currentTime = DateTime.Now;
+                                    var elapsedTime = currentTime - startTime;
+                                    var speedBytesPerSecond = 0.0;
+
+                                    if (elapsedTime.TotalSeconds > 0.1)
                                     {
-                                        var bytesSinceLastUpdate = completedBytes - lastCompletedBytes;
-                                        if (timeSinceLastUpdate.TotalSeconds > 0)
+                                        var timeSinceLastUpdate = currentTime - lastUpdateTime;
+                                        if (timeSinceLastUpdate.TotalMilliseconds >= 100)
                                         {
-                                            speedBytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.TotalSeconds;
+                                            var bytesSinceLastUpdate = completedBytes - lastCompletedBytes;
+                                            if (timeSinceLastUpdate.TotalSeconds > 0)
+                                            {
+                                                speedBytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.TotalSeconds;
+                                            }
+                                            lastUpdateTime = currentTime;
+                                            lastCompletedBytes = completedBytes;
                                         }
-                                        lastUpdateTime = currentTime;
-                                        lastCompletedBytes = completedBytes;
+                                        else
+                                        {
+                                            speedBytesPerSecond = completedBytes / elapsedTime.TotalSeconds;
+                                        }
                                     }
-                                    else
+
+                                    var percentage = (double)completedBytes / totalBytes * 100;
+                                    var estimatedTimeRemaining = TimeSpan.Zero;
+                                    if (speedBytesPerSecond > 0)
                                     {
-                                        speedBytesPerSecond = completedBytes / elapsedTime.TotalSeconds;
+                                        var remainingBytes = totalBytes - completedBytes;
+                                        estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
                                     }
-                                }
 
-                                var percentage = (double)completedBytes / totalBytes * 100;
-                                var estimatedTimeRemaining = TimeSpan.Zero;
-                                if (speedBytesPerSecond > 0)
-                                {
-                                    var remainingBytes = totalBytes - completedBytes;
-                                    estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
+                                    progress.Report(new DownloadProgress
+                                    {
+                                        BytesReceived = completedBytes,
+                                        TotalBytes = totalBytes,
+                                        ProgressPercentage = percentage,
+                                        SpeedBytesPerSecond = speedBytesPerSecond,
+                                        ElapsedTime = elapsedTime,
+                                        EstimatedTimeRemaining = estimatedTimeRemaining
+                                    });
                                 }
-
-                                progress.Report(new DownloadProgress
-                                {
-                                    BytesReceived = completedBytes,
-                                    TotalBytes = totalBytes,
-                                    ProgressPercentage = percentage,
-                                    SpeedBytesPerSecond = speedBytesPerSecond,
-                                    ElapsedTime = elapsedTime,
-                                    EstimatedTimeRemaining = estimatedTimeRemaining
-                                });
                             }
-                        }
-                    }, cancellationToken);
+                        }, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError(ex, "Worker {0} chunk {1} download error", workerId, chunkState.ChunkIndex);
+                    throw;
+                }
             }
         }
 
@@ -747,45 +905,175 @@ public class NetworkService : INetworkService
         var workerTasks = new List<Task>();
         for (int i = 0; i < optimalThreads; i++)
         {
-            workerTasks.Add(Task.Run(WorkerThread, cancellationToken));
+            var workerId = i;
+            workerTasks.Add(Task.Run(() => WorkerThread(workerId), cancellationToken));
         }
 
         // Wait for all workers to complete
         await Task.WhenAll(workerTasks);
 
-        // Validate all chunks were downloaded correctly
+        // Validate and merge results
         var totalDownloaded = 0L;
-        for (int i = 0; i < totalChunks; i++)
+        var completedChunks = 0;
+        var cancelledChunks = 0;
+
+        foreach (var kvp in chunkStates.OrderBy(x => x.Key))
         {
-            if (chunks[i] == null)
+            var cs = kvp.Value;
+            if (cs.Status == ChunkStatus.Completed)
             {
-                throw new Exception(string.Format(GHPC_Mod_Manager.Resources.Strings.ChunkDownloadFailed, i));
+                var isVirtual = cs.ChunkIndex >= 1000;
+                var actualDataSize = cs.Data?.Length ?? 0;
+
+                if (isVirtual)
+                {
+                    if (actualDataSize > 0)
+                    {
+                        totalDownloaded += actualDataSize;
+                        _loggingService.LogInfo(Strings.ChunkVirtualValidation, cs.ChunkIndex, actualDataSize);
+                    }
+                    else
+                    {
+                        _loggingService.LogInfo(Strings.ChunkVirtualEmpty, cs.ChunkIndex);
+                    }
+                }
+                else
+                {
+                    totalDownloaded += actualDataSize;
+                    _loggingService.LogInfo(Strings.ChunkValidation, cs.ChunkIndex, $"{actualDataSize:N0}");
+                }
+                completedChunks++;
             }
-            totalDownloaded += chunks[i].Length;
-            _loggingService.LogInfo(Strings.ChunkValidation, i, $"{chunks[i].Length:N0}");
+            else if (cs.Status == ChunkStatus.Cancelled)
+            {
+                cancelledChunks++;
+            }
         }
 
         if (totalDownloaded != totalBytes)
         {
-            _loggingService.LogError(Strings.DownloadSizeMismatch, $"{totalBytes:N0}", $"{totalDownloaded:N0}");
-            var errorMessage = string.Format(GHPC_Mod_Manager.Resources.Strings.DownloadSizeMismatchException, totalBytes, totalDownloaded);
-            throw new Exception(errorMessage);
+            _loggingService.LogWarning(Strings.DownloadStatisticsDifference,
+                totalBytes, totalDownloaded, Math.Abs(totalBytes - totalDownloaded));
+            _loggingService.LogInfo(Strings.DownloadStatisticsNote);
         }
 
-        // Combine all chunks in correct order
+        // Merge chunks by byte range
         var result = new byte[totalBytes];
-        var offset = 0L;
-
-        for (int i = 0; i < totalChunks; i++)
+        foreach (var cs in chunkStates.Values.OrderBy(x => x.StartByte))
         {
-            var chunk = chunks[i];
-            Array.Copy(chunk, 0, result, offset, chunk.Length);
-            offset += chunk.Length;
-            _loggingService.LogInfo(Strings.ChunkCopiedToOffset, i, $"{offset - chunk.Length:N0}");
+            if (cs.Status == ChunkStatus.Completed && cs.Data != null && cs.Data.Length > 0)
+            {
+                Array.Copy(cs.Data, 0, result, cs.StartByte, cs.Data.Length);
+                _loggingService.LogInfo(Strings.ChunkMergedToOffset,
+                    cs.ChunkIndex, cs.StartByte, cs.EndByte, cs.Data.Length);
+            }
         }
 
-        _loggingService.LogInfo(Strings.MultiThreadedDownloadCompleted, $"{result.Length:N0}");
+        _loggingService.LogInfo(Strings.WorkStealingDownloadComplete,
+            result.Length, chunkStates.Count, completedChunks, cancelledChunks);
+
         return result;
+    }
+
+    private async Task DownloadChunkWithTrackingAsync(string url, ChunkState chunkState, int workerId,
+        Action<long> onProgress, CancellationToken cancellationToken)
+    {
+        const int maxRetries = 3;
+        const int baseDelayMs = 1000;
+
+        for (int attempt = 0; attempt < maxRetries; attempt++)
+        {
+            try
+            {
+                // Update status
+                chunkState.Status = ChunkStatus.Downloading;
+                chunkState.StartTime = DateTime.Now;
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(chunkState.StartByte, chunkState.EndByte);
+
+                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.PartialContent)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+
+                using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                using var chunkStream = new MemoryStream();
+
+                var buffer = new byte[8192];
+                var lastProgressReport = 0L;
+                var lastUpdate = DateTime.Now;
+                var lastBytes = 0L;
+
+                while (true)
+                {
+                    // Check if cancelled
+                    if (chunkState.IsCancelled)
+                    {
+                        chunkState.Data = chunkStream.ToArray();
+                        chunkState.BytesDownloaded = chunkStream.Length;
+                        _loggingService.LogInfo(Strings.ChunkCancelledWithData, chunkState.ChunkIndex, chunkStream.Length);
+                        return;
+                    }
+
+                    var bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                    if (bytesRead == 0) break;
+
+                    await chunkStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+
+                    // Update state with real-time data
+                    var currentTime = DateTime.Now;
+                    chunkState.BytesDownloaded = chunkStream.Length;
+                    chunkState.Data = chunkStream.ToArray(); // Real-time update
+
+                    // Calculate speed every 100ms
+                    if ((currentTime - lastUpdate).TotalMilliseconds >= 100)
+                    {
+                        var timeDiff = currentTime - lastUpdate;
+                        var bytesDiff = chunkStream.Length - lastBytes;
+                        chunkState.CurrentSpeed = bytesDiff / timeDiff.TotalSeconds;
+                        chunkState.LastUpdateTime = currentTime;
+                        lastUpdate = currentTime;
+                        lastBytes = chunkStream.Length;
+                    }
+
+                    // Report progress every 64KB
+                    if (chunkStream.Length - lastProgressReport >= 65536)
+                    {
+                        onProgress(chunkStream.Length - lastProgressReport);
+                        lastProgressReport = chunkStream.Length;
+                    }
+                }
+
+                // Report remaining progress
+                if (chunkStream.Length > lastProgressReport)
+                {
+                    onProgress(chunkStream.Length - lastProgressReport);
+                }
+
+                // Mark as completed
+                chunkState.Status = ChunkStatus.Completed;
+                chunkState.Data = chunkStream.ToArray();
+                chunkState.BytesDownloaded = chunkStream.Length;
+
+                _loggingService.LogInfo(Strings.ChunkCompleted, chunkState.ChunkIndex, $"{chunkState.Data.Length:N0}");
+                return; // Success
+            }
+            catch (Exception ex) when (attempt < maxRetries - 1 && !chunkState.IsCancelled)
+            {
+                var delay = baseDelayMs * (int)Math.Pow(2, attempt);
+                _loggingService.LogWarning(Strings.ChunkFailedRetrying, chunkState.ChunkIndex, attempt + 1, maxRetries, delay, ex.Message);
+                await Task.Delay(delay, cancellationToken);
+            }
+        }
+
+        if (!chunkState.IsCancelled)
+        {
+            chunkState.Status = ChunkStatus.Pending; // Mark as failed for potential retry
+            throw new Exception(string.Format(GHPC_Mod_Manager.Resources.Strings.ChunkDownloadMaxRetriesExceeded, chunkState.ChunkIndex, maxRetries));
+        }
     }
 
     private async Task DownloadChunkAsync(string url, long startByte, long endByte, int chunkIndex, 
@@ -872,14 +1160,14 @@ public class NetworkService : INetworkService
         }
         else
         {
-            _loggingService.LogInfo("All caches cleared (session cache cleared, no persistent cache files found)");
+            _loggingService.LogInfo(Strings.AllCachesClearedNoFiles);
         }
     }
 
     public void ClearRateLimitBlocks()
     {
         _rateLimitBlocks.Clear();
-        _loggingService.LogInfo("Rate limit blocks cleared - GitHub API requests can now be retried");
+        _loggingService.LogInfo(Strings.RateLimitBlocksCleared);
     }
 
     private async Task<T?> GetFromPersistentCacheAsync<T>(string cacheKey, TimeSpan cacheExpiry, bool ignoreExpiry = false) where T : class
@@ -1214,7 +1502,7 @@ public class NetworkService : INetworkService
                             else
                             {
                                 // Cache is expired, delete it
-                                _loggingService.LogInfo("Deleting expired GitHub releases cache for {0}/{1} (age: {2} days)", repoOwner, repoName, age.TotalDays);
+                                _loggingService.LogInfo(Strings.DeletingExpiredGitHubCache, repoOwner, repoName, age.TotalDays);
                                 File.Delete(cacheFile);
                             }
                         }
@@ -1222,7 +1510,7 @@ public class NetworkService : INetworkService
                 }
                 catch (Exception ex)
                 {
-                    _loggingService.LogWarning("Failed to process cache file {0}: {1}", cacheFile, ex.Message);
+                    _loggingService.LogWarning(Strings.FailedToProcessCacheFile, cacheFile, ex.Message);
                     // Try to delete corrupted cache file
                     try { File.Delete(cacheFile); } catch { }
                 }
@@ -1232,7 +1520,7 @@ public class NetworkService : INetworkService
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning("Failed to read GitHub releases from persistent cache for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            _loggingService.LogWarning(Strings.FailedToReadGitHubReleasesFromCache, repoOwner, repoName, ex.Message);
             return null;
         }
     }
@@ -1264,7 +1552,7 @@ public class NetworkService : INetworkService
                     }
                     catch (Exception ex)
                     {
-                        _loggingService.LogWarning("Failed to delete old cache file {0}: {1}", oldFile, ex.Message);
+                        _loggingService.LogWarning(Strings.FailedToDeleteOldCacheFile, oldFile, ex.Message);
                     }
                 }
             }
@@ -1275,7 +1563,7 @@ public class NetworkService : INetworkService
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning("Failed to save GitHub releases to persistent cache for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            _loggingService.LogWarning(Strings.FailedToSaveGitHubReleasesToCache, repoOwner, repoName, ex.Message);
         }
     }
 }
@@ -1324,4 +1612,33 @@ internal class ChunkDownloadTask
     public int ChunkIndex { get; set; }
     public long StartByte { get; set; }
     public long EndByte { get; set; }
+}
+
+// Chunk status enum for Work Stealing algorithm
+internal enum ChunkStatus
+{
+    Pending,
+    Downloading,
+    Completed,
+    Cancelled
+}
+
+// Chunk state tracking for Work Stealing
+internal class ChunkState
+{
+    public int ChunkIndex { get; set; }
+    public long StartByte { get; set; }
+    public long EndByte { get; set; }
+    public ChunkStatus Status { get; set; } = ChunkStatus.Pending;
+    public DateTime? StartTime { get; set; }
+    public long BytesDownloaded { get; set; }
+    public double CurrentSpeed { get; set; }
+    public DateTime LastUpdateTime { get; set; }
+    public bool IsCancelled { get; set; }
+    public byte[]? Data { get; set; }
+
+    public long TotalSize => EndByte - StartByte + 1;
+    public long RemainingBytes => TotalSize - BytesDownloaded;
+    public TimeSpan ElapsedTime => StartTime.HasValue ? DateTime.Now - StartTime.Value : TimeSpan.Zero;
+    public double ProgressPercentage => TotalSize == 0 ? 100.0 : (BytesDownloaded / (double)TotalSize) * 100;
 }

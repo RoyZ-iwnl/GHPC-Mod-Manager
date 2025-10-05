@@ -150,7 +150,7 @@ public class UpdateService : IUpdateService
             // Write with UTF-8 BOM for PowerShell
             await File.WriteAllTextAsync(psPath, psScript, new System.Text.UTF8Encoding(true));
 
-            _loggingService.LogInfo("Launching update script...");
+            _loggingService.LogInfo(Strings.LaunchingUpdateScript);
 
             // Launch update script and exit application
             var startInfo = new ProcessStartInfo
@@ -299,23 +299,10 @@ Remove-Item -Path $PSCommandPath -Force -ErrorAction SilentlyContinue
             currentVersion = currentVersion.TrimStart('v');
             latestVersion = latestVersion.TrimStart('v');
 
-            // Parse versions
-            var current = ParseVersion(currentVersion);
-            var latest = ParseVersion(latestVersion);
+            var current = ParseSemanticVersion(currentVersion);
+            var latest = ParseSemanticVersion(latestVersion);
 
-            // Compare versions
-            for (int i = 0; i < Math.Max(current.Length, latest.Length); i++)
-            {
-                var currentPart = i < current.Length ? current[i] : 0;
-                var latestPart = i < latest.Length ? latest[i] : 0;
-
-                if (latestPart > currentPart)
-                    return true;
-                if (latestPart < currentPart)
-                    return false;
-            }
-
-            return false; // Versions are equal
+            return CompareSemanticVersions(current, latest) > 0;
         }
         catch
         {
@@ -323,18 +310,108 @@ Remove-Item -Path $PSCommandPath -Force -ErrorAction SilentlyContinue
         }
     }
 
-    private int[] ParseVersion(string version)
+    private (int[] version, string? prerelease) ParseSemanticVersion(string version)
     {
-        // Remove any pre-release identifiers (e.g., "1.0.0-beta" -> "1.0.0")
+        // Split version and prerelease parts
+        // Example: "1.0.0-beta.1" -> version=[1,0,0], prerelease="beta.1"
         var dashIndex = version.IndexOf('-');
+        string? prerelease = null;
+        string versionPart = version;
+
         if (dashIndex > 0)
         {
-            version = version.Substring(0, dashIndex);
+            versionPart = version.Substring(0, dashIndex);
+            prerelease = version.Substring(dashIndex + 1);
         }
 
-        // Split and parse version parts
-        return version.Split('.')
+        // Parse version numbers
+        var versionNumbers = versionPart.Split('.')
             .Select(part => int.TryParse(part, out var num) ? num : 0)
             .ToArray();
+
+        return (versionNumbers, prerelease);
+    }
+
+    private int CompareSemanticVersions((int[] version, string? prerelease) current, (int[] version, string? prerelease) latest)
+    {
+        // First, compare version numbers
+        for (int i = 0; i < Math.Max(current.version.Length, latest.version.Length); i++)
+        {
+            var currentPart = i < current.version.Length ? current.version[i] : 0;
+            var latestPart = i < latest.version.Length ? latest.version[i] : 0;
+
+            if (latestPart > currentPart)
+                return 1;  // latest is newer
+            if (latestPart < currentPart)
+                return -1; // current is newer
+        }
+
+        // Version numbers are equal, compare prerelease
+        // No prerelease (stable) > has prerelease (alpha/beta/rc)
+        if (current.prerelease == null && latest.prerelease == null)
+            return 0; // Both are stable and equal
+        if (current.prerelease == null)
+            return -1; // Current is stable, latest is prerelease
+        if (latest.prerelease == null)
+            return 1; // Latest is stable, current is prerelease
+
+        // Both have prerelease, compare them
+        return ComparePrereleaseVersions(current.prerelease, latest.prerelease);
+    }
+
+    private int ComparePrereleaseVersions(string current, string latest)
+    {
+        // Prerelease priority: alpha < beta < rc
+        var priorityMap = new Dictionary<string, int>
+        {
+            { "alpha", 1 },
+            { "beta", 2 },
+            { "rc", 3 }
+        };
+
+        var currentType = GetPrereleaseType(current);
+        var latestType = GetPrereleaseType(latest);
+
+        var currentPriority = priorityMap.ContainsKey(currentType) ? priorityMap[currentType] : 0;
+        var latestPriority = priorityMap.ContainsKey(latestType) ? priorityMap[latestType] : 0;
+
+        if (latestPriority > currentPriority)
+            return 1;
+        if (latestPriority < currentPriority)
+            return -1;
+
+        // Same prerelease type, compare version numbers
+        // e.g., "beta.1" vs "beta.2"
+        var currentNum = GetPrereleaseNumber(current);
+        var latestNum = GetPrereleaseNumber(latest);
+
+        if (latestNum > currentNum)
+            return 1;
+        if (latestNum < currentNum)
+            return -1;
+
+        return 0;
+    }
+
+    private string GetPrereleaseType(string prerelease)
+    {
+        // Extract prerelease type from strings like "beta.1", "rc.2", "alpha"
+        var dotIndex = prerelease.IndexOf('.');
+        if (dotIndex > 0)
+            return prerelease.Substring(0, dotIndex).ToLowerInvariant();
+        return prerelease.ToLowerInvariant();
+    }
+
+    private int GetPrereleaseNumber(string prerelease)
+    {
+        // Extract number from strings like "beta.1", "rc.2"
+        var dotIndex = prerelease.IndexOf('.');
+        if (dotIndex > 0 && dotIndex < prerelease.Length - 1)
+        {
+            var numberPart = prerelease.Substring(dotIndex + 1);
+            if (int.TryParse(numberPart, out var num))
+                return num;
+        }
+        return 0;
     }
 }

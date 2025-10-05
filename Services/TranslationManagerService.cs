@@ -60,20 +60,27 @@ public class TranslationManagerService : ITranslationManagerService
         if (string.IsNullOrEmpty(gameRootPath))
             return false;
 
-        await LoadManifestAsync();
-
-        // Check if translation files exist but manifest is empty/invalid
+        // Check if translation files exist
         var autoTranslatorPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
         var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
         var configPath = Path.Combine(gameRootPath, "AutoTranslator", "Config.ini");
-
         var filesExist = File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath));
-        var manifestIsEmpty = _installManifest.InstallDate == DateTime.Now.Date &&
-                              !_installManifest.XUnityAutoTranslatorFiles.Any() &&
-                              !_installManifest.TranslationRepoFiles.Any();
 
-        // Manual installation: files exist but manifest is empty or very old (before 2024)
-        return filesExist && (manifestIsEmpty || _installManifest.InstallDate.Year < 2024);
+        if (!filesExist)
+            return false; // No translation files, definitely not manually installed
+
+        // Check if manifest file exists
+        var manifestPath = Path.Combine(_settingsService.AppDataPath, "translation_install_manifest.json");
+        if (!File.Exists(manifestPath))
+            return true; // Files exist but no manifest = manually installed
+
+        // Manifest exists, load and check if it's valid
+        await LoadManifestAsync();
+        var manifestIsValid = _installManifest.XUnityAutoTranslatorFiles.Any() ||
+                              _installManifest.TranslationRepoFiles.Any();
+
+        // Files exist but manifest is invalid or too old = manually installed
+        return !manifestIsValid || _installManifest.InstallDate.Year < 2024;
     }
 
     public async Task<List<GitHubRelease>> GetXUnityReleasesAsync(bool forceRefresh = false)
@@ -251,7 +258,7 @@ public class TranslationManagerService : ITranslationManagerService
             var uri = new Uri(httpsUrl);
             if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
             {
-                _loggingService.LogWarning("URL is not a GitHub repository: {0}", repoUrl);
+                _loggingService.LogWarning(Strings.URLIsNotGitHubRepository, repoUrl);
                 return null;
             }
 
@@ -259,7 +266,7 @@ public class TranslationManagerService : ITranslationManagerService
             var pathParts = uri.AbsolutePath.Trim('/').Split('/');
             if (pathParts.Length < 2)
             {
-                _loggingService.LogWarning("Invalid GitHub repository path: {0}", uri.AbsolutePath);
+                _loggingService.LogWarning(Strings.InvalidGitHubRepositoryPath, uri.AbsolutePath);
                 return null;
             }
 
@@ -482,7 +489,7 @@ public class TranslationManagerService : ITranslationManagerService
             var zipData = await _networkService.DownloadFileAsync(targetAsset.DownloadUrl, progress);
             if (zipData == null || zipData.Length == 0)
             {
-                _loggingService.LogError("Failed to download translation ZIP file");
+                _loggingService.LogError(Strings.FailedToDownloadTranslationZip);
                 return false;
             }
 
@@ -628,7 +635,7 @@ public class TranslationManagerService : ITranslationManagerService
         }
     }
 
-    public async Task<List<string>> GetAvailableLanguagesAsync()
+    public Task<List<string>> GetAvailableLanguagesAsync()
     {
         try
         {
@@ -636,46 +643,21 @@ public class TranslationManagerService : ITranslationManagerService
             var translationPath = Path.Combine(gameRootPath, "AutoTranslator", "Translation");
 
             if (!Directory.Exists(translationPath))
-                return new List<string>();
+                return Task.FromResult(new List<string>());
 
             var languageFolders = Directory.GetDirectories(translationPath)
                 .Select(d => Path.GetFileName(d))
                 .Where(name => !string.IsNullOrEmpty(name))
                 .ToList();
 
-            // Map language codes to friendly names
-            return languageFolders.Select(code => GetFriendlyLanguageName(code ?? "")).ToList()!;
+            // Return language codes directly
+            return Task.FromResult(languageFolders!);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.LanguageListError);
-            return new List<string>();
+            return Task.FromResult(new List<string>());
         }
-    }
-
-    /// <summary>
-    /// Convert language code to friendly display name
-    /// </summary>
-    private string GetFriendlyLanguageName(string languageCode)
-    {
-        var currentUICulture = _settingsService.Settings.Language;
-
-        return languageCode.ToLowerInvariant() switch
-        {
-            "en" => currentUICulture == "zh-CN" ? "英语 (English)" : "English",
-            "zh" => currentUICulture == "zh-CN" ? "中文 (Chinese)" : "Chinese (中文)",
-            "zh-cn" => currentUICulture == "zh-CN" ? "简体中文 (Simplified Chinese)" : "Simplified Chinese (简体中文)",
-            "zh-tw" => currentUICulture == "zh-CN" ? "繁体中文 (Traditional Chinese)" : "Traditional Chinese (繁體中文)",
-            "ja" => currentUICulture == "zh-CN" ? "日语 (Japanese)" : "Japanese (日本語)",
-            "ko" => currentUICulture == "zh-CN" ? "韩语 (Korean)" : "Korean (한국어)",
-            "fr" => currentUICulture == "zh-CN" ? "法语 (French)" : "French (Français)",
-            "de" => currentUICulture == "zh-CN" ? "德语 (German)" : "German (Deutsch)",
-            "es" => currentUICulture == "zh-CN" ? "西班牙语 (Spanish)" : "Spanish (Español)",
-            "ru" => currentUICulture == "zh-CN" ? "俄语 (Russian)" : "Russian (Русский)",
-            "pt" => currentUICulture == "zh-CN" ? "葡萄牙语 (Portuguese)" : "Portuguese (Português)",
-            "it" => currentUICulture == "zh-CN" ? "意大利语 (Italian)" : "Italian (Italiano)",
-            _ => languageCode // Fallback to original code if not recognized
-        };
     }
 
     public async Task<string> GetCurrentLanguageAsync()

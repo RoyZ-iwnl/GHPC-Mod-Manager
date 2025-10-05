@@ -41,7 +41,7 @@ public class TranslationBackupService : ITranslationBackupService
             _backupPath = Path.Combine(ghpcmmPath, "translation_backup");
             Directory.CreateDirectory(_backupPath);
 
-            _loggingService.LogInfo("Translation backup directory initialized: {0}", _backupPath);
+            _loggingService.LogInfo(Strings.TranslationBackupDirectoryInitialized, _backupPath);
             return true;
         }
         catch (Exception ex)
@@ -98,7 +98,7 @@ public class TranslationBackupService : ITranslationBackupService
 
             if (!translationFiles.Any())
             {
-                _loggingService.LogWarning("No translation files found to disable");
+                _loggingService.LogWarning(Strings.NoTranslationFilesFoundToDisable);
                 return false;
             }
 
@@ -125,7 +125,7 @@ public class TranslationBackupService : ITranslationBackupService
                     }
 
                     File.Move(filePath, backupFilePath);
-                    _loggingService.LogInfo("Moved translation file to backup: {0} -> {1}", filePath, backupFilePath);
+                    _loggingService.LogInfo(Strings.MovedTranslationFileToBackup, filePath, backupFilePath);
                 }
             }
 
@@ -134,7 +134,7 @@ public class TranslationBackupService : ITranslationBackupService
             var manifestJson = System.Text.Json.JsonSerializer.Serialize(backupManifest, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
             await File.WriteAllTextAsync(manifestPath, manifestJson);
 
-            _loggingService.LogInfo("Translation system disabled and backed up");
+            _loggingService.LogInfo(Strings.TranslationSystemDisabledAndBackedUp);
             return true;
         }
         catch (Exception ex)
@@ -160,12 +160,12 @@ public class TranslationBackupService : ITranslationBackupService
                 var autoTranslatorPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
                 if (File.Exists(autoTranslatorPath))
                 {
-                    _loggingService.LogInfo("Translation system is already enabled");
+                    _loggingService.LogInfo(Strings.TranslationSystemAlreadyEnabled);
                     return true;
                 }
                 else
                 {
-                    _loggingService.LogWarning("No translation backup found and translation is not installed. Please install the translation system first.");
+                    _loggingService.LogWarning(Strings.NoTranslationBackupFoundPleaseInstall);
                     return false;
                 }
             }
@@ -176,7 +176,7 @@ public class TranslationBackupService : ITranslationBackupService
 
             if (backupManifest == null || !backupManifest.Any())
             {
-                _loggingService.LogWarning("Translation backup manifest is empty or invalid");
+                _loggingService.LogWarning(Strings.TranslationBackupManifestEmpty);
                 return false;
             }
 
@@ -196,7 +196,7 @@ public class TranslationBackupService : ITranslationBackupService
                     }
 
                     File.Move(backupFilePath, originalFilePath);
-                    _loggingService.LogInfo("Restored translation file: {0} -> {1}", backupFilePath, originalFilePath);
+                    _loggingService.LogInfo(Strings.RestoredTranslationFile, backupFilePath, originalFilePath);
                 }
             }
 
@@ -209,7 +209,7 @@ public class TranslationBackupService : ITranslationBackupService
                 Directory.Delete(_backupPath);
             }
 
-            _loggingService.LogInfo("Translation system enabled from backup");
+            _loggingService.LogInfo(Strings.TranslationSystemEnabledFromBackup);
             return true;
         }
         catch (Exception ex)
@@ -241,12 +241,12 @@ public class TranslationBackupService : ITranslationBackupService
             }
             catch (Exception ex)
             {
-                _loggingService.LogWarning("Failed to read translation install manifest: {0}", ex.Message);
+                _loggingService.LogWarning(Strings.FailedToReadTranslationInstallManifest, ex.Message);
             }
         }
 
         // Fallback: manually detect translation files
-        _loggingService.LogInfo("Using fallback method to detect translation files");
+        _loggingService.LogInfo(Strings.UsingFallbackMethodToDetectTranslationFiles);
         
         // Add XUnity AutoTranslator plugin file
         var autoTranslatorFile = Path.Combine("Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");

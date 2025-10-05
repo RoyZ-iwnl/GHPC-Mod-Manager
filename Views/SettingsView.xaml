@@ -199,6 +199,17 @@
                                 </TextBlock>
                             </Button>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0"
+                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Content="{x:Static resources:Strings.FollowBilibili}"
+                                    Command="{Binding OpenFollowBilibiliCommand}"
+                                    Style="{DynamicResource FilledButtonStyle}"
+                                    MinWidth="120" Margin="0,0,10,0"/>
+                            <Button Content="{x:Static resources:Strings.JoinGhpcCommunity}"
+                                    Command="{Binding OpenGhpcCommunityCommand}"
+                                    Style="{DynamicResource FilledButtonStyle}"
+                                    MinWidth="140"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
                 

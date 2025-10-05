@@ -64,8 +64,8 @@ public class FileOperationTracker : IFileOperationTracker
     {
         _loggingService = loggingService;
         _settingsService = settingsService;
-        
-        _loggingService.LogInfo("debugtemplog: FileOperationTracker initialized");
+
+        _loggingService.LogInfo(Strings.FileOperationTrackerInit);
     }
 
     public void StartTracking(string operationId, string targetDirectory)
@@ -74,15 +74,15 @@ public class FileOperationTracker : IFileOperationTracker
         _targetDirectory = targetDirectory;
         _startTime = DateTime.Now;
         _operations.Clear();
-        
-        _loggingService.LogInfo("debugtemplog: Started file operation tracking: {0} in {1}", operationId, targetDirectory);
+
+        _loggingService.LogInfo(Strings.FileOperationTrackingStarted, operationId, targetDirectory);
     }
 
     public void RecordFileOperation(FileOperation operation)
     {
-        if (_operationId == null) 
+        if (_operationId == null)
         {
-            _loggingService.LogError("debugtemplog: Cannot record operation - tracking not started");
+            _loggingService.LogError(Strings.FileOperationTrackingNotStarted);
             throw new InvalidOperationException("Tracking not started");
         }
         
@@ -99,22 +99,22 @@ public class FileOperationTracker : IFileOperationTracker
         
         operation.Timestamp = DateTime.Now;
         _operations.Add(operation);
-        
-        _loggingService.LogInfo("debugtemplog: Recorded file operation #{0}: {1} {2} -> {3} (size: {4} bytes)", 
+
+        _loggingService.LogInfo(Strings.FileOperationRecorded,
             _operations.Count, operation.Type, operation.SourcePath, operation.RelativePath, operation.FileSize);
     }
 
     public void StopTracking()
     {
-        _loggingService.LogInfo("debugtemplog: Stopped file operation tracking: {0}, recorded {1} operations in {2}ms", 
+        _loggingService.LogInfo(Strings.FileOperationTrackingStopped,
             _operationId, _operations.Count, (DateTime.Now - _startTime).TotalMilliseconds);
-        
-        // debugtemplog: 详细列出所有记录的操作
-        _loggingService.LogInfo("debugtemplog: All recorded operations for {0}:", _operationId);
+
+        // 详细列出所有记录的操作
+        _loggingService.LogInfo(Strings.FileOperationListHeader, _operationId);
         for (int i = 0; i < _operations.Count; i++)
         {
             var op = _operations[i];
-            _loggingService.LogInfo("debugtemplog:   [{0}] {1}: {2} ({3} bytes)", 
+            _loggingService.LogInfo(Strings.FileOperationListItem,
                 i + 1, op.Type, op.RelativePath, op.FileSize);
         }
     }
@@ -128,13 +128,13 @@ public class FileOperationTracker : IFileOperationTracker
             EndTime = DateTime.Now,
             Operations = _operations.ToList()
         };
-        
-        _loggingService.LogInfo("debugtemplog: GetResult called for {0}: {1} total files, {2} new files, {3} overwritten files", 
-            result.OperationId, 
+
+        _loggingService.LogInfo(Strings.FileOperationGetResult,
+            result.OperationId,
             result.GetAllProcessedFiles().Count,
-            result.GetNewFiles().Count, 
+            result.GetNewFiles().Count,
             result.GetOverwrittenFiles().Count);
-            
+
         return result;
     }
 }

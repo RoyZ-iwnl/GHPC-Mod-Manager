@@ -384,10 +384,16 @@
                             <StackPanel Margin="10">
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <TextBlock Text="{x:Static resources:Strings.CurrentLanguage}" VerticalAlignment="Center" MinWidth="100" Margin="0,0,10,0"/>
-                                    <ComboBox ItemsSource="{Binding AvailableLanguages}" 
+                                    <ComboBox ItemsSource="{Binding AvailableLanguages}"
                                               SelectedItem="{Binding CurrentTranslationLanguage}"
-                                              MinWidth="120" MaxWidth="200" Margin="0,0,10,0"/>
-                                    <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding SetTranslationLanguageCommand}" 
+                                              MinWidth="120" MaxWidth="200" Margin="0,0,10,0">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={StaticResource TranslationLanguageDisplayConverter}}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding SetTranslationLanguageCommand}"
                                             CommandParameter="{Binding CurrentTranslationLanguage}"
                                             MinWidth="80"
                                             Style="{DynamicResource FilledButtonStyle}"/>
