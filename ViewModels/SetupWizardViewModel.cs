@@ -18,6 +18,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly IProcessService _processService;
     private readonly ILoggingService _loggingService;
     private bool _isInitializing = true;
+    private bool _hasShownBepInExWarning;
 
     [ObservableProperty]
     private int _currentStep = 0;
@@ -112,7 +113,7 @@ public partial class SetupWizardViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                _loggingService.LogError(ex, "Failed to save proxy setting change");
+                _loggingService.LogError(ex, Strings.FailedToSaveProxySettingChange);
             }
         });
     }
@@ -142,7 +143,7 @@ public partial class SetupWizardViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                _loggingService.LogError(ex, "Failed to save proxy server change");
+                _loggingService.LogError(ex, Strings.FailedToSaveProxyServerChange);
             }
         });
     }
@@ -361,6 +362,7 @@ public partial class SetupWizardViewModel : ObservableObject
             if (Path.GetFileName(selectedFile).Equals("GHPC.exe", StringComparison.OrdinalIgnoreCase))
             {
                 GameRootPath = Path.GetDirectoryName(selectedFile) ?? string.Empty;
+                _hasShownBepInExWarning = false;
                 _settingsService.Settings.GameRootPath = GameRootPath;
                 await _settingsService.SaveSettingsAsync();
                 UpdateNavigationButtons();
@@ -404,7 +406,7 @@ public partial class SetupWizardViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, "Failed to apply proxy settings");
+            _loggingService.LogError(ex, Strings.FailedToApplyProxySettings);
             var errorMessage = string.Format(Strings.ApplyProxySettingsFailed, ex.Message);
             AddToNetworkLog(errorMessage);
         }
@@ -446,7 +448,7 @@ public partial class SetupWizardViewModel : ObservableObject
             if (IsNetworkAvailable)
             {
                 AddToNetworkLog(Strings.NetworkCheckSuccessful);
-                _loggingService.LogInfo(Strings.NetworkCheckResult, "Connection normal");
+                _loggingService.LogInfo(Strings.NetworkCheckResult, Strings.ConnectionNormal);
                 ShowNetworkFailed = false;
             }
             else
@@ -457,7 +459,7 @@ public partial class SetupWizardViewModel : ObservableObject
                 AddToNetworkLog(Strings.DNSResolutionProblem);
                 AddToNetworkLog(Strings.FirewallBlocking);
                 AddToNetworkLog(Strings.ProxyServerConfigProblem);
-                _loggingService.LogInfo(Strings.NetworkCheckResult, "Connection failed");
+                _loggingService.LogInfo(Strings.NetworkCheckResult, Strings.ConnectionFailed);
                 ShowNetworkFailed = true;
             }
         }
@@ -497,10 +499,38 @@ public partial class SetupWizardViewModel : ObservableObject
     private async Task CheckMelonLoaderAsync()
     {
         IsMelonLoaderInstalled = await _melonLoaderService.IsMelonLoaderInstalledAsync(GameRootPath);
-        
+
         if (IsMelonLoaderInstalled)
         {
             AreMelonLoaderDirsCreated = await _melonLoaderService.AreMelonLoaderDirectoriesCreatedAsync(GameRootPath);
+        }
+
+        CheckBepInExInstallation();
+    }
+
+    private void CheckBepInExInstallation()
+    {
+        if (string.IsNullOrEmpty(GameRootPath))
+        {
+            return;
+        }
+
+        var bepInExDirectory = Path.Combine(GameRootPath, "BepInEx");
+        var winhttpPath = Path.Combine(GameRootPath, "winhttp.dll");
+        var hasBepInEx = Directory.Exists(bepInExDirectory) || File.Exists(winhttpPath);
+
+        if (hasBepInEx)
+        {
+            if (!_hasShownBepInExWarning)
+            {
+                _loggingService.LogWarning(Strings.BepInExDetectedLog, GameRootPath);
+                MessageBox.Show(Strings.BepInExDetectedMessage, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                _hasShownBepInExWarning = true;
+            }
+        }
+        else
+        {
+            _hasShownBepInExWarning = false;
         }
     }
 

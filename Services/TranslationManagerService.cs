@@ -20,8 +20,11 @@ public interface ITranslationManagerService
     Task<bool> IsTranslationPluginEnabledAsync();
     Task<bool> SetTranslationPluginEnabledAsync(bool enabled);
     Task<List<GitHubRelease>> GetTranslationReleasesAsync(bool forceRefresh = false);
-    Task<bool> IsTranslationUpdateAvailableAsync();
-    Task<DateTime?> GetLatestTranslationReleaseTimeAsync();
+    Task<bool> IsTranslationUpdateAvailableAsync(bool forceRefresh = false);
+    Task<DateTime?> GetLatestTranslationReleaseTimeAsync(bool forceRefresh = false);
+    Task<bool> IsXUnityUpdateAvailableAsync(bool forceRefresh = false);
+    Task<bool> UpdateXUnityPluginAsync(IProgress<DownloadProgress>? progress = null);
+    Task<string> GetLatestXUnityVersionAsync(bool forceRefresh = false);
 }
 
 public class TranslationManagerService : ITranslationManagerService
@@ -1007,11 +1010,11 @@ public class TranslationManagerService : ITranslationManagerService
         }
     }
 
-    public async Task<DateTime?> GetLatestTranslationReleaseTimeAsync()
+    public async Task<DateTime?> GetLatestTranslationReleaseTimeAsync(bool forceRefresh = false)
     {
         try
         {
-            var releases = await GetTranslationReleasesAsync();
+            var releases = await GetTranslationReleasesAsync(forceRefresh);
             if (!releases.Any())
                 return null;
 
@@ -1042,7 +1045,7 @@ public class TranslationManagerService : ITranslationManagerService
         }
     }
 
-    public async Task<bool> IsTranslationUpdateAvailableAsync()
+    public async Task<bool> IsTranslationUpdateAvailableAsync(bool forceRefresh = false)
     {
         try
         {
@@ -1052,9 +1055,9 @@ public class TranslationManagerService : ITranslationManagerService
 
             // 加载安装清单
             await LoadManifestAsync();
-            
+
             // 获取最新Release时间
-            var latestReleaseTime = await GetLatestTranslationReleaseTimeAsync();
+            var latestReleaseTime = await GetLatestTranslationReleaseTimeAsync(forceRefresh);
             if (!latestReleaseTime.HasValue)
                 return false;
 
@@ -1071,6 +1074,172 @@ public class TranslationManagerService : ITranslationManagerService
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.TranslationUpdateCheckError);
+            return false;
+        }
+    }
+
+    public async Task<bool> IsXUnityUpdateAvailableAsync(bool forceRefresh = false)
+    {
+        try
+        {
+            // 检查是否已安装翻译
+            if (!await IsTranslationInstalledAsync())
+                return false;
+
+            // 加载安装清单获取当前版本
+            await LoadManifestAsync();
+            if (string.IsNullOrEmpty(_installManifest.XUnityVersion))
+                return false;
+
+            // 获取最新版本
+            var latestVersion = await GetLatestXUnityVersionAsync(forceRefresh);
+            if (string.IsNullOrEmpty(latestVersion))
+                return false;
+
+            // 比较版本
+            var hasUpdate = _installManifest.XUnityVersion != latestVersion;
+
+            _loggingService.LogInfo(Strings.TranslationUpdateCheckResult,
+                _installManifest.XUnityVersion,
+                latestVersion,
+                hasUpdate);
+
+            return hasUpdate;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationUpdateCheckError);
+            return false;
+        }
+    }
+
+    public async Task<string> GetLatestXUnityVersionAsync(bool forceRefresh = false)
+    {
+        try
+        {
+            var releases = await GetXUnityReleasesAsync(forceRefresh);
+            return releases.FirstOrDefault()?.TagName ?? string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.XUnityReleasesFetchError);
+            return string.Empty;
+        }
+    }
+
+    public async Task<bool> UpdateXUnityPluginAsync(IProgress<DownloadProgress>? progress = null)
+    {
+        try
+        {
+            _loggingService.LogInfo(Strings.UpdatingTranslationPlugin);
+
+            // 检查是否已安装翻译
+            if (!await IsTranslationInstalledAsync())
+            {
+                _loggingService.LogError(Strings.TranslationSystemNotInstalled);
+                return false;
+            }
+
+            // 获取最新版本
+            var latestVersion = await GetLatestXUnityVersionAsync();
+            if (string.IsNullOrEmpty(latestVersion))
+            {
+                _loggingService.LogError(Strings.CannotGetTranslationVersions);
+                return false;
+            }
+
+            await LoadManifestAsync();
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+
+            // 创建文件操作追踪器
+            var tracker = new FileOperationTracker(_loggingService, _settingsService);
+            var trackedOps = new TrackedFileOperations(tracker, _loggingService);
+
+            // 开始追踪文件操作
+            tracker.StartTracking($"xunity_update_{latestVersion}", gameRootPath);
+
+            // 备份当前插件文件
+            var success = await BackupCurrentXUnityFilesAsync(trackedOps);
+            if (!success) return false;
+
+            // 安装新版本
+            success = await InstallXUnityAutoTranslatorWithTrackingAsync(latestVersion, trackedOps, progress);
+            if (!success) return false;
+
+            // 停止追踪并更新清单
+            tracker.StopTracking();
+            var result = tracker.GetResult();
+            var processedFiles = result.GetAllProcessedFiles();
+
+            if (!processedFiles.Any())
+            {
+                _loggingService.LogError(Strings.TranslationPluginUpdateFailed);
+                return false;
+            }
+
+            // 更新清单中的插件文件列表
+            var modsPath = Path.Combine(gameRootPath, "Mods");
+            var userLibsPath = Path.Combine(gameRootPath, "UserLibs");
+
+            // 保留原有的翻译资源文件，只更新插件文件
+            var translationRepoFiles = _installManifest.TranslationRepoFiles.ToList();
+
+            _installManifest.XUnityAutoTranslatorFiles = processedFiles
+                .Where(f =>
+                {
+                    var fullPath = Path.Combine(gameRootPath, f);
+                    return fullPath.StartsWith(modsPath, StringComparison.OrdinalIgnoreCase) ||
+                           fullPath.StartsWith(userLibsPath, StringComparison.OrdinalIgnoreCase) ||
+                           f.Contains("XUnity") ||
+                           Path.GetFileName(f).Equals("Font", StringComparison.OrdinalIgnoreCase);
+                })
+                .ToList();
+
+            _installManifest.TranslationRepoFiles = translationRepoFiles;
+            _installManifest.XUnityVersion = latestVersion;
+            _installManifest.InstallDate = DateTime.Now;
+            await SaveManifestAsync();
+
+            _loggingService.LogInfo(Strings.TranslationPluginUpdateSuccessful);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationPluginUpdateFailed);
+            return false;
+        }
+    }
+
+    private async Task<bool> BackupCurrentXUnityFilesAsync(TrackedFileOperations trackedOps)
+    {
+        try
+        {
+            await LoadManifestAsync();
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+
+            // 备份当前的XUnity文件
+            foreach (var file in _installManifest.XUnityAutoTranslatorFiles)
+            {
+                var fullPath = Path.Combine(gameRootPath, file);
+                if (File.Exists(fullPath))
+                {
+                    // 创建备份路径
+                    var backupDir = Path.Combine(_settingsService.AppDataPath, "translation_backup", "xunity", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+                    Directory.CreateDirectory(backupDir);
+
+                    var backupPath = Path.Combine(backupDir, Path.GetFileName(file));
+                    File.Copy(fullPath, backupPath, true);
+
+                    // 记录操作用于追踪
+                    await trackedOps.CopyFileAsync(fullPath, backupPath);
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to backup XUnity files");
             return false;
         }
     }

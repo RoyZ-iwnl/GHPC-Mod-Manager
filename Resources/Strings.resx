@@ -609,6 +609,66 @@
   <data name="SetupIncompleteWarning" xml:space="preserve">
     <value>Setup not complete, please rerun the game and ensure it reaches the main menu</value>
   </data>
+  <data name="UpdateCheckUsingProxy" xml:space="preserve">
+    <value>Checking for updates using proxy: {0}</value>
+  </data>
+  <data name="UpdateCheckProxyFailed" xml:space="preserve">
+    <value>Update check failed with proxy {0}: {1}</value>
+  </data>
+  <data name="UpdateCheckTryingNextProxy" xml:space="preserve">
+    <value>Trying next proxy server: {0}</value>
+  </data>
+  <data name="UpdateCheckDirectAccess" xml:space="preserve">
+    <value>Trying direct access to GitHub API</value>
+  </data>
+  <data name="UpdateCheckDirectFailed" xml:space="preserve">
+    <value>Direct access to GitHub API failed: {0}</value>
+  </data>
+  <data name="UpdateCheckAllMethodsFailed" xml:space="preserve">
+    <value>All update check methods failed. Unable to check for updates.</value>
+  </data>
+  <data name="UpdateCheckSuccessWithMethod" xml:space="preserve">
+    <value>Successfully checked for updates using method: {0}</value>
+  </data>
+  <data name="StartupUpdateCheckError" xml:space="preserve">
+    <value>Startup update check error: {0}</value>
+  </data>
+  <data name="SilentUpdateCheckFailed" xml:space="preserve">
+    <value>Silent update check failed: {0}</value>
+  </data>
+  <data name="TranslationUpdatesFound" xml:space="preserve">
+    <value>Translation updates found: {0}</value>
+  </data>
+  <data name="TranslationUpdateCheckInModFlowFailed" xml:space="preserve">
+    <value>Translation update check in mod flow failed: {0}</value>
+  </data>
+  <data name="ApplicationUpdateCheckFailed" xml:space="preserve">
+    <value>Application update check failed</value>
+  </data>
+  <data name="FailedToSaveProxySettingChange" xml:space="preserve">
+    <value>Failed to save proxy setting change</value>
+  </data>
+  <data name="FailedToSaveProxyServerChange" xml:space="preserve">
+    <value>Failed to save proxy server change</value>
+  </data>
+  <data name="FailedToApplyProxySettings" xml:space="preserve">
+    <value>Failed to apply proxy settings</value>
+  </data>
+  <data name="ConnectionNormal" xml:space="preserve">
+    <value>Connection normal</value>
+  </data>
+  <data name="ConnectionFailed" xml:space="preserve">
+    <value>Connection failed</value>
+  </data>
+  <data name="FailedToCleanupDirectory" xml:space="preserve">
+    <value>Failed to cleanup directory: {0}</value>
+  </data>
+  <data name="FailedToDeleteModBackup" xml:space="preserve">
+    <value>Failed to delete mod backup: {0} version {1}</value>
+  </data>
+  <data name="FailedToFetchReleasesViaProxy" xml:space="preserve">
+    <value>Failed to fetch releases via proxy: {0}</value>
+  </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
@@ -728,6 +788,12 @@
   </data>
   <data name="MelonLoaderNotInstalledNote" xml:space="preserve">
     <value>MelonLoader is not installed, will proceed to installation step.</value>
+  </data>
+  <data name="BepInExDetectedMessage" xml:space="preserve">
+    <value>Found BepInEx folder or winhttp.dll in the game directory. Please manually remove any previously installed translation plugins and the BepInEx framework before continuing.</value>
+  </data>
+  <data name="BepInExDetectedLog" xml:space="preserve">
+    <value>Detected existing BepInEx or translation files in: {0}</value>
   </data>
   <data name="MelonLoaderInstalledButMissingDirs" xml:space="preserve">
     <value>MelonLoader is installed but missing key directories. Please run the game at least once to the main menu and exit to generate required files.</value>
@@ -1775,6 +1841,39 @@
   </data>
   <data name="TranslationSystemNotInstalled" xml:space="preserve">
     <value>Translation system is not installed</value>
+  </data>
+  <data name="TranslationPluginUpdateAvailable" xml:space="preserve">
+    <value>Translation plugin update available</value>
+  </data>
+  <data name="TranslationResourceUpdateAvailable" xml:space="preserve">
+    <value>Translation resource update available</value>
+  </data>
+  <data name="TranslationUpdateAvailable" xml:space="preserve">
+    <value>Translation update available</value>
+  </data>
+  <data name="UpdateTranslationPlugin" xml:space="preserve">
+    <value>Update Translation Plugin</value>
+  </data>
+  <data name="UpdateTranslationResources" xml:space="preserve">
+    <value>Update Translation Resources</value>
+  </data>
+  <data name="GoToTranslationManagement" xml:space="preserve">
+    <value>Go to Translation Management</value>
+  </data>
+  <data name="UpdatingTranslationPlugin" xml:space="preserve">
+    <value>Updating translation plugin...</value>
+  </data>
+  <data name="TranslationPluginUpdateSuccessful" xml:space="preserve">
+    <value>Translation plugin updated successfully</value>
+  </data>
+  <data name="TranslationPluginUpdateFailed" xml:space="preserve">
+    <value>Translation plugin update failed</value>
+  </data>
+  <data name="TranslationPlugin" xml:space="preserve">
+    <value>Translation Plugin</value>
+  </data>
+  <data name="TranslationResources" xml:space="preserve">
+    <value>Translation Resources</value>
   </data>
   <data name="CheckForUpdates" xml:space="preserve">
     <value>Check for Updates</value>

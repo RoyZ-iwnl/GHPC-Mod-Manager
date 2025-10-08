@@ -3,6 +3,8 @@ using GHPC_Mod_Manager.Resources;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -55,75 +57,202 @@ public class UpdateService : IUpdateService
 
     public async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl)> CheckForUpdatesAsync(bool includePrerelease = false)
     {
+        return await CheckForUpdatesWithFallbackAsync(includePrerelease);
+    }
+
+    /// <summary>
+    /// 智能回退的更新检查机制
+    /// 1. 根据设置优先使用代理或直接访问
+    /// 2. 失败时尝试所有代理服务器
+    /// 3. 最后尝试直接访问GitHub API
+    /// </summary>
+    private async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl)> CheckForUpdatesWithFallbackAsync(bool includePrerelease)
+    {
+        var checkMethods = new List<(string name, Func<Task<List<GitHubRelease>?>> checker)>();
+
+        // 根据用户设置构建检查方法列表
+        if (_settingsService.Settings.UseGitHubProxy)
+        {
+            // 如果启用了代理，优先使用选中的代理
+            var primaryProxy = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+            checkMethods.Add(($"Proxy: {primaryProxy}", () => CheckWithProxy(_settingsService.Settings.GitHubProxyServer)));
+
+            // 添加其他代理作为备选
+            var allProxies = GetAllProxyServers().Where(p => p != _settingsService.Settings.GitHubProxyServer);
+            foreach (var proxy in allProxies)
+            {
+                var proxyName = GetProxyDomain(proxy);
+                checkMethods.Add(($"Proxy: {proxyName}", () => CheckWithProxy(proxy)));
+            }
+
+            // 最后尝试直接访问
+            checkMethods.Add(("Direct GitHub API", () => CheckDirectAsync()));
+        }
+        else
+        {
+            // 如果未启用代理，优先尝试直接访问
+            checkMethods.Add(("Direct GitHub API", () => CheckDirectAsync()));
+
+            // 失败后尝试所有代理服务器
+            var allProxies = GetAllProxyServers();
+            foreach (var proxy in allProxies)
+            {
+                var proxyName = GetProxyDomain(proxy);
+                checkMethods.Add(($"Proxy: {proxyName}", () => CheckWithProxy(proxy)));
+            }
+        }
+
+        // 逐个尝试检查方法
+        foreach (var (methodName, checker) in checkMethods)
+        {
+            try
+            {
+                _loggingService.LogInfo(Strings.UpdateCheckUsingProxy, methodName);
+
+                var releases = await checker();
+
+                if (releases != null && releases.Any())
+                {
+                    _loggingService.LogInfo(Strings.UpdateCheckSuccessWithMethod, methodName);
+                    return ProcessReleases(releases, includePrerelease);
+                }
+                else
+                {
+                    _loggingService.LogWarning(Strings.NoReleasesFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogWarning(Strings.UpdateCheckProxyFailed, methodName, ex.Message);
+
+                // 如果是最后一次尝试，记录错误日志
+                if (checkMethods.Last().name == methodName)
+                {
+                    _loggingService.LogError(ex, Strings.UpdateCheckAllMethodsFailed);
+                }
+            }
+        }
+
+        _loggingService.LogError(new Exception("All update check methods failed"), Strings.UpdateCheckAllMethodsFailed);
+        return (false, null, null);
+    }
+
+    private async Task<List<GitHubRelease>?> CheckWithProxy(GitHubProxyServer proxyServer)
+    {
+        var proxyDomain = GetProxyDomain(proxyServer);
+        var proxyUrl = $"https://{proxyDomain}/https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases";
+
+        // 使用NetworkService的GetGitHubReleasesAsync方法，但需要修改URL为代理URL
+        // 由于现有的NetworkService不支持自定义URL格式，我们需要直接实现代理请求
+        return await GetGitHubReleasesViaProxyAsync(proxyUrl);
+    }
+
+    private async Task<List<GitHubRelease>?> CheckDirectAsync()
+    {
+        return await _networkService.GetGitHubReleasesAsync("RoyZ-iwnl", "GHPC-Mod-Manager", forceRefresh: true);
+    }
+
+    private async Task<List<GitHubRelease>?> GetGitHubReleasesViaProxyAsync(string proxyUrl)
+    {
         try
         {
-            // Get releases from GitHub
-            var releases = await _networkService.GetGitHubReleasesAsync("RoyZ-iwnl", "GHPC-Mod-Manager", forceRefresh: true);
+            using var request = new HttpRequestMessage(HttpMethod.Get, proxyUrl);
+            request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
 
-            if (releases == null || !releases.Any())
-            {
-                _loggingService.LogWarning(Strings.NoReleasesFound);
-                return (false, null, null);
-            }
+            using var response = await _networkService.HttpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
 
-            // Filter releases based on update channel setting
-            var updateChannel = _settingsService.Settings.UpdateChannel;
-            List<GitHubRelease> availableReleases;
+            var json = await response.Content.ReadAsStringAsync();
+            var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
 
-            if (updateChannel == Models.UpdateChannel.Beta)
-            {
-                // Beta channel: include all releases (stable + prerelease)
-                availableReleases = releases.ToList();
-            }
-            else
-            {
-                // Stable channel: only include releases without any letters in version number
-                availableReleases = releases.Where(r =>
-                {
-                    var version = r.TagName.TrimStart('v');
-                    // Check if version contains only digits, dots, and hyphens followed by digits
-                    // Pure stable versions: 1.0.0, 1.0.1, etc. (no letters)
-                    // Exclude: 1.0.0-beta.1, 1.1.0-rc.1, etc. (contains letters)
-                    return !System.Text.RegularExpressions.Regex.IsMatch(version, @"[a-zA-Z]");
-                }).ToList();
-            }
-
-            if (!availableReleases.Any())
-            {
-                _loggingService.LogWarning(Strings.NoStableReleasesFound);
-                return (false, null, null);
-            }
-
-            var latestRelease = availableReleases.First();
-            var latestVersion = latestRelease.TagName.TrimStart('v');
-            var currentVersion = GetCurrentVersion();
-
-            // Compare versions
-            if (!IsNewerVersion(currentVersion, latestVersion))
-            {
-                // No log needed - this is normal operation
-                return (false, latestVersion, null);
-            }
-
-            // Find download URL for the update package
-            var asset = latestRelease.Assets.FirstOrDefault(a =>
-                a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
-                a.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
-
-            if (asset == null)
-            {
-                _loggingService.LogWarning(Strings.NoDownloadableAsset);
-                return (false, latestVersion, null);
-            }
-
-            _loggingService.LogInfo(Strings.UpdateAvailable, latestVersion, currentVersion);
-            return (true, latestVersion, asset.DownloadUrl);
+            return releases;
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.Error);
+            _loggingService.LogError(ex, Strings.FailedToFetchReleasesViaProxy, proxyUrl);
+            throw;
+        }
+    }
+
+    private (bool hasUpdate, string? latestVersion, string? downloadUrl) ProcessReleases(List<GitHubRelease> releases, bool includePrerelease)
+    {
+        // Filter releases based on update channel setting
+        var updateChannel = _settingsService.Settings.UpdateChannel;
+        List<GitHubRelease> availableReleases;
+
+        if (updateChannel == Models.UpdateChannel.Beta)
+        {
+            // Beta channel: include all releases (stable + prerelease)
+            availableReleases = releases.ToList();
+        }
+        else
+        {
+            // Stable channel: only include releases without any letters in version number
+            availableReleases = releases.Where(r =>
+            {
+                var version = r.TagName.TrimStart('v');
+                // Check if version contains only digits, dots, and hyphens followed by digits
+                // Pure stable versions: 1.0.0, 1.0.1, etc. (no letters)
+                // Exclude: 1.0.0-beta.1, 1.1.0-rc.1, etc. (contains letters)
+                return !System.Text.RegularExpressions.Regex.IsMatch(version, @"[a-zA-Z]");
+            }).ToList();
+        }
+
+        if (!availableReleases.Any())
+        {
+            _loggingService.LogWarning(Strings.NoStableReleasesFound);
             return (false, null, null);
         }
+
+        var latestRelease = availableReleases.First();
+        var latestVersion = latestRelease.TagName.TrimStart('v');
+        var currentVersion = GetCurrentVersion();
+
+        // Compare versions
+        if (!IsNewerVersion(currentVersion, latestVersion))
+        {
+            // No log needed - this is normal operation
+            return (false, latestVersion, null);
+        }
+
+        // Find download URL for the update package
+        var asset = latestRelease.Assets.FirstOrDefault(a =>
+            a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+            a.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
+
+        if (asset == null)
+        {
+            _loggingService.LogWarning(Strings.NoDownloadableAsset);
+            return (false, latestVersion, null);
+        }
+
+        _loggingService.LogInfo(Strings.UpdateAvailable, latestVersion, currentVersion);
+        return (true, latestVersion, asset.DownloadUrl);
+    }
+
+    private List<GitHubProxyServer> GetAllProxyServers()
+    {
+        return new List<GitHubProxyServer>
+        {
+            GitHubProxyServer.GhDmrGg,
+            GitHubProxyServer.GhProxyCom,
+            GitHubProxyServer.HkGhProxyCom,
+            GitHubProxyServer.CdnGhProxyCom,
+            GitHubProxyServer.EdgeOneGhProxyCom
+        };
+    }
+
+    private string GetProxyDomain(GitHubProxyServer proxyServer)
+    {
+        return proxyServer switch
+        {
+            GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+            GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+            GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+            _ => "gh.dmr.gg"
+        };
     }
 
     public async Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null)

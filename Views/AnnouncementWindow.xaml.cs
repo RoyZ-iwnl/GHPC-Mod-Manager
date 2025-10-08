@@ -1,146 +1,153 @@
 using GHPC_Mod_Manager.ViewModels;
 using GHPC_Mod_Manager.Services;
 using System.Windows;
+using System.Diagnostics;
+using Microsoft.Web.WebView2.Core;
 
 namespace GHPC_Mod_Manager.Views;
 
 public partial class AnnouncementWindow : Window
 {
+    private bool _isWebViewInitialized = false;
+
     public AnnouncementWindow()
     {
         InitializeComponent();
         Loaded += Window_Loaded;
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        if (DataContext is AnnouncementViewModel viewModel)
+        try
         {
-            // Load HTML content into WebBrowser when HasContent changes
-            viewModel.PropertyChanged += (s, args) =>
-            {
-                if (args.PropertyName == nameof(AnnouncementViewModel.HtmlContent) && !string.IsNullOrEmpty(viewModel.HtmlContent))
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        AnnouncementBrowser.NavigateToString(CreateHtmlPage(viewModel.HtmlContent));
-                    });
-                }
-            };
+            // Initialize WebView2 asynchronously
+            await AnnouncementWebView.EnsureCoreWebView2Async(null);
+            _isWebViewInitialized = true;
 
-            // Listen for theme changes and refresh content
-            if (App.GetService<IThemeService>() is IThemeService themeService)
+            // Set up navigation event handler for external links
+            AnnouncementWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+
+            // Set up WebMessageReceived to handle external links from JavaScript
+            AnnouncementWebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+
+            if (DataContext is AnnouncementViewModel viewModel)
             {
-                themeService.ThemeChanged += (s, theme) =>
+                // Load HTML content into WebView2 when HasContent changes
+                viewModel.PropertyChanged += (s, args) =>
                 {
-                    if (!string.IsNullOrEmpty(viewModel.HtmlContent))
+                    if (args.PropertyName == nameof(AnnouncementViewModel.HtmlContent) && !string.IsNullOrEmpty(viewModel.HtmlContent))
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            AnnouncementBrowser.NavigateToString(CreateHtmlPage(viewModel.HtmlContent));
+                            LoadContentIntoWebView(viewModel.HtmlContent);
                         });
                     }
                 };
-            }
 
-            // Check if content is already loaded
-            if (!string.IsNullOrEmpty(viewModel.HtmlContent))
-            {
-                Dispatcher.Invoke(() =>
+                // Listen for theme changes and refresh content
+                if (App.GetService<IThemeService>() is IThemeService themeService)
                 {
-                    AnnouncementBrowser.NavigateToString(CreateHtmlPage(viewModel.HtmlContent));
-                });
-            }
+                    themeService.ThemeChanged += (s, theme) =>
+                    {
+                        if (!string.IsNullOrEmpty(viewModel.HtmlContent))
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                LoadContentIntoWebView(viewModel.HtmlContent);
+                            });
+                        }
+                    };
+                }
 
-            // Handle close command - use a simple action
-            viewModel.CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() => Close());
+                // Check if content is already loaded
+                if (!string.IsNullOrEmpty(viewModel.HtmlContent))
+                {
+                    LoadContentIntoWebView(viewModel.HtmlContent);
+                }
+
+                // Handle close command - use a simple action
+                viewModel.CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() => Close());
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"WebView2 initialization failed: {ex.Message}");
+            // Fallback to show error message if WebView2 fails to initialize
         }
     }
 
-    private string CreateHtmlPage(string htmlContent)
+    private void LoadContentIntoWebView(string htmlContent)
     {
-        // Get theme colors from ViewModel
-        var themeColors = (backgroundColor: "#FFFBFE", textColor: "#1C1B1F", linkColor: "#6750A4", 
-                          codeBackgroundColor: "#F3EDF7", borderColor: "#79747E");
-        
-        if (DataContext is AnnouncementViewModel viewModel)
+        if (!_isWebViewInitialized)
         {
-            themeColors = viewModel.GetThemeColors();
-            System.Diagnostics.Debug.WriteLine($"Using theme colors - Background: {themeColors.backgroundColor}, Text: {themeColors.textColor}");
+            System.Diagnostics.Debug.WriteLine("WebView2 not yet initialized, delaying content load");
+            return;
+        }
+
+        try
+        {
+            // The ViewModel now provides the complete HTML with embedded markdown parser
+            AnnouncementWebView.NavigateToString(htmlContent);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load content into WebView2: {ex.Message}");
+        }
+    }
+
+  
+    private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+    {
+        // Handle external links from JavaScript via window.external.notify()
+        try
+        {
+            var message = e.TryGetWebMessageAsString();
+            if (!string.IsNullOrEmpty(message) && (message.StartsWith("http://") || message.StartsWith("https://")))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = message,
+                    UseShellExecute = true
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open external link from web message: {ex.Message}");
+        }
+    }
+
+    private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+    {
+        // Handle external links - open in default browser
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri,
+                UseShellExecute = true
+            });
+
+            // Cancel opening in WebView2
+            e.Handled = true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open external link: {e.Uri}. Error: {ex.Message}");
+        }
+    }
+
+    private void AnnouncementWebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+    {
+        // WebView2 navigation completed - content is loaded
+        if (e.IsSuccess)
+        {
+            System.Diagnostics.Debug.WriteLine("WebView2 content loaded successfully");
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine("DataContext is not AnnouncementViewModel, using default light theme colors");
+            System.Diagnostics.Debug.WriteLine($"WebView2 navigation failed with status: {e.WebErrorStatus}");
         }
-        
-        return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <style>
-        body {{ 
-            font-family: 'Microsoft YaHei UI', 'Segoe UI', Arial, sans-serif; 
-            margin: 20px; 
-            line-height: 1.6;
-            color: {themeColors.textColor};
-            background-color: {themeColors.backgroundColor};
-        }}
-        h1, h2, h3 {{ 
-            color: {themeColors.textColor}; 
-            opacity: 0.9;
-        }}
-        blockquote {{ 
-            border-left: 4px solid {themeColors.linkColor}; 
-            margin: 0; 
-            padding-left: 16px; 
-            background-color: {themeColors.codeBackgroundColor};
-            padding: 10px 16px;
-            border-radius: 4px;
-        }}
-        code {{ 
-            background-color: {themeColors.codeBackgroundColor}; 
-            color: {themeColors.textColor};
-            padding: 2px 4px; 
-            border-radius: 3px; 
-            font-family: 'Consolas', 'Courier New', monospace;
-        }}
-        pre {{ 
-            background-color: {themeColors.codeBackgroundColor}; 
-            color: {themeColors.textColor};
-            padding: 12px; 
-            border-radius: 5px; 
-            overflow-x: auto;
-            border: 1px solid {themeColors.borderColor};
-        }}
-        a {{ 
-            color: {themeColors.linkColor}; 
-            text-decoration: none; 
-        }}
-        a:hover {{ 
-            text-decoration: underline; 
-            opacity: 0.8;
-        }}
-        table {{
-            border-collapse: collapse;
-            width: 100%;
-            margin: 10px 0;
-        }}
-        th, td {{
-            border: 1px solid {themeColors.borderColor};
-            padding: 8px 12px;
-            text-align: left;
-        }}
-        th {{
-            background-color: {themeColors.codeBackgroundColor};
-            font-weight: 600;
-        }}
-    </style>
-</head>
-<body>
-{htmlContent}
-</body>
-</html>";
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

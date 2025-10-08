@@ -160,6 +160,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 应用程序更新检查失败.
+        /// </summary>
+        public static string ApplicationUpdateCheckFailed {
+            get {
+                return ResourceManager.GetString("ApplicationUpdateCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 应用版本.
         /// </summary>
         public static string ApplicationVersion {
@@ -390,6 +399,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string BatchWaitingForClose {
             get {
                 return ResourceManager.GetString("BatchWaitingForClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到现有的 BepInEx 或翻译文件：{0}.
+        /// </summary>
+        public static string BepInExDetectedLog {
+            get {
+                return ResourceManager.GetString("BepInExDetectedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到游戏目录中存在 BepInEx 文件夹或 winhttp.dll。请手动删除之前安装的任何翻译插件和 BepInEx 框架后再继续。.
+        /// </summary>
+        public static string BepInExDetectedMessage {
+            get {
+                return ResourceManager.GetString("BepInExDetectedMessage", resourceCulture);
             }
         }
         
@@ -1006,6 +1033,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 连接失败.
+        /// </summary>
+        public static string ConnectionFailed {
+            get {
+                return ResourceManager.GetString("ConnectionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 连接正常.
         /// </summary>
         public static string ConnectionNormal {
@@ -1609,6 +1645,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 应用代理设置失败.
+        /// </summary>
+        public static string FailedToApplyProxySettings {
+            get {
+                return ResourceManager.GetString("FailedToApplyProxySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 检查 {0} 更新失败: {1}.
         /// </summary>
         public static string FailedToCheckModUpdate {
@@ -1618,11 +1663,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 清理目录失败: {0}.
+        /// </summary>
+        public static string FailedToCleanupDirectory {
+            get {
+                return ResourceManager.GetString("FailedToCleanupDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 清理持久缓存失败: {0}.
         /// </summary>
         public static string FailedToClearPersistentCache {
             get {
                 return ResourceManager.GetString("FailedToClearPersistentCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 删除Mod备份失败: {0} 版本 {1}.
+        /// </summary>
+        public static string FailedToDeleteModBackup {
+            get {
+                return ResourceManager.GetString("FailedToDeleteModBackup", resourceCulture);
             }
         }
         
@@ -1654,11 +1717,38 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 通过代理获取Releases失败: {0}.
+        /// </summary>
+        public static string FailedToFetchReleasesViaProxy {
+            get {
+                return ResourceManager.GetString("FailedToFetchReleasesViaProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 打开B站失败.
+        /// </summary>
+        public static string FailedToOpenBilibili {
+            get {
+                return ResourceManager.GetString("FailedToOpenBilibili", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 打开游戏目录失败.
         /// </summary>
         public static string FailedToOpenGameDirectory {
             get {
                 return ResourceManager.GetString("FailedToOpenGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 打开GHPC交流群页面失败.
+        /// </summary>
+        public static string FailedToOpenGhpcCommunity {
+            get {
+                return ResourceManager.GetString("FailedToOpenGhpcCommunity", resourceCulture);
             }
         }
         
@@ -1731,6 +1821,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToSaveGitHubReleasesToCache {
             get {
                 return ResourceManager.GetString("FailedToSaveGitHubReleasesToCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 保存代理服务器更改失败.
+        /// </summary>
+        public static string FailedToSaveProxyServerChange {
+            get {
+                return ResourceManager.GetString("FailedToSaveProxyServerChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 保存代理设置更改失败.
+        /// </summary>
+        public static string FailedToSaveProxySettingChange {
+            get {
+                return ResourceManager.GetString("FailedToSaveProxySettingChange", resourceCulture);
             }
         }
         
@@ -1983,6 +2091,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FirewallBlocking {
             get {
                 return ResourceManager.GetString("FirewallBlocking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to B站关注我.
+        /// </summary>
+        public static string FollowBilibili {
+            get {
+                return ResourceManager.GetString("FollowBilibili", resourceCulture);
             }
         }
         
@@ -2383,6 +2500,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 前往翻译管理.
+        /// </summary>
+        public static string GoToTranslationManagement {
+            get {
+                return ResourceManager.GetString("GoToTranslationManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 哈希已计算：{0} = {1}.
         /// </summary>
         public static string HashCalculated {
@@ -2568,6 +2694,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ItemsCountOfTotal {
             get {
                 return ResourceManager.GetString("ItemsCountOfTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC交流群.
+        /// </summary>
+        public static string JoinGhpcCommunity {
+            get {
+                return ResourceManager.GetString("JoinGhpcCommunity", resourceCulture);
             }
         }
         
@@ -4822,6 +4957,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 静默更新检查失败: {0}.
+        /// </summary>
+        public static string SilentUpdateCheckFailed {
+            get {
+                return ResourceManager.GetString("SilentUpdateCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 跳过目录: {0}.
         /// </summary>
         public static string SkippingDirectory {
@@ -4899,6 +5043,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string StartingNetworkConnectionCheck {
             get {
                 return ResourceManager.GetString("StartingNetworkConnectionCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动时更新检查错误: {0}.
+        /// </summary>
+        public static string StartupUpdateCheckError {
+            get {
+                return ResourceManager.GetString("StartupUpdateCheckError", resourceCulture);
             }
         }
         
@@ -5479,6 +5632,33 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 翻译插件更新可用.
+        /// </summary>
+        public static string TranslationPluginUpdateAvailable {
+            get {
+                return ResourceManager.GetString("TranslationPluginUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 翻译插件更新失败.
+        /// </summary>
+        public static string TranslationPluginUpdateFailed {
+            get {
+                return ResourceManager.GetString("TranslationPluginUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 翻译插件更新成功.
+        /// </summary>
+        public static string TranslationPluginUpdateSuccessful {
+            get {
+                return ResourceManager.GetString("TranslationPluginUpdateSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 获取翻译发布版本时出错.
         /// </summary>
         public static string TranslationReleasesFetchError {
@@ -5502,6 +5682,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationRepoUrlEmpty {
             get {
                 return ResourceManager.GetString("TranslationRepoUrlEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 翻译资源.
+        /// </summary>
+        public static string TranslationResources {
+            get {
+                return ResourceManager.GetString("TranslationResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 翻译资源更新可用.
+        /// </summary>
+        public static string TranslationResourceUpdateAvailable {
+            get {
+                return ResourceManager.GetString("TranslationResourceUpdateAvailable", resourceCulture);
             }
         }
         
@@ -5614,7 +5812,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 有翻译更新可用.
+        ///   Looks up a localized string similar to 翻译更新可用.
         /// </summary>
         public static string TranslationUpdateAvailable {
             get {
@@ -5628,6 +5826,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationUpdateCheckError {
             get {
                 return ResourceManager.GetString("TranslationUpdateCheckError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod流程中的翻译更新检查失败: {0}.
+        /// </summary>
+        public static string TranslationUpdateCheckInModFlowFailed {
+            get {
+                return ResourceManager.GetString("TranslationUpdateCheckInModFlowFailed", resourceCulture);
             }
         }
         
@@ -5646,6 +5853,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TranslationUpdateError {
             get {
                 return ResourceManager.GetString("TranslationUpdateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 发现翻译更新: {0}.
+        /// </summary>
+        public static string TranslationUpdatesFound {
+            get {
+                return ResourceManager.GetString("TranslationUpdatesFound", resourceCulture);
             }
         }
         
@@ -5812,6 +6028,69 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 所有更新检查方法都失败了。无法检查更新。.
+        /// </summary>
+        public static string UpdateCheckAllMethodsFailed {
+            get {
+                return ResourceManager.GetString("UpdateCheckAllMethodsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 尝试直接访问GitHub API.
+        /// </summary>
+        public static string UpdateCheckDirectAccess {
+            get {
+                return ResourceManager.GetString("UpdateCheckDirectAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 直接访问GitHub API失败: {0}.
+        /// </summary>
+        public static string UpdateCheckDirectFailed {
+            get {
+                return ResourceManager.GetString("UpdateCheckDirectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 使用代理 {0} 检查更新失败: {1}.
+        /// </summary>
+        public static string UpdateCheckProxyFailed {
+            get {
+                return ResourceManager.GetString("UpdateCheckProxyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 使用方法成功检查更新: {0}.
+        /// </summary>
+        public static string UpdateCheckSuccessWithMethod {
+            get {
+                return ResourceManager.GetString("UpdateCheckSuccessWithMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 尝试下一个代理服务器: {0}.
+        /// </summary>
+        public static string UpdateCheckTryingNextProxy {
+            get {
+                return ResourceManager.GetString("UpdateCheckTryingNextProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在使用代理检查更新: {0}.
+        /// </summary>
+        public static string UpdateCheckUsingProxy {
+            get {
+                return ResourceManager.GetString("UpdateCheckUsingProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 更新已下载: {0}.
         /// </summary>
         public static string UpdateDownloaded {
@@ -5848,6 +6127,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 更新翻译插件.
+        /// </summary>
+        public static string UpdateTranslationPlugin {
+            get {
+                return ResourceManager.GetString("UpdateTranslationPlugin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 更新翻译资源.
+        /// </summary>
+        public static string UpdateTranslationResources {
+            get {
+                return ResourceManager.GetString("UpdateTranslationResources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 正在更新MOD: {0} 从 {1} 到 {2}.
         /// </summary>
         public static string UpdatingMod {
@@ -5862,6 +6159,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UpdatingTranslationFiles {
             get {
                 return ResourceManager.GetString("UpdatingTranslationFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在更新翻译插件....
+        /// </summary>
+        public static string UpdatingTranslationPlugin {
+            get {
+                return ResourceManager.GetString("UpdatingTranslationPlugin", resourceCulture);
             }
         }
         

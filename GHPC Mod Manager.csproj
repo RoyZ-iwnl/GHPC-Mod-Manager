@@ -12,23 +12,23 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     
     <!-- Version Information -->
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.99</AssemblyVersion>
-    <FileVersion>1.1.0.99</FileVersion>
-    <InformationalVersion>1.1.0</InformationalVersion>
+    <Version>1.1.1-beta.1</Version>
+    <AssemblyVersion>1.1.1.32</AssemblyVersion>
+    <FileVersion>1.1.1.32</FileVersion>
+    <InformationalVersion>1.1.1-beta.1</InformationalVersion>
     <Product>GHPC Mod Manager</Product>
-    <Description>A comprehensive mod management tool for GHPC (Gunner, HEAT, PC!)</Description>
+    <Description>A mod management tool for GHPC (Gunner, HEAT, PC!)</Description>
     <Copyright>Copyright © 2025</Copyright>
     <Company>GHPC.DMR.gg</Company>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Markdig" Version="0.41.3" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>

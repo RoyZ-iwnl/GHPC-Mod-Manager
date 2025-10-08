@@ -17,6 +17,7 @@
         <converters:ModEnableStateConverter x:Key="ModEnableStateConverter"/>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <converters:StringToInverseVisibilityConverter x:Key="StringToInverseVisibilityConverter"/>
+        <converters:BooleanAndToVisibilityConverter x:Key="BooleanAndToVisibilityConverter"/>
     </UserControl.Resources>
     
     <Grid Background="{DynamicResource BackgroundBrush}">
@@ -135,6 +136,88 @@
                         Style="{DynamicResource FilledButtonStyle}"
                         Background="{DynamicResource OnPrimaryBrush}"
                         Foreground="{DynamicResource PrimaryBrush}"/>
+            </Grid>
+        </Border>
+
+        <!-- Translation Update Available Banner -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource SecondaryBrush}"
+                Padding="12,8"
+                Margin="10,0,10,10"
+                CornerRadius="{DynamicResource RadiusSmall}"
+                Visibility="{Binding IsTranslationUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                          Text="🌐"
+                          FontSize="20"
+                          Margin="0,0,10,0"
+                          VerticalAlignment="Center"
+                          Foreground="{DynamicResource OnSecondaryBrush}"/>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <!-- Plugin only update -->
+                    <TextBlock FontWeight="SemiBold"
+                              Foreground="{DynamicResource OnSecondaryBrush}">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                <Binding Path="IsTranslationPluginUpdateAvailable"/>
+                                <Binding Path="IsTranslationResourceUpdateAvailable" Converter="{StaticResource InverseBooleanConverter}"/>
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                        <Run Text="{x:Static resources:Strings.TranslationUpdateAvailable}"/>
+                        <Run Text=": "/>
+                        <Run Text="{x:Static resources:Strings.TranslationPlugin}"/>
+                    </TextBlock>
+
+                    <!-- Resources only update -->
+                    <TextBlock FontWeight="SemiBold"
+                              Foreground="{DynamicResource OnSecondaryBrush}">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                <Binding Path="IsTranslationResourceUpdateAvailable"/>
+                                <Binding Path="IsTranslationPluginUpdateAvailable" Converter="{StaticResource InverseBooleanConverter}"/>
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                        <Run Text="{x:Static resources:Strings.TranslationUpdateAvailable}"/>
+                        <Run Text=": "/>
+                        <Run Text="{x:Static resources:Strings.TranslationResources}"/>
+                    </TextBlock>
+
+                    <!-- Both plugin and resources update -->
+                    <TextBlock FontWeight="SemiBold"
+                              Foreground="{DynamicResource OnSecondaryBrush}">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                <Binding Path="IsTranslationPluginUpdateAvailable"/>
+                                <Binding Path="IsTranslationResourceUpdateAvailable"/>
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                        <Run Text="{x:Static resources:Strings.TranslationUpdateAvailable}"/>
+                        <Run Text=": "/>
+                        <Run Text="{x:Static resources:Strings.TranslationPlugin}"/>
+                        <Run Text=" + "/>
+                        <Run Text="{x:Static resources:Strings.TranslationResources}"/>
+                    </TextBlock>
+
+                    <TextBlock Text="{x:Static resources:Strings.GoToTranslationManagement}"
+                              FontSize="{DynamicResource LabelSmall}"
+                              Foreground="{DynamicResource OnSecondaryBrush}"
+                              Opacity="0.9"/>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Content="{x:Static resources:Strings.GoToTranslationManagement}"
+                        Command="{Binding GoToTranslationManagementCommand}"
+                        Margin="10,0,0,0"
+                        Style="{DynamicResource FilledButtonStyle}"
+                        Background="{DynamicResource OnSecondaryBrush}"
+                        Foreground="{DynamicResource SecondaryBrush}"/>
             </Grid>
         </Border>
 
@@ -363,15 +446,36 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="{x:Static resources:Strings.InstallTranslationSystem}" Command="{Binding InstallTranslationCommand}" 
+                                    <Button Content="{x:Static resources:Strings.InstallTranslationSystem}" Command="{Binding InstallTranslationCommand}"
                                             MinWidth="140" Margin="0,0,10,0"
                                             Style="{DynamicResource FilledButtonStyle}"
                                             Visibility="{Binding IsTranslationInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                    <Button Content="{x:Static resources:Strings.UpdateTranslationFiles}" Command="{Binding UpdateTranslationCommand}" 
+
+                                    <!-- Translation Plugin Update Button -->
+                                    <Button Content="{x:Static resources:Strings.UpdateTranslationPlugin}" Command="{Binding UpdateTranslationPluginCommand}"
                                             MinWidth="140" Margin="0,0,10,0"
-                                            Style="{DynamicResource OutlinedButtonStyle}"
-                                            Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <Button Content="{x:Static resources:Strings.UninstallTranslationSystem}" Command="{Binding UninstallTranslationCommand}" 
+                                            Style="{DynamicResource OutlinedButtonStyle}">
+                                        <Button.Visibility>
+                                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                                <Binding Path="IsTranslationInstalled"/>
+                                                <Binding Path="IsTranslationPluginUpdateAvailable"/>
+                                            </MultiBinding>
+                                        </Button.Visibility>
+                                    </Button>
+
+                                    <!-- Translation Resources Update Button -->
+                                    <Button Content="{x:Static resources:Strings.UpdateTranslationResources}" Command="{Binding UpdateTranslationCommand}"
+                                            MinWidth="140" Margin="0,0,10,0"
+                                            Style="{DynamicResource OutlinedButtonStyle}">
+                                        <Button.Visibility>
+                                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                                <Binding Path="IsTranslationInstalled"/>
+                                                <Binding Path="IsTranslationResourceUpdateAvailable"/>
+                                            </MultiBinding>
+                                        </Button.Visibility>
+                                    </Button>
+
+                                    <Button Content="{x:Static resources:Strings.UninstallTranslationSystem}" Command="{Binding UninstallTranslationCommand}"
                                             MinWidth="140"
                                             Style="{DynamicResource OutlinedButtonStyle}"
                                             Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"/>

@@ -407,7 +407,7 @@ public class ModBackupService : IModBackupService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, "Failed to cleanup directory: {0}", directoryPath);
+            _loggingService.LogError(ex, Strings.FailedToCleanupDirectory, directoryPath);
         }
 
         return freedBytes;
@@ -453,7 +453,7 @@ public class ModBackupService : IModBackupService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, "Failed to delete mod backup: {0} version {1}", modId, version);
+            _loggingService.LogError(ex, Strings.FailedToDeleteModBackup, modId, version);
             return false;
         }
     }

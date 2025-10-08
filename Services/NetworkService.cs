@@ -18,11 +18,14 @@ public interface INetworkService
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default);
     void ClearCache(); // Clear all cached data
     void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
+    HttpClient HttpClient { get; } // 暴露HttpClient用于代理请求
 }
 
 public class NetworkService : INetworkService
 {
     private readonly HttpClient _httpClient;
+
+    public HttpClient HttpClient => _httpClient;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     

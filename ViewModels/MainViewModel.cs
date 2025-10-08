@@ -75,6 +75,15 @@ public partial class MainViewModel : ObservableObject
     private bool _isTranslationUpdateAvailable;
 
     [ObservableProperty]
+    private bool _isTranslationPluginUpdateAvailable;
+
+    [ObservableProperty]
+    private bool _isTranslationResourceUpdateAvailable;
+
+    [ObservableProperty]
+    private string _latestXUnityVersion = string.Empty;
+
+    [ObservableProperty]
     private List<string> _availableLanguages = new();
 
     [ObservableProperty]
@@ -103,6 +112,12 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string _latestAppDownloadUrl = string.Empty;
+
+    [ObservableProperty]
+    private bool _isTranslationUpdating = false;
+
+    [ObservableProperty]
+    private bool _isCheckingUpdates = false;
 
     public MainViewModel(
         IModManagerService modManagerService,
@@ -168,7 +183,7 @@ public partial class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    _loggingService.LogWarning($"Startup update check error: {ex.Message}");
+                    _loggingService.LogWarning(Strings.StartupUpdateCheckError, ex.Message);
                 }
             });
         }
@@ -196,7 +211,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning($"Silent update check failed: {ex.Message}");
+            _loggingService.LogWarning(Strings.SilentUpdateCheckFailed, ex.Message);
             // Silently fail - don't bother the user
         }
     }
@@ -227,7 +242,14 @@ public partial class MainViewModel : ObservableObject
             IsTranslationInstalled = await _translationManagerService.IsTranslationInstalledAsync();
             IsTranslationManuallyInstalled = await _translationManagerService.IsTranslationManuallyInstalledAsync();
             IsTranslationPluginEnabled = await _translationManagerService.IsTranslationPluginEnabledAsync();
-            IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+
+            // 分别检查翻译插件和资源更新（使用默认缓存行为）
+            IsTranslationPluginUpdateAvailable = await _translationManagerService.IsXUnityUpdateAvailableAsync();
+            IsTranslationResourceUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+            IsTranslationUpdateAvailable = IsTranslationPluginUpdateAvailable || IsTranslationResourceUpdateAvailable;
+
+            // 获取最新XUnity版本（使用默认缓存行为）
+            LatestXUnityVersion = await _translationManagerService.GetLatestXUnityVersionAsync();
 
             if (IsTranslationInstalled)
             {
@@ -507,7 +529,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task InstallTranslationAsync()
     {
         try
@@ -557,7 +579,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task UpdateTranslationAsync()
     {
         // Check if translation was manually installed
@@ -573,6 +595,7 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
+            IsTranslationUpdating = true;
             StatusMessage = Strings.UpdatingTranslationFiles;
             var success = await _translationManagerService.UpdateTranslationFilesAsync();
 
@@ -594,9 +617,68 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.TranslationUpdateError);
             StatusMessage = Strings.TranslationFilesUpdateFailed;
         }
+        finally
+        {
+            IsTranslationUpdating = false;
+        }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
+    private async Task UpdateTranslationPluginAsync()
+    {
+        // Check if translation was manually installed
+        if (IsTranslationManuallyInstalled)
+        {
+            MessageBox.Show(
+                Strings.CannotUpdateManuallyInstalledTranslation,
+                Strings.Error,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            IsTranslationUpdating = true;
+            StatusMessage = Strings.UpdatingTranslationPlugin;
+
+            var progress = new Progress<DownloadProgress>(downloadProgress =>
+            {
+                var speedText = downloadProgress.GetFormattedSpeed();
+                var progressText = downloadProgress.GetFormattedProgress();
+                var percentage = downloadProgress.ProgressPercentage;
+
+                StatusMessage = $"{Strings.UpdatingTranslationPlugin} - {percentage:F1}% ({progressText}) - {speedText}";
+            });
+
+            var success = await _translationManagerService.UpdateXUnityPluginAsync(progress);
+
+            if (success)
+            {
+                StatusMessage = Strings.TranslationPluginUpdateSuccessful;
+                await RefreshDataAsync();
+
+                // 更新完成后重新检查更新状态
+                IsTranslationPluginUpdateAvailable = await _translationManagerService.IsXUnityUpdateAvailableAsync();
+                IsTranslationUpdateAvailable = IsTranslationPluginUpdateAvailable || IsTranslationResourceUpdateAvailable;
+            }
+            else
+            {
+                StatusMessage = Strings.TranslationPluginUpdateFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationPluginUpdateFailed);
+            StatusMessage = Strings.TranslationPluginUpdateFailed;
+        }
+        finally
+        {
+            IsTranslationUpdating = false;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task UninstallTranslationAsync()
     {
         // Check if translation was manually installed
@@ -640,7 +722,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task SetTranslationLanguageAsync(string language)
     {
         try
@@ -663,7 +745,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task ToggleTranslationPluginAsync()
     {
         try
@@ -704,7 +786,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private async Task LaunchGameAsync()
     {
         try
@@ -759,7 +841,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private void OpenSettings()
     {
         _navigationService.NavigateToSettings();
@@ -821,6 +903,12 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void GoToTranslationManagement()
+    {
+        SelectedTabIndex = 1; // Translation Management tab index
+    }
+
+    [RelayCommand]
     private async Task CheckForTranslationUpdatesAsync()
     {
         try
@@ -849,11 +937,12 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteCheckUpdates))]
     private async Task CheckForModUpdatesAsync()
     {
         try
         {
+            IsCheckingUpdates = true;
             IsLoading = true;
             StatusMessage = Strings.CheckingForModUpdates;
 
@@ -922,6 +1011,9 @@ public partial class MainViewModel : ObservableObject
 
             _loggingService.LogInfo(Strings.ModUpdateCheckComplete);
 
+            // 同时检查翻译更新
+            await CheckTranslationUpdatesInModUpdateFlowAsync();
+
             if (updatesFound > 0)
             {
                 var updatesList = string.Join("\n", updatedMods);
@@ -937,6 +1029,38 @@ public partial class MainViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+            IsCheckingUpdates = false;
+        }
+    }
+
+    private async Task CheckTranslationUpdatesInModUpdateFlowAsync()
+    {
+        try
+        {
+            // 只检查翻译更新，不显示消息
+            if (await _translationManagerService.IsTranslationInstalledAsync())
+            {
+                // 分别检查翻译插件和资源更新（强制刷新缓存）
+                IsTranslationPluginUpdateAvailable = await _translationManagerService.IsXUnityUpdateAvailableAsync(forceRefresh: true);
+                IsTranslationResourceUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync(forceRefresh: true);
+                IsTranslationUpdateAvailable = IsTranslationPluginUpdateAvailable || IsTranslationResourceUpdateAvailable;
+
+                // 获取最新XUnity版本（强制刷新缓存）
+                LatestXUnityVersion = await _translationManagerService.GetLatestXUnityVersionAsync(forceRefresh: true);
+
+                if (IsTranslationUpdateAvailable)
+                {
+                    var updateTypes = new List<string>();
+                    if (IsTranslationPluginUpdateAvailable) updateTypes.Add("plugin");
+                    if (IsTranslationResourceUpdateAvailable) updateTypes.Add("resources");
+
+                    _loggingService.LogInfo(Strings.TranslationUpdatesFound, string.Join(", ", updateTypes));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning(Strings.TranslationUpdateCheckInModFlowFailed, ex.Message);
         }
     }
 
@@ -1011,7 +1135,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, "Application update check failed");
+            _loggingService.LogError(ex, Strings.ApplicationUpdateCheckFailed);
             StatusMessage = "Update check failed";
             MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -1086,18 +1210,46 @@ public partial class MainViewModel : ObservableObject
 
     private bool CanExecuteWhenNotDownloading()
     {
-        return !IsDownloading;
+        return !IsDownloading && !IsTranslationUpdating;
+    }
+
+    private bool CanExecuteModOperations()
+    {
+        return !IsDownloading && !IsTranslationUpdating && !IsGameRunning;
+    }
+
+    private bool CanExecuteCheckUpdates()
+    {
+        return !IsCheckingUpdates && !IsTranslationUpdating;
     }
 
     partial void OnIsDownloadingChanged(bool value)
     {
-        LaunchGameCommand.NotifyCanExecuteChanged();
-        OpenSettingsCommand.NotifyCanExecuteChanged();
-        InstallTranslationCommand.NotifyCanExecuteChanged();
-        UpdateTranslationCommand.NotifyCanExecuteChanged();
-        UninstallTranslationCommand.NotifyCanExecuteChanged();
-        SetTranslationLanguageCommand.NotifyCanExecuteChanged();
-        ToggleTranslationPluginCommand.NotifyCanExecuteChanged();
+        UpdateAllCommandsCanExecute();
+    }
+
+    partial void OnIsTranslationUpdatingChanged(bool value)
+    {
+        UpdateAllCommandsCanExecute();
+    }
+
+    partial void OnIsCheckingUpdatesChanged(bool value)
+    {
+        UpdateAllCommandsCanExecute();
+    }
+
+    private void UpdateAllCommandsCanExecute()
+    {
+        // Update all commands that should be disabled during operations
+        LaunchGameCommand?.NotifyCanExecuteChanged();
+        OpenSettingsCommand?.NotifyCanExecuteChanged();
+        InstallTranslationCommand?.NotifyCanExecuteChanged();
+        UpdateTranslationCommand?.NotifyCanExecuteChanged();
+        UpdateTranslationPluginCommand?.NotifyCanExecuteChanged();
+        UninstallTranslationCommand?.NotifyCanExecuteChanged();
+        SetTranslationLanguageCommand?.NotifyCanExecuteChanged();
+        ToggleTranslationPluginCommand?.NotifyCanExecuteChanged();
+        CheckForModUpdatesCommand?.NotifyCanExecuteChanged();
     }
 
     private void FilterAndSortMods()

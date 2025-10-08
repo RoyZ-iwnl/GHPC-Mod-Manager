@@ -609,6 +609,66 @@
   <data name="SetupIncompleteWarning" xml:space="preserve">
     <value>设置未完成，请重新运行游戏并确保到达主菜单</value>
   </data>
+  <data name="UpdateCheckUsingProxy" xml:space="preserve">
+    <value>正在使用代理检查更新: {0}</value>
+  </data>
+  <data name="UpdateCheckProxyFailed" xml:space="preserve">
+    <value>使用代理 {0} 检查更新失败: {1}</value>
+  </data>
+  <data name="UpdateCheckTryingNextProxy" xml:space="preserve">
+    <value>尝试下一个代理服务器: {0}</value>
+  </data>
+  <data name="UpdateCheckDirectAccess" xml:space="preserve">
+    <value>尝试直接访问GitHub API</value>
+  </data>
+  <data name="UpdateCheckDirectFailed" xml:space="preserve">
+    <value>直接访问GitHub API失败: {0}</value>
+  </data>
+  <data name="UpdateCheckAllMethodsFailed" xml:space="preserve">
+    <value>所有更新检查方法都失败了。无法检查更新。</value>
+  </data>
+  <data name="UpdateCheckSuccessWithMethod" xml:space="preserve">
+    <value>使用方法成功检查更新: {0}</value>
+  </data>
+  <data name="StartupUpdateCheckError" xml:space="preserve">
+    <value>启动时更新检查错误: {0}</value>
+  </data>
+  <data name="SilentUpdateCheckFailed" xml:space="preserve">
+    <value>静默更新检查失败: {0}</value>
+  </data>
+  <data name="TranslationUpdatesFound" xml:space="preserve">
+    <value>发现翻译更新: {0}</value>
+  </data>
+  <data name="TranslationUpdateCheckInModFlowFailed" xml:space="preserve">
+    <value>Mod流程中的翻译更新检查失败: {0}</value>
+  </data>
+  <data name="ApplicationUpdateCheckFailed" xml:space="preserve">
+    <value>应用程序更新检查失败</value>
+  </data>
+  <data name="FailedToSaveProxySettingChange" xml:space="preserve">
+    <value>保存代理设置更改失败</value>
+  </data>
+  <data name="FailedToSaveProxyServerChange" xml:space="preserve">
+    <value>保存代理服务器更改失败</value>
+  </data>
+  <data name="FailedToApplyProxySettings" xml:space="preserve">
+    <value>应用代理设置失败</value>
+  </data>
+  <data name="ConnectionNormal" xml:space="preserve">
+    <value>连接正常</value>
+  </data>
+  <data name="ConnectionFailed" xml:space="preserve">
+    <value>连接失败</value>
+  </data>
+  <data name="FailedToCleanupDirectory" xml:space="preserve">
+    <value>清理目录失败: {0}</value>
+  </data>
+  <data name="FailedToDeleteModBackup" xml:space="preserve">
+    <value>删除Mod备份失败: {0} 版本 {1}</value>
+  </data>
+  <data name="FailedToFetchReleasesViaProxy" xml:space="preserve">
+    <value>通过代理获取Releases失败: {0}</value>
+  </data>
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
@@ -728,6 +788,12 @@
   </data>
   <data name="MelonLoaderNotInstalledNote" xml:space="preserve">
     <value>MelonLoader未安装，将进入安装步骤。</value>
+  </data>
+  <data name="BepInExDetectedMessage" xml:space="preserve">
+    <value>检测到游戏目录中存在 BepInEx 文件夹或 winhttp.dll。请手动删除之前安装的任何翻译插件和 BepInEx 框架后再继续。</value>
+  </data>
+  <data name="BepInExDetectedLog" xml:space="preserve">
+    <value>检测到现有的 BepInEx 或翻译文件：{0}</value>
   </data>
   <data name="MelonLoaderInstalledButMissingDirs" xml:space="preserve">
     <value>MelonLoader已安装，但缺少关键目录。请至少完整运行一次游戏至主菜单后退出，以便生成所需文件。</value>
@@ -1775,6 +1841,39 @@
   </data>
   <data name="TranslationSystemNotInstalled" xml:space="preserve">
     <value>翻译系统尚未安装</value>
+  </data>
+  <data name="TranslationPluginUpdateAvailable" xml:space="preserve">
+    <value>翻译插件更新可用</value>
+  </data>
+  <data name="TranslationResourceUpdateAvailable" xml:space="preserve">
+    <value>翻译资源更新可用</value>
+  </data>
+  <data name="TranslationUpdateAvailable" xml:space="preserve">
+    <value>翻译更新可用</value>
+  </data>
+  <data name="UpdateTranslationPlugin" xml:space="preserve">
+    <value>更新翻译插件</value>
+  </data>
+  <data name="UpdateTranslationResources" xml:space="preserve">
+    <value>更新翻译资源</value>
+  </data>
+  <data name="GoToTranslationManagement" xml:space="preserve">
+    <value>前往翻译管理</value>
+  </data>
+  <data name="UpdatingTranslationPlugin" xml:space="preserve">
+    <value>正在更新翻译插件...</value>
+  </data>
+  <data name="TranslationPluginUpdateSuccessful" xml:space="preserve">
+    <value>翻译插件更新成功</value>
+  </data>
+  <data name="TranslationPluginUpdateFailed" xml:space="preserve">
+    <value>翻译插件更新失败</value>
+  </data>
+  <data name="TranslationPlugin" xml:space="preserve">
+    <value>翻译插件</value>
+  </data>
+  <data name="TranslationResources" xml:space="preserve">
+    <value>翻译资源</value>
   </data>
   <data name="CheckForUpdates" xml:space="preserve">
     <value>检查更新</value>

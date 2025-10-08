@@ -425,7 +425,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, "Application update check failed");
+            _loggingService.LogError(ex, Strings.ApplicationUpdateCheckFailed);
             MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
