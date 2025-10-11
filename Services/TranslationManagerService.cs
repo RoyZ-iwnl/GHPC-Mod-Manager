@@ -572,6 +572,8 @@ public class TranslationManagerService : ITranslationManagerService
                     })
                     .ToList();
 
+                _installManifest.InstallDate = DateTime.Now;
+
                 await SaveManifestAsync();
                 _loggingService.LogInfo(Strings.TranslationFilesUpdated);
             }
@@ -1001,7 +1003,7 @@ public class TranslationManagerService : ITranslationManagerService
                 !int.TryParse(timePart.Substring(4, 2), out var second))
                 return null;
 
-            return new DateTime(year, month, day, hour, minute, second);
+            return new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
         }
         catch (Exception ex)
         {
@@ -1019,11 +1021,11 @@ public class TranslationManagerService : ITranslationManagerService
                 return null;
 
             DateTime? latestTime = null;
-            
+
             foreach (var release in releases)
             {
-                var asset = release.Assets.FirstOrDefault(a => 
-                    a.Name.Contains("ghpc-translation-") && 
+                var asset = release.Assets.FirstOrDefault(a =>
+                    a.Name.Contains("ghpc-translation-") &&
                     (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz")));
 
                 if (asset != null)
@@ -1061,8 +1063,9 @@ public class TranslationManagerService : ITranslationManagerService
             if (!latestReleaseTime.HasValue)
                 return false;
 
-            // 对比安装时间与最新Release时间
-            var hasUpdate = _installManifest.InstallDate < latestReleaseTime.Value;
+            // 对比安装时间与最新Release时间（统一转换为UTC时间对比）
+            var installTimeUtc = _installManifest.InstallDate.ToUniversalTime();
+            var hasUpdate = installTimeUtc < latestReleaseTime.Value;
             
             _loggingService.LogInfo(Strings.TranslationUpdateCheckResult, 
                 _installManifest.InstallDate.ToString("yyyy-MM-dd HH:mm:ss"), 
@@ -1197,7 +1200,6 @@ public class TranslationManagerService : ITranslationManagerService
 
             _installManifest.TranslationRepoFiles = translationRepoFiles;
             _installManifest.XUnityVersion = latestVersion;
-            _installManifest.InstallDate = DateTime.Now;
             await SaveManifestAsync();
 
             _loggingService.LogInfo(Strings.TranslationPluginUpdateSuccessful);

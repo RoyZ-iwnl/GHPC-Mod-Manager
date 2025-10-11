@@ -538,7 +538,7 @@
     <value>游戏运行中</value>
   </data>
   <data name="SetupWizardTitle" xml:space="preserve">
-    <value>GHPC Mod Manager 初始化向导</value>
+    <value>GHPC模组管理器始化向导</value>
   </data>
   <data name="Step1LanguageSelection" xml:space="preserve">
     <value>步骤 1: 选择语言</value>
@@ -749,9 +749,6 @@
   </data>
   <data name="Checking" xml:space="preserve">
     <value>检测中...</value>
-  </data>
-  <data name="ConnectionNormal" xml:space="preserve">
-    <value>连接正常</value>
   </data>
   <data name="ConnectionAbnormal" xml:space="preserve">
     <value>连接异常</value>
@@ -1699,7 +1696,7 @@
     <value>使用亮色主题色: {0}</value>
   </data>
   <data name="CheckForModUpdates" xml:space="preserve">
-    <value>检查模组更新</value>
+    <value>检查模组与翻译更新</value>
   </data>
   <data name="OnlyCheckInstalledMods" xml:space="preserve">
     <value>仅检查已安装模组</value>
@@ -1810,7 +1807,7 @@
     <value>正在下载翻译发布版本: {0}</value>
   </data>
   <data name="TranslationUpdateAvailable" xml:space="preserve">
-    <value>有翻译更新可用</value>
+    <value>翻译更新可用</value>
   </data>
   <data name="CheckingTranslationUpdates" xml:space="preserve">
     <value>正在检查翻译更新...</value>
@@ -1848,9 +1845,6 @@
   <data name="TranslationResourceUpdateAvailable" xml:space="preserve">
     <value>翻译资源更新可用</value>
   </data>
-  <data name="TranslationUpdateAvailable" xml:space="preserve">
-    <value>翻译更新可用</value>
-  </data>
   <data name="UpdateTranslationPlugin" xml:space="preserve">
     <value>更新翻译插件</value>
   </data>
@@ -1868,9 +1862,6 @@
   </data>
   <data name="TranslationPluginUpdateFailed" xml:space="preserve">
     <value>翻译插件更新失败</value>
-  </data>
-  <data name="TranslationPlugin" xml:space="preserve">
-    <value>翻译插件</value>
   </data>
   <data name="TranslationResources" xml:space="preserve">
     <value>翻译资源</value>
@@ -1915,7 +1906,7 @@
     <value>未找到可下载的更新资源</value>
   </data>
   <data name="BatchUpdateTitle" xml:space="preserve">
-    <value>GHPC Mod Manager 更新</value>
+    <value>GHPC模组管理器更新</value>
   </data>
   <data name="BatchWaitingForClose" xml:space="preserve">
     <value>等待应用程序关闭...</value>
@@ -2035,7 +2026,7 @@
     <value>无法记录操作 - 追踪未启动</value>
   </data>
   <data name="FileOperationRecorded" xml:space="preserve">
-    <value>已记录文件操作 #{0}: {1} {2} -> {3} (大小: {4} 字节)</value>
+    <value>已记录文件操作 #{0}: {1} {2} -&gt; {3} (大小: {4} 字节)</value>
   </data>
   <data name="FileOperationTrackingStopped" xml:space="preserve">
     <value>停止文件操作追踪：{0}，记录了 {1} 个操作，耗时 {2}毫秒</value>
@@ -2065,7 +2056,7 @@
     <value>根据模式排除文件：{0}</value>
   </data>
   <data name="ZipProcessingEntry" xml:space="preserve">
-    <value>处理 ZIP 条目：{0} -> {1}</value>
+    <value>处理 ZIP 条目：{0} -&gt; {1}</value>
   </data>
   <data name="ZipCreatedDirectory" xml:space="preserve">
     <value>已创建目录：{0}</value>
@@ -2086,7 +2077,7 @@
     <value>ZIP 解压完成。已处理：{0}，已跳过：{1}，条目总数：{2}</value>
   </data>
   <data name="FileCopyStarting" xml:space="preserve">
-    <value>开始文件复制：{0} -> {1}</value>
+    <value>开始文件复制：{0} -&gt; {1}</value>
   </data>
   <data name="FileCopySourceNotFound" xml:space="preserve">
     <value>源文件不存在：{0}</value>
@@ -2104,19 +2095,19 @@
     <value>成功复制文件：{0} ({1} 字节)</value>
   </data>
   <data name="FileCopyFailed" xml:space="preserve">
-    <value>文件复制失败 {0} -> {1}: {2}</value>
+    <value>文件复制失败 {0} -&gt; {1}: {2}</value>
   </data>
   <data name="DirectoryCopyStarting" xml:space="preserve">
-    <value>开始目录复制：{0} -> {1}，排除模式：[{2}]</value>
+    <value>开始目录复制：{0} -&gt; {1}，排除模式：[{2}]</value>
   </data>
   <data name="DirectoryCopySourceNotFound" xml:space="preserve">
     <value>源目录不存在：{0}</value>
   </data>
   <data name="DirectoryCopyCompleted" xml:space="preserve">
-    <value>目录复制完成：{0} -> {1}</value>
+    <value>目录复制完成：{0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyProcessing" xml:space="preserve">
-    <value>处理目录：{0} -> {1}</value>
+    <value>处理目录：{0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyFoundFiles" xml:space="preserve">
     <value>在 {1} 中找到 {0} 个文件</value>
@@ -2125,7 +2116,7 @@
     <value>根据模式排除文件：{0}</value>
   </data>
   <data name="DirectoryCopyingFile" xml:space="preserve">
-    <value>复制文件：{0} -> {1}</value>
+    <value>复制文件：{0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyFoundSubdirs" xml:space="preserve">
     <value>在 {1} 中找到 {0} 个子目录</value>
@@ -2134,7 +2125,7 @@
     <value>根据模式排除目录：{0}</value>
   </data>
   <data name="DirectoryCopyRecursing" xml:space="preserve">
-    <value>递归进入子目录：{0} -> {1}</value>
+    <value>递归进入子目录：{0} -&gt; {1}</value>
   </data>
   <data name="HashCalculating" xml:space="preserve">
     <value>计算文件哈希：{0}</value>
@@ -2155,7 +2146,7 @@
     <value>未找到模组 {0} 的备份文件，正在清理备份目录</value>
   </data>
   <data name="RestoredModFile" xml:space="preserve">
-    <value>已恢复模组文件：{0} -> {1}</value>
+    <value>已恢复模组文件：{0} -&gt; {1}</value>
   </data>
   <data name="CannotUpdateModCanUpdateFalse" xml:space="preserve">
     <value>无法更新模组：{0}，CanUpdate 为 false</value>
@@ -2239,7 +2230,7 @@
     <value>未找到要禁用的翻译文件</value>
   </data>
   <data name="MovedTranslationFileToBackup" xml:space="preserve">
-    <value>已将翻译文件移至备份：{0} -> {1}</value>
+    <value>已将翻译文件移至备份：{0} -&gt; {1}</value>
   </data>
   <data name="TranslationSystemDisabledAndBackedUp" xml:space="preserve">
     <value>翻译系统已禁用并备份</value>
@@ -2254,7 +2245,7 @@
     <value>翻译备份清单为空或无效</value>
   </data>
   <data name="RestoredTranslationFile" xml:space="preserve">
-    <value>已恢复翻译文件：{0} -> {1}</value>
+    <value>已恢复翻译文件：{0} -&gt; {1}</value>
   </data>
   <data name="TranslationSystemEnabledFromBackup" xml:space="preserve">
     <value>翻译系统已从备份启用</value>
@@ -2285,5 +2276,20 @@
   </data>
   <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
     <value>打开GHPC交流群页面失败</value>
+  </data>
+  <data name="AutoSearchingGHPC" xml:space="preserve">
+    <value>搜寻路径···</value>
+  </data>
+  <data name="AdditionalSteamLibrary" xml:space="preserve">
+    <value>已添加额外Steam库: {0}</value>
+  </data>
+  <data name="AutoSearchStarted" xml:space="preserve">
+    <value>开始搜寻路径</value>
+  </data>
+  <data name="AutoSearchCompleted" xml:space="preserve">
+    <value>自动搜寻完成 ，{0}个可能路径</value>
+  </data>
+  <data name="AutoSearchError" xml:space="preserve">
+    <value>路径搜寻出错</value>
   </data>
 </root>

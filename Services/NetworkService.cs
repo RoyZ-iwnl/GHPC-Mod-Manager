@@ -510,16 +510,16 @@ public class NetworkService : INetworkService
         
         // Use multi-threaded download only if:
         // 1. Server supports range requests
-        // 2. File size is known and >= 5MB
-        if (supportsRangeRequests && totalBytes >= 5 * 1024 * 1024)
+        // 2. File size is known and >= 512KB
+        if (supportsRangeRequests && totalBytes >= 512 * 1024)
         {
             _loggingService.LogInfo(Strings.UsingMultiThreadedDownload, $"{totalBytes:N0}");
             return await DownloadFileMultiThreadedAsync(url, totalBytes, progress, cancellationToken);
         }
         else
         {
-            var reason = !supportsRangeRequests ? "server doesn't support range requests" : 
-                       totalBytes < 5 * 1024 * 1024 ? "file is small" : "unknown file size";
+            var reason = !supportsRangeRequests ? "server doesn't support range requests" :
+                       totalBytes < 512 * 1024 ? "file is small" : "unknown file size";
             _loggingService.LogInfo(Strings.UsingSingleThreadedDownload, reason, $"{totalBytes:N0}");
             return await DownloadFileSequentialAsync(url, progress, cancellationToken, totalBytes);
         }

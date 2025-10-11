@@ -95,13 +95,13 @@ public class GitHubRelease
 {
     [JsonProperty("tag_name")]
     public string TagName { get; set; } = string.Empty;
-    
+
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
-    
+
     [JsonProperty("assets")]
     public List<GitHubAsset> Assets { get; set; } = new();
-    
+
     [JsonProperty("prerelease")]
     public bool PreRelease { get; set; }
 

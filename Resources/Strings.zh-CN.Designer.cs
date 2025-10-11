@@ -385,7 +385,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC Mod Manager 更新.
+        ///   Looks up a localized string similar to GHPC模组管理器更新.
         /// </summary>
         public static string BatchUpdateTitle {
             get {
@@ -511,7 +511,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 检查模组更新.
+        ///   Looks up a localized string similar to 检查模组与翻译更新.
         /// </summary>
         public static string CheckForModUpdates {
             get {
@@ -4939,7 +4939,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GHPC Mod Manager 初始化向导.
+        ///   Looks up a localized string similar to GHPC模组管理器始化向导.
         /// </summary>
         public static string SetupWizardTitle {
             get {

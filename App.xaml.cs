@@ -39,6 +39,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IModBackupService, ModBackupService>();
                     services.AddSingleton<IAnnouncementService, AnnouncementService>();
                     services.AddSingleton<IUpdateService, UpdateService>();
+                    services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
                     
                     services.AddHttpClient<INetworkService, NetworkService>(client =>
                     {

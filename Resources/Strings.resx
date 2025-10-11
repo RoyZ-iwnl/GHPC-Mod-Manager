@@ -655,7 +655,7 @@
     <value>Failed to apply proxy settings</value>
   </data>
   <data name="ConnectionNormal" xml:space="preserve">
-    <value>Connection normal</value>
+    <value>Connection Normal</value>
   </data>
   <data name="ConnectionFailed" xml:space="preserve">
     <value>Connection failed</value>
@@ -749,9 +749,6 @@
   </data>
   <data name="Checking" xml:space="preserve">
     <value>Checking...</value>
-  </data>
-  <data name="ConnectionNormal" xml:space="preserve">
-    <value>Connection Normal</value>
   </data>
   <data name="ConnectionAbnormal" xml:space="preserve">
     <value>Connection Abnormal</value>
@@ -1699,7 +1696,7 @@
     <value>Using light theme colors: {0}</value>
   </data>
   <data name="CheckForModUpdates" xml:space="preserve">
-    <value>Check for Mod Updates</value>
+    <value>Check Mod &amp; i18n Updates</value>
   </data>
   <data name="OnlyCheckInstalledMods" xml:space="preserve">
     <value>Only check installed mods</value>
@@ -1848,9 +1845,6 @@
   <data name="TranslationResourceUpdateAvailable" xml:space="preserve">
     <value>Translation resource update available</value>
   </data>
-  <data name="TranslationUpdateAvailable" xml:space="preserve">
-    <value>Translation update available</value>
-  </data>
   <data name="UpdateTranslationPlugin" xml:space="preserve">
     <value>Update Translation Plugin</value>
   </data>
@@ -1868,9 +1862,6 @@
   </data>
   <data name="TranslationPluginUpdateFailed" xml:space="preserve">
     <value>Translation plugin update failed</value>
-  </data>
-  <data name="TranslationPlugin" xml:space="preserve">
-    <value>Translation Plugin</value>
   </data>
   <data name="TranslationResources" xml:space="preserve">
     <value>Translation Resources</value>
@@ -2035,7 +2026,7 @@
     <value>Cannot record operation - tracking not started</value>
   </data>
   <data name="FileOperationRecorded" xml:space="preserve">
-    <value>Recorded file operation #{0}: {1} {2} -> {3} (size: {4} bytes)</value>
+    <value>Recorded file operation #{0}: {1} {2} -&gt; {3} (size: {4} bytes)</value>
   </data>
   <data name="FileOperationTrackingStopped" xml:space="preserve">
     <value>Stopped file operation tracking: {0}, recorded {1} operations in {2}ms</value>
@@ -2065,7 +2056,7 @@
     <value>Excluding file due to pattern: {0}</value>
   </data>
   <data name="ZipProcessingEntry" xml:space="preserve">
-    <value>Processing ZIP entry: {0} -> {1}</value>
+    <value>Processing ZIP entry: {0} -&gt; {1}</value>
   </data>
   <data name="ZipCreatedDirectory" xml:space="preserve">
     <value>Created directory: {0}</value>
@@ -2086,7 +2077,7 @@
     <value>ZIP extraction completed. Processed: {0}, Skipped: {1}, Total entries: {2}</value>
   </data>
   <data name="FileCopyStarting" xml:space="preserve">
-    <value>Starting file copy: {0} -> {1}</value>
+    <value>Starting file copy: {0} -&gt; {1}</value>
   </data>
   <data name="FileCopySourceNotFound" xml:space="preserve">
     <value>Source file does not exist: {0}</value>
@@ -2104,19 +2095,19 @@
     <value>Successfully copied file: {0} ({1} bytes)</value>
   </data>
   <data name="FileCopyFailed" xml:space="preserve">
-    <value>Failed to copy file {0} -> {1}: {2}</value>
+    <value>Failed to copy file {0} -&gt; {1}: {2}</value>
   </data>
   <data name="DirectoryCopyStarting" xml:space="preserve">
-    <value>Starting directory copy: {0} -> {1}, exclude patterns: [{2}]</value>
+    <value>Starting directory copy: {0} -&gt; {1}, exclude patterns: [{2}]</value>
   </data>
   <data name="DirectoryCopySourceNotFound" xml:space="preserve">
     <value>Source directory does not exist: {0}</value>
   </data>
   <data name="DirectoryCopyCompleted" xml:space="preserve">
-    <value>Directory copy completed: {0} -> {1}</value>
+    <value>Directory copy completed: {0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyProcessing" xml:space="preserve">
-    <value>Processing directory: {0} -> {1}</value>
+    <value>Processing directory: {0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyFoundFiles" xml:space="preserve">
     <value>Found {0} files in {1}</value>
@@ -2125,7 +2116,7 @@
     <value>Excluding file due to pattern: {0}</value>
   </data>
   <data name="DirectoryCopyingFile" xml:space="preserve">
-    <value>Copying file: {0} -> {1}</value>
+    <value>Copying file: {0} -&gt; {1}</value>
   </data>
   <data name="DirectoryCopyFoundSubdirs" xml:space="preserve">
     <value>Found {0} subdirectories in {1}</value>
@@ -2134,7 +2125,7 @@
     <value>Excluding directory due to pattern: {0}</value>
   </data>
   <data name="DirectoryCopyRecursing" xml:space="preserve">
-    <value>Recursing into subdirectory: {0} -> {1}</value>
+    <value>Recursing into subdirectory: {0} -&gt; {1}</value>
   </data>
   <data name="HashCalculating" xml:space="preserve">
     <value>Calculating hash for file: {0}</value>
@@ -2155,7 +2146,7 @@
     <value>No backup files found for mod: {0}, cleaning up backup directory</value>
   </data>
   <data name="RestoredModFile" xml:space="preserve">
-    <value>Restored mod file: {0} -> {1}</value>
+    <value>Restored mod file: {0} -&gt; {1}</value>
   </data>
   <data name="CannotUpdateModCanUpdateFalse" xml:space="preserve">
     <value>Cannot update mod: {0}, CanUpdate is false</value>
@@ -2239,7 +2230,7 @@
     <value>No translation files found to disable</value>
   </data>
   <data name="MovedTranslationFileToBackup" xml:space="preserve">
-    <value>Moved translation file to backup: {0} -> {1}</value>
+    <value>Moved translation file to backup: {0} -&gt; {1}</value>
   </data>
   <data name="TranslationSystemDisabledAndBackedUp" xml:space="preserve">
     <value>Translation system disabled and backed up</value>
@@ -2254,7 +2245,7 @@
     <value>Translation backup manifest is empty or invalid</value>
   </data>
   <data name="RestoredTranslationFile" xml:space="preserve">
-    <value>Restored translation file: {0} -> {1}</value>
+    <value>Restored translation file: {0} -&gt; {1}</value>
   </data>
   <data name="TranslationSystemEnabledFromBackup" xml:space="preserve">
     <value>Translation system enabled from backup</value>
@@ -2285,5 +2276,89 @@
   </data>
   <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
     <value>Failed to open GHPC community page</value>
+  </data>
+  <data name="AutoSearchingGHPC" xml:space="preserve">
+    <value>Searching for GHPC game directory...</value>
+  </data>
+  <data name="SteamPathNotFound" xml:space="preserve">
+    <value>Steam installation not found in registry</value>
+  </data>
+  <data name="SteamInstallationPath" xml:space="preserve">
+    <value>Found Steam installation path: {0}</value>
+  </data>
+  <data name="DefaultSteamLibrary" xml:space="preserve">
+    <value>Added default Steam library: {0}</value>
+  </data>
+  <data name="AdditionalSteamLibrary" xml:space="preserve">
+    <value>Added additional Steam library: {0}</value>
+  </data>
+  <data name="GHPCFoundInLibrary" xml:space="preserve">
+    <value>Found GHPC in library {0}: {1}</value>
+  </data>
+  <data name="GHPCFoundViaManifest" xml:space="preserve">
+    <value>Found GHPC via manifest: {0}</value>
+  </data>
+  <data name="GHPCFoundViaGeneralSearch" xml:space="preserve">
+    <value>Found GHPC via general search: {0}</value>
+  </data>
+  <data name="AutoSearchStarted" xml:space="preserve">
+    <value>Starting automatic GHPC game path search</value>
+  </data>
+  <data name="AutoSearchCompleted" xml:space="preserve">
+    <value>Automatic search completed, found {0} possible GHPC paths</value>
+  </data>
+  <data name="AutoSearchError" xml:space="preserve">
+    <value>Error occurred during automatic GHPC search</value>
+  </data>
+  <data name="ReadingSteamPathFromRegistry" xml:space="preserve">
+    <value>Reading Steam installation path from registry</value>
+  </data>
+  <data name="ReadingSteamPathFromRegistryFailed" xml:space="preserve">
+    <value>Failed to read Steam installation path from registry</value>
+  </data>
+  <data name="ParsingLibraryFoldersConfig" xml:space="preserve">
+    <value>Parsing Steam library folders configuration</value>
+  </data>
+  <data name="ParsingLibraryFoldersConfigFailed" xml:space="preserve">
+    <value>Failed to parse Steam library folders configuration</value>
+  </data>
+  <data name="SearchingGHPCInLibrary" xml:space="preserve">
+    <value>Searching for GHPC in library: {0}</value>
+  </data>
+  <data name="SearchingGHPCInLibraryError" xml:space="preserve">
+    <value>Error searching for GHPC in library {0}</value>
+  </data>
+  <data name="ParsingSteamManifest" xml:space="preserve">
+    <value>Parsing Steam manifest file</value>
+  </data>
+  <data name="ParsingSteamManifestFailed" xml:space="preserve">
+    <value>Failed to parse Steam manifest file</value>
+  </data>
+  <data name="NoSteamLibraryFound" xml:space="preserve">
+    <value>Steam installation found but no valid library paths detected</value>
+  </data>
+  <data name="MultiplePathsFound" xml:space="preserve">
+    <value>Found {0} possible GHPC installations</value>
+  </data>
+  <data name="NoPathsFound" xml:space="preserve">
+    <value>No GHPC installations found automatically</value>
+  </data>
+  <data name="SelectPathDialog" xml:space="preserve">
+    <value>Select GHPC Installation</value>
+  </data>
+  <data name="SelectPathInstructions" xml:space="preserve">
+    <value>Multiple GHPC installations found. Please select the one you want to use:</value>
+  </data>
+  <data name="NonSteamVersionWarning" xml:space="preserve">
+    <value>Please ensure you are using the latest Steam version. We only provide official support for the Steam version of GHPC. Manual or cracked versions may cause compatibility issues.</value>
+  </data>
+  <data name="VersionWarningTitle" xml:space="preserve">
+    <value>Version Compatibility Notice</value>
+  </data>
+  <data name="SteamVersionDetected" xml:space="preserve">
+    <value>Steam version detected - continuing setup</value>
+  </data>
+  <data name="NonSteamVersionDetected" xml:space="preserve">
+    <value>Non-Steam version detected - please verify Steam version is installed</value>
   </data>
 </root>

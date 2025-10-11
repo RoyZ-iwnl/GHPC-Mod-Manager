@@ -454,7 +454,7 @@
                                     <!-- Translation Plugin Update Button -->
                                     <Button Content="{x:Static resources:Strings.UpdateTranslationPlugin}" Command="{Binding UpdateTranslationPluginCommand}"
                                             MinWidth="140" Margin="0,0,10,0"
-                                            Style="{DynamicResource OutlinedButtonStyle}">
+                                            Style="{DynamicResource FilledButtonStyle}">
                                         <Button.Visibility>
                                             <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
                                                 <Binding Path="IsTranslationInstalled"/>
@@ -466,7 +466,7 @@
                                     <!-- Translation Resources Update Button -->
                                     <Button Content="{x:Static resources:Strings.UpdateTranslationResources}" Command="{Binding UpdateTranslationCommand}"
                                             MinWidth="140" Margin="0,0,10,0"
-                                            Style="{DynamicResource OutlinedButtonStyle}">
+                                            Style="{DynamicResource FilledButtonStyle}">
                                         <Button.Visibility>
                                             <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
                                                 <Binding Path="IsTranslationInstalled"/>

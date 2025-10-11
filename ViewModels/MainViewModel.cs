@@ -597,7 +597,17 @@ public partial class MainViewModel : ObservableObject
         {
             IsTranslationUpdating = true;
             StatusMessage = Strings.UpdatingTranslationFiles;
-            var success = await _translationManagerService.UpdateTranslationFilesAsync();
+
+            var progress = new Progress<DownloadProgress>(downloadProgress =>
+            {
+                var speedText = downloadProgress.GetFormattedSpeed();
+                var progressText = downloadProgress.GetFormattedProgress();
+                var percentage = downloadProgress.ProgressPercentage;
+
+                StatusMessage = $"{Strings.UpdatingTranslationFiles} - {percentage:F1}% ({progressText}) - {speedText}";
+            });
+
+            var success = await _translationManagerService.UpdateTranslationFilesAsync(progress);
 
             if (success)
             {
@@ -605,7 +615,8 @@ public partial class MainViewModel : ObservableObject
                 await RefreshDataAsync();
 
                 // 更新完成后重新检查更新状态
-                IsTranslationUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+                IsTranslationResourceUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+                IsTranslationUpdateAvailable = IsTranslationPluginUpdateAvailable || IsTranslationResourceUpdateAvailable;
             }
             else
             {

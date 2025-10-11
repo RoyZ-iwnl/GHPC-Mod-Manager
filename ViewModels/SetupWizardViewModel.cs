@@ -17,11 +17,25 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IProcessService _processService;
     private readonly ILoggingService _loggingService;
+    private readonly ISteamGameFinderService _steamGameFinder;
     private bool _isInitializing = true;
     private bool _hasShownBepInExWarning;
+    private bool _hasShownSteamWarning;
+    private bool _autoSearchAttempted;
 
     [ObservableProperty]
     private int _currentStep = 0;
+
+    partial void OnCurrentStepChanged(int value)
+    {
+        // 当步骤切换到游戏目录选择(步骤3)时，自动触发搜索
+        if (value == 3 && !_autoSearchAttempted)
+        {
+            _autoSearchAttempted = true;
+            _ = Task.Run(async () => await AutoSearchGHPCAsync());
+        }
+        UpdateNavigationButtons();
+    }
 
     [ObservableProperty]
     private bool _isNextEnabled = true;
@@ -164,7 +178,8 @@ public partial class SetupWizardViewModel : ObservableObject
         INetworkService networkService,
         IMelonLoaderService melonLoaderService,
         IProcessService processService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        ISteamGameFinderService steamGameFinder)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -172,6 +187,7 @@ public partial class SetupWizardViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
         _processService = processService;
         _loggingService = loggingService;
+        _steamGameFinder = steamGameFinder;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -281,7 +297,8 @@ public partial class SetupWizardViewModel : ObservableObject
                 break;
 
             case 3: // Game Directory
-                if (await ValidateGameDirectoryAsync())
+                // 验证游戏目录并继续下一步
+                if (await ValidateGameDirectoryWithSteamCheckAsync())
                 {
                     CurrentStep = 4;
                     // Start preloading MelonLoader releases in background
@@ -363,6 +380,7 @@ public partial class SetupWizardViewModel : ObservableObject
             {
                 GameRootPath = Path.GetDirectoryName(selectedFile) ?? string.Empty;
                 _hasShownBepInExWarning = false;
+                _hasShownSteamWarning = false; // 重置Steam版本警告状态
                 _settingsService.Settings.GameRootPath = GameRootPath;
                 await _settingsService.SaveSettingsAsync();
                 UpdateNavigationButtons();
@@ -668,5 +686,125 @@ public partial class SetupWizardViewModel : ObservableObject
             7 => false,
             _ => true
         };
+    }
+
+    private async Task AutoSearchGHPCAsync()
+    {
+        try
+        {
+            StatusMessage = Strings.AutoSearchingGHPC;
+            _loggingService.LogInfo(Strings.AutoSearchStarted);
+
+            var foundPaths = await _steamGameFinder.FindGHPCGamePathsAsync();
+
+            if (foundPaths.Count > 0)
+            {
+                // 如果找到多个路径，使用第一个（通常是最可能的）
+                GameRootPath = foundPaths[0];
+                _settingsService.Settings.GameRootPath = GameRootPath;
+                await _settingsService.SaveSettingsAsync();
+                UpdateNavigationButtons();
+
+                _loggingService.LogInfo(string.Format(Strings.MultiplePathsFound, foundPaths.Count));
+                _loggingService.LogInfo(string.Format(Strings.SteamInstallationPath, GameRootPath));
+            }
+            else
+            {
+                _loggingService.LogInfo(Strings.NoPathsFound);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.AutoSearchError);
+        }
+        finally
+        {
+            StatusMessage = string.Empty;
+        }
+    }
+
+    private async Task<bool> ValidateGameDirectoryWithSteamCheckAsync()
+    {
+        if (string.IsNullOrEmpty(GameRootPath))
+        {
+            MessageBox.Show(Strings.PleaseSelectGameDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        var ghpcExe = Path.Combine(GameRootPath, "GHPC.exe");
+        if (!File.Exists(ghpcExe))
+        {
+            MessageBox.Show(Strings.GHPCExeNotFoundInDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        // 检查是否为Steam版本
+        if (!await IsSteamVersionAsync(GameRootPath))
+        {
+            if (!_hasShownSteamWarning)
+            {
+                _hasShownSteamWarning = true;
+                var result = MessageBox.Show(
+                    Strings.NonSteamVersionWarning,
+                    Strings.VersionWarningTitle,
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return false;
+                }
+
+                _loggingService.LogInfo(Strings.NonSteamVersionDetected);
+            }
+        }
+        else
+        {
+            _loggingService.LogInfo(Strings.SteamVersionDetected);
+        }
+
+        return true;
+    }
+
+    private async Task<bool> IsSteamVersionAsync(string gamePath)
+    {
+        try
+        {
+            // 检查是否存在Steam相关的文件或目录结构
+            var gameBinPath = Path.GetDirectoryName(gamePath);
+            var gameRootPath = Path.GetDirectoryName(gameBinPath);
+
+            if (string.IsNullOrEmpty(gameRootPath))
+                return false;
+
+            // 方法1: 检查是否存在Steam游戏manifest文件
+            var steamAppsPath = Path.Combine(gameRootPath, "..", "..", "steamapps");
+            if (Directory.Exists(steamAppsPath))
+            {
+                var manifestPath = Path.Combine(steamAppsPath, "appmanifest_665650.acf");
+                if (File.Exists(manifestPath))
+                    return true;
+            }
+
+            // 方法2: 检查父目录是否包含"steamapps\common"
+            if (gameBinPath.Contains("steamapps") && gameBinPath.Contains("common"))
+            {
+                return true;
+            }
+
+            // 方法3: 检查是否为标准Steam安装路径结构
+            var typicalSteamPath = Path.Combine(gameRootPath, "steamapps", "common", "Gunner, HEAT, PC!");
+            if (Directory.Exists(typicalSteamPath) && typicalSteamPath.Contains("steamapps"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.AutoSearchError);
+            return false;
+        }
     }
 }
