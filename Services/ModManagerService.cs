@@ -27,6 +27,8 @@ public interface IModManagerService
     Task RefreshModListAsync();
     string GetLocalizedConfigLabel(string modId, string configKey);
     string GetLocalizedConfigComment(string modId, string commentKey);
+    Task<(bool HasConflicts, List<(string ModId, string ConflictsWith)> Conflicts)> CheckEnabledModsConflictsAsync();
+    Task<(bool HasMissingDependencies, List<(string ModId, string RequiredMod)> MissingDependencies)> CheckEnabledModsDependenciesAsync();
 }
 
 public class ModManagerService : IModManagerService
@@ -95,11 +97,14 @@ public class ModManagerService : IModManagerService
                     GetRepoName(modConfig.ReleaseUrl),
                     forceRefresh
                 );
-                viewModel.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                var latestRelease = releases.FirstOrDefault();
+                viewModel.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                viewModel.UpdateDate = latestRelease?.PublishedAt;
             }
             catch
             {
                 viewModel.LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown;
+                viewModel.UpdateDate = null;
             }
 
             result.Add(viewModel);
@@ -1517,14 +1522,15 @@ public class ModManagerService : IModManagerService
     }
 
     /// <summary>
-    /// Check for mod conflicts before installation
+    /// Check for mod conflicts before installation (双向检测)
     /// </summary>
     public async Task<(bool HasConflicts, List<string> ConflictingMods)> CheckModConflictsAsync(ModConfig modConfig)
     {
         var conflictingMods = new List<string>();
-        
+
         _loggingService.LogInfo(Strings.CheckingModConflicts, modConfig.Id);
-        
+
+        // 检查当前MOD的Conflicts列表
         if (modConfig.Conflicts?.Any() == true)
         {
             foreach (var conflictId in modConfig.Conflicts)
@@ -1536,9 +1542,62 @@ public class ModManagerService : IModManagerService
                 }
             }
         }
-        
+
+        // 双向检测:检查已安装的MOD是否将当前MOD列为冲突
+        foreach (var installedMod in _installManifest.InstalledMods.Keys)
+        {
+            var installedModConfig = _availableMods.FirstOrDefault(m => m.Id == installedMod);
+            if (installedModConfig?.Conflicts?.Contains(modConfig.Id) == true)
+            {
+                if (!conflictingMods.Contains(installedMod))
+                {
+                    conflictingMods.Add(installedMod);
+                    _loggingService.LogWarning(Strings.ConflictFound, installedMod);
+                }
+            }
+        }
+
         _loggingService.LogInfo(Strings.ModConflictCheckComplete, modConfig.Id);
         return (conflictingMods.Any(), conflictingMods);
+    }
+
+    /// <summary>
+    /// 检查已启用MOD之间的冲突(用于启动游戏时)
+    /// </summary>
+    public async Task<(bool HasConflicts, List<(string ModId, string ConflictsWith)> Conflicts)> CheckEnabledModsConflictsAsync()
+    {
+        var conflicts = new List<(string ModId, string ConflictsWith)>();
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        var modsPath = Path.Combine(gameRootPath, "Mods");
+
+        // 获取所有已安装且已启用的MOD
+        var enabledMods = _installManifest.InstalledMods
+            .Where(kvp => IsModEnabled(_availableMods.FirstOrDefault(m => m.Id == kvp.Key)?.MainBinaryFileName ?? "", modsPath))
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        // 检查每个已启用MOD的冲突
+        foreach (var modId in enabledMods)
+        {
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+            if (modConfig?.Conflicts?.Any() == true)
+            {
+                foreach (var conflictId in modConfig.Conflicts)
+                {
+                    // 如果冲突的MOD也已启用,记录冲突
+                    if (enabledMods.Contains(conflictId))
+                    {
+                        // 避免重复记录(A冲突B,B冲突A只记录一次)
+                        if (!conflicts.Any(c => c.ModId == conflictId && c.ConflictsWith == modId))
+                        {
+                            conflicts.Add((modId, conflictId));
+                        }
+                    }
+                }
+            }
+        }
+
+        return (conflicts.Any(), conflicts);
     }
 
     /// <summary>
@@ -1547,9 +1606,9 @@ public class ModManagerService : IModManagerService
     public async Task<(bool HasMissingRequirements, List<string> MissingMods)> CheckModDependenciesAsync(ModConfig modConfig)
     {
         var missingMods = new List<string>();
-        
+
         _loggingService.LogInfo(Strings.CheckingModDependencies, modConfig.Id);
-        
+
         if (modConfig.Requirements?.Any() == true)
         {
             foreach (var requiredId in modConfig.Requirements)
@@ -1561,9 +1620,45 @@ public class ModManagerService : IModManagerService
                 }
             }
         }
-        
+
         _loggingService.LogInfo(Strings.ModDependencyCheckComplete, modConfig.Id);
         return (missingMods.Any(), missingMods);
+    }
+
+    /// <summary>
+    /// 检查已启用MOD的依赖是否已安装且已启用(用于启动游戏时)
+    /// </summary>
+    public async Task<(bool HasMissingDependencies, List<(string ModId, string RequiredMod)> MissingDependencies)> CheckEnabledModsDependenciesAsync()
+    {
+        var missingDependencies = new List<(string ModId, string RequiredMod)>();
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        var modsPath = Path.Combine(gameRootPath, "Mods");
+
+        // 获取所有已安装且已启用的MOD
+        var enabledMods = _installManifest.InstalledMods
+            .Where(kvp => IsModEnabled(_availableMods.FirstOrDefault(m => m.Id == kvp.Key)?.MainBinaryFileName ?? "", modsPath))
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        // 检查每个已启用MOD的依赖
+        foreach (var modId in enabledMods)
+        {
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+            if (modConfig?.Requirements?.Any() == true)
+            {
+                foreach (var requiredId in modConfig.Requirements)
+                {
+                    // 检查依赖的MOD是否已安装且已启用
+                    if (!enabledMods.Contains(requiredId))
+                    {
+                        missingDependencies.Add((modId, requiredId));
+                        _loggingService.LogWarning(Strings.MissingRequirement, requiredId);
+                    }
+                }
+            }
+        }
+
+        return (missingDependencies.Any(), missingDependencies);
     }
 
     /// <summary>

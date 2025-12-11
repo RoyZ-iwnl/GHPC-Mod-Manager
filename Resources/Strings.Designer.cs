@@ -610,6 +610,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Checking mod conflicts and dependencies... 的本地化字符串。
+        /// </summary>
+        public static string CheckingModConflictsAndDependencies {
+            get {
+                return ResourceManager.GetString("CheckingModConflictsAndDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Checking mod dependencies for: {0} 的本地化字符串。
         /// </summary>
         public static string CheckingModDependencies {
@@ -1051,11 +1060,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 MOD Conflict Detected 的本地化字符串。
+        /// </summary>
+        public static string ConflictDetectedOnLaunch {
+            get {
+                return ResourceManager.GetString("ConflictDetectedOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Conflict found with mod: {0} 的本地化字符串。
         /// </summary>
         public static string ConflictFound {
             get {
                 return ResourceManager.GetString("ConflictFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The following mods have conflicts:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game? 的本地化字符串。
+        /// </summary>
+        public static string ConflictWarningMessage {
+            get {
+                return ResourceManager.GetString("ConflictWarningMessage", resourceCulture);
             }
         }
         
@@ -1240,6 +1267,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 {0} days ago 的本地化字符串。
+        /// </summary>
+        public static string DaysAgo {
+            get {
+                return ResourceManager.GetString("DaysAgo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Added default Steam library: {0} 的本地化字符串。
         /// </summary>
         public static string DefaultSteamLibrary {
@@ -1272,6 +1308,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DeletingExpiredGitHubCache {
             get {
                 return ResourceManager.GetString("DeletingExpiredGitHubCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Missing Dependencies Detected 的本地化字符串。
+        /// </summary>
+        public static string DependencyMissingOnLaunch {
+            get {
+                return ResourceManager.GetString("DependencyMissingOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The following mods are missing required dependencies:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game? 的本地化字符串。
+        /// </summary>
+        public static string DependencyWarningMessage {
+            get {
+                return ResourceManager.GetString("DependencyWarningMessage", resourceCulture);
             }
         }
         
@@ -1623,6 +1677,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string EnteringNetworkCheck {
             get {
                 return ResourceManager.GetString("EnteringNetworkCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Entering offline mode 的本地化字符串。
+        /// </summary>
+        public static string EnteringOfflineMode {
+            get {
+                return ResourceManager.GetString("EnteringOfflineMode", resourceCulture);
             }
         }
         
@@ -3400,6 +3463,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 {0} conflicts with {1} 的本地化字符串。
+        /// </summary>
+        public static string ModConflictsWith {
+            get {
+                return ResourceManager.GetString("ModConflictsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Mod dependency check complete for: {0} 的本地化字符串。
         /// </summary>
         public static string ModDependencyCheckComplete {
@@ -3648,6 +3720,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModReinstalledFromBackup {
             get {
                 return ResourceManager.GetString("ModReinstalledFromBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} requires: {1} 的本地化字符串。
+        /// </summary>
+        public static string ModRequiresDependency {
+            get {
+                return ResourceManager.GetString("ModRequiresDependency", resourceCulture);
             }
         }
         
@@ -3918,6 +3999,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NetworkCheckSuccessful {
             get {
                 return ResourceManager.GetString("NetworkCheckSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Network connection failed 的本地化字符串。
+        /// </summary>
+        public static string NetworkConnectionFailed {
+            get {
+                return ResourceManager.GetString("NetworkConnectionFailed", resourceCulture);
             }
         }
         
@@ -4251,6 +4341,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NoUpdateAvailableToDownload {
             get {
                 return ResourceManager.GetString("NoUpdateAvailableToDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Offline Mode - Using cached data 的本地化字符串。
+        /// </summary>
+        public static string OfflineModeActive {
+            get {
+                return ResourceManager.GetString("OfflineModeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to connect to server, entering offline mode.\n\nYou can continue using local features (disable/uninstall mods), but cannot install or update mods.\n\nPlease check your network connection and restart the application. 的本地化字符串。
+        /// </summary>
+        public static string OfflineModeMessage {
+            get {
+                return ResourceManager.GetString("OfflineModeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Offline Mode 的本地化字符串。
+        /// </summary>
+        public static string OfflineModeTitle {
+            get {
+                return ResourceManager.GetString("OfflineModeTitle", resourceCulture);
             }
         }
         
@@ -5587,6 +5704,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Today 的本地化字符串。
+        /// </summary>
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Toggle 的本地化字符串。
         /// </summary>
         public static string Toggle {
@@ -6334,6 +6460,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Update Date 的本地化字符串。
+        /// </summary>
+        public static string UpdateDate {
+            get {
+                return ResourceManager.GetString("UpdateDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Update downloaded: {0} 的本地化字符串。
         /// </summary>
         public static string UpdateDownloaded {
@@ -6654,6 +6789,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string XUnityVersionNotFound {
             get {
                 return ResourceManager.GetString("XUnityVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Yesterday 的本地化字符串。
+        /// </summary>
+        public static string Yesterday {
+            get {
+                return ResourceManager.GetString("Yesterday", resourceCulture);
             }
         }
         

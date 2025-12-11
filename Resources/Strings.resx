@@ -2361,4 +2361,52 @@
   <data name="NonSteamVersionDetected" xml:space="preserve">
     <value>Non-Steam version detected - please verify Steam version is installed</value>
   </data>
+  <data name="OfflineModeTitle" xml:space="preserve">
+    <value>Offline Mode</value>
+  </data>
+  <data name="OfflineModeMessage" xml:space="preserve">
+    <value>Unable to connect to server, entering offline mode.\n\nYou can continue using local features (disable/uninstall mods), but cannot install or update mods.\n\nPlease check your network connection and restart the application.</value>
+  </data>
+  <data name="EnteringOfflineMode" xml:space="preserve">
+    <value>Entering offline mode</value>
+  </data>
+  <data name="OfflineModeActive" xml:space="preserve">
+    <value>Offline Mode - Using cached data</value>
+  </data>
+  <data name="NetworkConnectionFailed" xml:space="preserve">
+    <value>Network connection failed</value>
+  </data>
+  <data name="ConflictDetectedOnLaunch" xml:space="preserve">
+    <value>MOD Conflict Detected</value>
+  </data>
+  <data name="ConflictWarningMessage" xml:space="preserve">
+    <value>The following mods have conflicts:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game?</value>
+  </data>
+  <data name="DependencyMissingOnLaunch" xml:space="preserve">
+    <value>Missing Dependencies Detected</value>
+  </data>
+  <data name="DependencyWarningMessage" xml:space="preserve">
+    <value>The following mods are missing required dependencies:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game?</value>
+  </data>
+  <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
+    <value>Checking mod conflicts and dependencies...</value>
+  </data>
+  <data name="ModRequiresDependency" xml:space="preserve">
+    <value>{0} requires: {1}</value>
+  </data>
+  <data name="ModConflictsWith" xml:space="preserve">
+    <value>{0} conflicts with {1}</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} days ago</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="UpdateDate" xml:space="preserve">
+    <value>Update Date</value>
+  </data>
 </root>

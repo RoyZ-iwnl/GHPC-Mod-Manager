@@ -388,30 +388,4 @@ mod_install_manifest.json
 translation_install_manifest.json
 mod_i18n.json
 
-# Claude Code AI assistant files
-.claude/
-CLAUDE.md
-*.claude
-claude-*
-.claude-*
 
-# AI assistant generated files
-.ai/
-ai-*
-.ai-*
-assistant-*
-.assistant-*
-
-# Temporary AI files
-*.ai.tmp
-*.claude.tmp
-.temp-ai/
-/1.txt
-/*.py
-/*.txt
-
-# Gemini
-.gemini/
-.gemini.db
-.gemini.log
-.geminiignore

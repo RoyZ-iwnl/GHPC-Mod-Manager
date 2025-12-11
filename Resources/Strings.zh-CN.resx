@@ -1630,7 +1630,7 @@
     <value>GitHub API 访问限制</value>
   </data>
   <data name="GitHubRateLimitMessage" xml:space="preserve">
-    <value>GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制。</value>
+    <value>GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制，如您已经启用，请尝试更换其他服务器。</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>更新</value>
@@ -2283,6 +2283,10 @@
   <data name="AdditionalSteamLibrary" xml:space="preserve">
     <value>已添加额外Steam库: {0}</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="GHPCFoundInLibrary" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="AutoSearchStarted" xml:space="preserve">
     <value>开始搜寻路径</value>
   </data>
@@ -2291,5 +2295,56 @@
   </data>
   <data name="AutoSearchError" xml:space="preserve">
     <value>路径搜寻出错</value>
+  </data>
+  <data name="NonSteamVersionWarning" xml:space="preserve">
+    <value>请确保您使用的是最新版本的 Steam。我们仅为 Steam 版本的 GHPC 提供官方支持。手动安装或破解版可能会导致兼容性问题。</value>
+  </data>
+  <data name="OfflineModeTitle" xml:space="preserve">
+    <value>离线模式</value>
+  </data>
+  <data name="OfflineModeMessage" xml:space="preserve">
+    <value>无法连接到服务器,已进入离线模式。\n\n您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。\n\n请检查您的网络连接后重启应用。</value>
+  </data>
+  <data name="EnteringOfflineMode" xml:space="preserve">
+    <value>进入离线模式</value>
+  </data>
+  <data name="OfflineModeActive" xml:space="preserve">
+    <value>离线模式 - 使用缓存数据</value>
+  </data>
+  <data name="NetworkConnectionFailed" xml:space="preserve">
+    <value>网络连接失败</value>
+  </data>
+  <data name="ConflictDetectedOnLaunch" xml:space="preserve">
+    <value>检测到MOD冲突</value>
+  </data>
+  <data name="ConflictWarningMessage" xml:space="preserve">
+    <value>以下MOD存在冲突:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?</value>
+  </data>
+  <data name="DependencyMissingOnLaunch" xml:space="preserve">
+    <value>检测到缺失依赖</value>
+  </data>
+  <data name="DependencyWarningMessage" xml:space="preserve">
+    <value>以下MOD缺少必需的依赖:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?</value>
+  </data>
+  <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
+    <value>正在检查MOD冲突和依赖...</value>
+  </data>
+  <data name="ModRequiresDependency" xml:space="preserve">
+    <value>{0} 需要: {1}</value>
+  </data>
+  <data name="ModConflictsWith" xml:space="preserve">
+    <value>{0} 与 {1} 冲突</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0}天前</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>今天</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨天</value>
+  </data>
+  <data name="UpdateDate" xml:space="preserve">
+    <value>更新日期</value>
   </data>
 </root>

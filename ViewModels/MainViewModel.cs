@@ -119,6 +119,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isCheckingUpdates = false;
 
+    [ObservableProperty]
+    private bool _isOfflineMode = false;
+
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
@@ -158,7 +161,22 @@ public partial class MainViewModel : ObservableObject
 
     private async void InitializeAsync()
     {
+        // 先加载数据,不阻塞
         await RefreshDataAsync();
+
+        // 后台检测网络连接,不阻塞UI
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(1000); // 延迟1秒,让数据先加载
+                await CheckNetworkAndEnterOfflineModeIfNeededAsync();
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, "Network check failed in background");
+            }
+        });
 
         // Check for app updates silently on first MainViewModel initialization only
         // Subsequent checks should be triggered manually by user in Settings
@@ -809,9 +827,59 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
+            StatusMessage = Strings.CheckingModConflictsAndDependencies;
+
+            // 检查MOD冲突
+            var (hasConflicts, conflicts) = await _modManagerService.CheckEnabledModsConflictsAsync();
+            if (hasConflicts)
+            {
+                var conflictMessages = conflicts.Select(c =>
+                    string.Format(Strings.ModConflictsWith,
+                        GetModDisplayName(c.ModId),
+                        GetModDisplayName(c.ConflictsWith)))
+                    .ToList();
+
+                var conflictText = string.Join("\n", conflictMessages);
+                var result = MessageBox.Show(
+                    string.Format(Strings.ConflictWarningMessage, conflictText),
+                    Strings.ConflictDetectedOnLaunch,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No)
+                {
+                    StatusMessage = Strings.Ready;
+                    return;
+                }
+            }
+
+            // 检查MOD依赖
+            var (hasMissingDeps, missingDeps) = await _modManagerService.CheckEnabledModsDependenciesAsync();
+            if (hasMissingDeps)
+            {
+                var depMessages = missingDeps.Select(d =>
+                    string.Format(Strings.ModRequiresDependency,
+                        GetModDisplayName(d.ModId),
+                        GetModDisplayName(d.RequiredMod)))
+                    .ToList();
+
+                var depText = string.Join("\n", depMessages);
+                var result = MessageBox.Show(
+                    string.Format(Strings.DependencyWarningMessage, depText),
+                    Strings.DependencyMissingOnLaunch,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No)
+                {
+                    StatusMessage = Strings.Ready;
+                    return;
+                }
+            }
+
             StatusMessage = Strings.StartingGame;
             var success = await _processService.LaunchGameAsync(gameRootPath);
-            
+
             if (success)
             {
                 StatusMessage = Strings.GameStartedSuccessfully;
@@ -826,6 +894,15 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.LaunchGameError);
             StatusMessage = Strings.GameLaunchFailed;
         }
+    }
+
+    /// <summary>
+    /// 获取MOD的显示名称
+    /// </summary>
+    private string GetModDisplayName(string modId)
+    {
+        var mod = Mods.FirstOrDefault(m => m.Id == modId);
+        return mod?.DisplayName ?? modId;
     }
 
     [RelayCommand]
@@ -1227,6 +1304,39 @@ public partial class MainViewModel : ObservableObject
     private bool CanExecuteModOperations()
     {
         return !IsDownloading && !IsTranslationUpdating && !IsGameRunning;
+    }
+
+    /// <summary>
+    /// 检查网络连接,如果失败则进入离线模式
+    /// </summary>
+    private async Task CheckNetworkAndEnterOfflineModeIfNeededAsync()
+    {
+        try
+        {
+            // 尝试连接到 GHPC.DMR.GG
+            var isConnected = await _networkService.CheckNetworkConnectionAsync();
+
+            if (!isConnected)
+            {
+                IsOfflineMode = true;
+                _loggingService.LogWarning(Strings.EnteringOfflineMode);
+
+                // 弹窗提示用户
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show(
+                        Strings.OfflineModeMessage,
+                        Strings.OfflineModeTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            IsOfflineMode = true;
+            _loggingService.LogError(ex, Strings.NetworkConnectionFailed);
+        }
     }
 
     private bool CanExecuteCheckUpdates()

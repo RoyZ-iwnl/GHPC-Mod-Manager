@@ -105,6 +105,9 @@ public class GitHubRelease
     [JsonProperty("prerelease")]
     public bool PreRelease { get; set; }
 
+    [JsonProperty("published_at")]
+    public DateTime PublishedAt { get; set; }
+
     public override string ToString()
     {
         return TagName;
@@ -140,7 +143,14 @@ public class ModViewModel
     public string Id { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string? InstalledVersion { get; set; }
-    public string? LatestVersion { get; set; }
+
+    private string? _latestVersion;
+    public string? LatestVersion
+    {
+        get => _latestVersion;
+        set => _latestVersion = value;
+    }
+
     public bool IsInstalled { get; set; }
     public bool IsEnabled { get; set; }
     public bool IsManuallyInstalled { get; set; }
@@ -148,6 +158,37 @@ public class ModViewModel
     public bool IsSupportedManualMod { get; set; }  // Manual mod that matches a supported mod
     public bool IsUnsupportedManualMod { get; set; }  // Manual mod with no matching config
     public ModConfig Config { get; set; } = new();
+    public DateTime? UpdateDate { get; set; }  // MOD更新日期
+
+    // 格式化更新日期为"XX天前"格式
+    private string GetUpdateDateDisplay()
+    {
+        if (!UpdateDate.HasValue)
+            return "";
+
+        var days = (DateTime.Now - UpdateDate.Value).Days;
+        if (days == 0)
+            return GHPC_Mod_Manager.Resources.Strings.Today;
+        if (days == 1)
+            return GHPC_Mod_Manager.Resources.Strings.Yesterday;
+        return string.Format(GHPC_Mod_Manager.Resources.Strings.DaysAgo, days);
+    }
+
+    // 显示版本号和更新日期: "1.2.3 (XX天前)"
+    public string LatestVersionWithDate
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(LatestVersion))
+                return GHPC_Mod_Manager.Resources.Strings.Unknown;
+
+            var dateDisplay = GetUpdateDateDisplay();
+            if (string.IsNullOrEmpty(dateDisplay))
+                return LatestVersion;
+
+            return $"{LatestVersion} ({dateDisplay})";
+        }
+    }
     
     // Property to determine if this mod has configuration options
     public bool HasConfiguration => IsInstalled && 

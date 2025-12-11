@@ -338,7 +338,7 @@
                                             </Style>
                                         </DataGridTextColumn.CellStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="{x:Static resources:Strings.LatestVersion}" Binding="{Binding LatestVersion}" Width="120" MinWidth="130">
+                                    <DataGridTextColumn Header="{x:Static resources:Strings.LatestVersion}" Binding="{Binding LatestVersionWithDate}" Width="200" MinWidth="200">
                                         <DataGridTextColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>

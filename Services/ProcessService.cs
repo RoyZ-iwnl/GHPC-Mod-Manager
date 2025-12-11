@@ -70,8 +70,11 @@ public class ProcessService : IProcessService
         try
         {
             var processes = Process.GetProcessesByName("GHPC");
-            IsGameRunning = processes.Length > 0;
-            
+            var isRunning = processes.Length > 0;
+
+            // 确保状态正确更新
+            IsGameRunning = isRunning;
+
             foreach (var process in processes)
             {
                 process.Dispose();
@@ -80,6 +83,8 @@ public class ProcessService : IProcessService
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.ProcessCheckError);
+            // 发生错误时,假设游戏未运行
+            IsGameRunning = false;
         }
     }
 

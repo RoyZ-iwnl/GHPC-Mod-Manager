@@ -371,7 +371,7 @@ public class ModBackupService : IModBackupService
             if (!await InitializeBackupDirectoryAsync())
                 return 0;
 
-            totalFreedBytes += await CleanupDirectoryAsync(_disabledPath);
+            // 只清理 uninstalled 目录,保留 disabled 目录
             totalFreedBytes += await CleanupDirectoryAsync(_uninstalledPath);
 
             _loggingService.LogInfo(Strings.CleanupModBackupsSuccessful, (totalFreedBytes / (1024 * 1024)).ToString("F1"));

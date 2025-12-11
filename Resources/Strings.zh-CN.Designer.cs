@@ -79,6 +79,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 已添加额外Steam库: {0}.
+        /// </summary>
+        public static string AdditionalSteamLibrary {
+            get {
+                return ResourceManager.GetString("AdditionalSteamLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 所有缓存已清除（会话缓存已清除，未找到持久化缓存文件）.
         /// </summary>
         public static string AllCachesClearedNoFiles {
@@ -264,6 +273,42 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Attention {
             get {
                 return ResourceManager.GetString("Attention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 自动搜寻完成 ，{0}个可能路径.
+        /// </summary>
+        public static string AutoSearchCompleted {
+            get {
+                return ResourceManager.GetString("AutoSearchCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 路径搜寻出错.
+        /// </summary>
+        public static string AutoSearchError {
+            get {
+                return ResourceManager.GetString("AutoSearchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 搜寻路径···.
+        /// </summary>
+        public static string AutoSearchingGHPC {
+            get {
+                return ResourceManager.GetString("AutoSearchingGHPC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 开始搜寻路径.
+        /// </summary>
+        public static string AutoSearchStarted {
+            get {
+                return ResourceManager.GetString("AutoSearchStarted", resourceCulture);
             }
         }
         
@@ -561,6 +606,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string CheckingModConflicts {
             get {
                 return ResourceManager.GetString("CheckingModConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在检查MOD冲突和依赖....
+        /// </summary>
+        public static string CheckingModConflictsAndDependencies {
+            get {
+                return ResourceManager.GetString("CheckingModConflictsAndDependencies", resourceCulture);
             }
         }
         
@@ -1006,11 +1060,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 检测到MOD冲突.
+        /// </summary>
+        public static string ConflictDetectedOnLaunch {
+            get {
+                return ResourceManager.GetString("ConflictDetectedOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 发现与模组 {0} 冲突.
         /// </summary>
         public static string ConflictFound {
             get {
                 return ResourceManager.GetString("ConflictFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 以下MOD存在冲突:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?.
+        /// </summary>
+        public static string ConflictWarningMessage {
+            get {
+                return ResourceManager.GetString("ConflictWarningMessage", resourceCulture);
             }
         }
         
@@ -1195,6 +1267,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}天前.
+        /// </summary>
+        public static string DaysAgo {
+            get {
+                return ResourceManager.GetString("DaysAgo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已删除MOD备份: {0} 版本 {1}.
         /// </summary>
         public static string DeletedModBackup {
@@ -1218,6 +1299,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DeletingExpiredGitHubCache {
             get {
                 return ResourceManager.GetString("DeletingExpiredGitHubCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到缺失依赖.
+        /// </summary>
+        public static string DependencyMissingOnLaunch {
+            get {
+                return ResourceManager.GetString("DependencyMissingOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 以下MOD缺少必需的依赖:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?.
+        /// </summary>
+        public static string DependencyWarningMessage {
+            get {
+                return ResourceManager.GetString("DependencyWarningMessage", resourceCulture);
             }
         }
         
@@ -1569,6 +1668,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string EnteringNetworkCheck {
             get {
                 return ResourceManager.GetString("EnteringNetworkCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 进入离线模式.
+        /// </summary>
+        public static string EnteringOfflineMode {
+            get {
+                return ResourceManager.GetString("EnteringOfflineMode", resourceCulture);
             }
         }
         
@@ -2455,7 +2563,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制。.
+        ///   Looks up a localized string similar to GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制，如您已经启用，请尝试更换其他服务器。.
         /// </summary>
         public static string GitHubRateLimitMessage {
             get {
@@ -3319,6 +3427,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} 与 {1} 冲突.
+        /// </summary>
+        public static string ModConflictsWith {
+            get {
+                return ResourceManager.GetString("ModConflictsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 模组依赖检查完成: {0}.
         /// </summary>
         public static string ModDependencyCheckComplete {
@@ -3567,6 +3684,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModReinstalledFromBackup {
             get {
                 return ResourceManager.GetString("ModReinstalledFromBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 需要: {1}.
+        /// </summary>
+        public static string ModRequiresDependency {
+            get {
+                return ResourceManager.GetString("ModRequiresDependency", resourceCulture);
             }
         }
         
@@ -3828,6 +3954,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NetworkCheckSuccessful {
             get {
                 return ResourceManager.GetString("NetworkCheckSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 网络连接失败.
+        /// </summary>
+        public static string NetworkConnectionFailed {
+            get {
+                return ResourceManager.GetString("NetworkConnectionFailed", resourceCulture);
             }
         }
         
@@ -4125,6 +4260,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NoUpdateAvailableToDownload {
             get {
                 return ResourceManager.GetString("NoUpdateAvailableToDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 离线模式 - 使用缓存数据.
+        /// </summary>
+        public static string OfflineModeActive {
+            get {
+                return ResourceManager.GetString("OfflineModeActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 无法连接到服务器,已进入离线模式。\n\n您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。\n\n请检查您的网络连接后重启应用。.
+        /// </summary>
+        public static string OfflineModeMessage {
+            get {
+                return ResourceManager.GetString("OfflineModeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 离线模式.
+        /// </summary>
+        public static string OfflineModeTitle {
+            get {
+                return ResourceManager.GetString("OfflineModeTitle", resourceCulture);
             }
         }
         
@@ -5344,6 +5506,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 今天.
+        /// </summary>
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 切换.
         /// </summary>
         public static string Toggle {
@@ -6091,6 +6262,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 更新日期.
+        /// </summary>
+        public static string UpdateDate {
+            get {
+                return ResourceManager.GetString("UpdateDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 更新已下载: {0}.
         /// </summary>
         public static string UpdateDownloaded {
@@ -6402,6 +6582,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string XUnityVersionNotFound {
             get {
                 return ResourceManager.GetString("XUnityVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 昨天.
+        /// </summary>
+        public static string Yesterday {
+            get {
+                return ResourceManager.GetString("Yesterday", resourceCulture);
             }
         }
         
