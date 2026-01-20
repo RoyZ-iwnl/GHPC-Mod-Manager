@@ -25,6 +25,9 @@ public partial class SettingsViewModel : ObservableObject
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
 
+    // 记录原始语言，用于检测是否改变
+    private string _originalLanguage = "zh-CN";
+
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
 
@@ -127,6 +130,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         var settings = _settingsService.Settings;
         SelectedLanguage = settings.Language;
+        _originalLanguage = settings.Language; // 记录原始语言
         GameRootPath = settings.GameRootPath;
         ModConfigUrl = settings.ModConfigUrl;
         TranslationConfigUrl = settings.TranslationConfigUrl;
@@ -142,6 +146,9 @@ public partial class SettingsViewModel : ObservableObject
     {
         try
         {
+            // 检测语言是否改变
+            bool languageChanged = SelectedLanguage != _originalLanguage;
+
             var settings = _settingsService.Settings;
             settings.Language = SelectedLanguage;
             settings.GameRootPath = GameRootPath;
@@ -154,17 +161,69 @@ public partial class SettingsViewModel : ObservableObject
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
 
             await _settingsService.SaveSettingsAsync();
-            
+
             // 应用新主题
             _themeService.SetTheme(SelectedTheme);
-            
-            MessageBox.Show(Strings.SettingsSavedSuccessfully, Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // 如果语言改变了，提示用户重启应用
+            if (languageChanged)
+            {
+                var result = MessageBox.Show(
+                    Strings.LanguageChangedRestartRequired,
+                    Strings.RestartRequired,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // 重启应用
+                    RestartApplication();
+                }
+                else
+                {
+                    // 用户选择稍后重启，更新原始语言以避免重复提示
+                    _originalLanguage = SelectedLanguage;
+                }
+            }
+            else
+            {
+                MessageBox.Show(Strings.SettingsSavedSuccessfully, Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
             _loggingService.LogInfo(Strings.SettingsSaved);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.SettingsSaveError);
             MessageBox.Show(Strings.SettingsSaveFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void RestartApplication()
+    {
+        try
+        {
+            // 获取当前应用程序路径
+            var currentProcess = Process.GetCurrentProcess();
+            var exePath = currentProcess.MainModule?.FileName;
+
+            if (!string.IsNullOrEmpty(exePath))
+            {
+                // 启动新实例
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = true
+                });
+
+                // 退出当前应用
+                Application.Current.Shutdown();
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.RestartApplicationError);
+            MessageBox.Show(Strings.RestartApplicationFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

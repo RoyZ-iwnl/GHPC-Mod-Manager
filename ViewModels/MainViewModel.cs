@@ -33,6 +33,9 @@ public partial class MainViewModel : ObservableObject
     private static bool _hasPerformedStartupUpdateCheck = false;
     private static readonly object _updateCheckLock = new object();
 
+    // Instance flag to prevent re-initialization when navigating back from settings
+    private bool _isInitialized = false;
+
     private readonly IModManagerService _modManagerService;
     private readonly ITranslationManagerService _translationManagerService;
     private readonly ITranslationBackupService _translationBackupService;
@@ -161,6 +164,16 @@ public partial class MainViewModel : ObservableObject
 
     private async void InitializeAsync()
     {
+        // 防止重复初始化（从设置返回时不应重新初始化）
+        if (_isInitialized)
+        {
+            _loggingService.LogInfo("MainViewModel already initialized, skipping re-initialization");
+            return;
+        }
+
+        _isInitialized = true;
+        _loggingService.LogInfo("MainViewModel initializing for the first time");
+
         // 先加载数据,不阻塞
         await RefreshDataAsync();
 
@@ -905,14 +918,14 @@ public partial class MainViewModel : ObservableObject
         return mod?.DisplayName ?? modId;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteStopGame))]
     private async Task StopGameAsync()
     {
         try
         {
             StatusMessage = Strings.StoppingGame;
             var success = await _processService.StopGameAsync();
-            
+
             if (success)
             {
                 StatusMessage = Strings.GameStoppedSuccessfully;
@@ -927,6 +940,12 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.StopGameError);
             StatusMessage = Strings.GameStopFailed;
         }
+    }
+
+    private bool CanExecuteStopGame()
+    {
+        // 只有游戏正在运行时才能停止
+        return IsGameRunning;
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
@@ -1359,10 +1378,21 @@ public partial class MainViewModel : ObservableObject
         UpdateAllCommandsCanExecute();
     }
 
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        // 游戏运行状态改变时，更新所有依赖此状态的命令
+        // 必须在UI线程上执行，因为可能从Timer线程触发
+        System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+        {
+            UpdateAllCommandsCanExecute();
+        });
+    }
+
     private void UpdateAllCommandsCanExecute()
     {
         // Update all commands that should be disabled during operations
         LaunchGameCommand?.NotifyCanExecuteChanged();
+        StopGameCommand?.NotifyCanExecuteChanged();
         OpenSettingsCommand?.NotifyCanExecuteChanged();
         InstallTranslationCommand?.NotifyCanExecuteChanged();
         UpdateTranslationCommand?.NotifyCanExecuteChanged();

@@ -89,7 +89,7 @@ namespace GHPC_Mod_Manager
                     // ViewModels
                     services.AddTransient<MainWindowViewModel>();
                     services.AddTransient<SetupWizardViewModel>();
-                    services.AddTransient<MainViewModel>();
+                    services.AddSingleton<MainViewModel>(); // 改为单例，避免导航时重新创建
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
                     services.AddTransient<AnnouncementViewModel>();
@@ -97,7 +97,7 @@ namespace GHPC_Mod_Manager
                     // Views
                     services.AddTransient<MainWindow>();
                     services.AddTransient<SetupWizardView>();
-                    services.AddTransient<MainView>();
+                    services.AddSingleton<MainView>(); // 改为单例，避免导航时重新创建
                     services.AddTransient<SettingsView>();
                 })
                 .ConfigureLogging(logging =>

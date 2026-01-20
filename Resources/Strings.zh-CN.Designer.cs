@@ -1078,7 +1078,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 以下MOD存在冲突:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?.
+        ///   Looks up a localized string similar to 以下MOD存在冲突:
+        ///
+        ///{0}
+        ///
+        ///这些MOD可能无法正常工作。是否仍要启动游戏?.
         /// </summary>
         public static string ConflictWarningMessage {
             get {
@@ -1312,7 +1316,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 以下MOD缺少必需的依赖:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?.
+        ///   Looks up a localized string similar to 以下MOD缺少必需的依赖:
+        ///
+        ///{0}
+        ///
+        ///这些MOD可能无法正常工作。是否仍要启动游戏?.
         /// </summary>
         public static string DependencyWarningMessage {
             get {
@@ -2464,6 +2472,16 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Object.
+        /// </summary>
+        public static object GHPCFoundInLibrary {
+            get {
+                object obj = ResourceManager.GetObject("GHPCFoundInLibrary", resourceCulture);
+                return ((object)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GHPC模组管理器.
         /// </summary>
         public static string GHPCModManager {
@@ -2829,6 +2847,17 @@ namespace GHPC_Mod_Manager.Resources {
         public static string LanguageChangedConfirmRestart {
             get {
                 return ResourceManager.GetString("LanguageChangedConfirmRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 语言已更改，需要重启应用程序才能生效。
+        ///
+        ///是否立即重启？.
+        /// </summary>
+        public static string LanguageChangedRestartRequired {
+            get {
+                return ResourceManager.GetString("LanguageChangedRestartRequired", resourceCulture);
             }
         }
         
@@ -3625,6 +3654,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MOD {0} 在清单中但文件不存在，正在清理清单.
+        /// </summary>
+        public static string ModInManifestButFilesNotFound {
+            get {
+                return ResourceManager.GetString("ModInManifestButFilesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod {0} 版本 {1} 安装成功.
         /// </summary>
         public static string ModInstalled {
@@ -4183,6 +4221,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 请确保您使用的是最新版本的 Steam。我们仅为 Steam 版本的 GHPC 提供官方支持。手动安装或破解版可能会导致兼容性问题。.
+        /// </summary>
+        public static string NonSteamVersionWarning {
+            get {
+                return ResourceManager.GetString("NonSteamVersionWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 未找到发布版本.
         /// </summary>
         public static string NoReleasesFound {
@@ -4273,7 +4320,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 无法连接到服务器,已进入离线模式。\n\n您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。\n\n请检查您的网络连接后重启应用。.
+        ///   Looks up a localized string similar to 无法连接到服务器,已进入离线模式。
+        ///
+        ///您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。
+        ///
+        ///请检查您的网络连接后重启应用。.
         /// </summary>
         public static string OfflineModeMessage {
             get {
@@ -4831,11 +4882,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 重启应用程序错误.
+        ///   Looks up a localized string similar to 重启应用程序失败.
         /// </summary>
         public static string RestartApplicationError {
             get {
                 return ResourceManager.GetString("RestartApplicationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 重启应用程序失败，请手动重启。.
+        /// </summary>
+        public static string RestartApplicationFailed {
+            get {
+                return ResourceManager.GetString("RestartApplicationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 需要重启.
+        /// </summary>
+        public static string RestartRequired {
+            get {
+                return ResourceManager.GetString("RestartRequired", resourceCulture);
             }
         }
         

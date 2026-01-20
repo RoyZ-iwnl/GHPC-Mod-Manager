@@ -2365,7 +2365,11 @@
     <value>Offline Mode</value>
   </data>
   <data name="OfflineModeMessage" xml:space="preserve">
-    <value>Unable to connect to server, entering offline mode.\n\nYou can continue using local features (disable/uninstall mods), but cannot install or update mods.\n\nPlease check your network connection and restart the application.</value>
+    <value>Unable to connect to server, entering offline mode.
+
+You can continue using local features (disable/uninstall mods), but cannot install or update mods.
+
+Please check your network connection and restart the application.</value>
   </data>
   <data name="EnteringOfflineMode" xml:space="preserve">
     <value>Entering offline mode</value>
@@ -2380,13 +2384,21 @@
     <value>MOD Conflict Detected</value>
   </data>
   <data name="ConflictWarningMessage" xml:space="preserve">
-    <value>The following mods have conflicts:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game?</value>
+    <value>The following mods have conflicts:
+
+{0}
+
+These mods may not work properly. Do you still want to launch the game?</value>
   </data>
   <data name="DependencyMissingOnLaunch" xml:space="preserve">
     <value>Missing Dependencies Detected</value>
   </data>
   <data name="DependencyWarningMessage" xml:space="preserve">
-    <value>The following mods are missing required dependencies:\n\n{0}\n\nThese mods may not work properly. Do you still want to launch the game?</value>
+    <value>The following mods are missing required dependencies:
+
+{0}
+
+These mods may not work properly. Do you still want to launch the game?</value>
   </data>
   <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
     <value>Checking mod conflicts and dependencies...</value>
@@ -2408,5 +2420,22 @@
   </data>
   <data name="UpdateDate" xml:space="preserve">
     <value>Update Date</value>
+  </data>
+  <data name="ModInManifestButFilesNotFound" xml:space="preserve">
+    <value>MOD {0} is in manifest but files not found, cleaning up manifest</value>
+  </data>
+  <data name="LanguageChangedRestartRequired" xml:space="preserve">
+    <value>Language has been changed. The application needs to be restarted for the changes to take effect.
+
+Do you want to restart now?</value>
+  </data>
+  <data name="RestartRequired" xml:space="preserve">
+    <value>Restart Required</value>
+  </data>
+  <data name="RestartApplicationError" xml:space="preserve">
+    <value>Failed to restart application</value>
+  </data>
+  <data name="RestartApplicationFailed" xml:space="preserve">
+    <value>Failed to restart application. Please restart manually.</value>
   </data>
 </root>

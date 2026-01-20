@@ -2303,7 +2303,11 @@
     <value>离线模式</value>
   </data>
   <data name="OfflineModeMessage" xml:space="preserve">
-    <value>无法连接到服务器,已进入离线模式。\n\n您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。\n\n请检查您的网络连接后重启应用。</value>
+    <value>无法连接到服务器,已进入离线模式。
+
+您可以继续使用本地功能(禁用/卸载MOD),但无法安装或更新MOD。
+
+请检查您的网络连接后重启应用。</value>
   </data>
   <data name="EnteringOfflineMode" xml:space="preserve">
     <value>进入离线模式</value>
@@ -2318,13 +2322,21 @@
     <value>检测到MOD冲突</value>
   </data>
   <data name="ConflictWarningMessage" xml:space="preserve">
-    <value>以下MOD存在冲突:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?</value>
+    <value>以下MOD存在冲突:
+
+{0}
+
+这些MOD可能无法正常工作。是否仍要启动游戏?</value>
   </data>
   <data name="DependencyMissingOnLaunch" xml:space="preserve">
     <value>检测到缺失依赖</value>
   </data>
   <data name="DependencyWarningMessage" xml:space="preserve">
-    <value>以下MOD缺少必需的依赖:\n\n{0}\n\n这些MOD可能无法正常工作。是否仍要启动游戏?</value>
+    <value>以下MOD缺少必需的依赖:
+
+{0}
+
+这些MOD可能无法正常工作。是否仍要启动游戏?</value>
   </data>
   <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
     <value>正在检查MOD冲突和依赖...</value>
@@ -2346,5 +2358,22 @@
   </data>
   <data name="UpdateDate" xml:space="preserve">
     <value>更新日期</value>
+  </data>
+  <data name="ModInManifestButFilesNotFound" xml:space="preserve">
+    <value>MOD {0} 在清单中但文件不存在，正在清理清单</value>
+  </data>
+  <data name="LanguageChangedRestartRequired" xml:space="preserve">
+    <value>语言已更改，需要重启应用程序才能生效。
+
+是否立即重启？</value>
+  </data>
+  <data name="RestartRequired" xml:space="preserve">
+    <value>需要重启</value>
+  </data>
+  <data name="RestartApplicationError" xml:space="preserve">
+    <value>重启应用程序失败</value>
+  </data>
+  <data name="RestartApplicationFailed" xml:space="preserve">
+    <value>重启应用程序失败，请手动重启。</value>
   </data>
 </root>

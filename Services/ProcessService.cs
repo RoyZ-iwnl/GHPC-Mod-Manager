@@ -49,7 +49,10 @@ public class ProcessService : IProcessService
         if (!_isMonitoring)
         {
             _isMonitoring = true;
-            _monitorTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(2));
+            // 立即检查一次游戏进程状态
+            CheckGameProcess(null);
+            // 然后每2秒检查一次
+            _monitorTimer.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
             _loggingService.LogInfo(Strings.ProcessMonitoringStarted);
         }
         return Task.CompletedTask;

@@ -73,9 +73,22 @@ public class ModManagerService : IModManagerService
             var installInfo = _installManifest.InstalledMods.GetValueOrDefault(modConfig.Id);
             if (installInfo != null)
             {
-                viewModel.IsInstalled = true;
-                viewModel.InstalledVersion = installInfo.Version;
-                viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
+                // 验证manifest中记录的MOD文件是否实际存在
+                bool modFilesExist = IsModActuallyInstalled(modConfig.MainBinaryFileName, modsPath, installInfo);
+
+                if (modFilesExist)
+                {
+                    viewModel.IsInstalled = true;
+                    viewModel.InstalledVersion = installInfo.Version;
+                    viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
+                }
+                else
+                {
+                    // MOD在manifest中但文件不存在，清理manifest
+                    _loggingService.LogWarning(Strings.ModInManifestButFilesNotFound, modConfig.Id);
+                    _installManifest.InstalledMods.Remove(modConfig.Id);
+                    _ = SaveManifestAsync(); // 异步保存，不阻塞
+                }
             }
             else
             {
@@ -1353,15 +1366,15 @@ public class ModManagerService : IModManagerService
     private bool IsModInstalled(string binaryFileName, string modsPath)
     {
         var modFile = Path.Combine(modsPath, binaryFileName);
-        
+
         // Check if mod file exists in Mods folder
         if (File.Exists(modFile))
             return true;
-            
+
         // Check if mod exists in disabled backup folder
         var gameRootPath = _settingsService.Settings.GameRootPath;
         var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled");
-        
+
         if (Directory.Exists(disabledPath))
         {
             var disabledModDirs = Directory.GetDirectories(disabledPath);
@@ -1370,14 +1383,48 @@ public class ModManagerService : IModManagerService
                 // Check if any backup contains this binary file
                 var backupFiles = Directory.GetFiles(disabledModDir, "*", SearchOption.TopDirectoryOnly)
                     .Where(f => Path.GetFileName(f) != "backup_paths.json");
-                    
+
                 if (backupFiles.Any(f => f.Contains(binaryFileName.Replace(".dll", "")) || Path.GetFileName(f) == binaryFileName.Replace('\\', '_').Replace('/', '_')))
                 {
                     return true;
                 }
             }
         }
-        
+
+        return false;
+    }
+
+    /// <summary>
+    /// 验证manifest中记录的MOD是否实际存在（文件或备份）
+    /// </summary>
+    private bool IsModActuallyInstalled(string binaryFileName, string modsPath, ModInstallInfo installInfo)
+    {
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+
+        // 检查manifest中记录的任意一个文件是否存在
+        foreach (var relativePath in installInfo.InstalledFiles)
+        {
+            var fullPath = Path.Combine(gameRootPath, relativePath);
+            if (File.Exists(fullPath))
+            {
+                return true; // 至少有一个文件存在
+            }
+        }
+
+        // 如果Mods目录中没有文件，检查是否在disabled备份中
+        var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled", installInfo.ModId);
+        if (Directory.Exists(disabledPath))
+        {
+            var backupFiles = Directory.GetFiles(disabledPath, "*", SearchOption.TopDirectoryOnly)
+                .Where(f => Path.GetFileName(f) != "backup_paths.json");
+
+            if (backupFiles.Any())
+            {
+                return true; // MOD在disabled备份中
+            }
+        }
+
+        // 文件和备份都不存在
         return false;
     }
 
@@ -1567,37 +1614,59 @@ public class ModManagerService : IModManagerService
     public async Task<(bool HasConflicts, List<(string ModId, string ConflictsWith)> Conflicts)> CheckEnabledModsConflictsAsync()
     {
         var conflicts = new List<(string ModId, string ConflictsWith)>();
-        var gameRootPath = _settingsService.Settings.GameRootPath;
-        var modsPath = Path.Combine(gameRootPath, "Mods");
 
-        // 获取所有已安装且已启用的MOD
-        var enabledMods = _installManifest.InstalledMods
-            .Where(kvp => IsModEnabled(_availableMods.FirstOrDefault(m => m.Id == kvp.Key)?.MainBinaryFileName ?? "", modsPath))
-            .Select(kvp => kvp.Key)
-            .ToList();
-
-        // 检查每个已启用MOD的冲突
-        foreach (var modId in enabledMods)
+        try
         {
-            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig?.Conflicts?.Any() == true)
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrEmpty(gameRootPath))
             {
-                foreach (var conflictId in modConfig.Conflicts)
+                return (false, conflicts);
+            }
+
+            var modsPath = Path.Combine(gameRootPath, "Mods");
+
+            // 获取所有已安装且已启用的MOD
+            var enabledMods = new List<string>();
+            foreach (var kvp in _installManifest.InstalledMods)
+            {
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == kvp.Key);
+                if (modConfig != null && !string.IsNullOrEmpty(modConfig.MainBinaryFileName))
                 {
-                    // 如果冲突的MOD也已启用,记录冲突
-                    if (enabledMods.Contains(conflictId))
+                    if (IsModEnabled(modConfig.MainBinaryFileName, modsPath))
                     {
-                        // 避免重复记录(A冲突B,B冲突A只记录一次)
-                        if (!conflicts.Any(c => c.ModId == conflictId && c.ConflictsWith == modId))
+                        enabledMods.Add(kvp.Key);
+                    }
+                }
+            }
+
+            // 检查每个已启用MOD的冲突
+            foreach (var modId in enabledMods)
+            {
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                if (modConfig?.Conflicts?.Any() == true)
+                {
+                    foreach (var conflictId in modConfig.Conflicts)
+                    {
+                        // 如果冲突的MOD也已启用,记录冲突
+                        if (enabledMods.Contains(conflictId))
                         {
-                            conflicts.Add((modId, conflictId));
+                            // 避免重复记录(A冲突B,B冲突A只记录一次)
+                            if (!conflicts.Any(c => c.ModId == conflictId && c.ConflictsWith == modId))
+                            {
+                                conflicts.Add((modId, conflictId));
+                            }
                         }
                     }
                 }
             }
-        }
 
-        return (conflicts.Any(), conflicts);
+            return (conflicts.Any(), conflicts);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "CheckEnabledModsConflictsAsync failed");
+            return (false, conflicts);
+        }
     }
 
     /// <summary>
@@ -1631,34 +1700,56 @@ public class ModManagerService : IModManagerService
     public async Task<(bool HasMissingDependencies, List<(string ModId, string RequiredMod)> MissingDependencies)> CheckEnabledModsDependenciesAsync()
     {
         var missingDependencies = new List<(string ModId, string RequiredMod)>();
-        var gameRootPath = _settingsService.Settings.GameRootPath;
-        var modsPath = Path.Combine(gameRootPath, "Mods");
 
-        // 获取所有已安装且已启用的MOD
-        var enabledMods = _installManifest.InstalledMods
-            .Where(kvp => IsModEnabled(_availableMods.FirstOrDefault(m => m.Id == kvp.Key)?.MainBinaryFileName ?? "", modsPath))
-            .Select(kvp => kvp.Key)
-            .ToList();
-
-        // 检查每个已启用MOD的依赖
-        foreach (var modId in enabledMods)
+        try
         {
-            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig?.Requirements?.Any() == true)
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrEmpty(gameRootPath))
             {
-                foreach (var requiredId in modConfig.Requirements)
+                return (false, missingDependencies);
+            }
+
+            var modsPath = Path.Combine(gameRootPath, "Mods");
+
+            // 获取所有已安装且已启用的MOD
+            var enabledMods = new List<string>();
+            foreach (var kvp in _installManifest.InstalledMods)
+            {
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == kvp.Key);
+                if (modConfig != null && !string.IsNullOrEmpty(modConfig.MainBinaryFileName))
                 {
-                    // 检查依赖的MOD是否已安装且已启用
-                    if (!enabledMods.Contains(requiredId))
+                    if (IsModEnabled(modConfig.MainBinaryFileName, modsPath))
                     {
-                        missingDependencies.Add((modId, requiredId));
-                        _loggingService.LogWarning(Strings.MissingRequirement, requiredId);
+                        enabledMods.Add(kvp.Key);
                     }
                 }
             }
-        }
 
-        return (missingDependencies.Any(), missingDependencies);
+            // 检查每个已启用MOD的依赖
+            foreach (var modId in enabledMods)
+            {
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                if (modConfig?.Requirements?.Any() == true)
+                {
+                    foreach (var requiredId in modConfig.Requirements)
+                    {
+                        // 检查依赖的MOD是否已安装且已启用
+                        if (!enabledMods.Contains(requiredId))
+                        {
+                            missingDependencies.Add((modId, requiredId));
+                            _loggingService.LogWarning(Strings.MissingRequirement, requiredId);
+                        }
+                    }
+                }
+            }
+
+            return (missingDependencies.Any(), missingDependencies);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "CheckEnabledModsDependenciesAsync failed");
+            return (false, missingDependencies);
+        }
     }
 
     /// <summary>
