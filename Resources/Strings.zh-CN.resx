@@ -1276,7 +1276,7 @@
     <value>应用语言设置失败</value>
   </data>
   <data name="RestartApplicationError" xml:space="preserve">
-    <value>重启应用程序错误</value>
+    <value>重启应用程序失败</value>
   </data>
   <data name="FailedToRestartApplication" xml:space="preserve">
     <value>重启应用程序失败。请手动重启</value>
@@ -2280,6 +2280,9 @@
   <data name="AutoSearchingGHPC" xml:space="preserve">
     <value>搜寻路径···</value>
   </data>
+  <data name="DefaultSteamLibrary" xml:space="preserve">
+    <value>已添加默认steam路径: {0}</value>
+  </data>
   <data name="AdditionalSteamLibrary" xml:space="preserve">
     <value>已添加额外Steam库: {0}</value>
   </data>
@@ -2370,10 +2373,28 @@
   <data name="RestartRequired" xml:space="preserve">
     <value>需要重启</value>
   </data>
-  <data name="RestartApplicationError" xml:space="preserve">
-    <value>重启应用程序失败</value>
-  </data>
   <data name="RestartApplicationFailed" xml:space="preserve">
     <value>重启应用程序失败，请手动重启。</value>
+  </data>
+  <data name="GitHubApiToken" xml:space="preserve">
+    <value>GitHub API Token（可选）</value>
+  </data>
+  <data name="GitHubApiTokenDescription" xml:space="preserve">
+    <value>提高API访问限制（60→5000次/小时）</value>
+  </data>
+  <data name="GitHubApiTokenHint" xml:space="preserve">
+    <value>注意：配置token后将禁用代理加速，直连GitHub</value>
+  </data>
+  <data name="GitHubApiTokenGetUrl" xml:space="preserve">
+    <value>获取地址：https://github.com/settings/tokens</value>
+  </data>
+  <data name="FetchingGitHubReleasesWithToken" xml:space="preserve">
+    <value>使用token获取GitHub发布信息：{0}</value>
+  </data>
+  <data name="TranslationTipsTitle" xml:space="preserve">
+    <value>翻译插件提示</value>
+  </data>
+  <data name="TranslationTipsContent" xml:space="preserve">
+    <value>翻译插件会导致帧数下降，游戏中可以按Alt+T暂时关闭，Alt+1~3是指挥模式的快捷键，但是与翻译插件工具冲突，请在指挥模式下使用M键地图发布GO CODE</value>
   </data>
 </root>

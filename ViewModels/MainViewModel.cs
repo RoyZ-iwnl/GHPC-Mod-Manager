@@ -1069,45 +1069,45 @@ public partial class MainViewModel : ObservableObject
             int updatesFound = 0;
             var updatedMods = new List<string>();
 
-            // 只对筛选后的Mod检查版本更新
-            foreach (var mod in modsToCheck)
-            {
-                if (mod.Config == null || string.IsNullOrEmpty(mod.Config.ReleaseUrl))
-                    continue;
-
-                try
+            // 并行检查所有Mod的版本更新
+            var updateTasks = modsToCheck
+                .Where(m => m.Config != null && !string.IsNullOrEmpty(m.Config.ReleaseUrl))
+                .Select(async mod =>
                 {
-                    // 直接使用ReleaseUrl（已经是完整的API URL）
-                    var releases = await _networkService.GetGitHubReleasesAsync(
-                        GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl),
-                        GetRepoNameFromApiUrl(mod.Config.ReleaseUrl),
-                        forceRefresh: true
-                    );
-
-                    var latestVersion = releases.FirstOrDefault()?.TagName;
-
-                    if (!string.IsNullOrEmpty(latestVersion))
+                    try
                     {
-                        // 更新Mod的最新版本
-                        mod.LatestVersion = latestVersion;
+                        var releases = await _networkService.GetGitHubReleasesAsync(
+                            GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl),
+                            GetRepoNameFromApiUrl(mod.Config.ReleaseUrl),
+                            forceRefresh: true
+                        );
 
-                        // 检查是否有更新
-                        if (mod.IsInstalled &&
-                            !string.IsNullOrEmpty(mod.InstalledVersion) &&
-                            mod.InstalledVersion != latestVersion &&
-                            mod.InstalledVersion != Strings.Manual)
+                        var latestVersion = releases.FirstOrDefault()?.TagName;
+
+                        if (!string.IsNullOrEmpty(latestVersion))
                         {
-                            updatesFound++;
-                            updatedMods.Add($"{mod.DisplayName}: {mod.InstalledVersion} → {latestVersion}");
+                            mod.LatestVersion = latestVersion;
+
+                            if (mod.IsInstalled &&
+                                !string.IsNullOrEmpty(mod.InstalledVersion) &&
+                                mod.InstalledVersion != latestVersion &&
+                                mod.InstalledVersion != Strings.Manual)
+                            {
+                                lock (updatedMods)
+                                {
+                                    updatesFound++;
+                                    updatedMods.Add($"{mod.DisplayName}: {mod.InstalledVersion} → {latestVersion}");
+                                }
+                            }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    // 单个Mod检查失败不影响其他Mod
-                    _loggingService.LogWarning(Strings.FailedToCheckModUpdate, mod.DisplayName, ex.Message);
-                }
-            }
+                    catch (Exception ex)
+                    {
+                        _loggingService.LogWarning(Strings.FailedToCheckModUpdate, mod.DisplayName, ex.Message);
+                    }
+                }).ToList();
+
+            await Task.WhenAll(updateTasks);
 
             // Apply filtering and sorting to refresh the view
             FilterAndSortMods();

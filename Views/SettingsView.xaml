@@ -103,13 +103,32 @@
                             <TextBlock Text="{x:Static resources:Strings.ModI18nConfigURL}" Margin="0,0,0,5"/>
                             <TextBox Text="{Binding ModI18nUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
                         </StackPanel>
-                        
+
+                        <!-- GitHub API Token -->
+                        <StackPanel Margin="0,0,0,10">
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiToken}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding GitHubApiToken}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
+                                       FontSize="{DynamicResource BodySmall}"
+                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                       Margin="0,3,0,0"/>
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenHint}"
+                                       FontSize="{DynamicResource BodySmall}"
+                                       Foreground="{DynamicResource ErrorBrush}"
+                                       Margin="0,3,0,0"/>
+                            <TextBlock Margin="0,3,0,0" FontSize="{DynamicResource BodySmall}">
+                                <Hyperlink NavigateUri="https://github.com/settings/tokens" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+
                         <!-- GitHub Proxy Settings -->
                         <StackPanel Margin="0,0,0,10" Visibility="{Binding IsGitHubProxyVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <CheckBox IsChecked="{Binding UseGitHubProxy}" Margin="0,0,0,5">
+                            <CheckBox IsChecked="{Binding UseGitHubProxy}" IsEnabled="{Binding IsGitHubProxyEnabled}" Margin="0,0,0,5">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>
-                                    <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}" 
+                                    <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}"
                                                FontSize="{DynamicResource BodySmall}"
                                                Foreground="{DynamicResource OnSurfaceVariantBrush}"
                                                Margin="0,2,0,0"/>

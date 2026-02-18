@@ -364,13 +364,27 @@ public class NetworkService : INetworkService
             
             // Make API request
             List<GitHubRelease> result;
-            
-            // When GitHub proxy is disabled, access directly
-            if (!_settingsService.Settings.UseGitHubProxy)
+            var hasToken = !string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken);
+
+            // 有token时强制直连，忽略代理设置
+            if (hasToken)
+            {
+                var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
+                _loggingService.LogInfo(Strings.FetchingGitHubReleasesWithToken, url);
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("Authorization", $"token {_settingsService.Settings.GitHubApiToken}");
+
+                var response = await _httpClient.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+                var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
+                result = releases ?? new List<GitHubRelease>();
+            }
+            else if (!_settingsService.Settings.UseGitHubProxy)
             {
                 var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
                 _loggingService.LogInfo(Strings.FetchingGitHubReleases, url);
-                
+
                 var json = await _httpClient.GetStringAsync(url);
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 result = releases ?? new List<GitHubRelease>();
@@ -381,7 +395,7 @@ public class NetworkService : INetworkService
                 var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
                 var url = $"https://{proxyDomain}/https://api.github.com/repos/{repoOwner}/{repoName}/releases";
                 _loggingService.LogInfo(Strings.FetchingGitHubReleases, url);
-                
+
                 var json = await _httpClient.GetStringAsync(url);
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 result = releases ?? new List<GitHubRelease>();

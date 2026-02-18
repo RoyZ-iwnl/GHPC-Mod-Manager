@@ -38,6 +38,7 @@ public class AppSettings
     public bool UseGitHubProxy { get; set; } = false; // GitHub代理加速设置
     public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.EdgeOneGhProxyCom; // 代理服务器选择
     public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Stable; // 更新通道选择
+    public string GitHubApiToken { get; set; } = string.Empty; // GitHub API Token
 }
 
 public class ModConfig

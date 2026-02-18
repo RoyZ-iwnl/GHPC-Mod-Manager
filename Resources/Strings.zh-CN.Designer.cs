@@ -1986,6 +1986,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 使用token获取GitHub发布信息：{0}.
+        /// </summary>
+        public static string FetchingGitHubReleasesWithToken {
+            get {
+                return ResourceManager.GetString("FetchingGitHubReleasesWithToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 正在从 {0} 获取Mod配置.
         /// </summary>
         public static string FetchingModConfig {
@@ -2514,6 +2523,42 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitDirectoryRemovalWarning {
             get {
                 return ResourceManager.GetString("GitDirectoryRemovalWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub API Token（可选）.
+        /// </summary>
+        public static string GitHubApiToken {
+            get {
+                return ResourceManager.GetString("GitHubApiToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 提高API访问限制（60→5000次/小时）.
+        /// </summary>
+        public static string GitHubApiTokenDescription {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 获取地址：https://github.com/settings/tokens.
+        /// </summary>
+        public static string GitHubApiTokenGetUrl {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenGetUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 注意：配置token后将禁用代理加速，直连GitHub.
+        /// </summary>
+        public static string GitHubApiTokenHint {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenHint", resourceCulture);
             }
         }
         

@@ -73,6 +73,19 @@ public partial class SettingsViewModel : ObservableObject
     };
 
     [ObservableProperty]
+    private string _gitHubApiToken = string.Empty;
+
+    partial void OnGitHubApiTokenChanged(string value)
+    {
+        // 配置token时禁用代理
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            UseGitHubProxy = false;
+        }
+        OnPropertyChanged(nameof(IsGitHubProxyEnabled));
+    }
+
+    [ObservableProperty]
     private List<string> _availableLanguages = new() { "zh-CN", "en-US" };
 
     [ObservableProperty]
@@ -103,6 +116,8 @@ public partial class SettingsViewModel : ObservableObject
     public bool IsChineseLanguage => SelectedLanguage == "zh-CN";
 
     public bool IsGitHubProxyVisible => IsChineseLanguage;
+
+    public bool IsGitHubProxyEnabled => string.IsNullOrWhiteSpace(GitHubApiToken);
 
     public SettingsViewModel(
         ISettingsService settingsService,
@@ -137,6 +152,7 @@ public partial class SettingsViewModel : ObservableObject
         ModI18nUrl = settings.ModI18nUrl;
         UseGitHubProxy = settings.UseGitHubProxy;
         GitHubProxyServer = settings.GitHubProxyServer;
+        GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
     }
@@ -157,6 +173,7 @@ public partial class SettingsViewModel : ObservableObject
             settings.ModI18nUrl = ModI18nUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = GitHubProxyServer;
+            settings.GitHubApiToken = GitHubApiToken;
             settings.Theme = SelectedTheme; // 保存主题设置
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
 

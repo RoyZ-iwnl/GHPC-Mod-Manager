@@ -61,6 +61,7 @@ public class ModManagerService : IModManagerService
         var gameRootPath = _settingsService.Settings.GameRootPath;
         var modsPath = Path.Combine(gameRootPath, "Mods");
 
+        // 先创建所有ModViewModel（不包含GitHub版本信息）
         foreach (var modConfig in _availableMods)
         {
             var viewModel = new ModViewModel
@@ -73,7 +74,6 @@ public class ModManagerService : IModManagerService
             var installInfo = _installManifest.InstalledMods.GetValueOrDefault(modConfig.Id);
             if (installInfo != null)
             {
-                // 验证manifest中记录的MOD文件是否实际存在
                 bool modFilesExist = IsModActuallyInstalled(modConfig.MainBinaryFileName, modsPath, installInfo);
 
                 if (modFilesExist)
@@ -84,44 +84,48 @@ public class ModManagerService : IModManagerService
                 }
                 else
                 {
-                    // MOD在manifest中但文件不存在，清理manifest
                     _loggingService.LogWarning(Strings.ModInManifestButFilesNotFound, modConfig.Id);
                     _installManifest.InstalledMods.Remove(modConfig.Id);
-                    _ = SaveManifestAsync(); // 异步保存，不阻塞
+                    _ = SaveManifestAsync();
                 }
             }
             else
             {
-                // Check if mod exists but not in manifest (manually installed)
                 if (IsModInstalled(modConfig.MainBinaryFileName, modsPath))
                 {
                     viewModel.IsInstalled = true;
                     viewModel.IsManuallyInstalled = true;
-                    viewModel.IsSupportedManualMod = true;  // This was missing!
+                    viewModel.IsSupportedManualMod = true;
                     viewModel.InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual;
                     viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
                 }
             }
 
+            result.Add(viewModel);
+        }
+
+        // 并行获取所有Mod的GitHub版本信息
+        var versionTasks = result.Select(async vm =>
+        {
             try
             {
                 var releases = await _networkService.GetGitHubReleasesAsync(
-                    GetRepoOwner(modConfig.ReleaseUrl),
-                    GetRepoName(modConfig.ReleaseUrl),
+                    GetRepoOwner(vm.Config.ReleaseUrl),
+                    GetRepoName(vm.Config.ReleaseUrl),
                     forceRefresh
                 );
                 var latestRelease = releases.FirstOrDefault();
-                viewModel.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
-                viewModel.UpdateDate = latestRelease?.PublishedAt;
+                vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                vm.UpdateDate = latestRelease?.PublishedAt;
             }
             catch
             {
-                viewModel.LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown;
-                viewModel.UpdateDate = null;
+                vm.LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown;
+                vm.UpdateDate = null;
             }
+        }).ToList();
 
-            result.Add(viewModel);
-        }
+        await Task.WhenAll(versionTasks);
 
         await ScanManualModsAsync(result, modsPath);
 
@@ -1384,9 +1388,19 @@ public class ModManagerService : IModManagerService
                 var backupFiles = Directory.GetFiles(disabledModDir, "*", SearchOption.TopDirectoryOnly)
                     .Where(f => Path.GetFileName(f) != "backup_paths.json");
 
-                if (backupFiles.Any(f => f.Contains(binaryFileName.Replace(".dll", "")) || Path.GetFileName(f) == binaryFileName.Replace('\\', '_').Replace('/', '_')))
+                foreach (var backupFile in backupFiles)
                 {
-                    return true;
+                    // 从备份文件名提取原始文件名 (Mods_SubFolder_File.dll -> File.dll)
+                    var backupFileName = Path.GetFileName(backupFile);
+                    var lastUnderscoreIndex = backupFileName.LastIndexOf('_');
+                    var originalFileName = lastUnderscoreIndex >= 0
+                        ? backupFileName.Substring(lastUnderscoreIndex + 1)
+                        : backupFileName;
+
+                    if (originalFileName.Equals(binaryFileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
             }
         }

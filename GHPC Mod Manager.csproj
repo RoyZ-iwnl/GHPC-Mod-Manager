@@ -12,10 +12,10 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     
     <!-- Version Information -->
-    <Version>1.1.2</Version>
-    <AssemblyVersion>1.1.2.88</AssemblyVersion>
-    <FileVersion>1.1.2.88</FileVersion>
-    <InformationalVersion>1.1.2</InformationalVersion>
+    <Version>1.1.3</Version>
+    <AssemblyVersion>1.1.3.5</AssemblyVersion>
+    <FileVersion>1.1.3.5</FileVersion>
+    <InformationalVersion>1.1.3-beta.1</InformationalVersion>
     <Product>GHPC Mod Manager</Product>
     <Description>A mod management tool for GHPC (Gunner, HEAT, PC!)</Description>
     <Copyright>Copyright © 2025</Copyright>
