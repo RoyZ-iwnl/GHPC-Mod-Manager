@@ -168,7 +168,26 @@
                                 </StackPanel>
                             </StackPanel>
                         </GroupBox>
-                        
+
+                        <!-- GitHub API Token -->
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiToken}" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding GitHubApiToken, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
+                                       FontSize="{DynamicResource BodySmall}"
+                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                       Margin="0,3,0,0"/>
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenHint}"
+                                       FontSize="{DynamicResource BodySmall}"
+                                       Foreground="{DynamicResource ErrorBrush}"
+                                       Margin="0,3,0,0"/>
+                            <TextBlock Margin="0,3,0,0" FontSize="{DynamicResource BodySmall}">
+                                <Hyperlink NavigateUri="https://github.com/settings/tokens" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+
                         <!-- Network Check Log -->
                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="3" 
                                 Visibility="{Binding ShowNetworkLog, Converter={StaticResource BooleanToVisibilityConverter}}"

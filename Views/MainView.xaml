@@ -556,32 +556,51 @@
         </TabControl>
         
         <!-- Game Running Overlay -->
-        <Grid Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource ScrimBrush}" 
+        <Grid Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource ScrimBrush}"
               Opacity="0.8"
               Visibility="{Binding IsGameRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
-            
-            <Border Background="{DynamicResource SurfaceBrush}" 
-                    CornerRadius="{DynamicResource RadiusMedium}" 
-                    Padding="32" 
-                    HorizontalAlignment="Center" 
+
+            <Border Background="{DynamicResource SurfaceBrush}"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    Padding="32"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     BorderBrush="{DynamicResource OutlineVariantBrush}"
                     BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="{x:Static resources:Strings.GameRunning}" 
-                              FontSize="{DynamicResource HeadlineSmall}" 
-                              FontWeight="Medium" 
+                    <TextBlock Text="{x:Static resources:Strings.GameRunning}"
+                              FontSize="{DynamicResource HeadlineSmall}"
+                              FontWeight="Medium"
                               Foreground="{DynamicResource OnSurfaceBrush}"
-                              HorizontalAlignment="Center" 
+                              HorizontalAlignment="Center"
                               Margin="0,0,0,16"/>
-                    <TextBlock Text="{x:Static resources:Strings.GameRunningCannotOperate}" 
-                              TextAlignment="Center" 
+                    <TextBlock Text="{x:Static resources:Strings.GameRunningCannotOperate}"
+                              TextAlignment="Center"
                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
                               FontSize="{DynamicResource BodyMedium}"/>
                 </StackPanel>
             </Border>
         </Grid>
-        
+
+        <!-- MelonLoader Disabled Overlay -->
+        <Grid Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource ScrimBrush}"
+              Opacity="0.8"
+              Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="{DynamicResource SurfaceBrush}"
+                    CornerRadius="{DynamicResource RadiusMedium}"
+                    Padding="32"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                    BorderThickness="1">
+                <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabledOverlayHint}"
+                           FontSize="{DynamicResource HeadlineSmall}"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource OnSurfaceBrush}"
+                           HorizontalAlignment="Center"/>
+            </Border>
+        </Grid>
+
         <!-- Status Bar -->
         <StatusBar Grid.Row="3" Height="32" Style="{DynamicResource MaterialStatusBarStyle}">
             <StatusBarItem>

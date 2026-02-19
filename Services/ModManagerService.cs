@@ -38,18 +38,20 @@ public class ModManagerService : IModManagerService
     private readonly ILoggingService _loggingService;
     private readonly IModI18nService _modI18nService;
     private readonly IModBackupService _modBackupService;
+    private readonly IProcessService _processService;
     private List<ModConfig> _availableMods = new();
     private ModInstallManifest _installManifest = new();
     private Dictionary<string, Dictionary<string, string>> _configComments = new(); // Store comments for each mod
     private Dictionary<string, List<string>> _standaloneComments = new(); // Store standalone comments for each mod
 
-    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService)
+    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService, IProcessService processService)
     {
         _settingsService = settingsService;
         _networkService = networkService;
         _loggingService = loggingService;
         _modI18nService = modI18nService;
         _modBackupService = modBackupService;
+        _processService = processService;
     }
 
     public async Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false)
@@ -86,7 +88,7 @@ public class ModManagerService : IModManagerService
                 {
                     _loggingService.LogWarning(Strings.ModInManifestButFilesNotFound, modConfig.Id);
                     _installManifest.InstalledMods.Remove(modConfig.Id);
-                    _ = SaveManifestAsync();
+                    await SaveManifestAsync();
                 }
             }
             else
@@ -296,7 +298,7 @@ public class ModManagerService : IModManagerService
                     var quickGameRootPath = _settingsService.Settings.GameRootPath;
                     var quickModsPath = Path.Combine(quickGameRootPath, "Mods");
                     var quickNewFiles = Directory.GetFiles(quickModsPath, "*.dll", SearchOption.AllDirectories)
-                        .Where(f => Path.GetFileName(f).Contains(modConfig.MainBinaryFileName.Replace(".dll", "")))
+                        .Where(f => Path.GetFileName(f).Equals(modConfig.MainBinaryFileName, StringComparison.OrdinalIgnoreCase))
                         .Select(f => Path.GetRelativePath(quickGameRootPath, f))
                         .ToList();
 
@@ -375,6 +377,13 @@ public class ModManagerService : IModManagerService
             tracker.StartTracking($"mod_install_{modConfig.Id}_{version}", modsPath);
 
             var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+
+            // 下载完成后检查游戏是否已启动，避免写入冲突
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
 
             if (modConfig.InstallMethod == InstallMethod.Scripted && !string.IsNullOrEmpty(modConfig.InstallScript_Base64))
             {
@@ -475,6 +484,13 @@ public class ModManagerService : IModManagerService
 
             // Download the new version
             var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+
+            // 下载完成后检查游戏是否已启动，避免写入冲突
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
 
             // Step 2: Uninstall current version (move to uninstalled backup)
             await _modBackupService.UninstallModWithBackupAsync(modId, currentInstallInfo.Version, currentInstallInfo.InstalledFiles);
@@ -1425,20 +1441,19 @@ public class ModManagerService : IModManagerService
             }
         }
 
-        // 如果Mods目录中没有文件，检查是否在disabled备份中
+        // 检查是否在disabled备份中
         var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled", installInfo.ModId);
-        if (Directory.Exists(disabledPath))
-        {
-            var backupFiles = Directory.GetFiles(disabledPath, "*", SearchOption.TopDirectoryOnly)
-                .Where(f => Path.GetFileName(f) != "backup_paths.json");
+        if (Directory.Exists(disabledPath) &&
+            Directory.GetFiles(disabledPath, "*", SearchOption.TopDirectoryOnly)
+                .Any(f => Path.GetFileName(f) != "backup_paths.json"))
+            return true;
 
-            if (backupFiles.Any())
-            {
-                return true; // MOD在disabled备份中
-            }
-        }
+        // 检查是否在uninstalled备份中（已卸载但备份保留）
+        var uninstalledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "uninstalled");
+        if (Directory.Exists(uninstalledPath) &&
+            Directory.GetDirectories(uninstalledPath, $"{installInfo.ModId}_v*").Any())
+            return true;
 
-        // 文件和备份都不存在
         return false;
     }
 

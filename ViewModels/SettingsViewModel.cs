@@ -21,6 +21,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IThemeService _themeService;
     private readonly IModBackupService _modBackupService;
     private readonly IUpdateService _updateService;
+    private readonly IMelonLoaderService _melonLoaderService;
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
@@ -111,6 +112,25 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private List<UpdateChannel> _availableUpdateChannels = new() { UpdateChannel.Stable, UpdateChannel.Beta };
 
+    // MelonLoader 管理
+    [ObservableProperty]
+    private string _melonLoaderInstalledVersion = string.Empty;
+
+    [ObservableProperty]
+    private bool _isMelonLoaderDisabled;
+
+    [ObservableProperty]
+    private bool _isMelonLoaderInstalled;
+
+    [ObservableProperty]
+    private List<GitHubRelease> _melonLoaderReleases = new();
+
+    [ObservableProperty]
+    private GitHubRelease? _selectedMelonLoaderRelease;
+
+    [ObservableProperty]
+    private bool _isMelonLoaderOperating;
+
     public string ApplicationVersion => GetApplicationVersion();
 
     public bool IsChineseLanguage => SelectedLanguage == "zh-CN";
@@ -127,7 +147,8 @@ public partial class SettingsViewModel : ObservableObject
         IModI18nService modI18nService,
         IThemeService themeService,
         IModBackupService modBackupService,
-        IUpdateService updateService)
+        IUpdateService updateService,
+        IMelonLoaderService melonLoaderService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -137,8 +158,10 @@ public partial class SettingsViewModel : ObservableObject
         _themeService = themeService;
         _modBackupService = modBackupService;
         _updateService = updateService;
+        _melonLoaderService = melonLoaderService;
 
         LoadSettings();
+        _ = LoadMelonLoaderStatusAsync();
     }
 
     private void LoadSettings()
@@ -517,6 +540,123 @@ public partial class SettingsViewModel : ObservableObject
         catch
         {
             return "Unknown";
+        }
+    }
+
+    private async Task LoadMelonLoaderStatusAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        IsMelonLoaderInstalled = await _melonLoaderService.IsMelonLoaderInstalledAsync(gameRoot);
+        IsMelonLoaderDisabled = _melonLoaderService.IsMelonLoaderDisabled(gameRoot);
+
+        if (IsMelonLoaderInstalled || IsMelonLoaderDisabled)
+        {
+            var ver = await _melonLoaderService.GetInstalledVersionAsync(gameRoot);
+            MelonLoaderInstalledVersion = ver ?? Strings.MelonLoaderNotDetected;
+        }
+        else
+        {
+            MelonLoaderInstalledVersion = Strings.MelonLoaderNotDetected;
+        }
+
+        try
+        {
+            MelonLoaderReleases = await _melonLoaderService.GetMelonLoaderReleasesAsync();
+            SelectedMelonLoaderRelease = MelonLoaderReleases.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderReleasesLoadError);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ToggleMelonLoaderAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        IsMelonLoaderOperating = true;
+        try
+        {
+            bool success;
+            if (IsMelonLoaderDisabled)
+            {
+                success = await _melonLoaderService.EnableMelonLoaderAsync(gameRoot);
+                if (success)
+                {
+                    IsMelonLoaderDisabled = false;
+                    _loggingService.LogInfo(Strings.MelonLoaderEnableSuccess);
+                }
+                else
+                {
+                    MessageBox.Show(Strings.MelonLoaderEnableFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                success = await _melonLoaderService.DisableMelonLoaderAsync(gameRoot);
+                if (success)
+                {
+                    IsMelonLoaderDisabled = true;
+                    _loggingService.LogInfo(Strings.MelonLoaderDisableSuccess);
+                }
+                else
+                {
+                    MessageBox.Show(Strings.MelonLoaderDisableFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderCheckError);
+        }
+        finally
+        {
+            IsMelonLoaderOperating = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ReinstallMelonLoaderAsync()
+    {
+        if (SelectedMelonLoaderRelease == null)
+        {
+            MessageBox.Show(Strings.PleaseSelectMelonLoaderVersion, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        IsMelonLoaderOperating = true;
+        try
+        {
+            var progress = new Progress<DownloadProgress>(p =>
+                _loggingService.LogInfo(Strings.InstallingMelonLoader + $" {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}"));
+
+            var success = await _melonLoaderService.InstallMelonLoaderAsync(gameRoot, SelectedMelonLoaderRelease.TagName, progress);
+            if (success)
+            {
+                await LoadMelonLoaderStatusAsync();
+                MessageBox.Show(string.Format(Strings.MelonLoaderInstalled, SelectedMelonLoaderRelease.TagName),
+                    Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show(Strings.MelonLoaderInstallFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderInstallError, SelectedMelonLoaderRelease.TagName);
+            MessageBox.Show(Strings.MelonLoaderInstallationError, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsMelonLoaderOperating = false;
         }
     }
 }

@@ -3336,6 +3336,62 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderReleasesLoadError", resourceCulture);
             }
         }
+
+        public static string MelonLoaderManagement {
+            get { return ResourceManager.GetString("MelonLoaderManagement", resourceCulture); }
+        }
+
+        public static string MelonLoaderInstalledVersion {
+            get { return ResourceManager.GetString("MelonLoaderInstalledVersion", resourceCulture); }
+        }
+
+        public static string MelonLoaderNotDetected {
+            get { return ResourceManager.GetString("MelonLoaderNotDetected", resourceCulture); }
+        }
+
+        public static string MelonLoaderDisabled {
+            get { return ResourceManager.GetString("MelonLoaderDisabled", resourceCulture); }
+        }
+
+        public static string MelonLoaderEnabled {
+            get { return ResourceManager.GetString("MelonLoaderEnabled", resourceCulture); }
+        }
+
+        public static string DisableMelonLoader {
+            get { return ResourceManager.GetString("DisableMelonLoader", resourceCulture); }
+        }
+
+        public static string EnableMelonLoader {
+            get { return ResourceManager.GetString("EnableMelonLoader", resourceCulture); }
+        }
+
+        public static string ReinstallMelonLoader {
+            get { return ResourceManager.GetString("ReinstallMelonLoader", resourceCulture); }
+        }
+
+        public static string MelonLoaderDisableSuccess {
+            get { return ResourceManager.GetString("MelonLoaderDisableSuccess", resourceCulture); }
+        }
+
+        public static string MelonLoaderEnableSuccess {
+            get { return ResourceManager.GetString("MelonLoaderEnableSuccess", resourceCulture); }
+        }
+
+        public static string MelonLoaderDisableFailed {
+            get { return ResourceManager.GetString("MelonLoaderDisableFailed", resourceCulture); }
+        }
+
+        public static string MelonLoaderEnableFailed {
+            get { return ResourceManager.GetString("MelonLoaderEnableFailed", resourceCulture); }
+        }
+
+        public static string SelectMelonLoaderVersion {
+            get { return ResourceManager.GetString("SelectMelonLoaderVersion", resourceCulture); }
+        }
+
+        public static string MelonLoaderDisabledOverlayHint {
+            get { return ResourceManager.GetString("MelonLoaderDisabledOverlayHint", resourceCulture); }
+        }
         
         /// <summary>
         ///   查找类似 MelonLoader version {0} not found 的本地化字符串。

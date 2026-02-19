@@ -202,10 +202,10 @@ public class ModBackupService : IModBackupService
                 _loggingService.LogInfo(Strings.RestoredModFile, backupFile, targetPath);
             }
 
-            // Clean up empty backup directory
-            if (!Directory.EnumerateFileSystemEntries(modBackupPath).Any())
+            // 清理备份目录（含残留的 backup_paths.json）
+            if (Directory.Exists(modBackupPath))
             {
-                Directory.Delete(modBackupPath);
+                Directory.Delete(modBackupPath, true);
             }
 
             _loggingService.LogInfo(Strings.ModEnabledFromBackup, modId);
@@ -307,22 +307,42 @@ public class ModBackupService : IModBackupService
                 return false;
             }
 
+            // 同时尝试读取 backup_paths.json（手动Mod卸载时写入的路径映射）
+            Dictionary<string, string>? backupPathsMapping = null;
+            var backupPathsFile = Path.Combine(versionedBackupPath, "backup_paths.json");
+            if (File.Exists(backupPathsFile))
+            {
+                var pathsJson = await File.ReadAllTextAsync(backupPathsFile);
+                backupPathsMapping = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(pathsJson);
+            }
+
             Directory.CreateDirectory(modsPath);
 
             // Restore files from backup to their original locations
             var backupFiles = Directory.GetFiles(versionedBackupPath, "*", SearchOption.TopDirectoryOnly)
-                .Where(f => Path.GetFileName(f) != "backup_manifest.json")
+                .Where(f => Path.GetFileName(f) != "backup_manifest.json" && Path.GetFileName(f) != "backup_paths.json")
                 .ToList();
+
+            // 备份目录存在但无实际文件，视为损坏备份
+            if (!backupFiles.Any())
+            {
+                _loggingService.LogWarning(Strings.ModBackupNotFound, $"{modId} (empty backup)");
+                return false;
+            }
 
             foreach (var backupFile in backupFiles)
             {
                 var backupFileName = Path.GetFileName(backupFile);
                 string targetPath;
-                
-                // Try to get original path from manifest file mapping
+
+                // 优先从 FilePathMapping 查找，其次从 backup_paths.json 查找
                 if (backupManifest.FilePathMapping?.TryGetValue(backupFileName, out var originalRelativePath) == true)
                 {
                     targetPath = Path.Combine(gameRootPath, originalRelativePath);
+                }
+                else if (backupPathsMapping?.TryGetValue(backupFileName, out var pathsMappingRelative) == true)
+                {
+                    targetPath = Path.Combine(gameRootPath, pathsMappingRelative);
                 }
                 else
                 {

@@ -1290,6 +1290,48 @@
   <data name="MelonLoaderReleasesLoadError" xml:space="preserve">
     <value>Error loading MelonLoader releases</value>
   </data>
+  <data name="MelonLoaderManagement" xml:space="preserve">
+    <value>MelonLoader Framework Management</value>
+  </data>
+  <data name="MelonLoaderInstalledVersion" xml:space="preserve">
+    <value>Current Version:</value>
+  </data>
+  <data name="MelonLoaderNotDetected" xml:space="preserve">
+    <value>Not detected</value>
+  </data>
+  <data name="MelonLoaderDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="MelonLoaderEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DisableMelonLoader" xml:space="preserve">
+    <value>Temporarily Disable</value>
+  </data>
+  <data name="EnableMelonLoader" xml:space="preserve">
+    <value>Re-enable</value>
+  </data>
+  <data name="ReinstallMelonLoader" xml:space="preserve">
+    <value>Reinstall / Update Version</value>
+  </data>
+  <data name="MelonLoaderDisableSuccess" xml:space="preserve">
+    <value>MelonLoader disabled</value>
+  </data>
+  <data name="MelonLoaderEnableSuccess" xml:space="preserve">
+    <value>MelonLoader enabled</value>
+  </data>
+  <data name="MelonLoaderDisableFailed" xml:space="preserve">
+    <value>Failed to disable MelonLoader</value>
+  </data>
+  <data name="MelonLoaderEnableFailed" xml:space="preserve">
+    <value>Failed to enable MelonLoader</value>
+  </data>
+  <data name="SelectMelonLoaderVersion" xml:space="preserve">
+    <value>Select version:</value>
+  </data>
+  <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
+    <value>MelonLoader is temporarily disabled, mod functions unavailable</value>
+  </data>
   <data name="Manual" xml:space="preserve">
     <value>Manual</value>
   </data>

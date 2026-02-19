@@ -163,6 +163,58 @@
                     </StackPanel>
                 </GroupBox>
                 
+                <!-- MelonLoader 管理 -->
+                <GroupBox Header="{x:Static resources:Strings.MelonLoaderManagement}" Margin="0,0,0,15">
+                    <StackPanel Margin="10">
+                        <!-- 当前版本与状态 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="{x:Static resources:Strings.MelonLoaderInstalledVersion}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="{Binding MelonLoaderInstalledVersion}" VerticalAlignment="Center" FontWeight="Medium" Margin="0,0,12,0"/>
+                            <TextBlock VerticalAlignment="Center"
+                                       Foreground="{DynamicResource ErrorBrush}"
+                                       Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Run Text="("/>
+                                <Run Text="{x:Static resources:Strings.MelonLoaderDisabled}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <!-- 禁用/启用按钮 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Button Command="{Binding ToggleMelonLoaderCommand}"
+                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
+                                    MinWidth="120" Margin="0,0,10,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}">
+                                <Button.Content>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{x:Static resources:Strings.DisableMelonLoader}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMelonLoaderDisabled}" Value="True">
+                                                        <Setter Property="Text" Value="{x:Static resources:Strings.EnableMelonLoader}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <!-- 覆盖安装/更新版本 -->
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox ItemsSource="{Binding MelonLoaderReleases}"
+                                      SelectedItem="{Binding SelectedMelonLoaderRelease}"
+                                      DisplayMemberPath="TagName"
+                                      MinWidth="160" Margin="0,0,10,0"/>
+                            <Button Content="{x:Static resources:Strings.ReinstallMelonLoader}"
+                                    Command="{Binding ReinstallMelonLoaderCommand}"
+                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
+                                    MinWidth="160"
+                                    Style="{DynamicResource FilledButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
                 <!-- Maintenance -->
                 <GroupBox Header="{x:Static resources:Strings.MaintenanceTools}" Margin="0,0,0,15">
                     <StackPanel Margin="10">

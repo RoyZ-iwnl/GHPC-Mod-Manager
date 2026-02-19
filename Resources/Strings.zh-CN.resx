@@ -1290,6 +1290,48 @@
   <data name="MelonLoaderReleasesLoadError" xml:space="preserve">
     <value>加载MelonLoader版本错误</value>
   </data>
+  <data name="MelonLoaderManagement" xml:space="preserve">
+    <value>MelonLoader 框架管理</value>
+  </data>
+  <data name="MelonLoaderInstalledVersion" xml:space="preserve">
+    <value>当前版本：</value>
+  </data>
+  <data name="MelonLoaderNotDetected" xml:space="preserve">
+    <value>未检测到</value>
+  </data>
+  <data name="MelonLoaderDisabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="MelonLoaderEnabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="DisableMelonLoader" xml:space="preserve">
+    <value>临时禁用</value>
+  </data>
+  <data name="EnableMelonLoader" xml:space="preserve">
+    <value>重新启用</value>
+  </data>
+  <data name="ReinstallMelonLoader" xml:space="preserve">
+    <value>覆盖安装/更新版本</value>
+  </data>
+  <data name="MelonLoaderDisableSuccess" xml:space="preserve">
+    <value>MelonLoader 已禁用</value>
+  </data>
+  <data name="MelonLoaderEnableSuccess" xml:space="preserve">
+    <value>MelonLoader 已启用</value>
+  </data>
+  <data name="MelonLoaderDisableFailed" xml:space="preserve">
+    <value>禁用 MelonLoader 失败</value>
+  </data>
+  <data name="MelonLoaderEnableFailed" xml:space="preserve">
+    <value>启用 MelonLoader 失败</value>
+  </data>
+  <data name="SelectMelonLoaderVersion" xml:space="preserve">
+    <value>选择版本：</value>
+  </data>
+  <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
+    <value>MelonLoader 已临时禁用，Mod 功能不可用</value>
+  </data>
   <data name="Manual" xml:space="preserve">
     <value>手动</value>
   </data>

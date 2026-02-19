@@ -1,6 +1,8 @@
 using GHPC_Mod_Manager.ViewModels;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using GHPC_Mod_Manager.Resources;
 
 namespace GHPC_Mod_Manager.Views;
@@ -34,5 +36,11 @@ public partial class SetupWizardView : UserControl
         {
             MessageBox.Show(string.Format(Strings.CopyFailed, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        e.Handled = true;
     }
 }

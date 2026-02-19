@@ -46,6 +46,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ISettingsService _settingsService;
     private readonly INetworkService _networkService;
     private readonly IUpdateService _updateService;
+    private readonly IMelonLoaderService _melonLoaderService;
 
     [ObservableProperty]
     private ObservableCollection<ModViewModel> _mods = new();
@@ -125,6 +126,16 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isOfflineMode = false;
 
+    [ObservableProperty]
+    private bool _isMelonLoaderDisabled = false;
+
+    public void RefreshMelonLoaderState()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (!string.IsNullOrEmpty(gameRoot))
+            IsMelonLoaderDisabled = _melonLoaderService.IsMelonLoaderDisabled(gameRoot);
+    }
+
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
@@ -135,7 +146,8 @@ public partial class MainViewModel : ObservableObject
         IServiceProvider serviceProvider,
         ISettingsService settingsService,
         INetworkService networkService,
-        IUpdateService updateService)
+        IUpdateService updateService,
+        IMelonLoaderService melonLoaderService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -147,6 +159,7 @@ public partial class MainViewModel : ObservableObject
         _settingsService = settingsService;
         _networkService = networkService;
         _updateService = updateService;
+        _melonLoaderService = melonLoaderService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -173,6 +186,11 @@ public partial class MainViewModel : ObservableObject
 
         _isInitialized = true;
         _loggingService.LogInfo("MainViewModel initializing for the first time");
+
+        // 检查 MelonLoader 是否被禁用
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (!string.IsNullOrEmpty(gameRoot))
+            IsMelonLoaderDisabled = _melonLoaderService.IsMelonLoaderDisabled(gameRoot);
 
         // 先加载数据,不阻塞
         await RefreshDataAsync();
@@ -1416,10 +1434,10 @@ public partial class MainViewModel : ObservableObject
                 m.Id.ToLowerInvariant().Contains(searchLower));
         }
         
-        // Sort: Installed mods first, then by display name
+        // 已安装优先，次级按JSON原始顺序
         var sortedMods = allMods
             .OrderByDescending(m => m.IsInstalled)
-            .ThenBy(m => m.DisplayName)
+            .ThenBy(m => Mods.IndexOf(m))
             .ToList();
         
         // Update filtered collection

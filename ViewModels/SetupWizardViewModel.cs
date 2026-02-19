@@ -111,6 +111,10 @@ public partial class SetupWizardViewModel : ObservableObject
         if (_isInitializing)
             return;
             
+        // 启用代理时清空token
+        if (value)
+            GitHubApiToken = string.Empty;
+
         // Automatically save proxy settings when changed
         _ = Task.Run(async () =>
         {
@@ -172,6 +176,32 @@ public partial class SetupWizardViewModel : ObservableObject
         GitHubProxyServer.CdnGhProxyCom
     };
 
+    [ObservableProperty]
+    private string _gitHubApiToken = string.Empty;
+
+    partial void OnGitHubApiTokenChanged(string value)
+    {
+        if (_isInitializing)
+            return;
+
+        // 配置token时禁用代理（已在UI线程，直接赋值）
+        if (!string.IsNullOrWhiteSpace(value))
+            UseGitHubProxy = false;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                _settingsService.Settings.GitHubApiToken = value;
+                await _settingsService.SaveSettingsAsync();
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.FailedToSaveProxySettingChange);
+            }
+        });
+    }
+
     public SetupWizardViewModel(
         ISettingsService settingsService,
         INavigationService navigationService,
@@ -201,6 +231,7 @@ public partial class SetupWizardViewModel : ObservableObject
         // Load existing proxy settings
         UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
         GitHubProxyServer = _settingsService.Settings.GitHubProxyServer;
+        GitHubApiToken = _settingsService.Settings.GitHubApiToken;
         
         // Mark initialization as complete after setting all values
         _isInitializing = false;

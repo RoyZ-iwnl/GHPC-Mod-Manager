@@ -11,6 +11,14 @@ public interface IMelonLoaderService
     Task<bool> AreMelonLoaderDirectoriesCreatedAsync(string gameRootPath);
     Task<List<GitHubRelease>> GetMelonLoaderReleasesAsync();
     Task<bool> InstallMelonLoaderAsync(string gameRootPath, string version, IProgress<DownloadProgress>? progress = null);
+    /// <summary>从 MelonLoader/Latest.log 解析当前安装版本号</summary>
+    Task<string?> GetInstalledVersionAsync(string gameRootPath);
+    /// <summary>禁用 MelonLoader（重命名 version.dll）</summary>
+    Task<bool> DisableMelonLoaderAsync(string gameRootPath);
+    /// <summary>启用 MelonLoader（还原 version.dll）</summary>
+    Task<bool> EnableMelonLoaderAsync(string gameRootPath);
+    /// <summary>检查 MelonLoader 是否被禁用</summary>
+    bool IsMelonLoaderDisabled(string gameRootPath);
 }
 
 public class MelonLoaderService : IMelonLoaderService
@@ -236,5 +244,83 @@ public class MelonLoaderService : IMelonLoaderService
             _loggingService.LogError(ex, Strings.MelonLoaderInstallError, version);
             return false;
         }
+    }
+
+    public async Task<string?> GetInstalledVersionAsync(string gameRootPath)
+    {
+        return await Task.Run(() =>
+        {
+            try
+            {
+                var logPath = Path.Combine(gameRootPath, "MelonLoader", "Latest.log");
+                if (!File.Exists(logPath)) return null;
+
+                // 读取前几行，找 "MelonLoader vX.X.X" 格式
+                foreach (var line in File.ReadLines(logPath))
+                {
+                    var idx = line.IndexOf("MelonLoader v", StringComparison.Ordinal);
+                    if (idx >= 0)
+                    {
+                        // 提取版本号直到空格
+                        var start = idx + "MelonLoader v".Length;
+                        var end = line.IndexOf(' ', start);
+                        return "v" + (end > start ? line[start..end] : line[start..]);
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.MelonLoaderCheckError);
+                return null;
+            }
+        });
+    }
+
+    private const string DisabledDllName = "version.dllGHPCMM";
+
+    public bool IsMelonLoaderDisabled(string gameRootPath)
+    {
+        return File.Exists(Path.Combine(gameRootPath, DisabledDllName));
+    }
+
+    public async Task<bool> DisableMelonLoaderAsync(string gameRootPath)
+    {
+        return await Task.Run(() =>
+        {
+            try
+            {
+                var src = Path.Combine(gameRootPath, "version.dll");
+                var dst = Path.Combine(gameRootPath, DisabledDllName);
+                if (!File.Exists(src)) return false;
+                File.Move(src, dst, overwrite: true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.MelonLoaderCheckError);
+                return false;
+            }
+        });
+    }
+
+    public async Task<bool> EnableMelonLoaderAsync(string gameRootPath)
+    {
+        return await Task.Run(() =>
+        {
+            try
+            {
+                var src = Path.Combine(gameRootPath, DisabledDllName);
+                var dst = Path.Combine(gameRootPath, "version.dll");
+                if (!File.Exists(src)) return false;
+                File.Move(src, dst, overwrite: true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.MelonLoaderCheckError);
+                return false;
+            }
+        });
     }
 }
