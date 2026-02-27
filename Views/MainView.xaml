@@ -39,12 +39,6 @@
                 </StackPanel>
 
                 <!-- 底部：设置按钮 -->
-                <Button DockPanel.Dock="Bottom"
-                        Content="{x:Static resources:Strings.Settings}"
-                        Command="{Binding OpenSettingsCommand}"
-                        Style="{DynamicResource TextButtonStyle}"
-                        Margin="8,8,8,12"
-                        HorizontalAlignment="Stretch"/>
 
                 <!-- 导航项列表 -->
                 <ListBox ItemsSource="{Binding NavigationItems}"
@@ -72,18 +66,22 @@
             </Grid.RowDefinitions>
 
             <!-- 游戏状态栏 -->
-            <Grid Grid.Row="0" Background="{DynamicResource SurfaceVariantBrush}" Margin="0,0,0,0">
+            <Grid Grid.Row="0" Background="{DynamicResource SurfaceVariantBrush}">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Grid.Column="0" Header="{x:Static resources:Strings.GameStatus}"
-                          Margin="10,5" Padding="10,5"
+                <!-- 游戏状态 GroupBox，内容自适应宽度 -->
+                <GroupBox Grid.Column="0"
+                          Header="{x:Static resources:Strings.GameStatus}"
+                          Margin="10,5,0,5" Padding="10,5"
                           Background="{DynamicResource SurfaceBrush}"
                           Foreground="{DynamicResource OnSurfaceBrush}"
                           BorderBrush="{DynamicResource OutlineVariantBrush}">
                     <StackPanel Orientation="Horizontal">
+                        <!-- 状态标签 -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
                             <TextBlock Text="{x:Static resources:Strings.Status}"
                                        VerticalAlignment="Center" Margin="0,0,5,0"/>
@@ -110,6 +108,7 @@
                                            VerticalAlignment="Center"/>
                             </Border>
                         </StackPanel>
+                        <!-- 启动/停止按钮 -->
                         <StackPanel Orientation="Horizontal">
                             <Button Content="{x:Static resources:Strings.StartGame}"
                                     Command="{Binding LaunchGameCommand}"
@@ -124,6 +123,15 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
+
+                <!-- 设置按钮，固定在右侧垂直居中 -->
+                <Button Grid.Column="2"
+                        Content="{x:Static resources:Strings.Settings}"
+                        Command="{Binding OpenSettingsCommand}"
+                        Style="{DynamicResource TextButtonStyle}"
+                        MinHeight="80" MinWidth="100"
+                        VerticalAlignment="Center"
+                        Margin="0,0,12,0"/>
             </Grid>
 
             <!-- 更新横幅区（App更新 + 翻译更新，叠加显示） -->
@@ -207,33 +215,63 @@
                     </StackPanel>
                 </StatusBarItem>
             </StatusBar>
+
+            <!-- 游戏运行遮罩（从Row1开始，不遮挡游戏状态栏Row0，保持停止游戏按钮可点击） -->
+            <Grid Grid.Row="1" Grid.RowSpan="3"
+                  Background="{DynamicResource ScrimBrush}" Opacity="0.8"
+                  Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Padding="32"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource OutlineVariantBrush}"
+                        BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.GameRunning}"
+                                   FontSize="{DynamicResource HeadlineSmall}"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource OnSurfaceBrush}"
+                                   HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                        <TextBlock Text="{x:Static resources:Strings.GameRunningCannotOperate}"
+                                   TextAlignment="Center"
+                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                   FontSize="{DynamicResource BodyMedium}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- MelonLoader未安装遮罩 -->
+            <Grid Grid.Row="1" Grid.RowSpan="3"
+                  Background="{DynamicResource ScrimBrush}" Opacity="0.8"
+                  Visibility="{Binding IsMelonLoaderNotInstalled, Converter={StaticResource BoolToVis}}">
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Padding="32"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource OutlineVariantBrush}"
+                        BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderNotInstalledTitle}"
+                                   FontSize="{DynamicResource HeadlineSmall}"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource OnSurfaceBrush}"
+                                   HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderNotInstalledMessage}"
+                                   TextAlignment="Center"
+                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                   FontSize="{DynamicResource BodyMedium}"
+                                   MaxWidth="360" TextWrapping="Wrap" Margin="0,0,0,16"/>
+                        <Button Content="{x:Static resources:Strings.InstallMelonLoader}"
+                                Command="{Binding GoToInstallMelonLoaderCommand}"
+                                HorizontalAlignment="Center"
+                                Style="{DynamicResource FilledButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
         </Grid>
 
-        <!-- 游戏运行遮罩（覆盖整个MainView，含左侧导航栏） -->
-        <Grid Grid.Column="0" Grid.ColumnSpan="2"
-              Background="{DynamicResource ScrimBrush}" Opacity="0.8"
-              Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
-            <Border Background="{DynamicResource SurfaceBrush}"
-                    CornerRadius="{DynamicResource RadiusMedium}"
-                    Padding="32"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    BorderBrush="{DynamicResource OutlineVariantBrush}"
-                    BorderThickness="1">
-                <StackPanel>
-                    <TextBlock Text="{x:Static resources:Strings.GameRunning}"
-                               FontSize="{DynamicResource HeadlineSmall}"
-                               FontWeight="Medium"
-                               Foreground="{DynamicResource OnSurfaceBrush}"
-                               HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                    <TextBlock Text="{x:Static resources:Strings.GameRunningCannotOperate}"
-                               TextAlignment="Center"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                               FontSize="{DynamicResource BodyMedium}"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- MelonLoader禁用遮罩 -->
+        <!-- MelonLoader禁用遮罩（覆盖整个主界面） -->
         <Grid Grid.Column="0" Grid.ColumnSpan="2"
               Background="{DynamicResource ScrimBrush}" Opacity="0.8"
               Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BoolToVis}}">
@@ -243,11 +281,17 @@
                     HorizontalAlignment="Center" VerticalAlignment="Center"
                     BorderBrush="{DynamicResource OutlineVariantBrush}"
                     BorderThickness="1">
-                <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabledOverlayHint}"
-                           FontSize="{DynamicResource HeadlineSmall}"
-                           FontWeight="Medium"
-                           Foreground="{DynamicResource OnSurfaceBrush}"
-                           HorizontalAlignment="Center"/>
+                <StackPanel>
+                    <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabledOverlayHint}"
+                               FontSize="{DynamicResource HeadlineSmall}"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource OnSurfaceBrush}"
+                               HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <Button Content="{x:Static resources:Strings.Settings}"
+                            Command="{Binding OpenSettingsCommand}"
+                            HorizontalAlignment="Center"
+                            Style="{DynamicResource FilledButtonStyle}"/>
+                </StackPanel>
             </Border>
         </Grid>
 

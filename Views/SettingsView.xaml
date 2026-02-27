@@ -122,8 +122,7 @@
                         <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
                                 <ComboBox ItemsSource="{Binding AvailableProxyServers}"
-                                          SelectedValue="{Binding GitHubProxyServer}"
-                                          SelectedValuePath="EnumValue"
+                                          SelectedItem="{Binding SelectedProxyServer}"
                                           Width="310" HorizontalAlignment="Left">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>

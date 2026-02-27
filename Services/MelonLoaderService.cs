@@ -19,6 +19,10 @@ public interface IMelonLoaderService
     Task<bool> EnableMelonLoaderAsync(string gameRootPath);
     /// <summary>检查 MelonLoader 是否被禁用</summary>
     bool IsMelonLoaderDisabled(string gameRootPath);
+    /// <summary>通过下载当前版本ZIP建立索引，删除旧版本文件</summary>
+    Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null);
+    /// <summary>从 Latest.log 读取游戏版本号，取最后一个+后的部分，如 20260210.1</summary>
+    Task<string?> GetCurrentGameVersionAsync(string gameRootPath);
 }
 
 public class MelonLoaderService : IMelonLoaderService
@@ -161,13 +165,16 @@ public class MelonLoaderService : IMelonLoaderService
                 using (var archive = ZipFile.OpenRead(tempFile))
                 {
                     _loggingService.LogInfo(Strings.ZipFileOpenSuccess, archive.Entries.Count);
-                    
+
                     if (archive.Entries.Count == 0)
                     {
                         _loggingService.LogError(Strings.ZipFileEmpty);
                         return false;
                     }
-                    
+
+                    // 收集文件列表，安装后保存为 manifest
+                    var installedFiles = new List<string>();
+
                     foreach (var entry in archive.Entries)
                     {
                         if (string.IsNullOrEmpty(entry.Name))
@@ -178,17 +185,18 @@ public class MelonLoaderService : IMelonLoaderService
 
                         var destinationPath = Path.Combine(gameRootPath, entry.FullName);
                         _loggingService.LogInfo(Strings.ExtractingFile, entry.FullName, destinationPath);
-                        
+
                         var destinationDir = Path.GetDirectoryName(destinationPath);
                         if (!string.IsNullOrEmpty(destinationDir))
                         {
                             Directory.CreateDirectory(destinationDir);
                         }
-                        
+
                         try
                         {
                             entry.ExtractToFile(destinationPath, true);
                             _loggingService.LogInfo(Strings.FileExtractionSuccess, Path.GetFileName(destinationPath));
+                            installedFiles.Add(entry.FullName);
                         }
                         catch (Exception fileEx)
                         {
@@ -196,6 +204,9 @@ public class MelonLoaderService : IMelonLoaderService
                             throw;
                         }
                     }
+
+                    // 安装完成后保存文件索引
+                    await SaveManifestAsync(version, installedFiles);
                 }
             }
             catch (Exception ex)
@@ -252,19 +263,46 @@ public class MelonLoaderService : IMelonLoaderService
         {
             try
             {
-                var logPath = Path.Combine(gameRootPath, "MelonLoader", "Latest.log");
-                if (!File.Exists(logPath)) return null;
+                // 优先从 MelonLoader.dll 的 FileVersion 读取，net6 和 net35 都有，取第一个存在的
+                var dllCandidates = new[]
+                {
+                    Path.Combine(gameRootPath, "MelonLoader", "net6", "MelonLoader.dll"),
+                    Path.Combine(gameRootPath, "MelonLoader", "net35", "MelonLoader.dll"),
+                };
 
-                // 读取前几行，找 "MelonLoader vX.X.X" 格式
+                foreach (var dllPath in dllCandidates)
+                {
+                    if (!File.Exists(dllPath)) continue;
+
+                    var fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(dllPath);
+                    if (string.IsNullOrEmpty(fvi.FileVersion)) continue;
+
+                    // FileVersion 格式: "0.7.1.0" → 去掉末尾 ".0" → "v0.7.1"
+                    var ver = fvi.FileVersion.Trim();
+                    if (ver.EndsWith(".0")) ver = ver[..^2];
+                    var result = "v" + ver;
+                    _loggingService.LogInfo(Strings.MelonLoaderVersionDetected, Path.GetFileName(Path.GetDirectoryName(dllPath)), result);
+                    return result;
+                }
+
+                // 兜底：从 Latest.log 解析
+                var logPath = Path.Combine(gameRootPath, "MelonLoader", "Latest.log");
+                if (!File.Exists(logPath))
+                {
+                    _loggingService.LogInfo(Strings.MelonLoaderVersionNotDetectable);
+                    return null;
+                }
+
                 foreach (var line in File.ReadLines(logPath))
                 {
                     var idx = line.IndexOf("MelonLoader v", StringComparison.Ordinal);
                     if (idx >= 0)
                     {
-                        // 提取版本号直到空格
                         var start = idx + "MelonLoader v".Length;
                         var end = line.IndexOf(' ', start);
-                        return "v" + (end > start ? line[start..end] : line[start..]);
+                        var result = "v" + (end > start ? line[start..end] : line[start..]);
+                        _loggingService.LogInfo(Strings.MelonLoaderVersionFromLog, result);
+                        return result;
                     }
                 }
                 return null;
@@ -277,11 +315,181 @@ public class MelonLoaderService : IMelonLoaderService
         });
     }
 
+    // 不删除这些目录下的文件，避免误删用户数据
+    private static readonly HashSet<string> _protectedPrefixes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Mods/", "Mods\\",
+        "UserData/", "UserData\\",
+        "Plugins/", "Plugins\\",
+        "Translation/", "Translation\\",
+    };
+
+    public async Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null)
+    {
+        try
+        {
+            _loggingService.LogInfo(Strings.MelonLoaderUninstallingCurrentVersion, currentVersion);
+
+            List<string> filesToDelete;
+
+            // 优先读本地 manifest
+            var manifest = await LoadManifestAsync();
+            if (manifest != null)
+            {
+                _loggingService.LogInfo(Strings.MelonLoaderManifestLoaded, manifest.Files.Count);
+                filesToDelete = manifest.Files
+                    .Where(f =>
+                    {
+                        var p = f.Replace('\\', '/');
+                        return !_protectedPrefixes.Any(prefix => p.StartsWith(prefix.Replace('\\', '/'), StringComparison.OrdinalIgnoreCase));
+                    })
+                    .Select(f => Path.Combine(gameRootPath, f))
+                    .ToList();
+            }
+            else
+            {
+                // 没有本地 manifest，下载当前版本 ZIP 建立临时索引
+                _loggingService.LogInfo(Strings.MelonLoaderManifestNotFound);
+
+                var releases = await GetMelonLoaderReleasesAsync();
+                var targetRelease = releases.FirstOrDefault(r => r.TagName == currentVersion);
+                if (targetRelease == null)
+                {
+                    _loggingService.LogWarning(Strings.MelonLoaderCurrentVersionAssetNotFound, currentVersion);
+                    return true;
+                }
+
+                var asset = targetRelease.Assets.FirstOrDefault(a => a.Name.Contains("MelonLoader.x64.zip"));
+                if (asset == null)
+                {
+                    _loggingService.LogWarning(Strings.MelonLoaderCurrentVersionAssetNotFound, currentVersion);
+                    return true;
+                }
+
+                _loggingService.LogInfo(Strings.MelonLoaderDownloadingIndexZip);
+                Directory.CreateDirectory(_settingsService.TempPath);
+                var indexZipPath = Path.Combine(_settingsService.TempPath, $"MelonLoader_{currentVersion}_index.zip");
+
+                var zipData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+                if (zipData == null || zipData.Length < 4 || zipData[0] != 0x50 || zipData[1] != 0x4B)
+                {
+                    _loggingService.LogError(Strings.MelonLoaderUninstallFailed);
+                    return false;
+                }
+                await File.WriteAllBytesAsync(indexZipPath, zipData);
+
+                filesToDelete = new List<string>();
+                using (var archive = ZipFile.OpenRead(indexZipPath))
+                {
+                    _loggingService.LogInfo(Strings.MelonLoaderIndexFileCount, archive.Entries.Count);
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (string.IsNullOrEmpty(entry.Name)) continue;
+                        var entryPath = entry.FullName.Replace('\\', '/');
+                        if (_protectedPrefixes.Any(p => entryPath.StartsWith(p.Replace('\\', '/'), StringComparison.OrdinalIgnoreCase)))
+                            continue;
+                        filesToDelete.Add(Path.Combine(gameRootPath, entry.FullName));
+                    }
+                }
+
+                try { File.Delete(indexZipPath); } catch { }
+            }
+
+            // 按索引删除文件
+            int deleted = 0;
+            foreach (var filePath in filesToDelete)
+            {
+                try
+                {
+                    if (File.Exists(filePath))
+                    {
+                        _loggingService.LogInfo(Strings.MelonLoaderDeletingFile, Path.GetRelativePath(gameRootPath, filePath));
+                        File.Delete(filePath);
+                        deleted++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogWarning(Strings.FileExtractionFailed, filePath, ex.Message);
+                }
+            }
+
+            _loggingService.LogInfo(Strings.MelonLoaderUninstallComplete, deleted);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderUninstallFailed);
+            return false;
+        }
+    }
+
+    private string ManifestPath => Path.Combine(_settingsService.AppDataPath, "melonloader_manifest.json");
+
+    private async Task SaveManifestAsync(string version, List<string> files)
+    {
+        try
+        {
+            var manifest = new MelonLoaderManifest { Version = version, Files = files };
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(manifest, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(ManifestPath, json);
+            _loggingService.LogInfo(Strings.MelonLoaderManifestSaved, files.Count);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderManifestSaveError);
+        }
+    }
+
+    private async Task<MelonLoaderManifest?> LoadManifestAsync()
+    {
+        try
+        {
+            if (!File.Exists(ManifestPath)) return null;
+            var json = await File.ReadAllTextAsync(ManifestPath);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<MelonLoaderManifest>(json);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private const string DisabledDllName = "version.dllGHPCMM";
 
     public bool IsMelonLoaderDisabled(string gameRootPath)
     {
         return File.Exists(Path.Combine(gameRootPath, DisabledDllName));
+    }
+
+    public async Task<string?> GetCurrentGameVersionAsync(string gameRootPath)
+    {
+        return await Task.Run(() =>
+        {
+            try
+            {
+                var logPath = Path.Combine(gameRootPath, "MelonLoader", "Latest.log");
+                if (!File.Exists(logPath))
+                    return null;
+
+                foreach (var line in File.ReadLines(logPath))
+                {
+                    // 匹配 "Game Version: 0.1.0-alpha+20260210.1"
+                    var idx = line.IndexOf("Game Version: ", StringComparison.Ordinal);
+                    if (idx < 0) continue;
+
+                    var versionStr = line[(idx + "Game Version: ".Length)..].Trim();
+                    // 取最后一个 + 后的部分
+                    var plusIdx = versionStr.LastIndexOf('+');
+                    return plusIdx >= 0 ? versionStr[(plusIdx + 1)..] : null;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        });
     }
 
     public async Task<bool> DisableMelonLoaderAsync(string gameRootPath)

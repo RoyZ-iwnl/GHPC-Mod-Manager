@@ -16,8 +16,7 @@ public enum GitHubProxyServer
 {
     GhDmrGg,          // gh.dmr.gg (Cloudflare 1)
     Gh1DmrGg,         // gh1.dmr.gg (腾讯云 1)
-    Gh2DmrGg,         // gh2.dmr.gg (腾讯云 2)
-    EdgeOneGhProxyCom, // edgeone.gh-proxy.com (腾讯云 3)
+    EdgeOneGhProxyCom, // edgeone.gh-proxy.com (腾讯云 2)
     GhProxyCom,       // gh-proxy.com (Cloudflare 2)
     HkGhProxyCom,     // hk.gh-proxy.com (Hong Kong)
     CdnGhProxyCom     // cdn.gh-proxy.com (Fastly)
@@ -42,8 +41,7 @@ public class ProxyServerItem
     {
         new(GitHubProxyServer.GhDmrGg,           "gh.dmr.gg (Cloudflare 1)"),
         new(GitHubProxyServer.Gh1DmrGg,          "gh1.dmr.gg (腾讯云 1)"),
-        new(GitHubProxyServer.Gh2DmrGg,          "gh2.dmr.gg (腾讯云 2)"),
-        new(GitHubProxyServer.EdgeOneGhProxyCom, "edgeone.gh-proxy.com (腾讯云 3)"),
+        new(GitHubProxyServer.EdgeOneGhProxyCom, "edgeone.gh-proxy.com (腾讯云 2)"),
         new(GitHubProxyServer.GhProxyCom,        "gh-proxy.com (Cloudflare 2)"),
         new(GitHubProxyServer.HkGhProxyCom,      "hk.gh-proxy.com (Hong Kong)"),
         new(GitHubProxyServer.CdnGhProxyCom,     "cdn.gh-proxy.com (Fastly)"),
@@ -82,6 +80,11 @@ public class AppSettings
     public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg;
     public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Stable;
     public string GitHubApiToken { get; set; } = string.Empty;
+    /// <summary>
+    /// 记录已完成旧版本清理的版本号，空字符串表示需要执行清理
+    /// 每次更新前由程序重置为空，下次启动时触发清理
+    /// </summary>
+    public string CleanupDoneForVersion { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -451,4 +454,13 @@ public class ModViewModel : INotifyPropertyChanged
         
         return null;
     }
+}
+
+public class MelonLoaderManifest
+{
+    [Newtonsoft.Json.JsonProperty("version")]
+    public string Version { get; set; } = string.Empty;
+
+    [Newtonsoft.Json.JsonProperty("files")]
+    public List<string> Files { get; set; } = new();
 }

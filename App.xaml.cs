@@ -42,6 +42,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IAnnouncementService, AnnouncementService>();
                     services.AddSingleton<IUpdateService, UpdateService>();
                     services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
+                    services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
                     
                     services.AddHttpClient<INetworkService, NetworkService>(client =>
                     {
@@ -162,6 +163,10 @@ namespace GHPC_Mod_Manager
 
             var processService = _host.Services.GetRequiredService<IProcessService>();
             await processService.StartMonitoringAsync();
+
+            // 检查并执行旧版本文件清理（后台运行，不阻断启动）
+            var versionCleanupService = _host.Services.GetRequiredService<IVersionCleanupService>();
+            _ = Task.Run(async () => await versionCleanupService.RunIfNeededAsync());
 
             // Show log window if -log parameter is provided
             if (showLogWindow)

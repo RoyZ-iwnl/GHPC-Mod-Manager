@@ -219,13 +219,11 @@ public class BooleanAndToVisibilityConverter : IMultiValueConverter
     {
         if (values == null || values.Length == 0)
             return Visibility.Collapsed;
-
         foreach (var value in values)
         {
             if (value is bool boolValue && !boolValue)
                 return Visibility.Collapsed;
         }
-
         return Visibility.Visible;
     }
 
@@ -233,4 +231,50 @@ public class BooleanAndToVisibilityConverter : IMultiValueConverter
     {
         throw new NotImplementedException();
     }
+}
+
+/// <summary>
+/// MultiValueConverter：[0] = 单个版本号字符串, [1] = CurrentGameVersion(string?)
+/// 匹配返回 SuccessBrush，有版本但不匹配返回 WarningBrush，无版本返回 Transparent
+/// </summary>
+public class GameVersionMatchBrushConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2 || values[0] is not string version)
+            return System.Windows.Media.Brushes.Transparent;
+
+        // 没有检测到游戏版本，不着色
+        if (values[1] is not string currentVersion || string.IsNullOrEmpty(currentVersion))
+            return System.Windows.Media.Brushes.Transparent;
+
+        return string.Equals(version.Trim(), currentVersion.Trim(), StringComparison.OrdinalIgnoreCase)
+            ? (object)(System.Windows.Application.Current.TryFindResource("SuccessBrush") ?? System.Windows.Media.Brushes.Green)
+            : (System.Windows.Application.Current.TryFindResource("WarningBrush") ?? System.Windows.Media.Brushes.Orange);
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
+}
+
+/// <summary>
+/// MultiValueConverter：[0] = 单个版本号字符串, [1] = CurrentGameVersion(string?)
+/// 匹配返回 "match"，有版本不匹配返回 "mismatch"，无版本返回 "none"，用于 DataTrigger
+/// </summary>
+public class GameVersionMatchBoolConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2 || values[0] is not string version)
+            return "none";
+
+        if (values[1] is not string currentVersion || string.IsNullOrEmpty(currentVersion))
+            return "none";
+
+        return string.Equals(version.Trim(), currentVersion.Trim(), StringComparison.OrdinalIgnoreCase)
+            ? "match" : "mismatch";
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
 }

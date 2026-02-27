@@ -39,7 +39,7 @@
                            Foreground="{DynamicResource OnSurfaceBrush}"/>
                 <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          Width="220" Margin="0,0,12,0"
-                         Style="{DynamicResource MaterialTextBoxStyle}"/>
+                         Style="{DynamicResource OutlinedTextBoxStyle}"/>
                 <TextBlock Text="{Binding InstalledModCount}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource OnSurfaceVariantBrush}"

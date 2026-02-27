@@ -57,10 +57,16 @@ public partial class SettingsViewModel : ObservableObject
     private bool _useGitHubProxy = false;
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
 
     [ObservableProperty]
-    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
+    private ProxyServerItem? _selectedProxyServer;
+
+    partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
+    {
+        // 配置token时禁用代理，token清空时重新启用代理选项
+        OnPropertyChanged(nameof(IsGitHubProxyEnabled));
+    }
 
     private void RefreshProxyServerList()
     {
@@ -69,6 +75,11 @@ public partial class SettingsViewModel : ObservableObject
         AvailableProxyServers = remote != null && remote.Count > 0
             ? ProxyServerItem.BuildFromRemote(remote, lang)
             : ProxyServerItem.BuildFallback();
+
+        // 列表刷新后根据已保存枚举值选中对应项
+        var savedEnum = _settingsService.Settings.GitHubProxyServer;
+        SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.EnumValue == savedEnum)
+            ?? AvailableProxyServers[0];
     }
 
     [ObservableProperty]
@@ -179,7 +190,7 @@ public partial class SettingsViewModel : ObservableObject
         // dev模式下从 DevMode override 读取，显示当前生效的 URL
         MainConfigUrl = DevMode.MainConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
-        GitHubProxyServer = settings.GitHubProxyServer;
+        // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
         GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
@@ -199,7 +210,7 @@ public partial class SettingsViewModel : ObservableObject
             // dev模式下写入 DevMode override（不持久化到 settings.json）
             DevMode.MainConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
-            settings.GitHubProxyServer = GitHubProxyServer;
+            settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
             settings.GitHubApiToken = GitHubApiToken;
             settings.Theme = SelectedTheme; // 保存主题设置
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
@@ -650,11 +661,25 @@ public partial class SettingsViewModel : ObservableObject
             var progress = new Progress<DownloadProgress>(p =>
                 _loggingService.LogInfo(Strings.InstallingMelonLoader + $" {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}"));
 
+            // 已安装时先用当前版本ZIP建立索引并清理旧文件，再安装新版本
+            if (IsMelonLoaderInstalled && !string.IsNullOrEmpty(MelonLoaderInstalledVersion)
+                && MelonLoaderInstalledVersion != Strings.MelonLoaderNotDetected)
+            {
+                var uninstallOk = await _melonLoaderService.UninstallCurrentVersionAsync(
+                    gameRoot, MelonLoaderInstalledVersion, progress);
+                if (!uninstallOk)
+                {
+                    MessageBox.Show(Strings.MelonLoaderUninstallFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
             var success = await _melonLoaderService.InstallMelonLoaderAsync(gameRoot, SelectedMelonLoaderRelease.TagName, progress);
             if (success)
             {
+                var installedVersion = SelectedMelonLoaderRelease.TagName;
                 await LoadMelonLoaderStatusAsync();
-                MessageBox.Show(string.Format(Strings.MelonLoaderInstalled, SelectedMelonLoaderRelease.TagName),
+                MessageBox.Show(string.Format(Strings.MelonLoaderInstalled, installedVersion),
                     Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else

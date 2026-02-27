@@ -295,6 +295,10 @@ public class UpdateService : IUpdateService
 
             Process.Start(startInfo);
 
+            // 更新前重置清理标记，下次启动时触发旧版本清理
+            _settingsService.Settings.CleanupDoneForVersion = string.Empty;
+            await _settingsService.SaveSettingsAsync();
+
             // Give the batch script time to start
             await Task.Delay(500);
 

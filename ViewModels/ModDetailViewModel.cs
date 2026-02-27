@@ -218,7 +218,9 @@ public partial class ModDetailViewModel : ObservableObject
                 if (!allSatisfied && missingIds.Count > 0)
                 {
                     IsInstalling = false;
-                    var missingNames = string.Join("\n• ", missingIds);
+                    // 用DisplayName替换modId，找不到则保留id
+                    var missingNames = string.Join("\n• ", missingIds.Select(id =>
+                        _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
                     var msg = $"{Strings.DependencyDialogMessage}\n• {missingNames}";
                     var result = MessageBox.Show(msg, Strings.DependencyDialogTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning);

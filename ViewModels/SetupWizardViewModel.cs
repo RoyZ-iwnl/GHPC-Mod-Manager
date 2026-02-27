@@ -29,6 +29,10 @@ public partial class SetupWizardViewModel : ObservableObject
 
     partial void OnCurrentStepChanged(int value)
     {
+        // 进入代理设置步骤(步骤2)时，拉取最新主配置并刷新代理列表
+        if (value == 2)
+            _ = RefreshProxyServersAsync();
+
         // 当步骤切换到游戏目录选择(步骤3)时，自动触发搜索
         if (value == 3 && !_autoSearchAttempted)
         {
@@ -36,6 +40,28 @@ public partial class SetupWizardViewModel : ObservableObject
             _ = Task.Run(async () => await AutoSearchGHPCAsync());
         }
         UpdateNavigationButtons();
+    }
+
+    private async Task RefreshProxyServersAsync()
+    {
+        await _mainConfigService.ForceReloadAsync();
+        var remote = _mainConfigService.GetRemoteProxyServers();
+        var lang = _settingsService.Settings.Language;
+        var newList = remote != null && remote.Count > 0
+            ? ProxyServerItem.BuildFromRemote(remote, lang)
+            : ProxyServerItem.BuildFallback();
+
+        // 必须回到UI线程才能正确触发ComboBox更新
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            AvailableProxyServers = newList;
+
+            // 根据已保存的枚举值找到对应项，找不到则选第一项
+            var savedEnum = _settingsService.Settings.GitHubProxyServer;
+            SelectedProxyServer = newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0];
+
+            UpdateNavigationButtons();
+        });
     }
 
     [ObservableProperty]
@@ -111,10 +137,17 @@ public partial class SetupWizardViewModel : ObservableObject
         // Skip auto-save during initial loading to prevent overwriting settings
         if (_isInitializing)
             return;
-            
-        // 启用代理时清空token
+
+        // 启用代理时清空token，并选中第一个节点
         if (value)
+        {
             GitHubApiToken = string.Empty;
+
+            if (AvailableProxyServers.Count > 0)
+                SelectedProxyServer = AvailableProxyServers[0];
+        }
+
+        UpdateNavigationButtons();
 
         // Automatically save proxy settings when changed
         _ = Task.Run(async () =>
@@ -123,7 +156,7 @@ public partial class SetupWizardViewModel : ObservableObject
             {
                 _settingsService.Settings.UseGitHubProxy = value;
                 await _settingsService.SaveSettingsAsync();
-                
+
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     var message = value ? Strings.GitHubProxyEnabled : Strings.GitHubProxyDisabled;
@@ -138,25 +171,29 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
+    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
 
-    partial void OnGitHubProxyServerChanged(GitHubProxyServer value)
+    [ObservableProperty]
+    private ProxyServerItem? _selectedProxyServer;
+
+    partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
-        // Skip auto-save during initial loading to prevent overwriting settings
-        if (_isInitializing)
+        if (_isInitializing || value == null)
             return;
 
-        // Automatically save proxy server settings when changed
+        UpdateNavigationButtons();
+
+        // 同步保存枚举值到设置
         _ = Task.Run(async () =>
         {
             try
             {
-                _settingsService.Settings.GitHubProxyServer = value;
+                _settingsService.Settings.GitHubProxyServer = value.EnumValue;
                 await _settingsService.SaveSettingsAsync();
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    var message = string.Format(Strings.ProxyServerChanged, value);
+                    var message = string.Format(Strings.ProxyServerChanged, value.EnumValue);
                     AddToNetworkLog(message);
                 });
             }
@@ -166,9 +203,6 @@ public partial class SetupWizardViewModel : ObservableObject
             }
         });
     }
-
-    [ObservableProperty]
-    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
 
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
@@ -226,15 +260,13 @@ public partial class SetupWizardViewModel : ObservableObject
 
         // Load existing proxy settings
         UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
-        GitHubProxyServer = _settingsService.Settings.GitHubProxyServer;
         GitHubApiToken = _settingsService.Settings.GitHubApiToken;
 
-        // 从远程下发刷新代理列表（主配置已在启动时加载）
-        var remote = _mainConfigService.GetRemoteProxyServers();
-        var lang = _settingsService.Settings.Language;
-        AvailableProxyServers = remote != null && remote.Count > 0
-            ? ProxyServerItem.BuildFromRemote(remote, lang)
-            : ProxyServerItem.BuildFallback();
+        // 代理列表在进入步骤2时通过 RefreshProxyServersAsync 拉取，这里先用兜底列表
+        var fallback = ProxyServerItem.BuildFallback();
+        AvailableProxyServers = fallback;
+        var savedEnum = _settingsService.Settings.GitHubProxyServer;
+        SelectedProxyServer = fallback.FirstOrDefault(p => p.EnumValue == savedEnum) ?? fallback[0];
 
         // Mark initialization as complete after setting all values
         _isInitializing = false;
@@ -711,8 +743,10 @@ public partial class SetupWizardViewModel : ObservableObject
         IsBackEnabled = CurrentStep > 0;
         IsNextEnabled = CurrentStep switch
         {
-            0 => true, // Language Selection - always allow next
-            1 => true, // Welcome page - always allow next
+            0 => true,
+            1 => true,
+            // 启用代理时必须选了节点才能下一步
+            2 => !UseGitHubProxy || SelectedProxyServer != null,
             3 => !string.IsNullOrEmpty(GameRootPath),
             4 => true, // 总是允许进入下一步：已安装则继续，未安装则进入安装
             5 => SelectedMelonLoaderVersion != null && !IsInstalling,

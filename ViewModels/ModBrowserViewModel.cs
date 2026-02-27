@@ -39,6 +39,7 @@ public partial class ModBrowserViewModel : ObservableObject
     private readonly IModManagerService _modManagerService;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
+    private readonly IMelonLoaderService _melonLoaderService;
 
     // 全量MOD列表（由MainViewModel注入）
     private List<ModViewModel> _allMods = new();
@@ -61,6 +62,10 @@ public partial class ModBrowserViewModel : ObservableObject
     [ObservableProperty]
     private string _statusMessage = string.Empty;
 
+    // 当前游戏版本（从 Latest.log 读取，如 "20260210.1"），null 表示未检测到
+    [ObservableProperty]
+    private string? _currentGameVersion;
+
     // 通知MainViewModel导航到详情页
     public event EventHandler<ModViewModel>? NavigateToDetailRequested;
 
@@ -70,11 +75,22 @@ public partial class ModBrowserViewModel : ObservableObject
     // 通知MainViewModel执行检查更新（true=只检查已安装）
     public event EventHandler<bool>? CheckForUpdatesRequested;
 
-    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService)
+    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
     {
         _modManagerService = modManagerService;
         _loggingService = loggingService;
         _settingsService = settingsService;
+        _melonLoaderService = melonLoaderService;
+
+        // 异步读取游戏版本，不阻塞构造
+        _ = LoadCurrentGameVersionAsync();
+    }
+
+    private async Task LoadCurrentGameVersionAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+        CurrentGameVersion = await _melonLoaderService.GetCurrentGameVersionAsync(gameRoot);
     }
 
     partial void OnSearchTextChanged(string value) => FilterMods();
@@ -241,7 +257,9 @@ public partial class ModBrowserViewModel : ObservableObject
                 if (!allSatisfied && missingIds.Count > 0)
                 {
                     IsDownloading = false;
-                    var missingNames = string.Join("\n• ", missingIds);
+                    // 用DisplayName替换modId，找不到则保留id
+                    var missingNames = string.Join("\n• ", missingIds.Select(id =>
+                        _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
                     var msg = $"{Strings.DependencyDialogMessage}\n• {missingNames}";
                     var result = MessageBox.Show(msg, Strings.DependencyDialogTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning);

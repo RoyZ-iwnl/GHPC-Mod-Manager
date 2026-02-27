@@ -154,8 +154,7 @@
                                     <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
                                     <StackPanel Orientation="Horizontal">
                                         <ComboBox ItemsSource="{Binding AvailableProxyServers}"
-                                                  SelectedValue="{Binding GitHubProxyServer}"
-                                                  SelectedValuePath="EnumValue"
+                                                  SelectedItem="{Binding SelectedProxyServer}"
                                                   Width="310" HorizontalAlignment="Left" Margin="0,0,10,0">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>

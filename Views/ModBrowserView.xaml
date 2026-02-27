@@ -13,6 +13,8 @@
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
         <converters:InverseBooleanConverter x:Key="InvBool"/>
         <converters:StringToVisibilityConverter x:Key="StrToVis"/>
+        <converters:GameVersionMatchBrushConverter x:Key="GameVersionMatchBrush"/>
+        <converters:GameVersionMatchBoolConverter x:Key="GameVersionMatchBool"/>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource BackgroundBrush}">
@@ -35,7 +37,7 @@
                            Foreground="{DynamicResource OnSurfaceBrush}"/>
                 <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          Width="220" Margin="0,0,12,0"
-                         Style="{DynamicResource MaterialTextBoxStyle}"/>
+                         Style="{DynamicResource OutlinedTextBoxStyle}"/>
                 <TextBlock Text="{Binding FilteredModCount}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource OnSurfaceVariantBrush}"
@@ -191,13 +193,58 @@
                     </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding SupportedVersionsText}"
-                                       VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding SupportedVersionsText}"
-                                       FontSize="{DynamicResource LabelSmall}"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       Margin="4,0"/>
+                            <ItemsControl ItemsSource="{Binding SupportedGameVersions}"
+                                          VerticalAlignment="Center" Margin="4,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="3" Margin="1" Padding="4,1">
+                                            <Border.Background>
+                                                <MultiBinding Converter="{StaticResource GameVersionMatchBrush}">
+                                                    <Binding/>
+                                                    <Binding Path="DataContext.CurrentGameVersion"
+                                                             RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                </MultiBinding>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding}"
+                                                       FontSize="{DynamicResource LabelSmall}"
+                                                       VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="match">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                                                                        <Binding/>
+                                                                        <Binding Path="DataContext.CurrentGameVersion"
+                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Foreground" Value="{DynamicResource OnSuccessBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Value="mismatch">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                                                                        <Binding/>
+                                                                        <Binding Path="DataContext.CurrentGameVersion"
+                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Foreground" Value="{DynamicResource OnWarningBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -201,6 +201,15 @@
   <data name="MelonLoaderVersionNotFound" xml:space="preserve">
     <value>未找到MelonLoader版本 {0}</value>
   </data>
+  <data name="MelonLoaderVersionDetected" xml:space="preserve">
+    <value>从 {0} 检测到MelonLoader版本：{1}</value>
+  </data>
+  <data name="MelonLoaderVersionFromLog" xml:space="preserve">
+    <value>从 Latest.log 检测到MelonLoader版本：{0}</value>
+  </data>
+  <data name="MelonLoaderVersionNotDetectable" xml:space="preserve">
+    <value>未找到MelonLoader DLL和Latest.log，无法检测版本</value>
+  </data>
   <data name="MelonLoaderAssetNotFound" xml:space="preserve">
     <value>未找到MelonLoader版本 {0} 的安装文件</value>
   </data>
@@ -209,6 +218,39 @@
   </data>
   <data name="MelonLoaderInstallError" xml:space="preserve">
     <value>安装MelonLoader错误</value>
+  </data>
+  <data name="MelonLoaderUninstallingCurrentVersion" xml:space="preserve">
+    <value>正在卸载当前MelonLoader版本 {0}...</value>
+  </data>
+  <data name="MelonLoaderDownloadingIndexZip" xml:space="preserve">
+    <value>正在下载当前版本ZIP作为文件索引...</value>
+  </data>
+  <data name="MelonLoaderIndexFileCount" xml:space="preserve">
+    <value>文件索引已建立：共 {0} 个文件</value>
+  </data>
+  <data name="MelonLoaderDeletingFile" xml:space="preserve">
+    <value>正在删除：{0}</value>
+  </data>
+  <data name="MelonLoaderUninstallComplete" xml:space="preserve">
+    <value>旧版本文件已清除（共删除 {0} 个文件）</value>
+  </data>
+  <data name="MelonLoaderUninstallFailed" xml:space="preserve">
+    <value>卸载当前MelonLoader版本失败</value>
+  </data>
+  <data name="MelonLoaderCurrentVersionAssetNotFound" xml:space="preserve">
+    <value>找不到当前版本 {0} 的安装包，跳过卸载步骤</value>
+  </data>
+  <data name="MelonLoaderManifestSaved" xml:space="preserve">
+    <value>MelonLoader文件清单已保存（共 {0} 个文件）</value>
+  </data>
+  <data name="MelonLoaderManifestLoaded" xml:space="preserve">
+    <value>找到本地清单，使用本地文件索引（共 {0} 个文件）</value>
+  </data>
+  <data name="MelonLoaderManifestNotFound" xml:space="preserve">
+    <value>未找到本地清单，下载当前版本ZIP建立索引</value>
+  </data>
+  <data name="MelonLoaderManifestSaveError" xml:space="preserve">
+    <value>保存MelonLoader清单失败</value>
   </data>
   <data name="ModInstallError" xml:space="preserve">
     <value>安装Mod {0} 版本 {1} 时出错</value>
@@ -2546,5 +2588,47 @@
   </data>
   <data name="ViewDetails" xml:space="preserve">
     <value>详情</value>
+  </data>
+  <data name="VersionCleanupStarting" xml:space="preserve">
+    <value>开始执行 v{0} 版本清理...</value>
+  </data>
+  <data name="VersionCleanupComplete" xml:space="preserve">
+    <value>v{0} 版本清理完成</value>
+  </data>
+  <data name="VersionCleanupFailed" xml:space="preserve">
+    <value>版本清理失败</value>
+  </data>
+  <data name="VersionCleanupSkippedNoInstallDir" xml:space="preserve">
+    <value>版本清理跳过：无法确定安装目录</value>
+  </data>
+  <data name="VersionCleanupNoReleasesFound" xml:space="preserve">
+    <value>版本清理跳过：未找到任何发布版本</value>
+  </data>
+  <data name="VersionCleanupNoPreviousRelease" xml:space="preserve">
+    <value>版本清理跳过：未找到上一个版本</value>
+  </data>
+  <data name="VersionCleanupComparingVersions" xml:space="preserve">
+    <value>对比 v{0}（上一版本）与 v{1}（当前版本）</value>
+  </data>
+  <data name="VersionCleanupPrevAssetNotFound" xml:space="preserve">
+    <value>版本清理跳过：上一版本 v{0} 没有 ZIP 附件</value>
+  </data>
+  <data name="VersionCleanupCurrentAssetNotFound" xml:space="preserve">
+    <value>版本清理跳过：当前版本 v{0} 没有 ZIP 附件</value>
+  </data>
+  <data name="VersionCleanupDownloadingPrev" xml:space="preserve">
+    <value>正在下载上一版本 v{0} 用于建立文件索引...</value>
+  </data>
+  <data name="VersionCleanupDownloadingCurrent" xml:space="preserve">
+    <value>正在下载当前版本 v{0} 用于建立文件索引...</value>
+  </data>
+  <data name="VersionCleanupObsoleteCount" xml:space="preserve">
+    <value>发现 {0} 个遗留文件需要删除</value>
+  </data>
+  <data name="VersionCleanupDeletedFile" xml:space="preserve">
+    <value>已删除遗留文件：{0}</value>
+  </data>
+  <data name="VersionCleanupDeleteFailed" xml:space="preserve">
+    <value>删除遗留文件失败：{0}</value>
   </data>
 </root>

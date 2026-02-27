@@ -170,6 +170,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isMelonLoaderDisabled = false;
 
+    [ObservableProperty]
+    private bool _isMelonLoaderNotInstalled = false;
+
     public void RefreshMelonLoaderState()
     {
         var gameRoot = _settingsService.Settings.GameRootPath;
@@ -178,7 +181,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 启动时检测MelonLoader是否已安装，未安装则提示用户前往设置安装
+    /// 启动时检测MelonLoader是否已安装，未安装则显示overlay提示
     /// </summary>
     private async Task CheckMelonLoaderInstalledAsync()
     {
@@ -192,15 +195,15 @@ public partial class MainViewModel : ObservableObject
         if (!isInstalled)
         {
             _loggingService.LogWarning(Strings.MelonLoaderNotInstalledMessage);
-            var result = System.Windows.MessageBox.Show(
-                Strings.MelonLoaderNotInstalledMessage,
-                Strings.MelonLoaderNotInstalledTitle,
-                System.Windows.MessageBoxButton.OKCancel,
-                System.Windows.MessageBoxImage.Warning);
-
-            if (result == System.Windows.MessageBoxResult.OK)
-                _navigationService.NavigateToSettings();
+            IsMelonLoaderNotInstalled = true;
         }
+    }
+
+    [RelayCommand]
+    private void GoToInstallMelonLoader()
+    {
+        IsMelonLoaderNotInstalled = false;
+        _navigationService.NavigateToSettings();
     }
 
     public MainViewModel(

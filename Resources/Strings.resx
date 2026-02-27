@@ -201,6 +201,15 @@
   <data name="MelonLoaderVersionNotFound" xml:space="preserve">
     <value>MelonLoader version {0} not found</value>
   </data>
+  <data name="MelonLoaderVersionDetected" xml:space="preserve">
+    <value>MelonLoader version detected from {0}: {1}</value>
+  </data>
+  <data name="MelonLoaderVersionFromLog" xml:space="preserve">
+    <value>MelonLoader version detected from Latest.log: {0}</value>
+  </data>
+  <data name="MelonLoaderVersionNotDetectable" xml:space="preserve">
+    <value>MelonLoader DLL and Latest.log not found, cannot detect version</value>
+  </data>
   <data name="MelonLoaderAssetNotFound" xml:space="preserve">
     <value>MelonLoader asset not found for version {0}</value>
   </data>
@@ -209,6 +218,39 @@
   </data>
   <data name="MelonLoaderInstallError" xml:space="preserve">
     <value>Error installing MelonLoader</value>
+  </data>
+  <data name="MelonLoaderUninstallingCurrentVersion" xml:space="preserve">
+    <value>Uninstalling current MelonLoader version {0}...</value>
+  </data>
+  <data name="MelonLoaderDownloadingIndexZip" xml:space="preserve">
+    <value>Downloading current version ZIP as file index...</value>
+  </data>
+  <data name="MelonLoaderIndexFileCount" xml:space="preserve">
+    <value>File index built: {0} files</value>
+  </data>
+  <data name="MelonLoaderDeletingFile" xml:space="preserve">
+    <value>Deleting: {0}</value>
+  </data>
+  <data name="MelonLoaderUninstallComplete" xml:space="preserve">
+    <value>Old version files removed ({0} files deleted)</value>
+  </data>
+  <data name="MelonLoaderUninstallFailed" xml:space="preserve">
+    <value>Failed to uninstall current MelonLoader version</value>
+  </data>
+  <data name="MelonLoaderCurrentVersionAssetNotFound" xml:space="preserve">
+    <value>Cannot find asset for current version {0}, skipping uninstall</value>
+  </data>
+  <data name="MelonLoaderManifestSaved" xml:space="preserve">
+    <value>MelonLoader file manifest saved ({0} files)</value>
+  </data>
+  <data name="MelonLoaderManifestLoaded" xml:space="preserve">
+    <value>MelonLoader manifest found, using local file index ({0} files)</value>
+  </data>
+  <data name="MelonLoaderManifestNotFound" xml:space="preserve">
+    <value>No local manifest found, downloading current version ZIP as index</value>
+  </data>
+  <data name="MelonLoaderManifestSaveError" xml:space="preserve">
+    <value>Failed to save MelonLoader manifest</value>
   </data>
   <data name="ModInstallError" xml:space="preserve">
     <value>Error installing mod {0} version {1}</value>
@@ -2584,5 +2626,47 @@ Do you want to restart now?</value>
   </data>
   <data name="ViewDetails" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="VersionCleanupStarting" xml:space="preserve">
+    <value>Starting version cleanup for v{0}...</value>
+  </data>
+  <data name="VersionCleanupComplete" xml:space="preserve">
+    <value>Version cleanup complete for v{0}</value>
+  </data>
+  <data name="VersionCleanupFailed" xml:space="preserve">
+    <value>Version cleanup failed</value>
+  </data>
+  <data name="VersionCleanupSkippedNoInstallDir" xml:space="preserve">
+    <value>Version cleanup skipped: could not determine install directory</value>
+  </data>
+  <data name="VersionCleanupNoReleasesFound" xml:space="preserve">
+    <value>Version cleanup skipped: no releases found</value>
+  </data>
+  <data name="VersionCleanupNoPreviousRelease" xml:space="preserve">
+    <value>Version cleanup skipped: no previous release found</value>
+  </data>
+  <data name="VersionCleanupComparingVersions" xml:space="preserve">
+    <value>Comparing v{0} (previous) vs v{1} (current)</value>
+  </data>
+  <data name="VersionCleanupPrevAssetNotFound" xml:space="preserve">
+    <value>Version cleanup skipped: no ZIP asset found for previous version v{0}</value>
+  </data>
+  <data name="VersionCleanupCurrentAssetNotFound" xml:space="preserve">
+    <value>Version cleanup skipped: no ZIP asset found for current version v{0}</value>
+  </data>
+  <data name="VersionCleanupDownloadingPrev" xml:space="preserve">
+    <value>Downloading previous version v{0} for file index...</value>
+  </data>
+  <data name="VersionCleanupDownloadingCurrent" xml:space="preserve">
+    <value>Downloading current version v{0} for file index...</value>
+  </data>
+  <data name="VersionCleanupObsoleteCount" xml:space="preserve">
+    <value>Found {0} obsolete file(s) to remove</value>
+  </data>
+  <data name="VersionCleanupDeletedFile" xml:space="preserve">
+    <value>Deleted obsolete file: {0}</value>
+  </data>
+  <data name="VersionCleanupDeleteFailed" xml:space="preserve">
+    <value>Failed to delete obsolete file: {0}</value>
   </data>
 </root>

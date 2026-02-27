@@ -70,7 +70,7 @@ jobs:
       run: dotnet build "GHPC Mod Manager.csproj" --configuration Release --no-restore
 
     - name: Publish application
-      run: dotnet publish "GHPC Mod Manager.csproj" --configuration Release --output ./publish --no-build --framework net8.0-windows
+      run: dotnet publish "GHPC Mod Manager.csproj" --configuration Release --output ./publish --no-build --framework net8.0-windows -r win-x64 --self-contained false -p:PublishSingleFile=true
 
     - name: Create release package
       shell: pwsh

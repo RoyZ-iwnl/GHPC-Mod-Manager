@@ -3591,6 +3591,72 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallError", resourceCulture);
             }
         }
+
+        public static string MelonLoaderUninstallingCurrentVersion {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallingCurrentVersion", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderDownloadingIndexZip {
+            get {
+                return ResourceManager.GetString("MelonLoaderDownloadingIndexZip", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderIndexFileCount {
+            get {
+                return ResourceManager.GetString("MelonLoaderIndexFileCount", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderDeletingFile {
+            get {
+                return ResourceManager.GetString("MelonLoaderDeletingFile", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderUninstallComplete {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallComplete", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderUninstallFailed {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallFailed", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderCurrentVersionAssetNotFound {
+            get {
+                return ResourceManager.GetString("MelonLoaderCurrentVersionAssetNotFound", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderManifestSaved {
+            get {
+                return ResourceManager.GetString("MelonLoaderManifestSaved", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderManifestLoaded {
+            get {
+                return ResourceManager.GetString("MelonLoaderManifestLoaded", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderManifestNotFound {
+            get {
+                return ResourceManager.GetString("MelonLoaderManifestNotFound", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderManifestSaveError {
+            get {
+                return ResourceManager.GetString("MelonLoaderManifestSaveError", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader installation failed.
@@ -3697,6 +3763,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string MelonLoaderVersionNotFound {
             get {
                 return ResourceManager.GetString("MelonLoaderVersionNotFound", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderVersionDetected {
+            get {
+                return ResourceManager.GetString("MelonLoaderVersionDetected", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderVersionFromLog {
+            get {
+                return ResourceManager.GetString("MelonLoaderVersionFromLog", resourceCulture);
+            }
+        }
+
+        public static string MelonLoaderVersionNotDetectable {
+            get {
+                return ResourceManager.GetString("MelonLoaderVersionNotDetectable", resourceCulture);
             }
         }
         
@@ -7554,6 +7638,62 @@ namespace GHPC_Mod_Manager.Resources {
             get {
                 return ResourceManager.GetString("ZipSkippingDirectory", resourceCulture);
             }
+        }
+
+        public static string VersionCleanupStarting {
+            get { return ResourceManager.GetString("VersionCleanupStarting", resourceCulture); }
+        }
+
+        public static string VersionCleanupComplete {
+            get { return ResourceManager.GetString("VersionCleanupComplete", resourceCulture); }
+        }
+
+        public static string VersionCleanupFailed {
+            get { return ResourceManager.GetString("VersionCleanupFailed", resourceCulture); }
+        }
+
+        public static string VersionCleanupSkippedNoInstallDir {
+            get { return ResourceManager.GetString("VersionCleanupSkippedNoInstallDir", resourceCulture); }
+        }
+
+        public static string VersionCleanupNoReleasesFound {
+            get { return ResourceManager.GetString("VersionCleanupNoReleasesFound", resourceCulture); }
+        }
+
+        public static string VersionCleanupNoPreviousRelease {
+            get { return ResourceManager.GetString("VersionCleanupNoPreviousRelease", resourceCulture); }
+        }
+
+        public static string VersionCleanupComparingVersions {
+            get { return ResourceManager.GetString("VersionCleanupComparingVersions", resourceCulture); }
+        }
+
+        public static string VersionCleanupPrevAssetNotFound {
+            get { return ResourceManager.GetString("VersionCleanupPrevAssetNotFound", resourceCulture); }
+        }
+
+        public static string VersionCleanupCurrentAssetNotFound {
+            get { return ResourceManager.GetString("VersionCleanupCurrentAssetNotFound", resourceCulture); }
+        }
+
+        public static string VersionCleanupDownloadingPrev {
+            get { return ResourceManager.GetString("VersionCleanupDownloadingPrev", resourceCulture); }
+        }
+
+        public static string VersionCleanupDownloadingCurrent {
+            get { return ResourceManager.GetString("VersionCleanupDownloadingCurrent", resourceCulture); }
+        }
+
+        public static string VersionCleanupObsoleteCount {
+            get { return ResourceManager.GetString("VersionCleanupObsoleteCount", resourceCulture); }
+        }
+
+        public static string VersionCleanupDeletedFile {
+            get { return ResourceManager.GetString("VersionCleanupDeletedFile", resourceCulture); }
+        }
+
+        public static string VersionCleanupDeleteFailed {
+            get { return ResourceManager.GetString("VersionCleanupDeleteFailed", resourceCulture); }
         }
     }
 }

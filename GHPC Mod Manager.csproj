@@ -10,12 +10,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon>app.ico</ApplicationIcon>
-    
-    <!-- Version Information -->
-    <Version>1.2.0-beta.1</Version>
-    <AssemblyVersion>1.2.0.117</AssemblyVersion>
+
+	  <!-- Version Information -->
+    <Version>1.2.0-rc.1</Version>
+	<!-- 1.2b -->
+	<AssemblyVersion>1.2.0.117</AssemblyVersion>
     <FileVersion>1.2.0.117</FileVersion>
-    <InformationalVersion>1.2.0-beta.1</InformationalVersion>
+	<!-- 1.2b -->
+    <InformationalVersion>1.2.0-rc.1</InformationalVersion>
     <Product>GHPC Mod Manager</Product>
     <Description>A mod management tool for GHPC (Gunner, HEAT, PC!)</Description>
     <Copyright>Copyright © 2025</Copyright>
