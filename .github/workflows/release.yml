@@ -34,6 +34,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Verify .NET SDK version
+      run: dotnet --version
+
     - name: Extract version from project file
       id: extract_version
       shell: pwsh
@@ -64,10 +67,10 @@ jobs:
         echo "tag_name=$tagName" >> $env:GITHUB_OUTPUT
 
     - name: Restore dependencies
-      run: dotnet restore "GHPC Mod Manager.csproj"
+      run: dotnet restore "GHPC Mod Manager.csproj" -r win-x64
 
     - name: Build project
-      run: dotnet build "GHPC Mod Manager.csproj" --configuration Release --no-restore
+      run: dotnet build "GHPC Mod Manager.csproj" --configuration Release --no-restore -r win-x64
 
     - name: Publish application
       run: dotnet publish "GHPC Mod Manager.csproj" --configuration Release --output ./publish --no-build --framework net8.0-windows -r win-x64 --self-contained false -p:PublishSingleFile=true
