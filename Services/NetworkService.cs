@@ -11,9 +11,8 @@ namespace GHPC_Mod_Manager.Services;
 public interface INetworkService
 {
     Task<bool> CheckNetworkConnectionAsync();
-    Task<List<ModConfig>> GetModConfigAsync(string url);
-    Task<TranslationConfig> GetTranslationConfigAsync(string url);
-    Task<ModI18nManager> GetModI18nConfigAsync(string url);
+    Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false);
+    Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default);
     void ClearCache(); // Clear all cached data
@@ -28,23 +27,24 @@ public class NetworkService : INetworkService
     public HttpClient HttpClient => _httpClient;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
-    
-    
+    private readonly IMainConfigService _mainConfigService;
+
+
     // Rate limit tracking
     private static readonly Dictionary<string, DateTime> _rateLimitBlocks = new();
     private static DateTime _lastRateLimitWarning = DateTime.MinValue;
     private const int RateLimitWarningCooldownMinutes = 5; // Show warning at most once every 5 minutes
-    
+
     // Cache expiry times
     private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
-    private readonly TimeSpan _dmrCacheExpiry = TimeSpan.FromMinutes(10); // DMR.gg data, short cache for quick updates
-    
-    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService)
+
+    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
     {
         _httpClient = httpClient;
         _loggingService = loggingService;
         _settingsService = settingsService;
-        
+        _mainConfigService = mainConfigService;
+
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
         _httpClient.Timeout = TimeSpan.FromMinutes(10);
     }
@@ -110,17 +110,33 @@ public class NetworkService : INetworkService
     }
 
     /// <summary>
-    /// Get proxy domain based on selected proxy server
+    /// Get proxy domain based on selected proxy server.
+    /// 优先使用主配置下发的代理列表，回退到本地枚举。
     /// </summary>
     private string GetProxyDomain(GitHubProxyServer proxyServer)
     {
+        // 优先使用下发的代理列表
+        var remoteServers = _mainConfigService.GetRemoteProxyServers();
+        if (remoteServers != null)
+        {
+            var match = remoteServers.FirstOrDefault(s =>
+                string.Equals(s.Id, proxyServer.ToString(), StringComparison.OrdinalIgnoreCase));
+            if (match != null)
+            {
+                _loggingService.LogInfo($"代理域名来自下发配置: [{match.Id}] {match.Domain}");
+                return match.Domain;
+            }
+        }
+
+        // 回退到本地枚举
         return proxyServer switch
         {
             GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.Gh1DmrGg => "gh1.dmr.gg",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
             GitHubProxyServer.GhProxyCom => "gh-proxy.com",
             GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
             GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
-            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
             _ => "gh.dmr.gg"
         };
     }
@@ -160,7 +176,7 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<List<ModConfig>> GetModConfigAsync(string url)
+    public async Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false)
     {
         try
         {
@@ -170,44 +186,39 @@ public class NetworkService : INetworkService
                 _loggingService.LogInfo(Strings.LoadingModConfigFromLocalPath, url);
                 return await LoadModConfigFromLocalPath(url);
             }
-            
-            // For DMR.gg URLs, use short cache or no cache
+
             var cacheKey = $"modconfig_{url}";
             var shouldCache = ShouldCacheUrl(url);
-            List<ModConfig>? cached = null;
-            
-            if (shouldCache)
+
+            if (shouldCache && !forceRefresh)
             {
-                cached = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url));
+                var cached = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url));
                 if (cached != null)
                 {
                     _loggingService.LogInfo(Strings.ModConfigLoadedFromCache);
                     return cached;
                 }
             }
-            
+
             _loggingService.LogInfo(Strings.FetchingModConfig, url);
             var json = await _httpClient.GetStringAsync(url);
             var configs = JsonConvert.DeserializeObject<List<ModConfig>>(json);
             var result = configs ?? new List<ModConfig>();
-            
-            // Save to persistent cache only if caching is enabled for this URL
+
             if (shouldCache)
             {
                 await SaveToPersistentCacheAsync(cacheKey, result);
             }
-            
+
             return result;
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.ModConfigFetchError, url);
-            
-            // For local paths, don't try cache fallback
+
             if (IsLocalPath(url))
                 return new List<ModConfig>();
-            
-            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
+
             var cacheKey = $"modconfig_{url}";
             if (ShouldCacheUrl(url))
             {
@@ -218,113 +229,49 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<TranslationConfig> GetTranslationConfigAsync(string url)
+    public async Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false)
     {
         try
         {
-            // Check if it's a local file path
-            if (IsLocalPath(url))
-            {
-                _loggingService.LogInfo(Strings.LoadingTranslationConfigFromLocalPath, url);
-                return await LoadTranslationConfigFromLocalPath(url);
-            }
-            
-            // For DMR.gg URLs, use short cache or no cache
-            var cacheKey = $"translationconfig_{url}";
-            var shouldCache = ShouldCacheUrl(url);
-            TranslationConfig? cached = null;
-            
-            if (shouldCache)
-            {
-                cached = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey, GetCacheExpiryForUrl(url));
-                if (cached != null)
-                {
-                    _loggingService.LogInfo(Strings.TranslationConfigLoadedFromCache);
-                    return cached;
-                }
-            }
-            
-            _loggingService.LogInfo(Strings.FetchingTranslationConfig, url);
-            var json = await _httpClient.GetStringAsync(url);
-            var config = JsonConvert.DeserializeObject<TranslationConfig>(json);
-            var result = config ?? new TranslationConfig();
-            
-            // Save to persistent cache only if caching is enabled for this URL
-            if (shouldCache)
-            {
-                await SaveToPersistentCacheAsync(cacheKey, result);
-            }
-            
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _loggingService.LogError(ex, Strings.TranslationConfigFetchError, url);
-            
-            // For local paths, don't try cache fallback
-            if (IsLocalPath(url))
-                return new TranslationConfig();
-            
-            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
-            var cacheKey = $"translationconfig_{url}";
-            if (ShouldCacheUrl(url))
-            {
-                var staleCache = await GetFromPersistentCacheAsync<TranslationConfig>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
-                return staleCache ?? new TranslationConfig();
-            }
-            return new TranslationConfig();
-        }
-    }
-
-    public async Task<ModI18nManager> GetModI18nConfigAsync(string url)
-    {
-        try
-        {
-            // Check if it's a local file path
             if (IsLocalPath(url))
             {
                 _loggingService.LogInfo(Strings.LoadingModI18nConfigFromLocalPath, url);
                 return await LoadModI18nConfigFromLocalPath(url);
             }
-            
-            // For DMR.gg URLs, use short cache or no cache
+
             var cacheKey = $"modi18nconfig_{url}";
             var shouldCache = ShouldCacheUrl(url);
-            ModI18nManager? cached = null;
-            
-            if (shouldCache)
+
+            if (shouldCache && !forceRefresh)
             {
-                cached = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url));
+                var cached = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url));
                 if (cached != null)
                 {
                     _loggingService.LogInfo(Strings.ModI18nConfigLoadedFromCache);
                     return cached;
                 }
             }
-            
+
             _loggingService.LogInfo(Strings.FetchingModI18nConfig, url);
             var json = await _httpClient.GetStringAsync(url);
             var config = JsonConvert.DeserializeObject<ModI18nManager>(json);
             var result = config ?? new ModI18nManager();
-            
-            // Save to persistent cache only if caching is enabled for this URL
+
             if (shouldCache)
             {
                 await SaveToPersistentCacheAsync(cacheKey, result);
             }
             _loggingService.LogInfo(Strings.ModI18nConfigRefreshed);
-            
+
             return result;
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.ModI18nConfigFetchError, url);
-            
-            // For local paths, don't try cache fallback
+
             if (IsLocalPath(url))
                 return new ModI18nManager();
-            
-            // Try to return stale cached data as fallback for URLs (only if caching is enabled)
+
             var cacheKey = $"modi18nconfig_{url}";
             if (ShouldCacheUrl(url))
             {
@@ -1267,30 +1214,7 @@ public class NetworkService : INetworkService
         }
     }
     
-    /// <summary>
-    /// Get cache expiry time based on URL
-    /// </summary>
-    private TimeSpan GetCacheExpiryForUrl(string url)
-    {
-        try
-        {
-            var uri = new Uri(url);
-            
-            // Short cache for DMR.gg URLs
-            if (uri.Host.Equals("ghpc.dmr.gg", StringComparison.OrdinalIgnoreCase))
-            {
-                return _dmrCacheExpiry;
-            }
-            
-            // Longer cache for GitHub API and other external sources
-            return _githubApiCacheExpiry;
-        }
-        catch
-        {
-            // Default to GitHub API cache time
-            return _githubApiCacheExpiry;
-        }
-    }
+    private TimeSpan GetCacheExpiryForUrl(string url) => _githubApiCacheExpiry;
 
     /// <summary>
     /// Check if a path is a local file system path (not a URL)
@@ -1349,48 +1273,6 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogError(ex, "Failed to load ModConfig from local path: {0}", path);
             return new List<ModConfig>();
-        }
-    }
-
-    /// <summary>
-    /// Load TranslationConfig from local file system path
-    /// </summary>
-    private async Task<TranslationConfig> LoadTranslationConfigFromLocalPath(string path)
-    {
-        try
-        {
-            string jsonPath;
-            
-            // If path is a directory, look for translationconfig.json inside
-            if (Directory.Exists(path))
-            {
-                jsonPath = Path.Combine(path, "translationconfig.json");
-                if (!File.Exists(jsonPath))
-                {
-                    _loggingService.LogError(Strings.TranslationConfigJsonNotFound, path);
-                    return new TranslationConfig();
-                }
-            }
-            // If it's a file, use it directly
-            else if (File.Exists(path))
-            {
-                jsonPath = path;
-            }
-            else
-            {
-                _loggingService.LogError(Strings.LocalPathNotFound, path);
-                return new TranslationConfig();
-            }
-
-            _loggingService.LogInfo(Strings.ReadingTranslationConfigFrom, jsonPath);
-            var json = await File.ReadAllTextAsync(jsonPath);
-            var config = JsonConvert.DeserializeObject<TranslationConfig>(json);
-            return config ?? new TranslationConfig();
-        }
-        catch (Exception ex)
-        {
-            _loggingService.LogError(ex, "Failed to load TranslationConfig from local path: {0}", path);
-            return new TranslationConfig();
         }
     }
 

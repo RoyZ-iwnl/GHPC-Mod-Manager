@@ -32,13 +32,15 @@ public class TranslationManagerService : ITranslationManagerService
     private readonly INetworkService _networkService;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
+    private readonly IMainConfigService _mainConfigService;
     private TranslationInstallManifest _installManifest = new();
 
-    public TranslationManagerService(INetworkService networkService, ILoggingService loggingService, ISettingsService settingsService)
+    public TranslationManagerService(INetworkService networkService, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
     {
         _networkService = networkService;
         _loggingService = loggingService;
         _settingsService = settingsService;
+        _mainConfigService = mainConfigService;
     }
 
     public async Task<bool> IsTranslationInstalledAsync()
@@ -186,40 +188,22 @@ public class TranslationManagerService : ITranslationManagerService
     {
         try
         {
-            var translationConfig = await _networkService.GetTranslationConfigAsync(_settingsService.Settings.TranslationConfigUrl);
-            
-            string owner, repoName;
-            
-            // 优先使用新的Owner/RepoName字段，如果为空则从RepoUrl解析
-            if (!string.IsNullOrEmpty(translationConfig.Owner) && !string.IsNullOrEmpty(translationConfig.RepoName))
-            {
-                owner = translationConfig.Owner;
-                repoName = translationConfig.RepoName;
-            }
-            else if (!string.IsNullOrEmpty(translationConfig.RepoUrl))
-            {
-                // 从RepoUrl解析Owner和RepoName
-                var parseResult = ParseGitHubRepoUrl(translationConfig.RepoUrl);
-                if (parseResult == null)
-                {
-                    _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
-                    return new List<GitHubRelease>();
-                }
-                owner = parseResult.Value.owner;
-                repoName = parseResult.Value.repoName;
-            }
-            else
+            // TranslationConfigUrl 直接是 GitHub 仓库地址，解析 owner/repo
+            var repoUrl = _mainConfigService.GetTranslationConfigUrl();
+            var parseResult = ParseGitHubRepoUrl(repoUrl);
+            if (parseResult == null)
             {
                 _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
                 return new List<GitHubRelease>();
             }
+            var (owner, repoName) = parseResult.Value;
 
             var releases = await _networkService.GetGitHubReleasesAsync(owner, repoName, forceRefresh);
-            
+
             // 筛选符合命名规范的release (release-YYYYMMDD-HHMMSS)
-            return releases.Where(r => r.TagName.StartsWith("release-") && 
-                                     r.TagName.Length == 23 && // "release-" + "20250922-143025"
-                                     r.Assets.Any(a => a.Name.Contains("ghpc-translation-") && 
+            return releases.Where(r => r.TagName.StartsWith("release-") &&
+                                     r.TagName.Length == 23 &&
+                                     r.Assets.Any(a => a.Name.Contains("ghpc-translation-") &&
                                                       (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz"))))
                           .ToList();
         }
@@ -422,34 +406,15 @@ public class TranslationManagerService : ITranslationManagerService
     {
         try
         {
-            var translationConfig = await _networkService.GetTranslationConfigAsync(_settingsService.Settings.TranslationConfigUrl);
-            
-            string owner, repoName;
-            
-            // 优先使用新的Owner/RepoName字段，如果为空则从RepoUrl解析
-            if (!string.IsNullOrEmpty(translationConfig.Owner) && !string.IsNullOrEmpty(translationConfig.RepoName))
+            // TranslationConfigUrl 直接是 GitHub 仓库地址，解析 owner/repo
+            var repoUrl = _mainConfigService.GetTranslationConfigUrl();
+            var parseResult = ParseGitHubRepoUrl(repoUrl);
+            if (parseResult == null)
             {
-                owner = translationConfig.Owner;
-                repoName = translationConfig.RepoName;
-            }
-            else if (!string.IsNullOrEmpty(translationConfig.RepoUrl))
-            {
-                // 从RepoUrl解析Owner和RepoName
-                var parseResult = ParseGitHubRepoUrl(translationConfig.RepoUrl);
-                if (parseResult == null)
-                {
-                    _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
-                    return false;
-                }
-                owner = parseResult.Value.owner;
-                repoName = parseResult.Value.repoName;
-            }
-            else
-            {
-                _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
                 _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
                 return false;
             }
+            var (owner, repoName) = parseResult.Value;
 
             // 获取翻译仓库的最新Release
             var releases = await _networkService.GetGitHubReleasesAsync(owner, repoName);
@@ -475,9 +440,8 @@ public class TranslationManagerService : ITranslationManagerService
             }
 
             var latestRelease = validReleases.First();
-            var targetAssetName = !string.IsNullOrEmpty(translationConfig.TargetAssetName) ? translationConfig.TargetAssetName : ".zip";
-            var targetAsset = latestRelease.Assets.FirstOrDefault(a => 
-                a.Name.Contains("ghpc-translation-") && a.Name.EndsWith(targetAssetName));
+            var targetAsset = latestRelease.Assets.FirstOrDefault(a =>
+                a.Name.Contains("ghpc-translation-") && a.Name.EndsWith(".zip"));
 
             if (targetAsset == null)
             {
@@ -503,11 +467,7 @@ public class TranslationManagerService : ITranslationManagerService
             await trackedOps.ExtractZipAsync(zipData, gameRootPath, new[] { ".git", ".gitignore", "README.md", "LICENSE" });
             
 
-            // 更新翻译配置
-            translationConfig.LastUpdated = DateTime.Now;
-            var configPath = Path.Combine(_settingsService.AppDataPath, "translationconfig.json");
-            var configJson = JsonConvert.SerializeObject(translationConfig, Formatting.Indented);
-            await File.WriteAllTextAsync(configPath, configJson);
+            // 更新翻译配置（translationconfig.json 已废弃，不再写入）
 
             return true;
         }

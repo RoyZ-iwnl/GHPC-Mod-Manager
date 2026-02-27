@@ -13,10 +13,7 @@ public partial class AnnouncementViewModel : ObservableObject
     private readonly IThemeService _themeService;
 
     [ObservableProperty]
-    private string _markdownContent = string.Empty;
-
-    [ObservableProperty]
-    private string _htmlContent = string.Empty; // Will contain HTML with embedded markdown parser
+    private string _htmlContent = string.Empty;
 
     [ObservableProperty]
     private bool _isLoading = true;
@@ -48,8 +45,6 @@ public partial class AnnouncementViewModel : ObservableObject
             
             if (!string.IsNullOrWhiteSpace(markdownContent))
             {
-                MarkdownContent = markdownContent;
-
                 // Create HTML with embedded marked.js for client-side markdown parsing
                 HtmlContent = CreateMarkdownHtml(markdownContent);
                 HasContent = true;
@@ -78,33 +73,30 @@ public partial class AnnouncementViewModel : ObservableObject
     {
         var currentTheme = _themeService.CurrentTheme;
         var isDarkTheme = currentTheme == AppTheme.Dark;
-        
-        Console.WriteLine($"[DEBUG] AnnouncementViewModel.GetThemeColors() - CurrentTheme: {currentTheme}, IsDark: {isDarkTheme}");
+
         _loggingService.LogInfo(Strings.GettingThemeColorsForCurrentTheme, currentTheme, isDarkTheme);
-        
+
         if (isDarkTheme)
         {
             var colors = (
-                backgroundColor: "#10101A",     // Dark Surface
-                textColor: "#E6E1E5",         // Dark OnSurface
-                linkColor: "#BB86FC",         // Dark Primary (better contrast)
-                codeBackgroundColor: "#211F26", // Dark SurfaceContainer
-                borderColor: "#938F99"        // Dark Outline
+                backgroundColor: "#10101A",
+                textColor: "#E6E1E5",
+                linkColor: "#BB86FC",
+                codeBackgroundColor: "#211F26",
+                borderColor: "#938F99"
             );
-            Console.WriteLine($"[DEBUG] Using dark theme colors: Background={colors.backgroundColor}, Text={colors.textColor}");
             _loggingService.LogInfo(Strings.UsingDarkThemeColors, colors.backgroundColor);
             return colors;
         }
         else
         {
             var colors = (
-                backgroundColor: "#FFFBFE",     // Light Surface
-                textColor: "#1C1B1F",         // Light OnSurface
-                linkColor: "#6750A4",         // Light Primary
-                codeBackgroundColor: "#F3EDF7", // Light SurfaceContainer
-                borderColor: "#79747E"        // Light Outline
+                backgroundColor: "#FFFBFE",
+                textColor: "#1C1B1F",
+                linkColor: "#6750A4",
+                codeBackgroundColor: "#F3EDF7",
+                borderColor: "#79747E"
             );
-            Console.WriteLine($"[DEBUG] Using light theme colors: Background={colors.backgroundColor}, Text={colors.textColor}");
             _loggingService.LogInfo(Strings.UsingLightThemeColors, colors.backgroundColor);
             return colors;
         }
@@ -317,7 +309,6 @@ public partial class AnnouncementViewModel : ObservableObject
         var lines = markdown.Split('\n');
         var html = new System.Text.StringBuilder();
         var inCodeBlock = false;
-        var codeBlockLang = "";
 
         foreach (var line in lines)
         {
@@ -329,8 +320,7 @@ public partial class AnnouncementViewModel : ObservableObject
                 if (!inCodeBlock)
                 {
                     inCodeBlock = true;
-                    codeBlockLang = trimmedLine.Substring(3).Trim();
-                    html.AppendLine($"<pre><code class=\"language-{codeBlockLang}\">");
+                    html.AppendLine($"<pre><code>");
                 }
                 else
                 {

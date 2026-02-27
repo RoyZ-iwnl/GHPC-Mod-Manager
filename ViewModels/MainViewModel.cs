@@ -6,10 +6,26 @@ using GHPC_Mod_Manager.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using GHPC_Mod_Manager.Resources;
 using System.Linq;
 
 namespace GHPC_Mod_Manager.ViewModels;
+
+// 导航项模型
+public class NavigationItem
+{
+    public string Label { get; set; } = string.Empty;
+    public NavigationPage Page { get; set; }
+}
+
+// 导航页面枚举
+public enum NavigationPage
+{
+    InstalledMods,
+    ModBrowser,
+    Translation
+}
 
 // 配置项视图模型
 public partial class ConfigurationItem : ObservableObject
@@ -47,6 +63,31 @@ public partial class MainViewModel : ObservableObject
     private readonly INetworkService _networkService;
     private readonly IUpdateService _updateService;
     private readonly IMelonLoaderService _melonLoaderService;
+
+    // 子ViewModel（导航页面）
+    private InstalledModsViewModel? _installedModsViewModel;
+    private ModBrowserViewModel? _modBrowserViewModel;
+    private ModDetailViewModel? _modDetailViewModel;
+
+    // 子View（导航页面）
+    private UserControl? _installedModsView;
+    private UserControl? _modBrowserView;
+    private UserControl? _translationView;
+
+    [ObservableProperty]
+    private UserControl? _currentPageView;
+
+    [ObservableProperty]
+    private ObservableCollection<NavigationItem> _navigationItems = new();
+
+    [ObservableProperty]
+    private NavigationItem? _selectedNavigationItem;
+
+    partial void OnSelectedNavigationItemChanged(NavigationItem? value)
+    {
+        if (value != null)
+            NavigateToPage(value.Page);
+    }
 
     [ObservableProperty]
     private ObservableCollection<ModViewModel> _mods = new();
@@ -136,6 +177,32 @@ public partial class MainViewModel : ObservableObject
             IsMelonLoaderDisabled = _melonLoaderService.IsMelonLoaderDisabled(gameRoot);
     }
 
+    /// <summary>
+    /// 启动时检测MelonLoader是否已安装，未安装则提示用户前往设置安装
+    /// </summary>
+    private async Task CheckMelonLoaderInstalledAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        // 已禁用状态说明之前安装过，不需要提示
+        if (IsMelonLoaderDisabled) return;
+
+        var isInstalled = await _melonLoaderService.IsMelonLoaderInstalledAsync(gameRoot);
+        if (!isInstalled)
+        {
+            _loggingService.LogWarning(Strings.MelonLoaderNotInstalledMessage);
+            var result = System.Windows.MessageBox.Show(
+                Strings.MelonLoaderNotInstalledMessage,
+                Strings.MelonLoaderNotInstalledTitle,
+                System.Windows.MessageBoxButton.OKCancel,
+                System.Windows.MessageBoxImage.Warning);
+
+            if (result == System.Windows.MessageBoxResult.OK)
+                _navigationService.NavigateToSettings();
+        }
+    }
+
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
@@ -162,17 +229,116 @@ public partial class MainViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
-        
+
+        // 初始化子ViewModel
+        _installedModsViewModel = _serviceProvider.GetRequiredService<InstalledModsViewModel>();
+        _modBrowserViewModel = _serviceProvider.GetRequiredService<ModBrowserViewModel>();
+        _modDetailViewModel = _serviceProvider.GetRequiredService<ModDetailViewModel>();
+
+        // 订阅子VM事件
+        _installedModsViewModel.NavigateToDetailRequested += OnNavigateToDetail;
+        _installedModsViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
+        _installedModsViewModel.CheckForUpdatesRequested += async (s, onlyInstalled) => await CheckForModUpdatesWithScopeAsync(onlyInstalled);
+        _modBrowserViewModel.NavigateToDetailRequested += OnNavigateToDetail;
+        _modBrowserViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
+        _modBrowserViewModel.CheckForUpdatesRequested += async (s, onlyInstalled) => await CheckForModUpdatesWithScopeAsync(onlyInstalled);
+        _modDetailViewModel.GoBackRequested += OnDetailGoBack;
+        _modDetailViewModel.NavigateToModRequested += OnNavigateToMod;
+        _modDetailViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
+        _modDetailViewModel.ConfigureModRequested += async (s, modId) =>
+        {
+            var mod = Mods.FirstOrDefault(m => m.Id == modId);
+            if (mod != null) await ConfigureModAsync(mod);
+        };
+
+        // 初始化导航项
+        NavigationItems = new ObservableCollection<NavigationItem>
+        {
+            new NavigationItem { Label = Strings.NavInstalledMods, Page = NavigationPage.InstalledMods },
+            new NavigationItem { Label = Strings.NavModBrowser, Page = NavigationPage.ModBrowser },
+            new NavigationItem { Label = Strings.NavTranslation, Page = NavigationPage.Translation },
+        };
+
         InitializeAsync();
-        
-        // Subscribe to search text changes
-        PropertyChanged += (sender, e) => 
+
+        // 订阅搜索文本变化
+        PropertyChanged += (sender, e) =>
         {
             if (e.PropertyName == nameof(SearchText))
-            {
                 FilterAndSortMods();
-            }
         };
+    }
+
+    // 导航到指定页面
+    private void NavigateToPage(NavigationPage page)
+    {
+        switch (page)
+        {
+            case NavigationPage.InstalledMods:
+                _installedModsView ??= (UserControl)_serviceProvider.GetRequiredService<InstalledModsView>();
+                _installedModsView.DataContext = _installedModsViewModel;
+                CurrentPageView = _installedModsView;
+                break;
+            case NavigationPage.ModBrowser:
+                _modBrowserView ??= (UserControl)_serviceProvider.GetRequiredService<ModBrowserView>();
+                _modBrowserView.DataContext = _modBrowserViewModel;
+                CurrentPageView = _modBrowserView;
+                break;
+            case NavigationPage.Translation:
+                _translationView ??= (UserControl)_serviceProvider.GetRequiredService<TranslationView>();
+                _translationView.DataContext = this;
+                CurrentPageView = _translationView;
+                break;
+        }
+    }
+
+    // 导航到MOD详情页（来自已安装或浏览页）
+    private void OnNavigateToDetail(object? sender, ModViewModel mod)
+    {
+        var allMods = Mods.ToList();
+        _ = _modDetailViewModel!.InitializeAsync(mod, allMods);
+
+        // 根据来源决定显示哪个View的详情
+        if (sender is InstalledModsViewModel)
+        {
+            _modDetailViewModel.ReturnToPage = NavigationPage.InstalledMods;
+            var detailView = _serviceProvider.GetRequiredService<ModDetailView>();
+            detailView.DataContext = _modDetailViewModel;
+            CurrentPageView = detailView;
+        }
+        else
+        {
+            _modDetailViewModel.ReturnToPage = NavigationPage.ModBrowser;
+            var detailView = _serviceProvider.GetRequiredService<ModDetailView>();
+            detailView.DataContext = _modDetailViewModel;
+            CurrentPageView = detailView;
+        }
+    }
+
+    // 从详情页返回
+    private void OnDetailGoBack(object? sender, EventArgs e)
+    {
+        var returnPage = _modDetailViewModel?.ReturnToPage ?? NavigationPage.InstalledMods;
+        // 直接调用NavigateToPage，避免SelectedNavigationItem值未变时不触发changed事件
+        NavigateToPage(returnPage);
+        // 同步更新左侧导航栏选中状态
+        var navItem = NavigationItems.FirstOrDefault(n => n.Page == returnPage);
+        if (navItem != null && SelectedNavigationItem != navItem)
+            SelectedNavigationItem = navItem;
+    }
+
+    // 从详情页跳转到另一个MOD（依赖跳转）
+    private void OnNavigateToMod(object? sender, string modId)
+    {
+        var targetMod = Mods.FirstOrDefault(m => m.Id == modId);
+        if (targetMod == null) return;
+
+        var allMods = Mods.ToList();
+        _ = _modDetailViewModel!.InitializeAsync(targetMod, allMods);
+
+        var detailView = _serviceProvider.GetRequiredService<ModDetailView>();
+        detailView.DataContext = _modDetailViewModel;
+        CurrentPageView = detailView;
     }
 
     private async void InitializeAsync()
@@ -192,8 +358,18 @@ public partial class MainViewModel : ObservableObject
         if (!string.IsNullOrEmpty(gameRoot))
             IsMelonLoaderDisabled = _melonLoaderService.IsMelonLoaderDisabled(gameRoot);
 
+        // 默认导航到已安装页
+        var defaultNavItem = NavigationItems.FirstOrDefault(n => n.Page == NavigationPage.InstalledMods);
+        if (defaultNavItem != null)
+            SelectedNavigationItem = defaultNavItem;
+        else
+            NavigateToPage(NavigationPage.InstalledMods);
+
         // 先加载数据,不阻塞
         await RefreshDataAsync();
+
+        // 检测 MelonLoader 是否已安装（可能在软件关闭期间被用户删除）
+        await CheckMelonLoaderInstalledAsync();
 
         // 后台检测网络连接,不阻塞UI
         _ = Task.Run(async () =>
@@ -278,6 +454,12 @@ public partial class MainViewModel : ObservableObject
 
             // Load mods
             var modList = await _modManagerService.GetModListAsync();
+
+            // 用settings中的语言，避免异步上下文中CultureInfo不可靠
+            var lang = _settingsService.Settings.Language;
+            foreach (var mod in modList)
+                mod.RefreshLocalization(lang);
+
             Mods.Clear();
             foreach (var mod in modList)
             {
@@ -286,6 +468,18 @@ public partial class MainViewModel : ObservableObject
             
             // Apply filtering and sorting
             FilterAndSortMods();
+
+            // 注入数据到子ViewModel
+            _installedModsViewModel?.SetModsSource(Mods);
+            _modBrowserViewModel?.SetModsSource(Mods);
+
+            // 如果当前正在显示详情页，用新数据重新初始化（确保按钮状态正确）
+            if (_modDetailViewModel?.Mod != null && CurrentPageView is ModDetailView)
+            {
+                var updatedMod = Mods.FirstOrDefault(m => m.Id == _modDetailViewModel.Mod.Id);
+                if (updatedMod != null)
+                    _ = _modDetailViewModel.InitializeAsync(updatedMod, Mods.ToList());
+            }
 
             // Check translation status
             IsTranslationInstalled = await _translationManagerService.IsTranslationInstalledAsync();
@@ -1030,7 +1224,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void GoToTranslationManagement()
     {
-        SelectedTabIndex = 1; // Translation Management tab index
+        // 切换到翻译管理页
+        var navItem = NavigationItems.FirstOrDefault(n => n.Page == NavigationPage.Translation);
+        if (navItem != null)
+            SelectedNavigationItem = navItem;
+        else
+            NavigateToPage(NavigationPage.Translation);
     }
 
     [RelayCommand]
@@ -1060,6 +1259,15 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.TranslationUpdateCheckError);
             StatusMessage = Strings.TranslationUpdateCheckError;
         }
+    }
+
+    // 子VM触发时指定检查范围
+    private async Task CheckForModUpdatesWithScopeAsync(bool onlyInstalled)
+    {
+        var prev = OnlyCheckInstalledMods;
+        OnlyCheckInstalledMods = onlyInstalled;
+        try { await CheckForModUpdatesAsync(); }
+        finally { OnlyCheckInstalledMods = prev; }
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteCheckUpdates))]

@@ -11,9 +11,10 @@ public class BooleanToVisibilityConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is bool boolValue)
-        {
             return boolValue ? Visibility.Visible : Visibility.Collapsed;
-        }
+        // 支持int（如Count属性）：非零为Visible
+        if (value is int intValue)
+            return intValue > 0 ? Visibility.Visible : Visibility.Collapsed;
         return Visibility.Collapsed;
     }
 
@@ -32,9 +33,10 @@ public class InverseBooleanToVisibilityConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is bool boolValue)
-        {
             return boolValue ? Visibility.Collapsed : Visibility.Visible;
-        }
+        // 支持int（如Count属性）：零为Visible
+        if (value is int intValue)
+            return intValue > 0 ? Visibility.Collapsed : Visibility.Visible;
         return Visibility.Visible;
     }
 
@@ -186,6 +188,22 @@ public class StringToInverseVisibilityConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return string.IsNullOrEmpty(value?.ToString()) ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 依赖状态转可见性转换器（Missing时显示警告图标）
+public class DependencyStatusToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is DependencyStatus status)
+            return status == DependencyStatus.Missing ? Visibility.Visible : Visibility.Collapsed;
+        return Visibility.Collapsed;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

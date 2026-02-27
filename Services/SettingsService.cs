@@ -50,6 +50,10 @@ public class SettingsService : ISettingsService
                 var loadedSettings = JsonConvert.DeserializeObject<AppSettings>(json);
                 if (loadedSettings != null)
                 {
+                    // 旧版本settings.json可能存有已删除的枚举值，回退到默认节点
+                    if (!Enum.IsDefined(typeof(GitHubProxyServer), loadedSettings.GitHubProxyServer))
+                        loadedSettings.GitHubProxyServer = GitHubProxyServer.GhDmrGg;
+
                     _settings = loadedSettings;
                     ApplyLanguageSetting();
                     _loggingService.LogInfo(Strings.SettingsLoaded);

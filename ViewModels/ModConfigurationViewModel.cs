@@ -82,12 +82,12 @@ public partial class ConfigurationItemViewModel : ObservableObject
     }
     
     // 创建单独注释行的构造函数
-    public ConfigurationItemViewModel(string comment, bool isLocalized = false)
+    public ConfigurationItemViewModel(string comment)
     {
         IsStandaloneComment = true;
         Comment = comment;
-        Key = isLocalized ? comment : comment; // 单独注释的Key就是注释内容
-        DisplayName = isLocalized ? comment : comment;
+        Key = comment;
+        DisplayName = comment;
         OriginalKey = comment;
         OriginalValue = string.Empty;
         Description = string.Empty;

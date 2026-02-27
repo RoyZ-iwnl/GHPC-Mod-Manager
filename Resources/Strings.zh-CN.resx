@@ -738,11 +738,8 @@
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>数据源配置</value>
   </data>
-  <data name="ModConfigURL" xml:space="preserve">
-    <value>Mod配置URL：</value>
-  </data>
-  <data name="TranslationConfigURL" xml:space="preserve">
-    <value>翻译配置URL：</value>
+  <data name="MainConfigURL" xml:space="preserve">
+    <value>主配置URL：</value>
   </data>
   <data name="NetworkStatus" xml:space="preserve">
     <value>网络状态：</value>
@@ -1016,9 +1013,6 @@
   </data>
   <data name="ModI18nConfigFetchError" xml:space="preserve">
     <value>从 {0} 获取Mod翻译配置时出错</value>
-  </data>
-  <data name="ModI18nConfigURL" xml:space="preserve">
-    <value>Mod翻译配置URL：</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>搜索：</value>
@@ -1302,9 +1296,6 @@
   <data name="MelonLoaderDisabled" xml:space="preserve">
     <value>已禁用</value>
   </data>
-  <data name="MelonLoaderEnabled" xml:space="preserve">
-    <value>已启用</value>
-  </data>
   <data name="DisableMelonLoader" xml:space="preserve">
     <value>临时禁用</value>
   </data>
@@ -1325,9 +1316,6 @@
   </data>
   <data name="MelonLoaderEnableFailed" xml:space="preserve">
     <value>启用 MelonLoader 失败</value>
-  </data>
-  <data name="SelectMelonLoaderVersion" xml:space="preserve">
-    <value>选择版本：</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
     <value>MelonLoader 已临时禁用，Mod 功能不可用</value>
@@ -1425,6 +1413,9 @@
   <data name="GhDmrGg" xml:space="preserve">
     <value>gh.dmr.gg (Cloudflare 1)</value>
   </data>
+  <data name="EdgeOneGhProxyCom" xml:space="preserve">
+    <value>edgeone.gh-proxy.com (腾讯云 2)</value>
+  </data>
   <data name="GhProxyCom" xml:space="preserve">
     <value>gh-proxy.com (Cloudflare 2)</value>
   </data>
@@ -1433,9 +1424,6 @@
   </data>
   <data name="CdnGhProxyCom" xml:space="preserve">
     <value>cdn.gh-proxy.com (Fastly)</value>
-  </data>
-  <data name="EdgeOneGhProxyCom" xml:space="preserve">
-    <value>edgeone.gh-proxy.com (腾讯云)</value>
   </data>
   <data name="GitHubProxyFailed" xml:space="preserve">
     <value>GitHub代理失败 ({0})，回退到原始URL: {1}</value>
@@ -2438,5 +2426,125 @@
   </data>
   <data name="TranslationTipsContent" xml:space="preserve">
     <value>翻译插件会导致帧数下降，游戏中可以按Alt+T暂时关闭，Alt+1~3是指挥模式的快捷键，但是与翻译插件工具冲突，请在指挥模式下使用M键地图发布GO CODE</value>
+  </data>
+  <data name="MelonLoaderNotInstalledTitle" xml:space="preserve">
+    <value>MelonLoader 未安装</value>
+  </data>
+  <data name="MelonLoaderNotInstalledMessage" xml:space="preserve">
+    <value>未检测到 MelonLoader，可能在软件关闭期间被删除。请前往设置页面安装 MelonLoader 后再使用 Mod 功能。</value>
+  </data>
+  <data name="InstallMelonLoader" xml:space="preserve">
+    <value>安装 MelonLoader</value>
+  </data>
+  <data name="NavInstalledMods" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="NavModBrowser" xml:space="preserve">
+    <value>MOD浏览</value>
+  </data>
+  <data name="NavTranslation" xml:space="preserve">
+    <value>翻译管理</value>
+  </data>
+  <data name="FilterByTags" xml:space="preserve">
+    <value>按标签筛选</value>
+  </data>
+  <data name="ClearTagFilter" xml:space="preserve">
+    <value>清除筛选</value>
+  </data>
+  <data name="NoModsMatchFilter" xml:space="preserve">
+    <value>没有符合筛选条件的MOD</value>
+  </data>
+  <data name="GoBack" xml:space="preserve">
+    <value>← 返回</value>
+  </data>
+  <data name="ModDescription" xml:space="preserve">
+    <value>简介</value>
+  </data>
+  <data name="ModTags" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="SupportedVersions" xml:space="preserve">
+    <value>支持的游戏版本</value>
+  </data>
+  <data name="SelectVersion" xml:space="preserve">
+    <value>选择版本：</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>在 GitHub 查看</value>
+  </data>
+  <data name="DependenciesSection" xml:space="preserve">
+    <value>依赖MOD</value>
+  </data>
+  <data name="ConflictsSection" xml:space="preserve">
+    <value>冲突MOD</value>
+  </data>
+  <data name="DependencyMissing" xml:space="preserve">
+    <value>未安装</value>
+  </data>
+  <data name="LoadingReleases" xml:space="preserve">
+    <value>加载版本中...</value>
+  </data>
+  <data name="InstallLatestVersion" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="QuickReinstall" xml:space="preserve">
+    <value>快速重装</value>
+  </data>
+  <data name="ConflictDialogTitle" xml:space="preserve">
+    <value>检测到MOD冲突</value>
+  </data>
+  <data name="ConflictDialogMessage" xml:space="preserve">
+    <value>以下已安装的MOD与此MOD存在冲突：</value>
+  </data>
+  <data name="ConflictInstallAnyway" xml:space="preserve">
+    <value>是否仍要安装此MOD？</value>
+  </data>
+  <data name="ConflictInstallConfirm" xml:space="preserve">
+    <value>确定吗？安装冲突MOD可能导致游戏异常。</value>
+  </data>
+  <data name="DependencyDialogTitle" xml:space="preserve">
+    <value>缺少依赖</value>
+  </data>
+  <data name="DependencyDialogMessage" xml:space="preserve">
+    <value>以下依赖MOD尚未安装：</value>
+  </data>
+  <data name="DependencyStatusMissing" xml:space="preserve">
+    <value>缺少依赖</value>
+  </data>
+  <data name="InstalledModsEmpty" xml:space="preserve">
+    <value>尚未安装任何MOD</value>
+  </data>
+  <data name="InstallSpecificVersion" xml:space="preserve">
+    <value>安装此版本</value>
+  </data>
+  <data name="ClickToInstall" xml:space="preserve">
+    <value>点击安装</value>
+  </data>
+  <data name="InstalledModsCount" xml:space="preserve">
+    <value>已安装：{0} 个MOD</value>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>正在更新 {0}...</value>
+  </data>
+  <data name="UpdateSuccessful" xml:space="preserve">
+    <value>{0} 更新成功</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>{0} 更新失败</value>
+  </data>
+  <data name="Uninstalling" xml:space="preserve">
+    <value>正在卸载 {0}...</value>
+  </data>
+  <data name="UninstallSuccessful" xml:space="preserve">
+    <value>{0} 卸载成功</value>
+  </data>
+  <data name="ModUpdateError" xml:space="preserve">
+    <value>更新MOD {0} 时出错</value>
+  </data>
+  <data name="GoToTranslation" xml:space="preserve">
+    <value>前往翻译管理</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>详情</value>
   </data>
 </root>

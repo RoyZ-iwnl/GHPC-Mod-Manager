@@ -22,6 +22,8 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IModBackupService _modBackupService;
     private readonly IUpdateService _updateService;
     private readonly IMelonLoaderService _melonLoaderService;
+    private readonly IMainConfigService _mainConfigService;
+    private readonly IModManagerService _modManagerService;
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
@@ -49,29 +51,25 @@ public partial class SettingsViewModel : ObservableObject
     private string _gameRootPath = string.Empty;
 
     [ObservableProperty]
-    private string _modConfigUrl = string.Empty;
-
-    [ObservableProperty]
-    private string _translationConfigUrl = string.Empty;
-
-    [ObservableProperty]
-    private string _modI18nUrl = string.Empty;
+    private string _mainConfigUrl = string.Empty;
 
     [ObservableProperty]
     private bool _useGitHubProxy = false;
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.EdgeOneGhProxyCom;
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
 
     [ObservableProperty]
-    private List<GitHubProxyServer> _availableProxyServers = new()
+    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
+
+    private void RefreshProxyServerList()
     {
-        GitHubProxyServer.EdgeOneGhProxyCom,
-        GitHubProxyServer.GhDmrGg,
-        GitHubProxyServer.GhProxyCom,
-        GitHubProxyServer.HkGhProxyCom,
-        GitHubProxyServer.CdnGhProxyCom
-    };
+        var remote = _mainConfigService.GetRemoteProxyServers();
+        var lang = _settingsService.Settings.Language;
+        AvailableProxyServers = remote != null && remote.Count > 0
+            ? ProxyServerItem.BuildFromRemote(remote, lang)
+            : ProxyServerItem.BuildFallback();
+    }
 
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
@@ -139,6 +137,9 @@ public partial class SettingsViewModel : ObservableObject
 
     public bool IsGitHubProxyEnabled => string.IsNullOrWhiteSpace(GitHubApiToken);
 
+    // 开发模式：仅通过 -dev 启动参数解锁
+    public bool IsDevMode => DevMode.IsEnabled;
+
     public SettingsViewModel(
         ISettingsService settingsService,
         INavigationService navigationService,
@@ -148,7 +149,9 @@ public partial class SettingsViewModel : ObservableObject
         IThemeService themeService,
         IModBackupService modBackupService,
         IUpdateService updateService,
-        IMelonLoaderService melonLoaderService)
+        IMelonLoaderService melonLoaderService,
+        IMainConfigService mainConfigService,
+        IModManagerService modManagerService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -159,8 +162,11 @@ public partial class SettingsViewModel : ObservableObject
         _modBackupService = modBackupService;
         _updateService = updateService;
         _melonLoaderService = melonLoaderService;
+        _mainConfigService = mainConfigService;
+        _modManagerService = modManagerService;
 
         LoadSettings();
+        RefreshProxyServerList();
         _ = LoadMelonLoaderStatusAsync();
     }
 
@@ -170,9 +176,8 @@ public partial class SettingsViewModel : ObservableObject
         SelectedLanguage = settings.Language;
         _originalLanguage = settings.Language; // 记录原始语言
         GameRootPath = settings.GameRootPath;
-        ModConfigUrl = settings.ModConfigUrl;
-        TranslationConfigUrl = settings.TranslationConfigUrl;
-        ModI18nUrl = settings.ModI18nUrl;
+        // dev模式下从 DevMode override 读取，显示当前生效的 URL
+        MainConfigUrl = DevMode.MainConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
         GitHubProxyServer = settings.GitHubProxyServer;
         GitHubApiToken = settings.GitHubApiToken;
@@ -191,9 +196,8 @@ public partial class SettingsViewModel : ObservableObject
             var settings = _settingsService.Settings;
             settings.Language = SelectedLanguage;
             settings.GameRootPath = GameRootPath;
-            settings.ModConfigUrl = ModConfigUrl;
-            settings.TranslationConfigUrl = TranslationConfigUrl;
-            settings.ModI18nUrl = ModI18nUrl;
+            // dev模式下写入 DevMode override（不持久化到 settings.json）
+            DevMode.MainConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = GitHubProxyServer;
             settings.GitHubApiToken = GitHubApiToken;
@@ -276,9 +280,18 @@ public partial class SettingsViewModel : ObservableObject
             
             // Clear all network caches
             _networkService.ClearCache();
-            
+
+            // 重新加载主配置（dev模式下会读本地路径，正常模式走远程并等待结果）
+            await _mainConfigService.ForceReloadAsync();
+
+            // 刷新代理服务器列表（可能有新节点下发）
+            RefreshProxyServerList();
+
             // Refresh ModI18n configuration
-            await _modI18nService.RefreshModI18nConfigAsync();
+            await _modI18nService.RefreshModI18nConfigAsync(forceRefresh: true);
+
+            // 重新拉取 Mod 列表和所有 GitHub Releases（缓存已清空，必须重拉）
+            await _modManagerService.GetModListAsync(forceRefresh: true);
             
             RefreshStatus = GHPC_Mod_Manager.Resources.Strings.ConfigurationsRefreshedSuccessfully;
             _loggingService.LogInfo(Strings.ConfigurationRefreshComplete);

@@ -11,7 +11,7 @@ public interface IModI18nService
     Task<ModI18nManager> LoadModI18nConfigAsync();
     string GetLocalizedLabel(string modId, string configKey, string fallback);
     string GetLocalizedComment(string modId, string commentKey, string fallback);
-    Task RefreshModI18nConfigAsync();
+    Task RefreshModI18nConfigAsync(bool forceRefresh = false);
 }
 
 public class ModI18nService : IModI18nService
@@ -19,17 +19,20 @@ public class ModI18nService : IModI18nService
     private readonly INetworkService _networkService;
     private readonly ISettingsService _settingsService;
     private readonly ILoggingService _loggingService;
+    private readonly IMainConfigService _mainConfigService;
     private ModI18nManager _modI18nManager = new();
     private readonly string _cacheFilePath;
 
     public ModI18nService(
-        INetworkService networkService, 
+        INetworkService networkService,
         ISettingsService settingsService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        IMainConfigService mainConfigService)
     {
         _networkService = networkService;
         _settingsService = settingsService;
         _loggingService = loggingService;
+        _mainConfigService = mainConfigService;
         _cacheFilePath = Path.Combine(_settingsService.AppDataPath, "mod_i18n.json");
         
         _ = LoadModI18nConfigAsync();
@@ -62,11 +65,11 @@ public class ModI18nService : IModI18nService
         return _modI18nManager;
     }
 
-    public async Task RefreshModI18nConfigAsync()
+    public async Task RefreshModI18nConfigAsync(bool forceRefresh = false)
     {
         try
         {
-            var remoteConfig = await _networkService.GetModI18nConfigAsync(_settingsService.Settings.ModI18nUrl);
+            var remoteConfig = await _networkService.GetModI18nConfigAsync(_mainConfigService.GetModI18nUrl(), forceRefresh);
             if (remoteConfig?.ModConfigs != null && remoteConfig.ModConfigs.Any())
             {
                 _modI18nManager = remoteConfig;

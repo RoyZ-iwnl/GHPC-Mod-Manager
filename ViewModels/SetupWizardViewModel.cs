@@ -18,6 +18,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly IProcessService _processService;
     private readonly ILoggingService _loggingService;
     private readonly ISteamGameFinderService _steamGameFinder;
+    private readonly IMainConfigService _mainConfigService;
     private bool _isInitializing = true;
     private bool _hasShownBepInExWarning;
     private bool _hasShownSteamWarning;
@@ -137,7 +138,7 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.EdgeOneGhProxyCom;
+    private GitHubProxyServer _gitHubProxyServer = GitHubProxyServer.GhDmrGg;
 
     partial void OnGitHubProxyServerChanged(GitHubProxyServer value)
     {
@@ -167,14 +168,7 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private List<GitHubProxyServer> _availableProxyServers = new()
-    {
-        GitHubProxyServer.EdgeOneGhProxyCom,
-        GitHubProxyServer.GhDmrGg,
-        GitHubProxyServer.GhProxyCom,
-        GitHubProxyServer.HkGhProxyCom,
-        GitHubProxyServer.CdnGhProxyCom
-    };
+    private List<ProxyServerItem> _availableProxyServers = ProxyServerItem.BuildFallback();
 
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
@@ -209,7 +203,8 @@ public partial class SetupWizardViewModel : ObservableObject
         IMelonLoaderService melonLoaderService,
         IProcessService processService,
         ILoggingService loggingService,
-        ISteamGameFinderService steamGameFinder)
+        ISteamGameFinderService steamGameFinder,
+        IMainConfigService mainConfigService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -218,6 +213,7 @@ public partial class SetupWizardViewModel : ObservableObject
         _processService = processService;
         _loggingService = loggingService;
         _steamGameFinder = steamGameFinder;
+        _mainConfigService = mainConfigService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -227,15 +223,22 @@ public partial class SetupWizardViewModel : ObservableObject
     private async void InitializeAsync()
     {
         SelectedLanguage = _settingsService.Settings.Language;
-        
+
         // Load existing proxy settings
         UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
         GitHubProxyServer = _settingsService.Settings.GitHubProxyServer;
         GitHubApiToken = _settingsService.Settings.GitHubApiToken;
-        
+
+        // 从远程下发刷新代理列表（主配置已在启动时加载）
+        var remote = _mainConfigService.GetRemoteProxyServers();
+        var lang = _settingsService.Settings.Language;
+        AvailableProxyServers = remote != null && remote.Count > 0
+            ? ProxyServerItem.BuildFromRemote(remote, lang)
+            : ProxyServerItem.BuildFallback();
+
         // Mark initialization as complete after setting all values
         _isInitializing = false;
-        
+
         ClearNetworkLog(); // 清空网络日志
         await CheckNetworkAsync();
     }

@@ -153,16 +153,17 @@
                                 <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <ComboBox SelectedValue="{Binding GitHubProxyServer}" 
-                                                  SelectedValuePath="Tag" 
+                                        <ComboBox ItemsSource="{Binding AvailableProxyServers}"
+                                                  SelectedValue="{Binding GitHubProxyServer}"
+                                                  SelectedValuePath="EnumValue"
                                                   Width="310" HorizontalAlignment="Left" Margin="0,0,10,0">
-                                            <ComboBoxItem Content="{x:Static resources:Strings.GhDmrGg}" Tag="{x:Static models:GitHubProxyServer.GhDmrGg}"/>
-                                            <ComboBoxItem Content="{x:Static resources:Strings.GhProxyCom}" Tag="{x:Static models:GitHubProxyServer.GhProxyCom}"/>
-                                            <ComboBoxItem Content="{x:Static resources:Strings.HkGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.HkGhProxyCom}"/>
-                                            <ComboBoxItem Content="{x:Static resources:Strings.CdnGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.CdnGhProxyCom}"/>
-                                            <ComboBoxItem Content="{x:Static resources:Strings.EdgeOneGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.EdgeOneGhProxyCom}"/>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding DisplayName}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                        <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ApplyProxySettingsCommand}" 
+                                        <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ApplyProxySettingsCommand}"
                                                 MinWidth="60" Style="{DynamicResource FilledButtonStyle}"/>
                                     </StackPanel>
                                 </StackPanel>

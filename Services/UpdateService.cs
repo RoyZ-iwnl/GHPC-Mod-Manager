@@ -235,10 +235,11 @@ public class UpdateService : IUpdateService
         return new List<GitHubProxyServer>
         {
             GitHubProxyServer.GhDmrGg,
+            GitHubProxyServer.Gh1DmrGg,
+            GitHubProxyServer.EdgeOneGhProxyCom,
             GitHubProxyServer.GhProxyCom,
             GitHubProxyServer.HkGhProxyCom,
-            GitHubProxyServer.CdnGhProxyCom,
-            GitHubProxyServer.EdgeOneGhProxyCom
+            GitHubProxyServer.CdnGhProxyCom
         };
     }
 
@@ -247,10 +248,11 @@ public class UpdateService : IUpdateService
         return proxyServer switch
         {
             GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.Gh1DmrGg => "gh1.dmr.gg",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
             GitHubProxyServer.GhProxyCom => "gh-proxy.com",
             GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
             GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
-            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
             _ => "gh.dmr.gg"
         };
     }

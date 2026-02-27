@@ -738,11 +738,8 @@
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>Data Source Configuration</value>
   </data>
-  <data name="ModConfigURL" xml:space="preserve">
-    <value>Mod Configuration URL:</value>
-  </data>
-  <data name="TranslationConfigURL" xml:space="preserve">
-    <value>Translation Configuration URL:</value>
+  <data name="MainConfigURL" xml:space="preserve">
+    <value>Main Configuration URL:</value>
   </data>
   <data name="NetworkStatus" xml:space="preserve">
     <value>Network Status:</value>
@@ -1016,9 +1013,6 @@
   </data>
   <data name="ModI18nConfigFetchError" xml:space="preserve">
     <value>Error fetching mod internationalization config from {0}</value>
-  </data>
-  <data name="ModI18nConfigURL" xml:space="preserve">
-    <value>Mod I18n Config URL:</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search:</value>
@@ -1302,9 +1296,6 @@
   <data name="MelonLoaderDisabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
-  <data name="MelonLoaderEnabled" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
   <data name="DisableMelonLoader" xml:space="preserve">
     <value>Temporarily Disable</value>
   </data>
@@ -1325,9 +1316,6 @@
   </data>
   <data name="MelonLoaderEnableFailed" xml:space="preserve">
     <value>Failed to enable MelonLoader</value>
-  </data>
-  <data name="SelectMelonLoaderVersion" xml:space="preserve">
-    <value>Select version:</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
     <value>MelonLoader is temporarily disabled, mod functions unavailable</value>
@@ -1425,6 +1413,9 @@
   <data name="GhDmrGg" xml:space="preserve">
     <value>gh.dmr.gg (Cloudflare 1)</value>
   </data>
+  <data name="EdgeOneGhProxyCom" xml:space="preserve">
+    <value>edgeone.gh-proxy.com (Tencent Cloud 2)</value>
+  </data>
   <data name="GhProxyCom" xml:space="preserve">
     <value>gh-proxy.com (Cloudflare 2)</value>
   </data>
@@ -1433,9 +1424,6 @@
   </data>
   <data name="CdnGhProxyCom" xml:space="preserve">
     <value>cdn.gh-proxy.com (Fastly)</value>
-  </data>
-  <data name="EdgeOneGhProxyCom" xml:space="preserve">
-    <value>edgeone.gh-proxy.com (Tencent Cloud)</value>
   </data>
   <data name="GitHubProxyFailed" xml:space="preserve">
     <value>GitHub proxy failed ({0}), falling back to original URL: {1}</value>
@@ -2352,44 +2340,23 @@
   <data name="AutoSearchError" xml:space="preserve">
     <value>Error occurred during automatic GHPC search</value>
   </data>
-  <data name="ReadingSteamPathFromRegistry" xml:space="preserve">
-    <value>Reading Steam installation path from registry</value>
-  </data>
   <data name="ReadingSteamPathFromRegistryFailed" xml:space="preserve">
     <value>Failed to read Steam installation path from registry</value>
-  </data>
-  <data name="ParsingLibraryFoldersConfig" xml:space="preserve">
-    <value>Parsing Steam library folders configuration</value>
   </data>
   <data name="ParsingLibraryFoldersConfigFailed" xml:space="preserve">
     <value>Failed to parse Steam library folders configuration</value>
   </data>
-  <data name="SearchingGHPCInLibrary" xml:space="preserve">
-    <value>Searching for GHPC in library: {0}</value>
-  </data>
   <data name="SearchingGHPCInLibraryError" xml:space="preserve">
     <value>Error searching for GHPC in library {0}</value>
   </data>
-  <data name="ParsingSteamManifest" xml:space="preserve">
-    <value>Parsing Steam manifest file</value>
-  </data>
   <data name="ParsingSteamManifestFailed" xml:space="preserve">
     <value>Failed to parse Steam manifest file</value>
-  </data>
-  <data name="NoSteamLibraryFound" xml:space="preserve">
-    <value>Steam installation found but no valid library paths detected</value>
   </data>
   <data name="MultiplePathsFound" xml:space="preserve">
     <value>Found {0} possible GHPC installations</value>
   </data>
   <data name="NoPathsFound" xml:space="preserve">
     <value>No GHPC installations found automatically</value>
-  </data>
-  <data name="SelectPathDialog" xml:space="preserve">
-    <value>Select GHPC Installation</value>
-  </data>
-  <data name="SelectPathInstructions" xml:space="preserve">
-    <value>Multiple GHPC installations found. Please select the one you want to use:</value>
   </data>
   <data name="NonSteamVersionWarning" xml:space="preserve">
     <value>Please ensure you are using the latest Steam version. We only provide official support for the Steam version of GHPC. Manual or cracked versions may cause compatibility issues.</value>
@@ -2497,5 +2464,125 @@ Do you want to restart now?</value>
   </data>
   <data name="TranslationTipsContent" xml:space="preserve">
     <value>The translator drops FPS. Press Alt+T to disable. Alt+1-3 conflict with it; use M-map to issue GO CODE in Commander Mode.</value>
+  </data>
+  <data name="MelonLoaderNotInstalledTitle" xml:space="preserve">
+    <value>MelonLoader Not Installed</value>
+  </data>
+  <data name="MelonLoaderNotInstalledMessage" xml:space="preserve">
+    <value>MelonLoader was not detected. It may have been removed while the application was closed. Please go to Settings to install MelonLoader before using mod features.</value>
+  </data>
+  <data name="InstallMelonLoader" xml:space="preserve">
+    <value>Install MelonLoader</value>
+  </data>
+  <data name="NavInstalledMods" xml:space="preserve">
+    <value>Installed Mods</value>
+  </data>
+  <data name="NavModBrowser" xml:space="preserve">
+    <value>Mod Browser</value>
+  </data>
+  <data name="NavTranslation" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="FilterByTags" xml:space="preserve">
+    <value>Filter by Tags</value>
+  </data>
+  <data name="ClearTagFilter" xml:space="preserve">
+    <value>Clear Filter</value>
+  </data>
+  <data name="NoModsMatchFilter" xml:space="preserve">
+    <value>No mods match the current filter</value>
+  </data>
+  <data name="GoBack" xml:space="preserve">
+    <value>← Back</value>
+  </data>
+  <data name="ModDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ModTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SupportedVersions" xml:space="preserve">
+    <value>Supported Game Versions</value>
+  </data>
+  <data name="SelectVersion" xml:space="preserve">
+    <value>Select version:</value>
+  </data>
+  <data name="ViewOnGitHub" xml:space="preserve">
+    <value>View on GitHub</value>
+  </data>
+  <data name="DependenciesSection" xml:space="preserve">
+    <value>Dependencies</value>
+  </data>
+  <data name="ConflictsSection" xml:space="preserve">
+    <value>Conflicts</value>
+  </data>
+  <data name="DependencyMissing" xml:space="preserve">
+    <value>Not Installed</value>
+  </data>
+  <data name="LoadingReleases" xml:space="preserve">
+    <value>Loading versions...</value>
+  </data>
+  <data name="InstallLatestVersion" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="QuickReinstall" xml:space="preserve">
+    <value>Quick Reinstall</value>
+  </data>
+  <data name="ConflictDialogTitle" xml:space="preserve">
+    <value>Mod Conflict Detected</value>
+  </data>
+  <data name="ConflictDialogMessage" xml:space="preserve">
+    <value>The following installed mods conflict with this mod:</value>
+  </data>
+  <data name="ConflictInstallAnyway" xml:space="preserve">
+    <value>Do you still want to install this mod?</value>
+  </data>
+  <data name="ConflictInstallConfirm" xml:space="preserve">
+    <value>Are you sure? Installing conflicting mods may cause issues.</value>
+  </data>
+  <data name="DependencyDialogTitle" xml:space="preserve">
+    <value>Missing Dependencies</value>
+  </data>
+  <data name="DependencyDialogMessage" xml:space="preserve">
+    <value>The following required mods are not installed:</value>
+  </data>
+  <data name="DependencyStatusMissing" xml:space="preserve">
+    <value>Missing deps</value>
+  </data>
+  <data name="InstalledModsEmpty" xml:space="preserve">
+    <value>No mods installed yet.</value>
+  </data>
+  <data name="InstallSpecificVersion" xml:space="preserve">
+    <value>Install This Version</value>
+  </data>
+  <data name="ClickToInstall" xml:space="preserve">
+    <value>Click to install</value>
+  </data>
+  <data name="InstalledModsCount" xml:space="preserve">
+    <value>Installed: {0} mods</value>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>Updating {0}...</value>
+  </data>
+  <data name="UpdateSuccessful" xml:space="preserve">
+    <value>Updated {0} successfully</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>Failed to update {0}</value>
+  </data>
+  <data name="Uninstalling" xml:space="preserve">
+    <value>Uninstalling {0}...</value>
+  </data>
+  <data name="UninstallSuccessful" xml:space="preserve">
+    <value>Uninstalled {0} successfully</value>
+  </data>
+  <data name="ModUpdateError" xml:space="preserve">
+    <value>Error updating mod {0}</value>
+  </data>
+  <data name="GoToTranslation" xml:space="preserve">
+    <value>Go to Translation</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>Details</value>
   </data>
 </root>

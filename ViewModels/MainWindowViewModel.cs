@@ -61,14 +61,11 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             var currentLanguage = CultureInfo.CurrentUICulture.Name;
-            
-            // Show announcement
             await ShowAnnouncementAsync(currentLanguage);
         }
-        catch (Exception ex)
+        catch
         {
-            // Don't let startup features crash the app
-            System.Diagnostics.Debug.WriteLine($"Error in startup features: {ex.Message}");
+            // 不让启动功能崩溃主程序
         }
     }
 
@@ -79,16 +76,8 @@ public partial class MainWindowViewModel : ObservableObject
             await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
-                
-                // Load announcement content first
                 await announcementViewModel.LoadAnnouncementAsync(language);
-                
-                // Debug: Log status
-                System.Diagnostics.Debug.WriteLine($"Announcement HasContent: {announcementViewModel.HasContent}");
-                System.Diagnostics.Debug.WriteLine($"Announcement IsLoading: {announcementViewModel.IsLoading}");
-                System.Diagnostics.Debug.WriteLine($"Announcement ErrorMessage: {announcementViewModel.ErrorMessage}");
-                
-                // Only show window if there's content
+
                 if (announcementViewModel.HasContent)
                 {
                     var announcementWindow = new AnnouncementWindow
@@ -96,21 +85,20 @@ public partial class MainWindowViewModel : ObservableObject
                         DataContext = announcementViewModel,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
                     };
-                    
-                    // Set owner if main window is available
+
                     if (Application.Current.MainWindow != null)
                     {
                         announcementWindow.Owner = Application.Current.MainWindow;
                         announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     }
-                    
+
                     announcementWindow.ShowDialog();
                 }
             });
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Error showing announcement: {ex.Message}");
+            // 不让公告窗口崩溃主程序
         }
     }
 

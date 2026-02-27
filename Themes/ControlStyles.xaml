@@ -868,5 +868,88 @@
     <Style TargetType="ContentPresenter">
         <Setter Property="TextBlock.FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
     </Style>
-    
+
+    <!-- Tag筛选Chip样式（ToggleButton） -->
+    <Style x:Key="ChipToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceVariantBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Margin" Value="3,2"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 左侧导航栏项样式 -->
+    <Style x:Key="NavigationItemStyle" TargetType="ListBoxItem">
+        <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource BodyMedium}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="3,0,0,0"
+                            BorderBrush="Transparent"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryContainerBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainerBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 左侧导航栏 ListBox 样式 -->
+    <Style x:Key="NavigationListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource NavigationItemStyle}"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+    </Style>
+
 </ResourceDictionary>

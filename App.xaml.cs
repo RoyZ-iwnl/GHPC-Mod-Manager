@@ -19,8 +19,9 @@ namespace GHPC_Mod_Manager
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            // Check for -log command line argument
+            // Check for -log / -dev command line arguments
             bool showLogWindow = e.Args.Contains("-log") || e.Args.Contains("--log");
+            bool isDevMode = e.Args.Contains("-dev") || e.Args.Contains("--dev");
             
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -28,6 +29,7 @@ namespace GHPC_Mod_Manager
                     // Services
                     services.AddSingleton<ILoggingService, LoggingService>();
                     services.AddSingleton<ISettingsService, SettingsService>();
+                    services.AddSingleton<IMainConfigService, MainConfigService>();
                     services.AddSingleton<IThemeService, ThemeService>();
                     services.AddSingleton<INavigationService, NavigationService>();
                     services.AddSingleton<IProcessService, ProcessService>();
@@ -93,12 +95,21 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
                     services.AddTransient<AnnouncementViewModel>();
+                    // 子页面ViewModel（单例，数据共享）
+                    services.AddSingleton<InstalledModsViewModel>();
+                    services.AddSingleton<ModBrowserViewModel>();
+                    services.AddSingleton<ModDetailViewModel>();
 
                     // Views
                     services.AddTransient<MainWindow>();
                     services.AddTransient<SetupWizardView>();
                     services.AddSingleton<MainView>(); // 改为单例，避免导航时重新创建
                     services.AddTransient<SettingsView>();
+                    // 子页面View（Transient，每次导航到详情页创建新实例）
+                    services.AddSingleton<InstalledModsView>();
+                    services.AddSingleton<ModBrowserView>();
+                    services.AddSingleton<TranslationView>();
+                    services.AddTransient<ModDetailView>();
                 })
                 .ConfigureLogging(logging =>
                 {
@@ -113,6 +124,18 @@ namespace GHPC_Mod_Manager
             await settingsService.LoadSettingsAsync();
             // Ensure language setting is applied immediately on startup
             settingsService.ApplyLanguageSetting();
+
+            // 加载主配置（后台拉取，不阻塞启动）
+            var mainConfigService = _host.Services.GetRequiredService<IMainConfigService>();
+            await mainConfigService.LoadAsync();
+
+            // 将 -dev 参数传递给 SettingsViewModel 单例
+            if (isDevMode)
+            {
+                var loggingService2 = _host.Services.GetRequiredService<ILoggingService>();
+                loggingService2.LogInfo("Dev mode enabled via -dev argument");
+                DevMode.IsEnabled = true;
+            }
 
             // 初始化主题系统
             var themeService = _host.Services.GetRequiredService<IThemeService>();
@@ -187,10 +210,9 @@ namespace GHPC_Mod_Manager
                     await _host.StopAsync(TimeSpan.FromSeconds(5));
                     _host.Dispose();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    // Log error but don't prevent shutdown
-                    System.Diagnostics.Debug.WriteLine($"Error during shutdown: {ex.Message}");
+                    // 忽略关闭时的错误，不阻止退出
                 }
             }
 

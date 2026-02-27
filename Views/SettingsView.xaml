@@ -86,24 +86,9 @@
                     </StackPanel>
                 </GroupBox>
                 
-                <!-- URL Settings -->
+                <!-- 数据源配置（始终显示 Token + 代理；开发模式下额外显示 URL 字段） -->
                 <GroupBox Header="{x:Static resources:Strings.DataSourceConfiguration}" Margin="0,0,0,15">
                     <StackPanel Margin="10">
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.ModConfigURL}" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding ModConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
-                        </StackPanel>
-                        
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.TranslationConfigURL}" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding TranslationConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
-                        </StackPanel>
-                        
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.ModI18nConfigURL}" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding ModI18nUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
-                        </StackPanel>
-
                         <!-- GitHub API Token -->
                         <StackPanel Margin="0,0,0,10">
                             <TextBlock Text="{x:Static resources:Strings.GitHubApiToken}" Margin="0,0,0,5"/>
@@ -123,7 +108,7 @@
                             </TextBlock>
                         </StackPanel>
 
-                        <!-- GitHub Proxy Settings -->
+                        <!-- GitHub 代理加速 -->
                         <StackPanel Margin="0,0,0,10" Visibility="{Binding IsGitHubProxyVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <CheckBox IsChecked="{Binding UseGitHubProxy}" IsEnabled="{Binding IsGitHubProxyEnabled}" Margin="0,0,0,5">
                                 <StackPanel Orientation="Vertical">
@@ -134,30 +119,39 @@
                                                Margin="0,2,0,0"/>
                                 </StackPanel>
                             </CheckBox>
-                            
-                            <!-- Proxy Server Selection -->
-                            <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
-                                <ComboBox SelectedValue="{Binding GitHubProxyServer}" 
-                                          SelectedValuePath="Tag" 
+                                <ComboBox ItemsSource="{Binding AvailableProxyServers}"
+                                          SelectedValue="{Binding GitHubProxyServer}"
+                                          SelectedValuePath="EnumValue"
                                           Width="310" HorizontalAlignment="Left">
-                                    <ComboBoxItem Content="{x:Static resources:Strings.GhDmrGg}" Tag="{x:Static models:GitHubProxyServer.GhDmrGg}"/>
-                                    <ComboBoxItem Content="{x:Static resources:Strings.GhProxyCom}" Tag="{x:Static models:GitHubProxyServer.GhProxyCom}"/>
-                                    <ComboBoxItem Content="{x:Static resources:Strings.HkGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.HkGhProxyCom}"/>
-                                    <ComboBoxItem Content="{x:Static resources:Strings.CdnGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.CdnGhProxyCom}"/>
-                                    <ComboBoxItem Content="{x:Static resources:Strings.EdgeOneGhProxyCom}" Tag="{x:Static models:GitHubProxyServer.EdgeOneGhProxyCom}"/>
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DisplayName}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </StackPanel>
                         </StackPanel>
-                        
-                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                            <Button Content="{x:Static resources:Strings.ForceRefreshCloudConfigurations}" 
-                                    Command="{Binding ForceRefreshConfigurationsCommand}" 
+
+                        <!-- 开发模式下显示数据源 URL 字段 -->
+                        <StackPanel Visibility="{Binding IsDevMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Separator Margin="0,5,0,10"/>
+                            <StackPanel Margin="0,0,0,10">
+                                <TextBlock Text="{x:Static resources:Strings.MainConfigURL}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding MainConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- 强制刷新云端配置（始终显示） -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <Button Content="{x:Static resources:Strings.ForceRefreshCloudConfigurations}"
+                                    Command="{Binding ForceRefreshConfigurationsCommand}"
                                     MinWidth="200" MaxWidth="300"
                                     Style="{DynamicResource OutlinedButtonStyle}"
                                     Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding RefreshStatus}" 
-                                       VerticalAlignment="Center" 
+                            <TextBlock Text="{Binding RefreshStatus}"
+                                       VerticalAlignment="Center"
                                        Foreground="{DynamicResource SuccessBrush}"/>
                         </StackPanel>
                     </StackPanel>
@@ -178,8 +172,9 @@
                                 <Run Text=")"/>
                             </TextBlock>
                         </StackPanel>
-                        <!-- 禁用/启用按钮 -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <!-- 禁用/启用按钮（仅已安装时显示） -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
+                                    Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Button Command="{Binding ToggleMelonLoaderCommand}"
                                     IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
                                     MinWidth="120" Margin="0,0,10,0"
@@ -206,11 +201,25 @@
                                       SelectedItem="{Binding SelectedMelonLoaderRelease}"
                                       DisplayMemberPath="TagName"
                                       MinWidth="160" Margin="0,0,10,0"/>
-                            <Button Content="{x:Static resources:Strings.ReinstallMelonLoader}"
-                                    Command="{Binding ReinstallMelonLoaderCommand}"
+                            <Button Command="{Binding ReinstallMelonLoaderCommand}"
                                     IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
                                     MinWidth="160"
-                                    Style="{DynamicResource FilledButtonStyle}"/>
+                                    Style="{DynamicResource FilledButtonStyle}">
+                                <Button.Content>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{x:Static resources:Strings.ReinstallMelonLoader}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMelonLoaderInstalled}" Value="False">
+                                                        <Setter Property="Text" Value="{x:Static resources:Strings.InstallMelonLoader}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

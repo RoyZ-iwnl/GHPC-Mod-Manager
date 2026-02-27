@@ -69,36 +69,29 @@ public partial class AnnouncementWindow : Window
                 viewModel.CloseCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() => Close());
             }
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"WebView2 initialization failed: {ex.Message}");
-            // Fallback to show error message if WebView2 fails to initialize
+            // WebView2 初始化失败，降级显示错误信息
         }
     }
 
     private void LoadContentIntoWebView(string htmlContent)
     {
         if (!_isWebViewInitialized)
-        {
-            System.Diagnostics.Debug.WriteLine("WebView2 not yet initialized, delaying content load");
             return;
-        }
 
         try
         {
-            // The ViewModel now provides the complete HTML with embedded markdown parser
             AnnouncementWebView.NavigateToString(htmlContent);
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load content into WebView2: {ex.Message}");
+            // 加载内容失败，静默处理
         }
     }
 
-  
     private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
-        // Handle external links from JavaScript via window.external.notify()
         try
         {
             var message = e.TryGetWebMessageAsString();
@@ -111,15 +104,14 @@ public partial class AnnouncementWindow : Window
                 });
             }
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open external link from web message: {ex.Message}");
+            // 打开外部链接失败，静默处理
         }
     }
 
     private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
     {
-        // Handle external links - open in default browser
         try
         {
             Process.Start(new ProcessStartInfo
@@ -127,27 +119,17 @@ public partial class AnnouncementWindow : Window
                 FileName = e.Uri,
                 UseShellExecute = true
             });
-
-            // Cancel opening in WebView2
             e.Handled = true;
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open external link: {e.Uri}. Error: {ex.Message}");
+            // 打开外部链接失败，静默处理
         }
     }
 
     private void AnnouncementWebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
     {
-        // WebView2 navigation completed - content is loaded
-        if (e.IsSuccess)
-        {
-            System.Diagnostics.Debug.WriteLine("WebView2 content loaded successfully");
-        }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine($"WebView2 navigation failed with status: {e.WebErrorStatus}");
-        }
+        // WebView2 导航完成，无需额外处理
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

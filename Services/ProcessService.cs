@@ -184,13 +184,7 @@ public class ProcessService : IProcessService
         {
             await Task.Delay(1000);
         }
-        
-        await Task.Delay(10000);
-    }
 
-    public void Dispose()
-    {
-        StopMonitoring();
-        _monitorTimer?.Dispose();
+        await Task.Delay(10000);
     }
 }

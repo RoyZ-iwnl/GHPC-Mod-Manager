@@ -2,8 +2,6 @@ using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.ViewModels;
 using Newtonsoft.Json;
 using System.IO;
-using System.IO.Compression;
-using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
@@ -13,7 +11,7 @@ namespace GHPC_Mod_Manager.Services;
 public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
-    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null);
+    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false);
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
@@ -29,6 +27,12 @@ public interface IModManagerService
     string GetLocalizedConfigComment(string modId, string commentKey);
     Task<(bool HasConflicts, List<(string ModId, string ConflictsWith)> Conflicts)> CheckEnabledModsConflictsAsync();
     Task<(bool HasMissingDependencies, List<(string ModId, string RequiredMod)> MissingDependencies)> CheckEnabledModsDependenciesAsync();
+
+    // 新增：获取指定MOD的所有GitHub Releases（用于版本选择）
+    Task<List<GitHubRelease>> GetModReleasesAsync(string modId);
+
+    // 新增：检查单个MOD的依赖状态（供详情页和列表图标使用）
+    Task<(bool AllSatisfied, List<string> MissingModIds)> CheckSingleModDependenciesAsync(string modId);
 }
 
 public class ModManagerService : IModManagerService
@@ -39,12 +43,13 @@ public class ModManagerService : IModManagerService
     private readonly IModI18nService _modI18nService;
     private readonly IModBackupService _modBackupService;
     private readonly IProcessService _processService;
+    private readonly IMainConfigService _mainConfigService;
     private List<ModConfig> _availableMods = new();
     private ModInstallManifest _installManifest = new();
     private Dictionary<string, Dictionary<string, string>> _configComments = new(); // Store comments for each mod
     private Dictionary<string, List<string>> _standaloneComments = new(); // Store standalone comments for each mod
 
-    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService, IProcessService processService)
+    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService, IProcessService processService, IMainConfigService mainConfigService)
     {
         _settingsService = settingsService;
         _networkService = networkService;
@@ -52,12 +57,13 @@ public class ModManagerService : IModManagerService
         _modI18nService = modI18nService;
         _modBackupService = modBackupService;
         _processService = processService;
+        _mainConfigService = mainConfigService;
     }
 
     public async Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false)
     {
         await LoadManifestAsync();
-        await LoadAvailableModsAsync();
+        await LoadAvailableModsAsync(forceRefresh);
 
         var result = new List<ModViewModel>();
         var gameRootPath = _settingsService.Settings.GameRootPath;
@@ -106,9 +112,15 @@ public class ModManagerService : IModManagerService
             result.Add(viewModel);
         }
 
-        // 并行获取所有Mod的GitHub版本信息
+        // 并行检查备份状态 + 获取GitHub版本信息
+        var uninstalledBackupRoot = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "uninstalled");
         var versionTasks = result.Select(async vm =>
         {
+            // 检查是否有卸载备份（用于快速重装提示）
+            if (Directory.Exists(uninstalledBackupRoot))
+            {
+                vm.HasBackup = Directory.GetDirectories(uninstalledBackupRoot, $"{vm.Id}_v*").Any();
+            }
             try
             {
                 var releases = await _networkService.GetGitHubReleasesAsync(
@@ -209,7 +221,10 @@ public class ModManagerService : IModManagerService
                     continue;
 
                 // Skip if already in install manifest
-                if (_installManifest.InstalledMods.Values.Any(m => m.InstalledFiles.Contains(Path.GetRelativePath(_settingsService.Settings.GameRootPath, modFile))))
+                // 统一用正斜杠比较，避免Windows路径分隔符不一致导致匹配失败
+                var relativeModPath = Path.GetRelativePath(_settingsService.Settings.GameRootPath, modFile).Replace('\\', '/');
+                if (_installManifest.InstalledMods.Values.Any(m =>
+                    m.InstalledFiles.Any(f => f.Replace('\\', '/') == relativeModPath)))
                     continue;
 
                 // Skip XUnity AutoTranslator (translation plugin) and its backup
@@ -279,7 +294,7 @@ public class ModManagerService : IModManagerService
         }
     }
 
-    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null)
+    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false)
     {
         try
         {
@@ -319,16 +334,19 @@ public class ModManagerService : IModManagerService
             }
 
             // Standard installation process continues if backup installation fails or doesn't exist
-            // Check for missing dependencies first
-            var (hasMissingRequirements, missingMods) = await CheckModDependenciesAsync(modConfig);
-            if (hasMissingRequirements)
+            // 依赖检查：skipDependencyCheck=true时跳过（ViewModel已在调用前处理依赖对话框）
+            if (!skipDependencyCheck)
             {
-                var missingModNames = missingMods.Select(GetModDisplayName).ToList();
-                var currentModName = GetModDisplayName(modConfig.Id);
-                var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
-                
-                MessageBox.Show(message, Strings.ModDependencyMissing, MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
+                var (hasMissingRequirements, missingMods) = await CheckModDependenciesAsync(modConfig);
+                if (hasMissingRequirements)
+                {
+                    var missingModNames = missingMods.Select(GetModDisplayName).ToList();
+                    var currentModName = GetModDisplayName(modConfig.Id);
+                    var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
+
+                    MessageBox.Show(message, Strings.ModDependencyMissing, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
             }
 
             // Check for conflicts
@@ -1145,7 +1163,7 @@ public class ModManagerService : IModManagerService
                         if (!string.IsNullOrEmpty(standaloneComment))
                         {
                             var localizedComment = GetLocalizedConfigComment(modId, standaloneComment);
-                            var commentItem = new ConfigurationItemViewModel(localizedComment, true);
+                            var commentItem = new ConfigurationItemViewModel(localizedComment);
                             result.Add(commentItem);
                             _loggingService.LogInfo(Strings.FoundStandaloneComment, standaloneComment);
                         }
@@ -1355,11 +1373,11 @@ public class ModManagerService : IModManagerService
         }
     }
 
-    private async Task LoadAvailableModsAsync()
+    private async Task LoadAvailableModsAsync(bool forceRefresh = false)
     {
         try
         {
-            _availableMods = await _networkService.GetModConfigAsync(_settingsService.Settings.ModConfigUrl);
+            _availableMods = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl(), forceRefresh);
         }
         catch (Exception ex)
         {
@@ -1448,12 +1466,7 @@ public class ModManagerService : IModManagerService
                 .Any(f => Path.GetFileName(f) != "backup_paths.json"))
             return true;
 
-        // 检查是否在uninstalled备份中（已卸载但备份保留）
-        var uninstalledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "uninstalled");
-        if (Directory.Exists(uninstalledPath) &&
-            Directory.GetDirectories(uninstalledPath, $"{installInfo.ModId}_v*").Any())
-            return true;
-
+        // uninstalled备份不代表已安装，不在此检查
         return false;
     }
 
@@ -1787,7 +1800,7 @@ public class ModManagerService : IModManagerService
     private string GetModDisplayName(string modId)
     {
         // Try to get the display name from available mod configs
-        var availableMods = Task.Run(async () => await _networkService.GetModConfigAsync(_settingsService.Settings.ModConfigUrl)).Result;
+        var availableMods = Task.Run(async () => await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl())).Result;
         var modConfig = availableMods.FirstOrDefault(m => m.Id == modId);
         
         if (modConfig?.Name != null)
@@ -1802,9 +1815,59 @@ public class ModManagerService : IModManagerService
 
     private bool IsNumericValue(string value)
     {
-        return int.TryParse(value, out _) || 
-               long.TryParse(value, out _) || 
-               float.TryParse(value, out _) || 
+        return int.TryParse(value, out _) ||
+               long.TryParse(value, out _) ||
+               float.TryParse(value, out _) ||
                double.TryParse(value, out _);
+    }
+
+    /// <summary>
+    /// 获取指定MOD的所有GitHub Releases（用于版本选择下拉）
+    /// </summary>
+    public async Task<List<GitHubRelease>> GetModReleasesAsync(string modId)
+    {
+        try
+        {
+            // 从已缓存的mod列表中找到对应配置
+            var modConfigs = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl());
+            var modConfig = modConfigs.FirstOrDefault(m => m.Id == modId);
+            if (modConfig == null || string.IsNullOrEmpty(modConfig.ReleaseUrl))
+                return new List<GitHubRelease>();
+
+            var owner = GetRepoOwner(modConfig.ReleaseUrl);
+            var repo = GetRepoName(modConfig.ReleaseUrl);
+            if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo))
+                return new List<GitHubRelease>();
+
+            // 获取所有releases（利用现有缓存机制）
+            return await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: false);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "GetModReleasesAsync failed for mod: {0}", modId);
+            return new List<GitHubRelease>();
+        }
+    }
+
+    /// <summary>
+    /// 检查单个MOD的依赖状态（供详情页和列表图标使用）
+    /// </summary>
+    public async Task<(bool AllSatisfied, List<string> MissingModIds)> CheckSingleModDependenciesAsync(string modId)
+    {
+        try
+        {
+            var modConfigs = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl());
+            var modConfig = modConfigs.FirstOrDefault(m => m.Id == modId);
+            if (modConfig == null || modConfig.Requirements?.Any() != true)
+                return (true, new List<string>());
+
+            var (hasMissing, missingMods) = await CheckModDependenciesAsync(modConfig);
+            return (!hasMissing, missingMods);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "CheckSingleModDependenciesAsync failed for mod: {0}", modId);
+            return (true, new List<string>());
+        }
     }
 }
