@@ -1086,6 +1086,9 @@
   <data name="GitHubReleasesLoadedFromSessionCache" xml:space="preserve">
     <value>GitHub releases loaded from session cache for {0}/{1}</value>
   </data>
+  <data name="OpenGameFolder" xml:space="preserve">
+    <value>Open Game Folder</value>
+  </data>
   <data name="StartGame" xml:space="preserve">
     <value>Start</value>
   </data>

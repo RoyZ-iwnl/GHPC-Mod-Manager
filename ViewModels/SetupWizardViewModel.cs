@@ -19,6 +19,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
     private readonly ISteamGameFinderService _steamGameFinder;
     private readonly IMainConfigService _mainConfigService;
+    private readonly IUpdateService _updateService;
     private bool _isInitializing = true;
     private bool _hasShownBepInExWarning;
     private bool _hasShownSteamWarning;
@@ -238,7 +239,8 @@ public partial class SetupWizardViewModel : ObservableObject
         IProcessService processService,
         ILoggingService loggingService,
         ISteamGameFinderService steamGameFinder,
-        IMainConfigService mainConfigService)
+        IMainConfigService mainConfigService,
+        IUpdateService updateService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -248,6 +250,7 @@ public partial class SetupWizardViewModel : ObservableObject
         _loggingService = loggingService;
         _steamGameFinder = steamGameFinder;
         _mainConfigService = mainConfigService;
+        _updateService = updateService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -730,6 +733,8 @@ public partial class SetupWizardViewModel : ObservableObject
     private async Task CompleteSetupAsync()
     {
         _settingsService.Settings.IsFirstRun = false;
+        // 初次安装无需清理旧版本文件，跳过清理
+        _settingsService.Settings.CleanupDoneForVersion = _updateService.GetCurrentVersion().TrimStart('v');
         await _settingsService.SaveSettingsAsync();
         
         StatusMessage = Strings.SetupComplete;

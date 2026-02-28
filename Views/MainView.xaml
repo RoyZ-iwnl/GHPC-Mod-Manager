@@ -120,6 +120,10 @@
                                     Margin="4" MinWidth="80"
                                     Style="{DynamicResource OutlinedButtonStyle}"
                                     IsEnabled="{Binding IsGameRunning}"/>
+                            <Button Content="{x:Static resources:Strings.OpenGameFolder}"
+                                    Command="{Binding OpenGameFolderCommand}"
+                                    Margin="4"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

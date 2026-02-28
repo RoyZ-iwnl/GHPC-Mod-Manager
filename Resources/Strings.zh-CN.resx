@@ -1086,6 +1086,9 @@
   <data name="GitHubReleasesLoadedFromSessionCache" xml:space="preserve">
     <value>从会话缓存加载 {0}/{1} 的GitHub版本信息</value>
   </data>
+  <data name="OpenGameFolder" xml:space="preserve">
+    <value>打开游戏目录</value>
+  </data>
   <data name="StartGame" xml:space="preserve">
     <value>开始游戏</value>
   </data>
@@ -2373,6 +2376,9 @@
   </data>
   <data name="NonSteamVersionWarning" xml:space="preserve">
     <value>请确保您使用的是最新版本的 Steam。我们仅为 Steam 版本的 GHPC 提供官方支持。手动安装或破解版可能会导致兼容性问题。</value>
+  </data>
+  <data name="VersionWarningTitle" xml:space="preserve">
+    <value>非Steam版兼容性提示</value>
   </data>
   <data name="OfflineModeTitle" xml:space="preserve">
     <value>离线模式</value>

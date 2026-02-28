@@ -1163,6 +1163,19 @@ public partial class MainViewModel : ObservableObject
         return IsGameRunning;
     }
 
+    [RelayCommand]
+    private void OpenGameFolder()
+    {
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRootPath) || !System.IO.Directory.Exists(gameRootPath))
+        {
+            MessageBox.Show(Strings.GamePathNotSet, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        System.Diagnostics.Process.Start("explorer.exe", gameRootPath);
+    }
+
     [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
     private void OpenSettings()
     {
