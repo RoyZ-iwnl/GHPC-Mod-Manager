@@ -1,4 +1,5 @@
 using GHPC_Mod_Manager.Models;
+using GHPC_Mod_Manager.Resources;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
@@ -9,10 +10,15 @@ namespace GHPC_Mod_Manager.Services;
 file static class BuiltinDefaults
 {
     public const string MainConfigPrimary  = "https://GHPC.DMR.gg/config/main.json";
-    public const string MainConfigFallback = "https://ghpcmm.link/config/main.json";
+    public const string MainConfigFallback = "https://ghpc1.dmr.gg/config/main.json";
+    public const string MainConfigRaw = "https://raw.githubusercontent.com/RoyZ-iwnl/GHPC-Mod-Manager-Web/refs/heads/main/config/main.json";
     public const string ModConfig          = "https://GHPC.DMR.gg/config/modconfig.json";
+    public const string ModConfigFallback  = "https://ghpc1.dmr.gg/config/modconfig.json";
+    public const string ModConfigRaw = "https://raw.githubusercontent.com/RoyZ-iwnl/GHPC-Mod-Manager-Web/refs/heads/main/config/modconfig.json";
     public const string TranslationConfig  = "https://github.com/RoyZ-iwnl/ghpc-translation";
     public const string ModI18n            = "https://GHPC.DMR.gg/config/mod_i18n.json";
+    public const string ModI18nFallback    = "https://ghpc1.dmr.gg/config/mod_i18n.json";
+    public const string ModI18nRaw = "https://raw.githubusercontent.com/RoyZ-iwnl/GHPC-Mod-Manager-Web/refs/heads/main/config/mod_i18n.json";
 }
 
 public interface IMainConfigService
@@ -24,9 +30,16 @@ public interface IMainConfigService
     /// 强制重新加载主配置（等待完成），用于手动刷新
     /// </summary>
     Task ForceReloadAsync();
+    IReadOnlyList<string> GetMainConfigUrlCandidates();
     string GetModConfigUrl();
+    string GetModConfigUrlFallback();
+    string? GetModConfigUrlFallback2();
+    IReadOnlyList<string> GetModConfigUrlCandidates();
     string GetTranslationConfigUrl();
     string GetModI18nUrl();
+    string GetModI18nUrlFallback();
+    string? GetModI18nUrlFallback2();
+    IReadOnlyList<string> GetModI18nUrlCandidates();
     /// <summary>
     /// 获取下发的代理服务器列表，未下发时返回 null
     /// </summary>
@@ -40,6 +53,7 @@ public interface IMainConfigService
 public class MainConfigService : IMainConfigService
 {
     private const string CacheFileName = "main_config.json";
+    private static readonly TimeSpan MainConfigRequestTimeout = TimeSpan.FromSeconds(8);
     private static readonly TimeSpan CacheExpiry = TimeSpan.FromHours(1);
 
     private readonly HttpClient _httpClient;
@@ -78,7 +92,7 @@ public class MainConfigService : IMainConfigService
         }
         else
         {
-            _loggingService.LogInfo("主配置强制刷新失败，保留当前配置");
+            _loggingService.LogInfo(Strings.MainConfigForceRefreshFailed);
             LogCurrentConfig();
         }
     }
@@ -94,18 +108,18 @@ public class MainConfigService : IMainConfigService
                 if (devConfig != null)
                 {
                     Config = devConfig;
-                    _loggingService.LogInfo($"Dev mode: 已从手动地址加载主配置：{DevMode.MainConfigUrlOverride}");
+                    _loggingService.LogInfo(string.Format(Strings.MainConfigLoadedFromManualUrl, DevMode.MainConfigUrlOverride));
                     LogConfigValues("Dev手动", devConfig);
                 }
                 else
                 {
-                    _loggingService.LogInfo($"Dev mode: 手动地址加载失败，使用内置默认：{DevMode.MainConfigUrlOverride}");
+                    _loggingService.LogInfo(string.Format(Strings.MainConfigManualUrlLoadFailed, DevMode.MainConfigUrlOverride));
                     LogDevOverrides();
                 }
             }
             else
             {
-                _loggingService.LogInfo("Dev mode: 未设置主配置地址，使用内置默认");
+                _loggingService.LogInfo(Strings.MainConfigNoManualUrl);
                 LogDevOverrides();
             }
             IsLoaded = true;
@@ -134,17 +148,19 @@ public class MainConfigService : IMainConfigService
             }
             else if (Config == null)
             {
-                _loggingService.LogInfo("主配置拉取失败，使用内置默认值");
+                _loggingService.LogInfo(Strings.MainConfigFetchFailedUsingDefaults);
             }
         });
     }
 
     private void LogDevOverrides()
     {
-        _loggingService.LogInfo("Dev mode: 未加载主配置，当前生效数据源（内置默认）：");
+        _loggingService.LogInfo(Strings.MainConfigDevModeNotLoaded);
         _loggingService.LogInfo($"  ModConfigUrl         = {BuiltinDefaults.ModConfig}");
+        _loggingService.LogInfo($"  ModConfigUrlfallback = {BuiltinDefaults.ModConfigFallback}");
         _loggingService.LogInfo($"  TranslationConfigUrl = {BuiltinDefaults.TranslationConfig}");
         _loggingService.LogInfo($"  ModI18nUrl           = {BuiltinDefaults.ModI18n}");
+        _loggingService.LogInfo($"  ModI18nUrlfallback   = {BuiltinDefaults.ModI18nFallback}");
     }
 
     /// <summary>
@@ -169,7 +185,7 @@ public class MainConfigService : IMainConfigService
         }
         catch (Exception ex)
         {
-            _loggingService.LogInfo($"主配置加载失败 ({pathOrUrl}): {ex.Message}");
+            _loggingService.LogInfo(string.Format(Strings.MainConfigLoadFailed, pathOrUrl, ex.Message));
             return null;
         }
     }
@@ -188,20 +204,29 @@ public class MainConfigService : IMainConfigService
             if (Config != null)
                 LogConfigValues("当前缓存", Config);
             else
-                _loggingService.LogInfo("主配置尚未加载，使用内置默认值");
+                _loggingService.LogInfo(Strings.MainConfigNotLoadedUsingDefaults);
         }
     }
 
     private void LogConfigValues(string source, MainConfig config)
     {
-        _loggingService.LogInfo($"主配置已从{source}加载，实际生效数据源：");
-        _loggingService.LogInfo($"  ModConfigUrl         = {config.ModConfigUrl ?? BuiltinDefaults.ModConfig}{(config.ModConfigUrl == null ? " (内置默认)" : " (下发)")}");
-        _loggingService.LogInfo($"  TranslationConfigUrl = {config.TranslationConfigUrl ?? BuiltinDefaults.TranslationConfig}{(config.TranslationConfigUrl == null ? " (内置默认)" : " (下发)")}");
-        _loggingService.LogInfo($"  ModI18nUrl           = {config.ModI18nUrl ?? BuiltinDefaults.ModI18n}{(config.ModI18nUrl == null ? " (内置默认)" : " (下发)")}");
+        var builtinDefault = Strings.MainConfigBuiltinDefault;
+        var remote = Strings.MainConfigRemote;
+
+        _loggingService.LogInfo(string.Format(Strings.MainConfigLoadedFromSource, source));
+        _loggingService.LogInfo($"  ModConfigUrl          = {config.ModConfigUrl ?? BuiltinDefaults.ModConfig}{(config.ModConfigUrl == null ? builtinDefault : remote)}");
+        _loggingService.LogInfo($"  ModConfigUrlfallback  = {config.ModConfigUrlFallback ?? BuiltinDefaults.ModConfigFallback}{(config.ModConfigUrlFallback == null ? builtinDefault : remote)}");
+        if (!string.IsNullOrWhiteSpace(config.ModConfigUrlFallback2))
+            _loggingService.LogInfo($"  ModConfigUrlfallback2 = {config.ModConfigUrlFallback2}{remote}");
+        _loggingService.LogInfo($"  TranslationConfigUrl  = {config.TranslationConfigUrl ?? BuiltinDefaults.TranslationConfig}{(config.TranslationConfigUrl == null ? builtinDefault : remote)}");
+        _loggingService.LogInfo($"  ModI18nUrl            = {config.ModI18nUrl ?? BuiltinDefaults.ModI18n}{(config.ModI18nUrl == null ? builtinDefault : remote)}");
+        _loggingService.LogInfo($"  ModI18nUrlfallback    = {config.ModI18nUrlFallback ?? BuiltinDefaults.ModI18nFallback}{(config.ModI18nUrlFallback == null ? builtinDefault : remote)}");
+        if (!string.IsNullOrWhiteSpace(config.ModI18nUrlFallback2))
+            _loggingService.LogInfo($"  ModI18nUrlfallback2   = {config.ModI18nUrlFallback2}{remote}");
 
         if (config.ProxyServers != null && config.ProxyServers.Count > 0)
         {
-            _loggingService.LogInfo($"  ProxyServers         = {config.ProxyServers.Count} 个节点已下发：");
+            _loggingService.LogInfo(string.Format(Strings.MainConfigProxyServersDelivered, config.ProxyServers.Count));
             foreach (var ps in config.ProxyServers)
             {
                 var displayZh = ps.DisplayName.TryGetValue("zh-CN", out var zh) ? zh : ps.Domain;
@@ -210,32 +235,125 @@ public class MainConfigService : IMainConfigService
         }
         else
         {
-            _loggingService.LogInfo("  ProxyServers         = (未下发，使用本地枚举)");
+            _loggingService.LogInfo($"  ProxyServers          = {Strings.MainConfigProxyServersNotDelivered}");
         }
     }
 
     private async Task<MainConfig?> FetchRemoteAsync()
     {
-        var primaryUrl = DevMode.MainConfigUrlOverride ?? BuiltinDefaults.MainConfigPrimary;
-        foreach (var url in new[] { primaryUrl, BuiltinDefaults.MainConfigFallback })
+        var urls = GetMainConfigUrlCandidates();
+        for (var i = 0; i < urls.Count; i++)
         {
-            try
-            {
-                _loggingService.LogInfo($"正在拉取主配置：{url}");
-                var json = await _httpClient.GetStringAsync(url);
-                var config = JsonConvert.DeserializeObject<MainConfig>(json);
-                if (config != null)
-                {
-                    _loggingService.LogInfo($"主配置拉取成功：{url}");
-                    return config;
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogInfo($"主配置拉取失败 ({url}): {ex.Message}");
-            }
+            var url = urls[i];
+            var result = await TryFetchMainConfigFromUrlAsync(url);
+            if (result.config != null)
+                return result.config;
+
+            var hasNext = i < urls.Count - 1;
+            _loggingService.LogInfo(string.Format(Strings.MainConfigFetchUrlFailed, url, result.error));
+            if (hasNext)
+                _loggingService.LogInfo(Strings.MainConfigTriggerFallback);
         }
         return null;
+    }
+
+    private async Task<(MainConfig? config, string error)> TryFetchMainConfigFromUrlAsync(string url)
+    {
+        try
+        {
+            _loggingService.LogInfo(string.Format(Strings.MainConfigFetchingFrom, url));
+            using var cts = new CancellationTokenSource(MainConfigRequestTimeout);
+            using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+            if (!response.IsSuccessStatusCode)
+                return (null, $"HTTP {(int)response.StatusCode}");
+
+            var json = await response.Content.ReadAsStringAsync(cts.Token);
+            var config = JsonConvert.DeserializeObject<MainConfig>(json);
+            if (config == null)
+                return (null, Strings.MainConfigDeserializationFailed);
+
+            _loggingService.LogInfo(string.Format(Strings.MainConfigFetchSuccess, url));
+            return (config, string.Empty);
+        }
+        catch (OperationCanceledException)
+        {
+            return (null, string.Format(Strings.MainConfigFetchTimeout, MainConfigRequestTimeout.TotalSeconds.ToString("0")));
+        }
+        catch (Exception ex)
+        {
+            return (null, ex.Message);
+        }
+    }
+
+    private static List<string> BuildUniqueUrlList(params string?[] urls)
+    {
+        var result = new List<string>();
+        foreach (var url in urls)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                continue;
+
+            if (result.Any(existing => string.Equals(existing, url, StringComparison.OrdinalIgnoreCase)))
+                continue;
+
+            result.Add(url);
+        }
+
+        return result;
+    }
+
+    private List<string> BuildRawLastResortCandidates(string rawUrl)
+    {
+        var result = new List<string>();
+        if (_settingsService.Settings.UseGitHubProxy)
+        {
+            var proxyDomain = GetSelectedProxyDomain();
+            if (!string.IsNullOrWhiteSpace(proxyDomain))
+                result.Add($"https://{proxyDomain}/{rawUrl}");
+        }
+
+        result.Add(rawUrl);
+        return result;
+    }
+
+    private static string? CandidateAt(IReadOnlyList<string> candidates, int index) =>
+        index >= 0 && index < candidates.Count ? candidates[index] : null;
+
+    private string GetSelectedProxyDomain()
+    {
+        // 优先使用主配置下发节点（如果当前已加载）
+        var selectedId = _settingsService.Settings.GitHubProxyServer.ToString();
+        var remote = Config?.ProxyServers;
+        if (remote != null)
+        {
+            var match = remote.FirstOrDefault(s =>
+                string.Equals(s.Id, selectedId, StringComparison.OrdinalIgnoreCase));
+            if (match != null && !string.IsNullOrWhiteSpace(match.Domain))
+                return match.Domain;
+        }
+
+        // 回退到本地枚举映射
+        return _settingsService.Settings.GitHubProxyServer switch
+        {
+            GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+            GitHubProxyServer.Gh1DmrGg => "gh1.dmr.gg",
+            GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+            GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+            GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+            GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+            _ => "gh.dmr.gg"
+        };
+    }
+
+    public IReadOnlyList<string> GetMainConfigUrlCandidates()
+    {
+        var rawLastResort = BuildRawLastResortCandidates(BuiltinDefaults.MainConfigRaw);
+        return BuildUniqueUrlList(
+            DevMode.MainConfigUrlOverride ?? BuiltinDefaults.MainConfigPrimary,
+            BuiltinDefaults.MainConfigFallback,
+            CandidateAt(rawLastResort, 0),
+            CandidateAt(rawLastResort, 1)
+        );
     }
 
     private async Task<MainConfig?> TryLoadCacheAsync()
@@ -266,11 +384,47 @@ public class MainConfigService : IMainConfigService
     public string GetModConfigUrl() =>
         Config?.ModConfigUrl ?? BuiltinDefaults.ModConfig;
 
+    public string GetModConfigUrlFallback() =>
+        Config?.ModConfigUrlFallback ?? BuiltinDefaults.ModConfigFallback;
+
+    public string? GetModConfigUrlFallback2() =>
+        Config?.ModConfigUrlFallback2;
+
+    public IReadOnlyList<string> GetModConfigUrlCandidates()
+    {
+        var rawLastResort = BuildRawLastResortCandidates(BuiltinDefaults.ModConfigRaw);
+        return BuildUniqueUrlList(
+            GetModConfigUrl(),
+            GetModConfigUrlFallback(),
+            GetModConfigUrlFallback2(),
+            CandidateAt(rawLastResort, 0),
+            CandidateAt(rawLastResort, 1)
+        );
+    }
+
     public string GetTranslationConfigUrl() =>
         Config?.TranslationConfigUrl ?? BuiltinDefaults.TranslationConfig;
 
     public string GetModI18nUrl() =>
         Config?.ModI18nUrl ?? BuiltinDefaults.ModI18n;
+
+    public string GetModI18nUrlFallback() =>
+        Config?.ModI18nUrlFallback ?? BuiltinDefaults.ModI18nFallback;
+
+    public string? GetModI18nUrlFallback2() =>
+        Config?.ModI18nUrlFallback2;
+
+    public IReadOnlyList<string> GetModI18nUrlCandidates()
+    {
+        var rawLastResort = BuildRawLastResortCandidates(BuiltinDefaults.ModI18nRaw);
+        return BuildUniqueUrlList(
+            GetModI18nUrl(),
+            GetModI18nUrlFallback(),
+            GetModI18nUrlFallback2(),
+            CandidateAt(rawLastResort, 0),
+            CandidateAt(rawLastResort, 1)
+        );
+    }
 
     // dev模式下也返回 Config 里的 ProxyServers（从手动路径加载的 main.json）
     public List<MainConfigProxyServer>? GetRemoteProxyServers() =>

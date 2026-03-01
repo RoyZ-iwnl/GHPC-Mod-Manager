@@ -145,28 +145,49 @@ public class NetworkService : INetworkService
     {
         try
         {
-            // 检测 GHPC.DMR.gg 而不是 GitHub API
-            var testUrl = "https://GHPC.DMR.gg/config/modconfig.json";
-
-            _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
-
-            var request = new HttpRequestMessage(HttpMethod.Head, testUrl);
-            request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
-
-            // 设置较短的超时时间,避免长时间等待
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-
-            if (response.IsSuccessStatusCode)
+            var testUrls = _mainConfigService.GetMainConfigUrlCandidates();
+            foreach (var testUrl in testUrls)
             {
-                _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
-            }
-            else
-            {
-                _loggingService.LogWarning(Strings.NetworkTestStatusCode, response.StatusCode);
+                _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+                try
+                {
+                    using var headRequest = new HttpRequestMessage(HttpMethod.Head, testUrl);
+                    headRequest.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
+                    using var headResponse = await _httpClient.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                    if (headResponse.IsSuccessStatusCode)
+                    {
+                        _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
+                        return true;
+                    }
+
+                    // 某些节点不允许 HEAD，回退到 GET 再判断可达性
+                    if ((int)headResponse.StatusCode == 405 || (int)headResponse.StatusCode == 403)
+                    {
+                        using var getRequest = new HttpRequestMessage(HttpMethod.Get, testUrl);
+                        getRequest.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
+                        using var getResponse = await _httpClient.SendAsync(getRequest, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+                        if (getResponse.IsSuccessStatusCode)
+                        {
+                            _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
+                            return true;
+                        }
+                    }
+
+                    _loggingService.LogWarning(Strings.NetworkTestStatusCode, headResponse.StatusCode);
+                    _loggingService.LogInfo("主配置网络检查失败，尝试下一个fallback渠道");
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError(ex, Strings.NetworkTestFailed, ex.Message);
+                    _loggingService.LogInfo("主配置网络检查失败，尝试下一个fallback渠道");
+                }
             }
 
-            return response.IsSuccessStatusCode;
+            _loggingService.LogError(Strings.NetworkCheckFailed);
+            return false;
         }
         catch (Exception ex)
         {

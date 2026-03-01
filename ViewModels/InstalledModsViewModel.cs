@@ -35,6 +35,10 @@ public partial class InstalledModsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isDownloading;
 
+    // 由MainViewModel同步，检查更新期间禁用按钮
+    [ObservableProperty]
+    private bool _isCheckingUpdates;
+
     [ObservableProperty]
     private string _statusMessage = string.Empty;
 
@@ -220,12 +224,14 @@ public partial class InstalledModsViewModel : ObservableObject
         NavigateToDetailRequested?.Invoke(this, mod);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteCheckUpdates))]
     private void CheckForUpdates()
     {
         // 已安装页只检查已安装的MOD
         CheckForUpdatesRequested?.Invoke(this, true);
     }
+
+    private bool CanExecuteCheckUpdates() => !IsCheckingUpdates && !IsDownloading;
 
     [RelayCommand]
     private void Refresh()
@@ -233,10 +239,18 @@ public partial class InstalledModsViewModel : ObservableObject
         RefreshRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool CanExecuteModOps() => !IsDownloading;
+    private bool CanExecuteModOps() => !IsDownloading && !IsCheckingUpdates;
 
     partial void OnIsDownloadingChanged(bool value)
     {
+        UpdateModCommand.NotifyCanExecuteChanged();
+        UninstallModCommand.NotifyCanExecuteChanged();
+        ToggleModCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsCheckingUpdatesChanged(bool value)
+    {
+        CheckForUpdatesCommand.NotifyCanExecuteChanged();
         UpdateModCommand.NotifyCanExecuteChanged();
         UninstallModCommand.NotifyCanExecuteChanged();
         ToggleModCommand.NotifyCanExecuteChanged();

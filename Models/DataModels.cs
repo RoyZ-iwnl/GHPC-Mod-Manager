@@ -93,8 +93,16 @@ public class AppSettings
 public class MainConfig
 {
     public string? ModConfigUrl { get; set; }
+    [JsonProperty("ModConfigUrlfallback")]
+    public string? ModConfigUrlFallback { get; set; }
+    [JsonProperty("ModConfigUrlfallback2")]
+    public string? ModConfigUrlFallback2 { get; set; }
     public string? TranslationConfigUrl { get; set; }
     public string? ModI18nUrl { get; set; }
+    [JsonProperty("ModI18nUrlfallback")]
+    public string? ModI18nUrlFallback { get; set; }
+    [JsonProperty("ModI18nUrlfallback2")]
+    public string? ModI18nUrlFallback2 { get; set; }
     public List<MainConfigProxyServer>? ProxyServers { get; set; }
 }
 

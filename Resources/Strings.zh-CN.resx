@@ -2637,4 +2637,61 @@
   <data name="VersionCleanupDeleteFailed" xml:space="preserve">
     <value>删除遗留文件失败：{0}</value>
   </data>
+  <data name="MainConfigForceRefreshFailed" xml:space="preserve">
+    <value>主配置强制刷新失败，保留当前配置</value>
+  </data>
+  <data name="MainConfigLoadedFromManualUrl" xml:space="preserve">
+    <value>Dev mode: 已从手动地址加载主配置：{0}</value>
+  </data>
+  <data name="MainConfigManualUrlLoadFailed" xml:space="preserve">
+    <value>Dev mode: 手动地址加载失败，使用内置默认：{0}</value>
+  </data>
+  <data name="MainConfigNoManualUrl" xml:space="preserve">
+    <value>Dev mode: 未设置主配置地址，使用内置默认</value>
+  </data>
+  <data name="MainConfigFetchFailedUsingDefaults" xml:space="preserve">
+    <value>主配置拉取失败，使用内置默认值</value>
+  </data>
+  <data name="MainConfigNotLoadedUsingDefaults" xml:space="preserve">
+    <value>主配置尚未加载，使用内置默认值</value>
+  </data>
+  <data name="MainConfigDevModeNotLoaded" xml:space="preserve">
+    <value>Dev mode: 未加载主配置，当前生效数据源（内置默认）：</value>
+  </data>
+  <data name="MainConfigLoadFailed" xml:space="preserve">
+    <value>主配置加载失败 ({0}): {1}</value>
+  </data>
+  <data name="MainConfigLoadedFromSource" xml:space="preserve">
+    <value>主配置已从{0}加载，实际生效数据源：</value>
+  </data>
+  <data name="MainConfigBuiltinDefault" xml:space="preserve">
+    <value> (内置默认)</value>
+  </data>
+  <data name="MainConfigRemote" xml:space="preserve">
+    <value> (下发)</value>
+  </data>
+  <data name="MainConfigProxyServersDelivered" xml:space="preserve">
+    <value>ProxyServers = {0} 个节点已下发：</value>
+  </data>
+  <data name="MainConfigProxyServersNotDelivered" xml:space="preserve">
+    <value>ProxyServers = (未下发，使用本地枚举)</value>
+  </data>
+  <data name="MainConfigFetchUrlFailed" xml:space="preserve">
+    <value>主配置拉取失败 ({0}): {1}</value>
+  </data>
+  <data name="MainConfigTriggerFallback" xml:space="preserve">
+    <value>触发fallback，尝试下一个主配置渠道</value>
+  </data>
+  <data name="MainConfigFetchingFrom" xml:space="preserve">
+    <value>正在拉取主配置：{0}</value>
+  </data>
+  <data name="MainConfigDeserializationFailed" xml:space="preserve">
+    <value>反序列化失败</value>
+  </data>
+  <data name="MainConfigFetchSuccess" xml:space="preserve">
+    <value>主配置拉取成功：{0}</value>
+  </data>
+  <data name="MainConfigFetchTimeout" xml:space="preserve">
+    <value>超时（&gt;{0}s）</value>
+  </data>
 </root>

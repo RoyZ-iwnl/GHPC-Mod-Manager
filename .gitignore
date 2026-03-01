@@ -388,4 +388,4 @@ mod_install_manifest.json
 translation_install_manifest.json
 mod_i18n.json
 
-
+.claude/*

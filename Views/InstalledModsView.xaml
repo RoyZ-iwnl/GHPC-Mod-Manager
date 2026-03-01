@@ -54,6 +54,7 @@
                         Margin="0,0,4,0"/>
                 <Button Content="{x:Static resources:Strings.CheckForUpdates}"
                         Command="{Binding CheckForUpdatesCommand}"
+                        IsEnabled="{Binding IsCheckingUpdates, Converter={StaticResource InvBool}}"
                         Style="{DynamicResource OutlinedButtonStyle}"/>
             </StackPanel>
         </Grid>

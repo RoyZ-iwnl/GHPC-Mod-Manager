@@ -69,7 +69,26 @@ public class ModI18nService : IModI18nService
     {
         try
         {
-            var remoteConfig = await _networkService.GetModI18nConfigAsync(_mainConfigService.GetModI18nUrl(), forceRefresh);
+            ModI18nManager? remoteConfig = null;
+            var urls = _mainConfigService.GetModI18nUrlCandidates();
+
+            for (var i = 0; i < urls.Count; i++)
+            {
+                var url = urls[i];
+                var candidate = await _networkService.GetModI18nConfigAsync(url, forceRefresh);
+                if (candidate?.ModConfigs != null && candidate.ModConfigs.Any())
+                {
+                    remoteConfig = candidate;
+                    break;
+                }
+
+                var hasNext = i < urls.Count - 1;
+                if (hasNext)
+                    _loggingService.LogWarning("ModI18n配置为空或不可访问，触发fallback，尝试下一个渠道。当前渠道: {0}", url);
+                else
+                    _loggingService.LogWarning("ModI18n配置为空或不可访问，且已无可用fallback。最后渠道: {0}", url);
+            }
+
             if (remoteConfig?.ModConfigs != null && remoteConfig.ModConfigs.Any())
             {
                 _modI18nManager = remoteConfig;

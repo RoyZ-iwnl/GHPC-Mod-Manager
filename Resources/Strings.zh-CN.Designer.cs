@@ -3312,6 +3312,177 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  (内置默认).
+        /// </summary>
+        public static string MainConfigBuiltinDefault {
+            get {
+                return ResourceManager.GetString("MainConfigBuiltinDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 反序列化失败.
+        /// </summary>
+        public static string MainConfigDeserializationFailed {
+            get {
+                return ResourceManager.GetString("MainConfigDeserializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev mode: 未加载主配置，当前生效数据源（内置默认）：.
+        /// </summary>
+        public static string MainConfigDevModeNotLoaded {
+            get {
+                return ResourceManager.GetString("MainConfigDevModeNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置拉取失败，使用内置默认值.
+        /// </summary>
+        public static string MainConfigFetchFailedUsingDefaults {
+            get {
+                return ResourceManager.GetString("MainConfigFetchFailedUsingDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在拉取主配置：{0}.
+        /// </summary>
+        public static string MainConfigFetchingFrom {
+            get {
+                return ResourceManager.GetString("MainConfigFetchingFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置拉取成功：{0}.
+        /// </summary>
+        public static string MainConfigFetchSuccess {
+            get {
+                return ResourceManager.GetString("MainConfigFetchSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 超时（&gt;{0}s）.
+        /// </summary>
+        public static string MainConfigFetchTimeout {
+            get {
+                return ResourceManager.GetString("MainConfigFetchTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置拉取失败 ({0}): {1}.
+        /// </summary>
+        public static string MainConfigFetchUrlFailed {
+            get {
+                return ResourceManager.GetString("MainConfigFetchUrlFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置强制刷新失败，保留当前配置.
+        /// </summary>
+        public static string MainConfigForceRefreshFailed {
+            get {
+                return ResourceManager.GetString("MainConfigForceRefreshFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev mode: 已从手动地址加载主配置：{0}.
+        /// </summary>
+        public static string MainConfigLoadedFromManualUrl {
+            get {
+                return ResourceManager.GetString("MainConfigLoadedFromManualUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置已从{0}加载，实际生效数据源：.
+        /// </summary>
+        public static string MainConfigLoadedFromSource {
+            get {
+                return ResourceManager.GetString("MainConfigLoadedFromSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置加载失败 ({0}): {1}.
+        /// </summary>
+        public static string MainConfigLoadFailed {
+            get {
+                return ResourceManager.GetString("MainConfigLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev mode: 手动地址加载失败，使用内置默认：{0}.
+        /// </summary>
+        public static string MainConfigManualUrlLoadFailed {
+            get {
+                return ResourceManager.GetString("MainConfigManualUrlLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev mode: 未设置主配置地址，使用内置默认.
+        /// </summary>
+        public static string MainConfigNoManualUrl {
+            get {
+                return ResourceManager.GetString("MainConfigNoManualUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主配置尚未加载，使用内置默认值.
+        /// </summary>
+        public static string MainConfigNotLoadedUsingDefaults {
+            get {
+                return ResourceManager.GetString("MainConfigNotLoadedUsingDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProxyServers = {0} 个节点已下发：.
+        /// </summary>
+        public static string MainConfigProxyServersDelivered {
+            get {
+                return ResourceManager.GetString("MainConfigProxyServersDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProxyServers = (未下发，使用本地枚举).
+        /// </summary>
+        public static string MainConfigProxyServersNotDelivered {
+            get {
+                return ResourceManager.GetString("MainConfigProxyServersNotDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  (下发).
+        /// </summary>
+        public static string MainConfigRemote {
+            get {
+                return ResourceManager.GetString("MainConfigRemote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 触发fallback，尝试下一个主配置渠道.
+        /// </summary>
+        public static string MainConfigTriggerFallback {
+            get {
+                return ResourceManager.GetString("MainConfigTriggerFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 主配置URL：.
         /// </summary>
         public static string MainConfigURL {
@@ -7290,6 +7461,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string VersionDllExists {
             get {
                 return ResourceManager.GetString("VersionDllExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 非Steam版兼容性提示.
+        /// </summary>
+        public static string VersionWarningTitle {
+            get {
+                return ResourceManager.GetString("VersionWarningTitle", resourceCulture);
             }
         }
         

@@ -1377,12 +1377,35 @@ public class ModManagerService : IModManagerService
     {
         try
         {
-            _availableMods = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl(), forceRefresh);
+            _availableMods = await GetModConfigsWithFallbackAsync(forceRefresh);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.AvailableModsLoadError);
         }
+    }
+
+    private async Task<List<ModConfig>> GetModConfigsWithFallbackAsync(bool forceRefresh = false)
+    {
+        var urls = _mainConfigService.GetModConfigUrlCandidates();
+        var lastResult = new List<ModConfig>();
+
+        for (var i = 0; i < urls.Count; i++)
+        {
+            var url = urls[i];
+            var configs = await _networkService.GetModConfigAsync(url, forceRefresh);
+            if (configs.Count > 0)
+                return configs;
+
+            lastResult = configs;
+            var hasNext = i < urls.Count - 1;
+            if (hasNext)
+                _loggingService.LogWarning("Mod配置为空或不可访问，触发fallback，尝试下一个渠道。当前渠道: {0}", url);
+            else
+                _loggingService.LogWarning("Mod配置为空或不可访问，且已无可用fallback。最后渠道: {0}", url);
+        }
+
+        return lastResult;
     }
 
     private string GetLocalizedName(ModConfig modConfig)
@@ -1800,7 +1823,7 @@ public class ModManagerService : IModManagerService
     private string GetModDisplayName(string modId)
     {
         // Try to get the display name from available mod configs
-        var availableMods = Task.Run(async () => await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl())).Result;
+        var availableMods = Task.Run(async () => await GetModConfigsWithFallbackAsync()).Result;
         var modConfig = availableMods.FirstOrDefault(m => m.Id == modId);
         
         if (modConfig?.Name != null)
@@ -1829,7 +1852,7 @@ public class ModManagerService : IModManagerService
         try
         {
             // 从已缓存的mod列表中找到对应配置
-            var modConfigs = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl());
+            var modConfigs = await GetModConfigsWithFallbackAsync();
             var modConfig = modConfigs.FirstOrDefault(m => m.Id == modId);
             if (modConfig == null || string.IsNullOrEmpty(modConfig.ReleaseUrl))
                 return new List<GitHubRelease>();
@@ -1856,7 +1879,7 @@ public class ModManagerService : IModManagerService
     {
         try
         {
-            var modConfigs = await _networkService.GetModConfigAsync(_mainConfigService.GetModConfigUrl());
+            var modConfigs = await GetModConfigsWithFallbackAsync();
             var modConfig = modConfigs.FirstOrDefault(m => m.Id == modId);
             if (modConfig == null || modConfig.Requirements?.Any() != true)
                 return (true, new List<string>());

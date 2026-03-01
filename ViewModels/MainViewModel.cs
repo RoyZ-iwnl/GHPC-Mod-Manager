@@ -1574,7 +1574,7 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            // 尝试连接到 GHPC.DMR.GG
+            // 通过主配置(main.json)渠道检测网络连通性
             var isConnected = await _networkService.CheckNetworkConnectionAsync();
 
             if (!isConnected)
@@ -1618,6 +1618,8 @@ public partial class MainViewModel : ObservableObject
     partial void OnIsCheckingUpdatesChanged(bool value)
     {
         UpdateAllCommandsCanExecute();
+        // 同步检查状态到子VM，禁用其检查更新按钮防止重复触发
+        _installedModsViewModel.IsCheckingUpdates = value;
     }
 
     partial void OnIsGameRunningChanged(bool value)

@@ -2672,4 +2672,61 @@ Do you want to restart now?</value>
   <data name="VersionCleanupDeleteFailed" xml:space="preserve">
     <value>Failed to delete obsolete file: {0}</value>
   </data>
+  <data name="MainConfigForceRefreshFailed" xml:space="preserve">
+    <value>Main config force refresh failed, keeping current config</value>
+  </data>
+  <data name="MainConfigLoadedFromManualUrl" xml:space="preserve">
+    <value>Dev mode: Loaded main config from manual URL: {0}</value>
+  </data>
+  <data name="MainConfigManualUrlLoadFailed" xml:space="preserve">
+    <value>Dev mode: Manual URL load failed, using builtin defaults: {0}</value>
+  </data>
+  <data name="MainConfigNoManualUrl" xml:space="preserve">
+    <value>Dev mode: No main config URL set, using builtin defaults</value>
+  </data>
+  <data name="MainConfigFetchFailedUsingDefaults" xml:space="preserve">
+    <value>Main config fetch failed, using builtin defaults</value>
+  </data>
+  <data name="MainConfigNotLoadedUsingDefaults" xml:space="preserve">
+    <value>Main config not loaded yet, using builtin defaults</value>
+  </data>
+  <data name="MainConfigDevModeNotLoaded" xml:space="preserve">
+    <value>Dev mode: Main config not loaded, current data source (builtin defaults):</value>
+  </data>
+  <data name="MainConfigLoadFailed" xml:space="preserve">
+    <value>Main config load failed ({0}): {1}</value>
+  </data>
+  <data name="MainConfigLoadedFromSource" xml:space="preserve">
+    <value>Main config loaded from {0}, active data sources:</value>
+  </data>
+  <data name="MainConfigBuiltinDefault" xml:space="preserve">
+    <value> (builtin default)</value>
+  </data>
+  <data name="MainConfigRemote" xml:space="preserve">
+    <value> (remote)</value>
+  </data>
+  <data name="MainConfigProxyServersDelivered" xml:space="preserve">
+    <value>ProxyServers = {0} nodes delivered:</value>
+  </data>
+  <data name="MainConfigProxyServersNotDelivered" xml:space="preserve">
+    <value>ProxyServers = (not delivered, using local enum)</value>
+  </data>
+  <data name="MainConfigFetchUrlFailed" xml:space="preserve">
+    <value>Main config fetch failed ({0}): {1}</value>
+  </data>
+  <data name="MainConfigTriggerFallback" xml:space="preserve">
+    <value>Triggering fallback, trying next main config channel</value>
+  </data>
+  <data name="MainConfigFetchingFrom" xml:space="preserve">
+    <value>Fetching main config from: {0}</value>
+  </data>
+  <data name="MainConfigDeserializationFailed" xml:space="preserve">
+    <value>Deserialization failed</value>
+  </data>
+  <data name="MainConfigFetchSuccess" xml:space="preserve">
+    <value>Main config fetched successfully: {0}</value>
+  </data>
+  <data name="MainConfigFetchTimeout" xml:space="preserve">
+    <value>Timeout (&gt;{0}s)</value>
+  </data>
 </root>
