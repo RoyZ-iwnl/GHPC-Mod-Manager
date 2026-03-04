@@ -133,6 +133,19 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <!-- 内置 DNS over HTTPS（仅中文用户显示） -->
+                        <StackPanel Margin="0,0,0,10" Visibility="{Binding IsDnsOverHttpsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <CheckBox IsChecked="{Binding UseDnsOverHttps}" Margin="0,0,0,5">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="启用内置 DNS over HTTPS (DoH)" FontWeight="Medium"/>
+                                    <TextBlock Text="按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。"
+                                               FontSize="{DynamicResource BodySmall}"
+                                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+                        </StackPanel>
+
                         <!-- 开发模式下显示数据源 URL 字段 -->
                         <StackPanel Visibility="{Binding IsDevMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Separator Margin="0,5,0,10"/>

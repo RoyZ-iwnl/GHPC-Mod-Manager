@@ -5791,6 +5791,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 会话缓存已清除.
+        /// </summary>
+        public static string SessionCacheCleared {
+            get {
+                return ResourceManager.GetString("SessionCacheCleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 设置翻译语言为 {0} 时出错.
         /// </summary>
         public static string SetLanguageError {

@@ -232,6 +232,11 @@ public partial class MainViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
+        IsGameRunning = _processService.IsGameRunning;
+        if (IsGameRunning)
+        {
+            StatusMessage = Strings.GameRunningCannotOperate;
+        }
 
         // 初始化子ViewModel
         _installedModsViewModel = _serviceProvider.GetRequiredService<InstalledModsViewModel>();
@@ -451,6 +456,9 @@ public partial class MainViewModel : ObservableObject
         {
             IsLoading = true;
             StatusMessage = Strings.RefreshingData;
+
+            // 清除会话缓存（非GitHub资源）
+            _networkService.ClearSessionCache();
 
             // Clear any rate limit blocks to allow fresh API requests
             _networkService.ClearRateLimitBlocks();

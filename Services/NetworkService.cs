@@ -15,7 +15,8 @@ public interface INetworkService
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default);
-    void ClearCache(); // Clear all cached data
+    void ClearCache(); // Clear all cached data (including GitHub persistent cache)
+    void ClearSessionCache(); // Clear session cache for non-GitHub resources
     void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
     HttpClient HttpClient { get; } // 暴露HttpClient用于代理请求
 }
@@ -37,6 +38,9 @@ public class NetworkService : INetworkService
 
     // Cache expiry times
     private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
+
+    // 本次启动的内存缓存（非GitHub资源）
+    private readonly Dictionary<string, object> _sessionCache = new();
 
     public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
     {
@@ -209,16 +213,12 @@ public class NetworkService : INetworkService
             }
 
             var cacheKey = $"modconfig_{url}";
-            var shouldCache = ShouldCacheUrl(url);
 
-            if (shouldCache && !forceRefresh)
+            // 优先使用会话缓存（非GitHub资源）
+            if (!forceRefresh && _sessionCache.TryGetValue(cacheKey, out var sessionCached))
             {
-                var cached = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url));
-                if (cached != null)
-                {
-                    _loggingService.LogInfo(Strings.ModConfigLoadedFromCache);
-                    return cached;
-                }
+                _loggingService.LogInfo(Strings.ModConfigLoadedFromCache);
+                return (List<ModConfig>)sessionCached;
             }
 
             _loggingService.LogInfo(Strings.FetchingModConfig, url);
@@ -226,10 +226,8 @@ public class NetworkService : INetworkService
             var configs = JsonConvert.DeserializeObject<List<ModConfig>>(json);
             var result = configs ?? new List<ModConfig>();
 
-            if (shouldCache)
-            {
-                await SaveToPersistentCacheAsync(cacheKey, result);
-            }
+            // 保存到会话缓存
+            _sessionCache[cacheKey] = result;
 
             return result;
         }
@@ -240,12 +238,13 @@ public class NetworkService : INetworkService
             if (IsLocalPath(url))
                 return new List<ModConfig>();
 
+            // 失败时尝试从会话缓存读取
             var cacheKey = $"modconfig_{url}";
-            if (ShouldCacheUrl(url))
+            if (_sessionCache.TryGetValue(cacheKey, out var sessionCached))
             {
-                var staleCache = await GetFromPersistentCacheAsync<List<ModConfig>>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
-                return staleCache ?? new List<ModConfig>();
+                return (List<ModConfig>)sessionCached;
             }
+
             return new List<ModConfig>();
         }
     }
@@ -261,16 +260,12 @@ public class NetworkService : INetworkService
             }
 
             var cacheKey = $"modi18nconfig_{url}";
-            var shouldCache = ShouldCacheUrl(url);
 
-            if (shouldCache && !forceRefresh)
+            // 优先使用会话缓存（避免同一次启动重复请求）
+            if (!forceRefresh && _sessionCache.TryGetValue(cacheKey, out var sessionCached))
             {
-                var cached = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url));
-                if (cached != null)
-                {
-                    _loggingService.LogInfo(Strings.ModI18nConfigLoadedFromCache);
-                    return cached;
-                }
+                _loggingService.LogInfo(Strings.ModI18nConfigLoadedFromCache);
+                return (ModI18nManager)sessionCached;
             }
 
             _loggingService.LogInfo(Strings.FetchingModI18nConfig, url);
@@ -278,10 +273,8 @@ public class NetworkService : INetworkService
             var config = JsonConvert.DeserializeObject<ModI18nManager>(json);
             var result = config ?? new ModI18nManager();
 
-            if (shouldCache)
-            {
-                await SaveToPersistentCacheAsync(cacheKey, result);
-            }
+            // 保存到会话缓存（上层Service会自己处理持久化）
+            _sessionCache[cacheKey] = result;
             _loggingService.LogInfo(Strings.ModI18nConfigRefreshed);
 
             return result;
@@ -293,12 +286,13 @@ public class NetworkService : INetworkService
             if (IsLocalPath(url))
                 return new ModI18nManager();
 
+            // 失败时尝试从会话缓存读取
             var cacheKey = $"modi18nconfig_{url}";
-            if (ShouldCacheUrl(url))
+            if (_sessionCache.TryGetValue(cacheKey, out var sessionCached))
             {
-                var staleCache = await GetFromPersistentCacheAsync<ModI18nManager>(cacheKey, GetCacheExpiryForUrl(url), ignoreExpiry: true);
-                return staleCache ?? new ModI18nManager();
+                return (ModI18nManager)sessionCached;
             }
+
             return new ModI18nManager();
         }
     }
@@ -1121,7 +1115,13 @@ public class NetworkService : INetworkService
     {
         // Clear rate limit blocks
         _rateLimitBlocks.Clear();
-        
+
+        // Clear session cache
+        _sessionCache.Clear();
+
+        // Clear DoH DNS cache
+        DnsOverHttpsConnector.ClearCache();
+
         // Clear persistent cache files
         var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache");
         if (Directory.Exists(cacheDir))
@@ -1140,6 +1140,12 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogInfo(Strings.AllCachesClearedNoFiles);
         }
+    }
+
+    public void ClearSessionCache()
+    {
+        _sessionCache.Clear();
+        _loggingService.LogInfo(Strings.SessionCacheCleared);
     }
 
     public void ClearRateLimitBlocks()

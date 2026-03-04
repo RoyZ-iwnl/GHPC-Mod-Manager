@@ -78,6 +78,7 @@ public class AppSettings
     public AppTheme Theme { get; set; } = AppTheme.Light;
     public bool UseGitHubProxy { get; set; } = false;
     public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg;
+    public bool UseDnsOverHttps { get; set; } = false;
     public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Stable;
     public string GitHubApiToken { get; set; } = string.Empty;
     /// <summary>

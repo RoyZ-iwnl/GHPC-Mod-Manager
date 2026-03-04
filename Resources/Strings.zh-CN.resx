@@ -1281,6 +1281,9 @@
   <data name="AllCachesClearedSuccessfully" xml:space="preserve">
     <value>所有缓存清理成功</value>
   </data>
+  <data name="SessionCacheCleared" xml:space="preserve">
+    <value>会话缓存已清除</value>
+  </data>
   <data name="FailedToClearPersistentCache" xml:space="preserve">
     <value>清理持久缓存失败: {0}</value>
   </data>

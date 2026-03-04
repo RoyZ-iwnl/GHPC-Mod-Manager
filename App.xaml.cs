@@ -6,6 +6,7 @@ using GHPC_Mod_Manager.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -43,51 +44,47 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IUpdateService, UpdateService>();
                     services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
                     services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
-                    
-                    services.AddHttpClient<INetworkService, NetworkService>(client =>
+
+                    services.ConfigureHttpClientDefaults(builder =>
                     {
-                        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
-                    })
-                    .ConfigurePrimaryHttpMessageHandler(() =>
-                    {
-                        var handler = new HttpClientHandler();
-                        
-                        // 配置证书验证回调以处理自签发证书和代理环境
-                        handler.ServerCertificateCustomValidationCallback = (HttpRequestMessage request, X509Certificate2? cert, X509Chain? chain, SslPolicyErrors sslPolicyErrors) =>
+                        builder.ConfigureHttpClient(client =>
                         {
-                            // 如果没有错误，直接返回 true
-                            if (sslPolicyErrors == SslPolicyErrors.None)
-                                return true;
+                            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
+                            client.Timeout = TimeSpan.FromMinutes(10);
+                        });
 
-                            // 如果只是证书撤销状态无法验证的问题（常见于代理环境），则接受证书
-                            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors && chain != null)
+                        builder.ConfigurePrimaryHttpMessageHandler(serviceProvider =>
+                        {
+                            var settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+                            var loggingService = serviceProvider.GetRequiredService<ILoggingService>();
+
+                            var handler = new SocketsHttpHandler
                             {
-                                // 检查链状态，如果只是撤销状态无法验证，则接受
-                                foreach (var status in chain.ChainStatus)
+                                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                                ConnectTimeout = TimeSpan.FromSeconds(15),
+                                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+                                SslOptions = new SslClientAuthenticationOptions
                                 {
-                                    if (status.Status == X509ChainStatusFlags.RevocationStatusUnknown ||
-                                        status.Status == X509ChainStatusFlags.OfflineRevocation)
-                                    {
-                                        continue; // 忽略撤销状态检查问题
-                                    }
-                                    else if (status.Status != X509ChainStatusFlags.NoError)
-                                    {
-                                        return false; // 其他错误不接受
-                                    }
+                                    CertificateRevocationCheckMode = X509RevocationMode.NoCheck,
+                                    RemoteCertificateValidationCallback = (_, _, chain, sslPolicyErrors) =>
+                                        ValidateServerCertificate(chain, sslPolicyErrors)
                                 }
-                                return true;
-                            }
+                            };
 
-                            // 对于本地反代或开发环境，可以考虑接受自签名证书
-                            // 但这里我们保持相对安全的策略，只处理撤销状态问题
-                            return false;
-                        };
+                            handler.ConnectCallback = (context, cancellationToken) =>
+                                DnsOverHttpsConnector.ConnectAsync(
+                                    context,
+                                    settingsService.Settings.UseDnsOverHttps &&
+                                    string.Equals(settingsService.Settings.Language, "zh-CN", StringComparison.OrdinalIgnoreCase),
+                                    loggingService,
+                                    cancellationToken);
 
-                        // 禁用证书撤销检查以避免网络问题
-                        handler.CheckCertificateRevocationList = false;
-                        
-                        return handler;
+                            return handler;
+                        });
                     });
+
+                    services.AddHttpClient<INetworkService, NetworkService>();
 
                     // ViewModels
                     services.AddTransient<MainWindowViewModel>();
@@ -125,6 +122,11 @@ namespace GHPC_Mod_Manager
             await settingsService.LoadSettingsAsync();
             // Ensure language setting is applied immediately on startup
             settingsService.ApplyLanguageSetting();
+            var startupLoggingService = _host.Services.GetRequiredService<ILoggingService>();
+            startupLoggingService.LogInfo(
+                "DoH startup state: enabled={0}, language={1}",
+                settingsService.Settings.UseDnsOverHttps,
+                settingsService.Settings.Language);
 
             // 加载主配置（后台拉取，不阻塞启动）
             var mainConfigService = _host.Services.GetRequiredService<IMainConfigService>();
@@ -229,6 +231,31 @@ namespace GHPC_Mod_Manager
         {
             return ((App)Current)._host?.Services.GetService<T>() 
                 ?? throw new InvalidOperationException($"Service {typeof(T).Name} not found");
+        }
+
+        private static bool ValidateServerCertificate(X509Chain? chain, SslPolicyErrors sslPolicyErrors)
+        {
+            if (sslPolicyErrors == SslPolicyErrors.None)
+                return true;
+
+            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors && chain != null)
+            {
+                foreach (var status in chain.ChainStatus)
+                {
+                    if (status.Status == X509ChainStatusFlags.RevocationStatusUnknown ||
+                        status.Status == X509ChainStatusFlags.OfflineRevocation)
+                    {
+                        continue;
+                    }
+
+                    if (status.Status != X509ChainStatusFlags.NoError)
+                        return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

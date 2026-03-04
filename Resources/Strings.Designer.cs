@@ -5871,6 +5871,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Session cache cleared.
+        /// </summary>
+        public static string SessionCacheCleared {
+            get {
+                return ResourceManager.GetString("SessionCacheCleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error setting translation language to {0}.
         /// </summary>
         public static string SetLanguageError {

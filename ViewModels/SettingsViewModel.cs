@@ -40,11 +40,13 @@ public partial class SettingsViewModel : ObservableObject
         if (value != "zh-CN")
         {
             UseGitHubProxy = false;
+            UseDnsOverHttps = false;
         }
 
         OnPropertyChanged(nameof(IsChineseLanguage));
         // Notify that proxy visibility has changed
         OnPropertyChanged(nameof(IsGitHubProxyVisible));
+        OnPropertyChanged(nameof(IsDnsOverHttpsVisible));
     }
 
     [ObservableProperty]
@@ -61,6 +63,9 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private ProxyServerItem? _selectedProxyServer;
+
+    [ObservableProperty]
+    private bool _useDnsOverHttps;
 
     partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
@@ -146,6 +151,8 @@ public partial class SettingsViewModel : ObservableObject
 
     public bool IsGitHubProxyVisible => IsChineseLanguage;
 
+    public bool IsDnsOverHttpsVisible => IsChineseLanguage;
+
     public bool IsGitHubProxyEnabled => string.IsNullOrWhiteSpace(GitHubApiToken);
 
     // 开发模式：仅通过 -dev 启动参数解锁
@@ -190,6 +197,7 @@ public partial class SettingsViewModel : ObservableObject
         // dev模式下从 DevMode override 读取，显示当前生效的 URL
         MainConfigUrl = DevMode.MainConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
+        UseDnsOverHttps = settings.UseDnsOverHttps;
         // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
         GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
@@ -211,11 +219,13 @@ public partial class SettingsViewModel : ObservableObject
             DevMode.MainConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
+            settings.UseDnsOverHttps = UseDnsOverHttps && SelectedLanguage == "zh-CN";
             settings.GitHubApiToken = GitHubApiToken;
             settings.Theme = SelectedTheme; // 保存主题设置
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
 
             await _settingsService.SaveSettingsAsync();
+            _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);
 
             // 应用新主题
             _themeService.SetTheme(SelectedTheme);

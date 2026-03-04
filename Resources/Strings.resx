@@ -1281,6 +1281,9 @@
   <data name="AllCachesClearedSuccessfully" xml:space="preserve">
     <value>All caches cleared successfully</value>
   </data>
+  <data name="SessionCacheCleared" xml:space="preserve">
+    <value>Session cache cleared</value>
+  </data>
   <data name="FailedToClearPersistentCache" xml:space="preserve">
     <value>Failed to clear persistent cache: {0}</value>
   </data>
