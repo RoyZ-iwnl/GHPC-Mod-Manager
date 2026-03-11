@@ -15,6 +15,7 @@
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:StepVisibilityConverter x:Key="StepVisibilityConverter"/>
+        <converters:ChineseLanguageToVisibilityConverter x:Key="ChineseLanguageToVisibilityConverter"/>
     </UserControl.Resources>
     
     <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
@@ -127,28 +128,30 @@
                         
                         <!-- Control Buttons -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                            <Button Content="{x:Static resources:Strings.RetryNetworkCheck}" Command="{Binding RetryNetworkCheckCommand}" 
+                            <Button Content="{x:Static resources:Strings.RetryNetworkCheck}" Command="{Binding RetryNetworkCheckCommand}"
                                     Width="100" Margin="0,0,10,0"
                                     IsEnabled="{Binding IsCheckingNetwork, Converter={StaticResource InverseBooleanConverter}}"/>
-                            <Button Content="{x:Static resources:Strings.NetworkHelpSolution}" Command="{Binding OpenNetworkHelpCommand}" 
-                                    Width="120" Margin="0,0,10,0"/>
-                            <ToggleButton Content="{x:Static resources:Strings.ShowLog}" IsChecked="{Binding ShowNetworkLog}" 
+                            <Button Content="{x:Static resources:Strings.NetworkHelpSolution}" Command="{Binding OpenNetworkHelpCommand}"
+                                    Width="120" Margin="0,0,10,0"
+                                    Visibility="{Binding SelectedLanguage, Converter={StaticResource ChineseLanguageToVisibilityConverter}}"/>
+                            <ToggleButton Content="{x:Static resources:Strings.ShowLog}" IsChecked="{Binding ShowNetworkLog}"
                                           MinWidth="100" Style="{DynamicResource MaterialToggleButtonStyle}"/>
                         </StackPanel>
                         
-                        <!-- GitHub Proxy Settings -->
-                        <GroupBox Header="{x:Static resources:Strings.GitHubProxyAcceleration}" Margin="0,0,0,15">
+                        <!-- GitHub Proxy Settings (仅中文用户可见) -->
+                        <GroupBox Header="{x:Static resources:Strings.GitHubProxyAcceleration}" Margin="0,0,0,15"
+                                  Visibility="{Binding SelectedLanguage, Converter={StaticResource ChineseLanguageToVisibilityConverter}}">
                             <StackPanel Margin="10">
                                 <CheckBox IsChecked="{Binding UseGitHubProxy}" Margin="0,0,0,5">
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>
-                                        <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}" 
+                                        <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}"
                                                    FontSize="{DynamicResource BodySmall}"
                                                    Foreground="{DynamicResource OnSurfaceVariantBrush}"
                                                    Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </CheckBox>
-                                
+
                                 <!-- Proxy Server Selection -->
                                 <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
@@ -299,6 +302,11 @@
                                   SelectedItem="{Binding SelectedMelonLoaderVersion}"
                                   DisplayMemberPath="TagName" 
                                   Width="200" HorizontalAlignment="Left" Margin="0,0,0,15"/>
+                        <TextBlock Text="{Binding MelonLoaderReleaseLoadWarningMessage}"
+                                   Foreground="DarkOrange"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,10"
+                                   Visibility="{Binding ShowMelonLoaderReleaseLoadWarning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         <ProgressBar Value="{Binding InstallProgress}" Height="20" Margin="0,0,0,10"
                                      Visibility="{Binding IsInstalling, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         <TextBlock Text="{Binding StatusMessage}" Foreground="Blue" TextWrapping="Wrap"/>

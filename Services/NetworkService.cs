@@ -2,6 +2,7 @@ using GHPC_Mod_Manager.Models;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using GHPC_Mod_Manager.Resources;
 using System.Windows;
@@ -14,7 +15,7 @@ public interface INetworkService
     Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false);
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
-    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default);
+    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
     void ClearCache(); // Clear all cached data (including GitHub persistent cache)
     void ClearSessionCache(); // Clear session cache for non-GitHub resources
     void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
@@ -38,6 +39,8 @@ public class NetworkService : INetworkService
 
     // Cache expiry times
     private readonly TimeSpan _githubApiCacheExpiry = TimeSpan.FromHours(24); // GitHub API with rate limits
+    private static readonly TimeSpan DownloadInactivityTimeout = TimeSpan.FromSeconds(30);
+    private const int DownloadRetryAttempts = 3;
 
     // 本次启动的内存缓存（非GitHub资源）
     private readonly Dictionary<string, object> _sessionCache = new();
@@ -149,45 +152,33 @@ public class NetworkService : INetworkService
     {
         try
         {
-            var testUrls = _mainConfigService.GetMainConfigUrlCandidates();
-            foreach (var testUrl in testUrls)
+            const string testUrl = "https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
+            _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var request = new HttpRequestMessage(HttpMethod.Get, testUrl);
+            request.Headers.Add("User-Agent", "GHPC-Mod-Manager");
+
+            // 添加 Token 支持
+            var token = _settingsService.Settings.GitHubApiToken;
+            if (!string.IsNullOrWhiteSpace(token))
+                request.Headers.Add("Authorization", $"token {token}");
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+            var content = await response.Content.ReadAsStringAsync(cts.Token);
+
+            // 检查是否返回 rate limit 错误
+            if (content.Contains("API rate limit exceeded") || content.Contains("rate limit"))
             {
-                _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                _loggingService.LogError(Strings.NetworkCheckFailed);
+                return false;
+            }
 
-                try
-                {
-                    using var headRequest = new HttpRequestMessage(HttpMethod.Head, testUrl);
-                    headRequest.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
-                    using var headResponse = await _httpClient.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-
-                    if (headResponse.IsSuccessStatusCode)
-                    {
-                        _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
-                        return true;
-                    }
-
-                    // 某些节点不允许 HEAD，回退到 GET 再判断可达性
-                    if ((int)headResponse.StatusCode == 405 || (int)headResponse.StatusCode == 403)
-                    {
-                        using var getRequest = new HttpRequestMessage(HttpMethod.Get, testUrl);
-                        getRequest.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
-                        using var getResponse = await _httpClient.SendAsync(getRequest, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-                        if (getResponse.IsSuccessStatusCode)
-                        {
-                            _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
-                            return true;
-                        }
-                    }
-
-                    _loggingService.LogWarning(Strings.NetworkTestStatusCode, headResponse.StatusCode);
-                    _loggingService.LogInfo("主配置网络检查失败，尝试下一个fallback渠道");
-                }
-                catch (Exception ex)
-                {
-                    _loggingService.LogError(ex, Strings.NetworkTestFailed, ex.Message);
-                    _loggingService.LogInfo("主配置网络检查失败，尝试下一个fallback渠道");
-                }
+            // 检查是否返回正常的 release 数据
+            if (response.IsSuccessStatusCode && (content.Contains("tag_name") || content.Contains("\"id\":")))
+            {
+                _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
+                return true;
             }
 
             _loggingService.LogError(Strings.NetworkCheckFailed);
@@ -393,41 +384,69 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default)
+    public async Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null)
     {
-        try
+        var finalUrl = ApplyGitHubProxy(url);
+        var candidateUrls = finalUrl != url
+            ? new[] { finalUrl, url }.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+            : new[] { url }.ToList();
+
+        var downloadTargetName = string.IsNullOrWhiteSpace(assetName)
+            ? GetDownloadTargetName(url)
+            : assetName;
+
+        _loggingService.LogInfo(Strings.DownloadStarted, finalUrl);
+
+        Exception? lastException = null;
+
+        for (int attempt = 1; attempt <= DownloadRetryAttempts; attempt++)
         {
-            // Apply GitHub proxy if enabled
-            var finalUrl = ApplyGitHubProxy(url);
-            
-            _loggingService.LogInfo(Strings.DownloadStarted, finalUrl);
-            
-            // If we're using GitHub proxy, try proxy first, then fallback to original if it fails
-            if (finalUrl != url)
+            foreach (var candidateUrl in candidateUrls)
             {
                 try
                 {
-                    // Test connectivity to proxy first
-                    var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
-                    await TestProxyConnectivityAsync(proxyDomain, cancellationToken);
-                    return await DownloadFromUrlAsync(finalUrl, progress, cancellationToken);
+                    if (candidateUrl != url)
+                    {
+                        var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+                        await TestProxyConnectivityAsync(proxyDomain, cancellationToken);
+                    }
+
+                    var downloadData = await DownloadFromUrlAsync(candidateUrl, progress, cancellationToken);
+                    ValidateDownloadIntegrity(downloadData, expectedSize, expectedDigest, downloadTargetName);
+                    return downloadData;
                 }
-                catch (Exception proxyEx)
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    _loggingService.LogWarning(Strings.GitHubProxyFailed, proxyEx.Message, url);
-                    return await DownloadFromUrlAsync(url, progress, cancellationToken);
+                    lastException = ex;
+
+                    if (candidateUrl != url)
+                    {
+                        _loggingService.LogWarning(Strings.GitHubProxyFailed, ex.Message, url);
+                    }
+
+                    var isLastCandidate = candidateUrl == candidateUrls.Last();
+                    var isLastAttempt = attempt == DownloadRetryAttempts;
+                    if (!isLastAttempt || !isLastCandidate)
+                    {
+                        _loggingService.LogWarning("DownloadAttemptRetrying", attempt, DownloadRetryAttempts, downloadTargetName, ex.Message);
+                    }
                 }
             }
-            else
+
+            if (attempt < DownloadRetryAttempts)
             {
-                return await DownloadFromUrlAsync(finalUrl, progress, cancellationToken);
+                var delayMs = (int)TimeSpan.FromSeconds(Math.Pow(2, attempt - 1)).TotalMilliseconds;
+                await Task.Delay(delayMs, cancellationToken);
             }
         }
-        catch (Exception ex)
+
+        if (lastException != null)
         {
-            _loggingService.LogError(ex, Strings.DownloadError, url);
-            throw;
+            _loggingService.LogError(lastException, Strings.DownloadError, url);
+            throw lastException;
         }
+
+        throw new InvalidOperationException(string.Format(GetResourceString("DownloadFailedWithoutException", "Download failed without exception: {0}"), downloadTargetName));
     }
 
     private async Task TestProxyConnectivityAsync(string hostname, CancellationToken cancellationToken)
@@ -537,7 +556,7 @@ public class NetworkService : INetworkService
 
         while (true)
         {
-            var bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+            var bytesRead = await ReadWithInactivityTimeoutAsync(contentStream, buffer, cancellationToken, GetDownloadTargetName(url));
             if (bytesRead == 0) break;
 
             await memoryStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
@@ -990,7 +1009,7 @@ public class NetworkService : INetworkService
                         return;
                     }
 
-                    var bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                    var bytesRead = await ReadWithInactivityTimeoutAsync(contentStream, buffer, cancellationToken, $"chunk {chunkState.ChunkIndex} of {GetDownloadTargetName(url)}");
                     if (bytesRead == 0) break;
 
                     await chunkStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
@@ -1077,7 +1096,7 @@ public class NetworkService : INetworkService
                 
                 while (true)
                 {
-                    var bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                    var bytesRead = await ReadWithInactivityTimeoutAsync(contentStream, buffer, cancellationToken, $"chunk {chunkIndex} of {GetDownloadTargetName(url)}");
                     if (bytesRead == 0) break;
 
                     await chunkStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
@@ -1484,6 +1503,88 @@ public class NetworkService : INetworkService
         {
             _loggingService.LogWarning(Strings.FailedToSaveGitHubReleasesToCache, repoOwner, repoName, ex.Message);
         }
+    }
+
+    private async Task<int> ReadWithInactivityTimeoutAsync(Stream contentStream, byte[] buffer, CancellationToken cancellationToken, string context)
+    {
+        try
+        {
+            return await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
+                .WaitAsync(DownloadInactivityTimeout, cancellationToken);
+        }
+        catch (TimeoutException ex)
+        {
+            throw new TimeoutException(string.Format(GetResourceString("DownloadNoProgressTimeout", "No download progress for {1} seconds while downloading {0}.") , context, DownloadInactivityTimeout.TotalSeconds.ToString("0")), ex);
+        }
+    }
+
+    private void ValidateDownloadIntegrity(byte[] downloadData, long? expectedSize, string? expectedDigest, string assetName)
+    {
+        if (downloadData.Length == 0)
+        {
+            throw new InvalidDataException(string.Format(GetResourceString("DownloadIntegrityCheckFailed", "Downloaded file failed integrity validation: {0}"), assetName));
+        }
+
+        if (expectedSize.HasValue && expectedSize.Value > 0 && downloadData.LongLength != expectedSize.Value)
+        {
+            throw new InvalidDataException(string.Format(Strings.DownloadSizeMismatchException, expectedSize.Value, downloadData.LongLength));
+        }
+
+        if (expectedSize.HasValue && expectedSize.Value > 0)
+        {
+            _loggingService.LogInfo("DownloadSizeVerified", assetName, expectedSize.Value);
+        }
+
+        if (string.IsNullOrWhiteSpace(expectedDigest))
+        {
+            return;
+        }
+
+        var (algorithm, expectedHash) = ParseDigest(expectedDigest);
+        if (!algorithm.Equals("sha256", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(expectedHash))
+        {
+            _loggingService.LogInfo("DownloadDigestUnsupported", assetName, expectedDigest);
+            return;
+        }
+
+        var actualHash = Convert.ToHexString(SHA256.HashData(downloadData)).ToLowerInvariant();
+        if (!actualHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(string.Format(GetResourceString("DownloadDigestMismatch", "SHA-256 mismatch for {0}. Expected {1}, got {2}."), assetName, expectedHash, actualHash));
+        }
+
+        _loggingService.LogInfo("DownloadDigestVerified", assetName, actualHash);
+    }
+
+    private static (string Algorithm, string Hash) ParseDigest(string digest)
+    {
+        var trimmedDigest = digest.Trim();
+        var separatorIndex = trimmedDigest.IndexOf(':');
+        if (separatorIndex <= 0 || separatorIndex >= trimmedDigest.Length - 1)
+        {
+            return ("sha256", trimmedDigest.ToLowerInvariant());
+        }
+
+        return (
+            trimmedDigest[..separatorIndex].Trim(),
+            trimmedDigest[(separatorIndex + 1)..].Trim().ToLowerInvariant());
+    }
+
+    private static string GetDownloadTargetName(string url)
+    {
+        try
+        {
+            return Path.GetFileName(new Uri(url).AbsolutePath);
+        }
+        catch
+        {
+            return url;
+        }
+    }
+
+    private static string GetResourceString(string key, string fallback)
+    {
+        return Strings.ResourceManager.GetString(key, Strings.Culture) ?? fallback;
     }
 }
 

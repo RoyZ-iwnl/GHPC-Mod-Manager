@@ -1917,6 +1917,24 @@
   <data name="TranslationSystemNotInstalled" xml:space="preserve">
     <value>翻译系统尚未安装</value>
   </data>
+  <data name="ResetConfiguration" xml:space="preserve">
+    <value>重置配置</value>
+  </data>
+  <data name="ConfirmResetConfiguration" xml:space="preserve">
+    <value>此按钮可以清除 MelonPreferences.cfg 中的 [{0}] 配置段。正常运行一次游戏并退出即可重新生成，不过将会丢失已经设置的 mod 配置。\n\n已经保存的预设不受影响，但是不受当前版本支持的配置可能不会生效。\n\n是否继续？</value>
+  </data>
+  <data name="ConfigurationReset" xml:space="preserve">
+    <value>配置段 [{0}] 已重置。请运行一次游戏以重新生成配置。</value>
+  </data>
+  <data name="ConfigurationResetFailed" xml:space="preserve">
+    <value>重置配置失败</value>
+  </data>
+  <data name="ConfigSectionNotGenerated" xml:space="preserve">
+    <value>配置段尚未生成。请先运行一次游戏并退出，然后重试。</value>
+  </data>
+  <data name="PresetCannotApplyNoConfig" xml:space="preserve">
+    <value>无法应用预设：配置段尚未生成。请先运行一次游戏并退出。</value>
+  </data>
   <data name="TranslationPluginUpdateAvailable" xml:space="preserve">
     <value>翻译插件更新可用</value>
   </data>
@@ -2499,6 +2517,9 @@
   <data name="FilterByTags" xml:space="preserve">
     <value>按标签筛选</value>
   </data>
+  <data name="ShowUninstalledOnly" xml:space="preserve">
+    <value>仅显示未安装</value>
+  </data>
   <data name="ClearTagFilter" xml:space="preserve">
     <value>清除筛选</value>
   </data>
@@ -2515,7 +2536,7 @@
     <value>标签</value>
   </data>
   <data name="SupportedVersions" xml:space="preserve">
-    <value>支持的游戏版本</value>
+    <value>支持版本</value>
   </data>
   <data name="SelectVersion" xml:space="preserve">
     <value>选择版本：</value>
@@ -2696,5 +2717,44 @@
   </data>
   <data name="MainConfigFetchTimeout" xml:space="preserve">
     <value>超时（&gt;{0}s）</value>
+  </data>
+  <data name="UnsupportedManualMod" xml:space="preserve">
+    <value>不受支持的手动模组</value>
+  </data>
+  <data name="UnsupportedManualModDescription" xml:space="preserve">
+    <value>此模组不受管理器支持，或文件名与官方版本记录不一致。仅可进行切换和卸载操作。</value>
+  </data>
+  <data name="DownloadAttemptRetrying" xml:space="preserve">
+    <value>{2} 下载第 {0}/{1} 次失败，准备重试：{3}</value>
+  </data>
+  <data name="DownloadNoProgressTimeout" xml:space="preserve">
+    <value>下载 {0} 时已连续 {1} 秒没有进度。</value>
+  </data>
+  <data name="DownloadIntegrityCheckFailed" xml:space="preserve">
+    <value>下载文件未通过完整性校验：{0}</value>
+  </data>
+  <data name="DownloadDigestUnsupported" xml:space="preserve">
+    <value>跳过不支持的摘要校验：{0} - {1}</value>
+  </data>
+  <data name="DownloadDigestMismatch" xml:space="preserve">
+    <value>{0} 的 SHA-256 校验失败。期望 {1}，实际 {2}。</value>
+  </data>
+  <data name="DownloadFailedWithoutException" xml:space="preserve">
+    <value>下载失败，但没有捕获到具体异常：{0}</value>
+  </data>
+  <data name="DownloadSizeVerified" xml:space="preserve">
+    <value>{0} 大小校验通过：{1} 字节</value>
+  </data>
+  <data name="DownloadDigestVerified" xml:space="preserve">
+    <value>{0} 的 SHA-256 校验通过：{1}</value>
+  </data>
+  <data name="RedownloadReinstall" xml:space="preserve">
+    <value>重下并重装</value>
+  </data>
+  <data name="MelonLoaderReleaseLoadWarning" xml:space="preserve">
+    <value>MelonLoader 版本列表加载失败，请检查网络连接后重试。</value>
+  </data>
+  <data name="MelonLoaderReleaseLoadWarningZh" xml:space="preserve">
+    <value>MelonLoader 版本列表加载失败，请检查网络连接。可以尝试使用代理加速或切换节点后重试。</value>
   </data>
 </root>

@@ -23,6 +23,7 @@ public class RelatedModInfo
 public partial class ModDetailViewModel : ObservableObject
 {
     private readonly IModManagerService _modManagerService;
+    private readonly IModBackupService _modBackupService;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
 
@@ -43,6 +44,9 @@ public partial class ModDetailViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isInstalling;
+
+    [ObservableProperty]
+    private bool _hasSelectedReleaseBackup;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -78,9 +82,12 @@ public partial class ModDetailViewModel : ObservableObject
     // 全量MOD列表引用（用于查找依赖/冲突的显示名称和安装状态）
     private List<ModViewModel> _allMods = new();
 
-    public ModDetailViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService)
+    public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
+
+    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService)
     {
         _modManagerService = modManagerService;
+        _modBackupService = modBackupService;
         _loggingService = loggingService;
         _settingsService = settingsService;
     }
@@ -156,6 +163,7 @@ public partial class ModDetailViewModel : ObservableObject
             // 默认选中最新版本
             SelectedRelease = AvailableReleases.FirstOrDefault(r => r.TagName == Mod.LatestVersion)
                               ?? AvailableReleases.FirstOrDefault();
+            await UpdateSelectedReleaseBackupStateAsync(SelectedRelease);
         }
         catch (Exception ex)
         {
@@ -169,6 +177,13 @@ public partial class ModDetailViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanInstall))]
     private async Task InstallSelectedVersionAsync()
+        => await InstallSelectedVersionCoreAsync(preferBackup: true);
+
+    [RelayCommand(CanExecute = nameof(CanInstall))]
+    private async Task RedownloadInstallSelectedVersionAsync()
+        => await InstallSelectedVersionCoreAsync(preferBackup: false);
+
+    private async Task InstallSelectedVersionCoreAsync(bool preferBackup)
     {
         if (Mod == null || SelectedRelease == null) return;
 
@@ -235,7 +250,7 @@ public partial class ModDetailViewModel : ObservableObject
             }
 
             var success = await _modManagerService.InstallModAsync(
-                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck);
+                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, preferBackup: preferBackup);
 
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, Mod.DisplayName)
@@ -298,6 +313,35 @@ public partial class ModDetailViewModel : ObservableObject
             IsInstalling = true;
             StatusMessage = string.Format(Strings.UninstallingMod_, Mod.DisplayName);
             var success = await _modManagerService.UninstallModAsync(Mod.Id);
+            StatusMessage = success
+                ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
+                : string.Format(Strings.UninstallFailed, Mod.DisplayName);
+            if (success) RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUninstallError, Mod.Id);
+            StatusMessage = string.Format(Strings.UninstallFailed, Mod.DisplayName);
+        }
+        finally { IsInstalling = false; }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanManage))]
+    private async Task UninstallManualModAsync()
+    {
+        if (Mod == null) return;
+
+        var result = MessageBox.Show(
+            string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
+            Strings.ConfirmUninstall,
+            MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (result != MessageBoxResult.Yes) return;
+
+        try
+        {
+            IsInstalling = true;
+            StatusMessage = string.Format(Strings.UninstallingMod_, Mod.DisplayName);
+            var success = await _modManagerService.UninstallManualModAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
                 : string.Format(Strings.UninstallFailed, Mod.DisplayName);
@@ -389,11 +433,29 @@ public partial class ModDetailViewModel : ObservableObject
     partial void OnIsInstallingChanged(bool value)
     {
         InstallSelectedVersionCommand.NotifyCanExecuteChanged();
+        RedownloadInstallSelectedVersionCommand.NotifyCanExecuteChanged();
         UninstallCommand.NotifyCanExecuteChanged();
+        UninstallManualModCommand.NotifyCanExecuteChanged();
         ToggleCommand.NotifyCanExecuteChanged();
         UpdateCommand.NotifyCanExecuteChanged();
         ConfigureCommand.NotifyCanExecuteChanged();
     }
 
-    partial void OnSelectedReleaseChanged(GitHubRelease? value) => InstallSelectedVersionCommand.NotifyCanExecuteChanged();
+    partial void OnSelectedReleaseChanged(GitHubRelease? value)
+    {
+        InstallSelectedVersionCommand.NotifyCanExecuteChanged();
+        RedownloadInstallSelectedVersionCommand.NotifyCanExecuteChanged();
+        _ = UpdateSelectedReleaseBackupStateAsync(value);
+    }
+
+    private async Task UpdateSelectedReleaseBackupStateAsync(GitHubRelease? release)
+    {
+        if (Mod == null || release == null)
+        {
+            HasSelectedReleaseBackup = false;
+            return;
+        }
+
+        HasSelectedReleaseBackup = await _modBackupService.CheckModBackupExistsAsync(Mod.Id, release.TagName);
+    }
 }

@@ -66,6 +66,9 @@ public partial class ModBrowserViewModel : ObservableObject
     [ObservableProperty]
     private string? _currentGameVersion;
 
+    [ObservableProperty]
+    private bool _showUninstalledOnly;
+
     // 通知MainViewModel导航到详情页
     public event EventHandler<ModViewModel>? NavigateToDetailRequested;
 
@@ -74,6 +77,8 @@ public partial class ModBrowserViewModel : ObservableObject
 
     // 通知MainViewModel执行检查更新（true=只检查已安装）
     public event EventHandler<bool>? CheckForUpdatesRequested;
+
+    public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
     public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
     {
@@ -94,6 +99,8 @@ public partial class ModBrowserViewModel : ObservableObject
     }
 
     partial void OnSearchTextChanged(string value) => FilterMods();
+
+    partial void OnShowUninstalledOnlyChanged(bool value) => FilterMods();
 
     /// <summary>
     /// 由MainViewModel在数据加载完成后调用，注入全量MOD列表
@@ -160,6 +167,12 @@ public partial class ModBrowserViewModel : ObservableObject
 
         var filtered = _allMods.AsEnumerable();
 
+        // 仅显示未安装
+        if (ShowUninstalledOnly)
+        {
+            filtered = filtered.Where(m => !m.IsInstalled);
+        }
+
         // 文本搜索
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
@@ -177,7 +190,7 @@ public partial class ModBrowserViewModel : ObservableObject
 
         var result = filtered.ToList();
         FilteredMods = new ObservableCollection<ModViewModel>(result);
-        FilteredModCount = selectedTagKeys.Count > 0 || !string.IsNullOrWhiteSpace(SearchText)
+        FilteredModCount = selectedTagKeys.Count > 0 || !string.IsNullOrWhiteSpace(SearchText) || ShowUninstalledOnly
             ? $"{result.Count} / {_allMods.Count}"
             : $"{_allMods.Count}";
     }
@@ -211,6 +224,13 @@ public partial class ModBrowserViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task InstallModAsync(ModViewModel mod)
+        => await InstallModCoreAsync(mod, preferBackup: true);
+
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    private async Task RedownloadInstallAsync(ModViewModel mod)
+        => await InstallModCoreAsync(mod, preferBackup: false);
+
+    private async Task InstallModCoreAsync(ModViewModel mod, bool preferBackup)
     {
         if (string.IsNullOrEmpty(mod.LatestVersion))
         {
@@ -281,7 +301,7 @@ public partial class ModBrowserViewModel : ObservableObject
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, preferBackup: preferBackup);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);
@@ -304,5 +324,6 @@ public partial class ModBrowserViewModel : ObservableObject
     partial void OnIsDownloadingChanged(bool value)
     {
         InstallModCommand.NotifyCanExecuteChanged();
+        RedownloadInstallCommand.NotifyCanExecuteChanged();
     }
 }

@@ -907,6 +907,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 配置段尚未生成。请先运行一次游戏并退出，然后重试。.
+        /// </summary>
+        public static string ConfigSectionNotGenerated {
+            get {
+                return ResourceManager.GetString("ConfigSectionNotGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 配置 - {0}.
         /// </summary>
         public static string ConfigurationFor {
@@ -966,6 +975,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ConfigurationRefreshError {
             get {
                 return ResourceManager.GetString("ConfigurationRefreshError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 配置段 [{0}] 已重置。请运行一次游戏以重新生成配置。.
+        /// </summary>
+        public static string ConfigurationReset {
+            get {
+                return ResourceManager.GetString("ConfigurationReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 重置配置失败.
+        /// </summary>
+        public static string ConfigurationResetFailed {
+            get {
+                return ResourceManager.GetString("ConfigurationResetFailed", resourceCulture);
             }
         }
         
@@ -1047,6 +1074,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ConfirmDeletePreset {
             get {
                 return ResourceManager.GetString("ConfirmDeletePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 此按钮可以清除 MelonPreferences.cfg 中的 [{0}] 配置段。正常运行一次游戏并退出即可重新生成，不过将会丢失已经设置的 mod 配置。\n\n已经保存的预设不受影响，但是不受当前版本支持的配置可能不会生效。\n\n是否继续？.
+        /// </summary>
+        public static string ConfirmResetConfiguration {
+            get {
+                return ResourceManager.GetString("ConfirmResetConfiguration", resourceCulture);
             }
         }
         
@@ -1653,11 +1689,47 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {2} 下载第 {0}/{1} 次失败，准备重试：{3}.
+        /// </summary>
+        public static string DownloadAttemptRetrying {
+            get {
+                return ResourceManager.GetString("DownloadAttemptRetrying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 下载完成: {0}.
         /// </summary>
         public static string DownloadCompleted {
             get {
                 return ResourceManager.GetString("DownloadCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 的 SHA-256 校验失败。期望 {1}，实际 {2}。.
+        /// </summary>
+        public static string DownloadDigestMismatch {
+            get {
+                return ResourceManager.GetString("DownloadDigestMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 跳过不支持的摘要校验：{0} - {1}.
+        /// </summary>
+        public static string DownloadDigestUnsupported {
+            get {
+                return ResourceManager.GetString("DownloadDigestUnsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 的 SHA-256 校验通过：{1}.
+        /// </summary>
+        public static string DownloadDigestVerified {
+            get {
+                return ResourceManager.GetString("DownloadDigestVerified", resourceCulture);
             }
         }
         
@@ -1676,6 +1748,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DownloadError {
             get {
                 return ResourceManager.GetString("DownloadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 下载失败，但没有捕获到具体异常：{0}.
+        /// </summary>
+        public static string DownloadFailedWithoutException {
+            get {
+                return ResourceManager.GetString("DownloadFailedWithoutException", resourceCulture);
             }
         }
         
@@ -1707,6 +1788,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 下载文件未通过完整性校验：{0}.
+        /// </summary>
+        public static string DownloadIntegrityCheckFailed {
+            get {
+                return ResourceManager.GetString("DownloadIntegrityCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 下载 {0} 时已连续 {1} 秒没有进度。.
+        /// </summary>
+        public static string DownloadNoProgressTimeout {
+            get {
+                return ResourceManager.GetString("DownloadNoProgressTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 大小不匹配！预期: {0}，已下载: {1}.
         /// </summary>
         public static string DownloadSizeMismatch {
@@ -1721,6 +1820,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DownloadSizeMismatchException {
             get {
                 return ResourceManager.GetString("DownloadSizeMismatchException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 大小校验通过：{1} 字节.
+        /// </summary>
+        public static string DownloadSizeVerified {
+            get {
+                return ResourceManager.GetString("DownloadSizeVerified", resourceCulture);
             }
         }
         
@@ -3861,6 +3969,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MelonLoader 版本列表加载失败，请检查网络连接后重试。.
+        /// </summary>
+        public static string MelonLoaderReleaseLoadWarning {
+            get {
+                return ResourceManager.GetString("MelonLoaderReleaseLoadWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MelonLoader 版本列表加载失败，请检查网络连接。可以尝试使用代理加速或切换节点后重试。.
+        /// </summary>
+        public static string MelonLoaderReleaseLoadWarningZh {
+            get {
+                return ResourceManager.GetString("MelonLoaderReleaseLoadWarningZh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 获取MelonLoader版本信息时出错.
         /// </summary>
         public static string MelonLoaderReleasesFetchError {
@@ -5197,6 +5323,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 无法应用预设：配置段尚未生成。请先运行一次游戏并退出。.
+        /// </summary>
+        public static string PresetCannotApplyNoConfig {
+            get {
+                return ResourceManager.GetString("PresetCannotApplyNoConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已创建预设: {0}.
         /// </summary>
         public static string PresetCreated {
@@ -5530,6 +5665,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 重下并重装.
+        /// </summary>
+        public static string RedownloadReinstall {
+            get {
+                return ResourceManager.GetString("RedownloadReinstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 刷新.
         /// </summary>
         public static string Refresh {
@@ -5616,6 +5760,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string RequiredDirectoryStatus {
             get {
                 return ResourceManager.GetString("RequiredDirectoryStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 重置配置.
+        /// </summary>
+        public static string ResetConfiguration {
+            get {
+                return ResourceManager.GetString("ResetConfiguration", resourceCulture);
             }
         }
         
@@ -5944,6 +6097,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 仅显示未安装.
+        /// </summary>
+        public static string ShowUninstalledOnly {
+            get {
+                return ResourceManager.GetString("ShowUninstalledOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 静默更新检查失败: {0}.
         /// </summary>
         public static string SilentUpdateCheckFailed {
@@ -6169,7 +6331,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 支持的游戏版本.
+        ///   Looks up a localized string similar to 支持版本.
         /// </summary>
         public static string SupportedVersions {
             get {
@@ -7002,6 +7164,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UnstableNetworkConnection {
             get {
                 return ResourceManager.GetString("UnstableNetworkConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 不受支持的手动模组.
+        /// </summary>
+        public static string UnsupportedManualMod {
+            get {
+                return ResourceManager.GetString("UnsupportedManualMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 此模组不受管理器支持，或文件名与官方版本记录不一致。仅可进行切换和卸载操作。.
+        /// </summary>
+        public static string UnsupportedManualModDescription {
+            get {
+                return ResourceManager.GetString("UnsupportedManualModDescription", resourceCulture);
             }
         }
         

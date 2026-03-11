@@ -32,7 +32,10 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         // 进入代理设置步骤(步骤2)时，拉取最新主配置并刷新代理列表
         if (value == 2)
+        {
             _ = RefreshProxyServersAsync();
+            _ = CheckNetworkAsync(); // 进入步骤2时才检查网络
+        }
 
         // 当步骤切换到游戏目录选择(步骤3)时，自动触发搜索
         if (value == 3 && !_autoSearchAttempted)
@@ -40,6 +43,8 @@ public partial class SetupWizardViewModel : ObservableObject
             _autoSearchAttempted = true;
             _ = Task.Run(async () => await AutoSearchGHPCAsync());
         }
+
+        OnPropertyChanged(nameof(ShowMelonLoaderReleaseLoadWarning));
         UpdateNavigationButtons();
     }
 
@@ -107,6 +112,12 @@ public partial class SetupWizardViewModel : ObservableObject
     private GitHubRelease? _selectedMelonLoaderVersion;
 
     [ObservableProperty]
+    private bool _isLoadingMelonLoaderReleases;
+
+    [ObservableProperty]
+    private bool _melonLoaderReleasesLoadFailed;
+
+    [ObservableProperty]
     private bool _isInstalling;
 
     [ObservableProperty]
@@ -132,6 +143,28 @@ public partial class SetupWizardViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _useGitHubProxy = false;
+
+    public bool ShowMelonLoaderReleaseLoadWarning => CurrentStep == 5 && MelonLoaderReleasesLoadFailed && !IsLoadingMelonLoaderReleases;
+
+    public string MelonLoaderReleaseLoadWarningMessage =>
+        SelectedLanguage == "zh-CN"
+            ? Strings.ResourceManager.GetString("MelonLoaderReleaseLoadWarningZh", Strings.Culture) ?? "MelonLoader 版本列表加载失败，请检查网络连接。可以尝试使用代理加速或切换节点后重试。"
+            : Strings.ResourceManager.GetString("MelonLoaderReleaseLoadWarning", Strings.Culture) ?? "Failed to load the MelonLoader version list. Please check your network connection and try again.";
+
+    partial void OnSelectedLanguageChanged(string value)
+    {
+        OnPropertyChanged(nameof(MelonLoaderReleaseLoadWarningMessage));
+    }
+
+    partial void OnIsLoadingMelonLoaderReleasesChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowMelonLoaderReleaseLoadWarning));
+    }
+
+    partial void OnMelonLoaderReleasesLoadFailedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowMelonLoaderReleaseLoadWarning));
+    }
 
     partial void OnUseGitHubProxyChanged(bool value)
     {
@@ -179,7 +212,7 @@ public partial class SetupWizardViewModel : ObservableObject
 
     partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
-        if (_isInitializing || value == null)
+        if (_isInitializing || value == null || SelectedLanguage != "zh-CN")
             return;
 
         UpdateNavigationButtons();
@@ -273,9 +306,6 @@ public partial class SetupWizardViewModel : ObservableObject
 
         // Mark initialization as complete after setting all values
         _isInitializing = false;
-
-        ClearNetworkLog(); // 清空网络日志
-        await CheckNetworkAsync();
     }
 
     [RelayCommand]
@@ -348,17 +378,9 @@ public partial class SetupWizardViewModel : ObservableObject
                 CurrentStep = 1; // Go to Welcome Page
                 break;
 
-            case 1: // Welcome Page  
-                if (SelectedLanguage == "zh-CN")
-                {
-                    _loggingService.LogInfo(Strings.EnteringNetworkCheck);
-                    CurrentStep = 2; // Network Check
-                }
-                else
-                {
-                    _loggingService.LogInfo(Strings.SkippingNetworkCheck);
-                    CurrentStep = 3; // Game Directory
-                }
+            case 1: // Welcome Page
+                _loggingService.LogInfo(Strings.EnteringNetworkCheck);
+                CurrentStep = 2; // Network Check
                 break;
 
             case 2: // Network Check
@@ -419,16 +441,7 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         if (CurrentStep > 0)
         {
-            // Handle special case: if we're on step 3 and we skipped step 2 (network check)
-            // for English language, go back to step 1 instead of step 2
-            if (CurrentStep == 3 && SelectedLanguage != "zh-CN")
-            {
-                CurrentStep = 1;
-            }
-            else
-            {
-                CurrentStep--;
-            }
+            CurrentStep--;
             UpdateNavigationButtons();
         }
     }
@@ -623,15 +636,29 @@ public partial class SetupWizardViewModel : ObservableObject
 
     private async Task LoadMelonLoaderReleasesAsync()
     {
+        IsLoadingMelonLoaderReleases = true;
+        MelonLoaderReleasesLoadFailed = false;
+
         try
         {
             MelonLoaderReleases = await _melonLoaderService.GetMelonLoaderReleasesAsync();
             SelectedMelonLoaderVersion = MelonLoaderReleases.FirstOrDefault();
+
+            if (SelectedMelonLoaderVersion == null)
+            {
+                MelonLoaderReleasesLoadFailed = true;
+                StatusMessage = MelonLoaderReleaseLoadWarningMessage;
+            }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.MelonLoaderReleasesLoadError);
-            MessageBox.Show(Strings.CannotGetMelonLoaderVersions, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MelonLoaderReleasesLoadFailed = true;
+            StatusMessage = MelonLoaderReleaseLoadWarningMessage;
+        }
+        finally
+        {
+            IsLoadingMelonLoaderReleases = false;
         }
     }
 

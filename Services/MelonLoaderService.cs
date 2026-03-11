@@ -125,7 +125,7 @@ public class MelonLoaderService : IMelonLoaderService
             // 确保临时目录存在
             Directory.CreateDirectory(_settingsService.TempPath);
             
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
             _loggingService.LogInfo(Strings.FileDownloadCompleted, downloadData.Length);
             
             // 验证下载的数据不为空
@@ -370,7 +370,7 @@ public class MelonLoaderService : IMelonLoaderService
                 Directory.CreateDirectory(_settingsService.TempPath);
                 var indexZipPath = Path.Combine(_settingsService.TempPath, $"MelonLoader_{currentVersion}_index.zip");
 
-                var zipData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+                var zipData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
                 if (zipData == null || zipData.Length < 4 || zipData[0] != 0x50 || zipData[1] != 0x4B)
                 {
                     _loggingService.LogError(Strings.MelonLoaderUninstallFailed);

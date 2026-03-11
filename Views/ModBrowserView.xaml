@@ -64,12 +64,24 @@
         <Border Grid.Row="1"
                 Background="{DynamicResource SurfaceVariantBrush}"
                 Padding="8,6" Margin="0,0,0,4">
-            <StackPanel>
-                <TextBlock Text="{x:Static resources:Strings.FilterByTags}"
-                           FontSize="{DynamicResource LabelSmall}"
-                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                           Margin="4,0,0,4"/>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="4,0,4,4">
+                    <TextBlock Text="{x:Static resources:Strings.FilterByTags}"
+                               FontSize="{DynamicResource LabelSmall}"
+                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                               VerticalAlignment="Center"/>
+                    <CheckBox Content="{x:Static resources:Strings.ShowUninstalledOnly}"
+                              IsChecked="{Binding ShowUninstalledOnly}"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"/>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding AvailableTags}">
                         <ItemsControl.ItemsPanel>
@@ -86,7 +98,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- 无结果提示 -->
@@ -141,7 +153,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- 最新版本：内容过长时横向滚动 -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.LatestVersion}" Width="*" MinWidth="120">
+                <!--<DataGridTemplateColumn Header="{x:Static resources:Strings.LatestVersion}" Width="*" MinWidth="120">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -156,10 +168,10 @@
                                        Margin="4,0"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn>-->
 
                 <!-- Tags列：单行截断 + ToolTip完整内容 -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.ModTags}" Width="*" MinWidth="100">
+                <DataGridTemplateColumn Header="{x:Static resources:Strings.ModTags}" Width="200" MinWidth="200">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -178,8 +190,8 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- 支持版本列：列头截断+ToolTip，内容横向滚动 -->
-                <DataGridTemplateColumn Width="*" MinWidth="80">
+                <!-- 支持版本列：列头截断+ToolTip -->
+                <DataGridTemplateColumn Width="170" MinWidth="170">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -250,7 +262,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- 操作列 -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="220" MinWidth="180">
+                <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="350" MinWidth="350">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -271,6 +283,14 @@
                                         CommandParameter="{Binding}"
                                         MinWidth="80" Margin="2"
                                         Style="{DynamicResource OutlinedButtonStyle}"
+                                        Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
+
+                                <!-- 未安装且有备份：重新下载重装 -->
+                                <Button Content="{Binding DataContext.RedownloadReinstallText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        Command="{Binding DataContext.RedownloadInstallCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"
+                                        MinWidth="110" Margin="2"
+                                        Style="{DynamicResource FilledButtonStyle}"
                                         Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
 
                                 <!-- 未安装且无备份：安装最新版 -->

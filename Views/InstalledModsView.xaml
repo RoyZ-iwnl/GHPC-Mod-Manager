@@ -194,6 +194,13 @@
                                         MinWidth="60" Margin="2"
                                         Style="{DynamicResource FilledButtonStyle}"
                                         Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
+                                <!-- 重装按钮（手动mod转管理器管理） -->
+                                <Button Content="{x:Static resources:Strings.Reinstall}"
+                                        Command="{Binding DataContext.ReinstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"
+                                        MinWidth="60" Margin="2"
+                                        Style="{DynamicResource FilledButtonStyle}"
+                                        Visibility="{Binding CanReinstall, Converter={StaticResource BoolToVis}}"/>
                                 <!-- 卸载按钮 -->
                                 <Button Content="{x:Static resources:Strings.Uninstall}"
                                         Command="{Binding DataContext.UninstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"

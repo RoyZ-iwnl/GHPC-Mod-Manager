@@ -54,8 +54,49 @@
                 <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 左列：简介 + 游戏版本 + 操作按钮 -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="16,16,8,16">
+            <!-- 不受支持的手动mod专用界面 -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="16"
+                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
+                <StackPanel MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Background="{DynamicResource WarningContainerBrush}"
+                            BorderBrush="{DynamicResource WarningBrush}"
+                            BorderThickness="2"
+                            CornerRadius="{DynamicResource RadiusMedium}"
+                            Padding="24">
+                        <StackPanel>
+                            <TextBlock Text="⚠️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                            <TextBlock Text="{x:Static resources:Strings.UnsupportedManualMod}"
+                                       FontSize="{DynamicResource TitleMedium}"
+                                       FontWeight="SemiBold"
+                                       TextAlignment="Center"
+                                       Foreground="{DynamicResource OnWarningContainerBrush}"
+                                       Margin="0,0,0,12"/>
+                            <TextBlock Text="{x:Static resources:Strings.UnsupportedManualModDescription}"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Foreground="{DynamicResource OnWarningContainerBrush}"
+                                       Opacity="0.9"
+                                       Margin="0,0,0,24"/>
+
+                            <!-- 操作按钮 -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="{x:Static resources:Strings.Toggle}"
+                                        Command="{Binding ToggleCommand}"
+                                        Style="{DynamicResource OutlinedButtonStyle}"
+                                        MinWidth="100" Margin="0,0,12,0"/>
+                                <Button Content="{x:Static resources:Strings.Uninstall}"
+                                        Command="{Binding UninstallManualModCommand}"
+                                        Style="{DynamicResource FilledButtonStyle}"
+                                        MinWidth="100"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 左列：简介 + 游戏版本 + 操作按钮（正常mod） -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="16,16,8,16"
+                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
                 <StackPanel>
 
                     <!-- Tags行 -->
@@ -171,12 +212,17 @@
                                         Command="{Binding InstallSelectedVersionCommand}"
                                         Style="{DynamicResource OutlinedButtonStyle}"
                                         MinWidth="120" Margin="0,0,8,4"
-                                        Visibility="{Binding Mod.HasBackup, Converter={StaticResource BoolToVis}}"/>
+                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
+                                <Button Content="{Binding RedownloadReinstallText}"
+                                        Command="{Binding RedownloadInstallSelectedVersionCommand}"
+                                        Style="{DynamicResource FilledButtonStyle}"
+                                        MinWidth="140" Margin="0,0,8,4"
+                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
                                 <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
-                                        Command="{Binding InstallSelectedVersionCommand}"
+                                        Command="{Binding RedownloadInstallSelectedVersionCommand}"
                                         Style="{DynamicResource FilledButtonStyle}"
                                         MinWidth="120" Margin="0,0,8,4"
-                                        Visibility="{Binding Mod.HasBackup, Converter={StaticResource InvBoolToVis}}"/>
+                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource InvBoolToVis}}"/>
                             </WrapPanel>
 
                             <!-- 管理按钮（已安装时） -->
@@ -226,8 +272,9 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- 右列：依赖 + 冲突 -->
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="8,16,16,16">
+            <!-- 右列：依赖 + 冲突（不受支持的手动mod不显示） -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="8,16,16,16"
+                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
                 <StackPanel>
 
                     <!-- 依赖列表 -->

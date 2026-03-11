@@ -384,7 +384,7 @@ public class TranslationManagerService : ITranslationManagerService
                 return false;
             }
 
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
             
             var gameRootPath = _settingsService.Settings.GameRootPath;
 
@@ -453,7 +453,7 @@ public class TranslationManagerService : ITranslationManagerService
             _loggingService.LogInfo(Strings.DownloadingTranslationRelease, latestRelease.TagName);
 
             // 下载翻译ZIP文件
-            var zipData = await _networkService.DownloadFileAsync(targetAsset.DownloadUrl, progress);
+            var zipData = await _networkService.DownloadFileAsync(targetAsset.DownloadUrl, progress, expectedSize: targetAsset.Size, expectedDigest: targetAsset.Digest, assetName: targetAsset.Name);
             if (zipData == null || zipData.Length == 0)
             {
                 _loggingService.LogError(Strings.FailedToDownloadTranslationZip);

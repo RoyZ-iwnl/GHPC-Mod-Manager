@@ -72,7 +72,13 @@ public enum UpdateChannel
 
 public class AppSettings
 {
-    public string Language { get; set; } = "zh-CN";
+    private static string GetSystemLanguage()
+    {
+        var culture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+        return culture.StartsWith("zh") ? "zh-CN" : "en-US";
+    }
+
+    public string Language { get; set; } = GetSystemLanguage();
     public string GameRootPath { get; set; } = string.Empty;
     public bool IsFirstRun { get; set; } = true;
     public AppTheme Theme { get; set; } = AppTheme.Light;
@@ -199,6 +205,9 @@ public class GitHubAsset
     
     [JsonProperty("browser_download_url")]
     public string DownloadUrl { get; set; } = string.Empty;
+
+    [JsonProperty("digest")]
+    public string Digest { get; set; } = string.Empty;
     
     [JsonProperty("size")]
     public long Size { get; set; }
@@ -209,6 +218,16 @@ public class ModI18nConfig
     public string ModId { get; set; } = string.Empty;
     public Dictionary<string, Dictionary<string, string>> ConfigLabels { get; set; } = new();
     public Dictionary<string, Dictionary<string, string>> ConfigComments { get; set; } = new();
+
+    // 多选配置：key = 逗号分隔的配置键列表，value = 可选项列表
+    // 例如: "ammopool1,ammopool2" -> ["3BM32", "3BM26", ...]
+    [JsonProperty("multiplechoice")]
+    public Dictionary<string, List<string>>? MultipleChoice { get; set; }
+
+    // 单选配置：key = 逗号分隔的配置键列表，value = 可选项列表
+    // 例如: "ammo,ammo2" -> ["3BM32", "3BM26", ...]
+    [JsonProperty("singlechoice")]
+    public Dictionary<string, List<string>>? SingleChoice { get; set; }
 }
 
 public class ModI18nManager
@@ -386,6 +405,9 @@ public class ModViewModel : INotifyPropertyChanged
 
     // 未安装且无备份：正常安装
     public bool CanInstallFresh => !IsInstalled && !HasBackup && !IsTranslationPlugin;
+
+    // 未安装时允许强制重新下载并安装（即使存在备份）
+    public bool CanDownloadInstall => !IsInstalled && !IsTranslationPlugin;
 
     // Property to determine if this mod has configuration options
     public bool HasConfiguration => IsInstalled && 

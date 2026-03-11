@@ -502,7 +502,7 @@
     <value>English</value>
   </data>
   <data name="RetryNetworkCheck" xml:space="preserve">
-    <value>Retry Network Check</value>
+    <value>Retry</value>
   </data>
   <data name="NetworkHelpSolution" xml:space="preserve">
     <value>View Solutions</value>
@@ -511,7 +511,7 @@
     <value>Show Log</value>
   </data>
   <data name="CopyLog" xml:space="preserve">
-    <value>Copy Log</value>
+    <value>Copy</value>
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse...</value>
@@ -802,7 +802,7 @@
     <value>• Click Retry Check to retry network connection</value>
   </data>
   <data name="ClickViewSolutions" xml:space="preserve">
-    <value>• Click View Solutions to see network troubleshooting guide</value>
+    <value>• Set up Github API Token for more rate limit</value>
   </data>
   <data name="ClickShowLogForDetails" xml:space="preserve">
     <value>• Click Show Log to view detailed detection process</value>
@@ -1917,6 +1917,24 @@
   <data name="TranslationSystemNotInstalled" xml:space="preserve">
     <value>Translation system is not installed</value>
   </data>
+  <data name="ResetConfiguration" xml:space="preserve">
+    <value>Reset Configuration</value>
+  </data>
+  <data name="ConfirmResetConfiguration" xml:space="preserve">
+    <value>This will delete the [{0}] section from MelonPreferences.cfg. The configuration will be regenerated when you run the game once and exit. All current settings for this mod will be lost, but saved presets will not be affected (though unsupported options may not work).\n\nContinue?</value>
+  </data>
+  <data name="ConfigurationReset" xml:space="preserve">
+    <value>Configuration section [{0}] has been reset. Please run the game once to regenerate it.</value>
+  </data>
+  <data name="ConfigurationResetFailed" xml:space="preserve">
+    <value>Failed to reset configuration</value>
+  </data>
+  <data name="ConfigSectionNotGenerated" xml:space="preserve">
+    <value>Configuration section has not been generated yet. Please run the game once and exit, then try again.</value>
+  </data>
+  <data name="PresetCannotApplyNoConfig" xml:space="preserve">
+    <value>Cannot apply preset: Configuration section has not been generated. Please run the game once and exit first.</value>
+  </data>
   <data name="TranslationPluginUpdateAvailable" xml:space="preserve">
     <value>Translation plugin update available</value>
   </data>
@@ -2534,6 +2552,9 @@ Do you want to restart now?</value>
   <data name="FilterByTags" xml:space="preserve">
     <value>Filter by Tags</value>
   </data>
+  <data name="ShowUninstalledOnly" xml:space="preserve">
+    <value>Show Uninstalled Only</value>
+  </data>
   <data name="ClearTagFilter" xml:space="preserve">
     <value>Clear Filter</value>
   </data>
@@ -2550,7 +2571,7 @@ Do you want to restart now?</value>
     <value>Tags</value>
   </data>
   <data name="SupportedVersions" xml:space="preserve">
-    <value>Supported Game Versions</value>
+    <value>Supported Versions</value>
   </data>
   <data name="SelectVersion" xml:space="preserve">
     <value>Select version:</value>
@@ -2731,5 +2752,44 @@ Do you want to restart now?</value>
   </data>
   <data name="MainConfigFetchTimeout" xml:space="preserve">
     <value>Timeout (&gt;{0}s)</value>
+  </data>
+  <data name="UnsupportedManualMod" xml:space="preserve">
+    <value>Unsupported Manual Mod</value>
+  </data>
+  <data name="UnsupportedManualModDescription" xml:space="preserve">
+    <value>This mod is not supported by the manager, or the file name does not match the official version records. Only toggle and uninstall operations are available.</value>
+  </data>
+  <data name="DownloadAttemptRetrying" xml:space="preserve">
+    <value>Download attempt {0}/{1} failed for {2}, retrying: {3}</value>
+  </data>
+  <data name="DownloadNoProgressTimeout" xml:space="preserve">
+    <value>No download progress for {1} seconds while downloading {0}.</value>
+  </data>
+  <data name="DownloadIntegrityCheckFailed" xml:space="preserve">
+    <value>Downloaded file failed integrity validation: {0}</value>
+  </data>
+  <data name="DownloadDigestUnsupported" xml:space="preserve">
+    <value>Skipping unsupported digest verification for {0}: {1}</value>
+  </data>
+  <data name="DownloadDigestMismatch" xml:space="preserve">
+    <value>SHA-256 mismatch for {0}. Expected {1}, got {2}.</value>
+  </data>
+  <data name="DownloadFailedWithoutException" xml:space="preserve">
+    <value>Download failed without exception: {0}</value>
+  </data>
+  <data name="DownloadSizeVerified" xml:space="preserve">
+    <value>Download size verified for {0}: {1} bytes</value>
+  </data>
+  <data name="DownloadDigestVerified" xml:space="preserve">
+    <value>SHA-256 verified for {0}: {1}</value>
+  </data>
+  <data name="RedownloadReinstall" xml:space="preserve">
+    <value>Redownload&amp;install</value>
+  </data>
+  <data name="MelonLoaderReleaseLoadWarning" xml:space="preserve">
+    <value>Failed to load the MelonLoader version list. Please check your network connection and try again.</value>
+  </data>
+  <data name="MelonLoaderReleaseLoadWarningZh" xml:space="preserve">
+    <value>Failed to load the MelonLoader version list. Please check your network connection and try again.</value>
   </data>
 </root>

@@ -24,6 +24,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IMainConfigService _mainConfigService;
     private readonly IModManagerService _modManagerService;
+    private readonly Lazy<MainViewModel> _mainViewModel;
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
@@ -169,7 +170,8 @@ public partial class SettingsViewModel : ObservableObject
         IUpdateService updateService,
         IMelonLoaderService melonLoaderService,
         IMainConfigService mainConfigService,
-        IModManagerService modManagerService)
+        IModManagerService modManagerService,
+        Lazy<MainViewModel> mainViewModel)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -182,6 +184,7 @@ public partial class SettingsViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
         _mainConfigService = mainConfigService;
         _modManagerService = modManagerService;
+        _mainViewModel = mainViewModel;
 
         LoadSettings();
         RefreshProxyServerList();
@@ -415,7 +418,10 @@ public partial class SettingsViewModel : ObservableObject
             {
                 var freedBytes = await _modBackupService.CleanupModBackupsAsync();
                 var freedMB = (freedBytes / (1024.0 * 1024.0)).ToString("F1");
-                
+
+                // 刷新MainViewModel的Mod列表，更新HasBackup状态
+                await _mainViewModel.Value.RefreshDataAsync();
+
                 MessageBox.Show(
                     string.Format(Strings.CleanupModBackupsSuccessful, freedMB),
                     Strings.Success,

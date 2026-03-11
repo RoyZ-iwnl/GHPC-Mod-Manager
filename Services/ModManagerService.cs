@@ -11,7 +11,7 @@ namespace GHPC_Mod_Manager.Services;
 public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
-    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false);
+    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool preferBackup = true);
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
@@ -33,6 +33,12 @@ public interface IModManagerService
 
     // 新增：检查单个MOD的依赖状态（供详情页和列表图标使用）
     Task<(bool AllSatisfied, List<string> MissingModIds)> CheckSingleModDependenciesAsync(string modId);
+
+    // 重置MOD配置段
+    Task<bool> ResetModConfigurationAsync(string modId);
+
+    // 检查配置段是否存在
+    Task<bool> ConfigSectionExistsAsync(string modId);
 }
 
 public class ModManagerService : IModManagerService
@@ -117,9 +123,10 @@ public class ModManagerService : IModManagerService
         var versionTasks = result.Select(async vm =>
         {
             // 检查是否有卸载备份（用于快速重装提示）
+            var hasAnyBackup = false;
             if (Directory.Exists(uninstalledBackupRoot))
             {
-                vm.HasBackup = Directory.GetDirectories(uninstalledBackupRoot, $"{vm.Id}_v*").Any();
+                hasAnyBackup = Directory.GetDirectories(uninstalledBackupRoot, $"{vm.Id}_v*").Any();
             }
             try
             {
@@ -131,11 +138,15 @@ public class ModManagerService : IModManagerService
                 var latestRelease = releases.FirstOrDefault();
                 vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
                 vm.UpdateDate = latestRelease?.PublishedAt;
+                vm.HasBackup = !string.IsNullOrWhiteSpace(vm.LatestVersion) &&
+                               vm.LatestVersion != GHPC_Mod_Manager.Resources.Strings.Unknown &&
+                               await _modBackupService.CheckModBackupExistsAsync(vm.Id, vm.LatestVersion);
             }
             catch
             {
                 vm.LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown;
                 vm.UpdateDate = null;
+                vm.HasBackup = hasAnyBackup;
             }
         }).ToList();
 
@@ -294,14 +305,15 @@ public class ModManagerService : IModManagerService
         }
     }
 
-    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false)
+    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool preferBackup = true)
     {
         try
         {
             _loggingService.LogInfo(Strings.Installing, modConfig.Id, version);
 
             // Check if we can reinstall from backup first (quick install)
-            if (await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version))
+            var hasBackup = await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version);
+            if (hasBackup && preferBackup)
             {
                 _loggingService.LogInfo(Strings.AttemptingQuickReinstallFromBackup, modConfig.Id, version);
                 
@@ -331,6 +343,10 @@ public class ModManagerService : IModManagerService
                     _loggingService.LogInfo(Strings.ModReinstalledFromBackup, modConfig.Id, version);
                     return true;
                 }
+            }
+            else if (hasBackup && !preferBackup)
+            {
+                await _modBackupService.DeleteModBackupAsync(modConfig.Id, version);
             }
 
             // Standard installation process continues if backup installation fails or doesn't exist
@@ -394,7 +410,7 @@ public class ModManagerService : IModManagerService
             // 开始追踪文件操作
             tracker.StartTracking($"mod_install_{modConfig.Id}_{version}", modsPath);
 
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
 
             // 下载完成后检查游戏是否已启动，避免写入冲突
             if (_processService.IsGameRunning)
@@ -501,7 +517,7 @@ public class ModManagerService : IModManagerService
             }
 
             // Download the new version
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress);
+            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
 
             // 下载完成后检查游戏是否已启动，避免写入冲突
             if (_processService.IsGameRunning)
@@ -1213,10 +1229,48 @@ public class ModManagerService : IModManagerService
                             }
                             
                             var localizedLabel = GetLocalizedConfigLabel(modId, key);
-                            var localizedComment = string.IsNullOrEmpty(comment) ? "" : 
+                            var localizedComment = string.IsNullOrEmpty(comment) ? "" :
                                 GetLocalizedConfigComment(modId, comment);
-                            
+
                             var configItem = new ConfigurationItemViewModel(key, localizedLabel, typedValue, "", localizedComment);
+
+                            // 检查是否为多选类型
+                            var multipleChoiceOptions = _modI18nService.GetMultipleChoiceOptions(modId, key);
+                            if (multipleChoiceOptions != null && multipleChoiceOptions.Count > 0)
+                            {
+                                configItem.IsMultipleChoiceType = true;
+                                configItem.IsStringType = false;
+
+                                // 解析当前值（数组格式）
+                                var selectedValues = new List<string>();
+                                if (value.StartsWith("[") && value.EndsWith("]"))
+                                {
+                                    var arrayContent = value.Substring(1, value.Length - 2);
+                                    selectedValues = arrayContent.Split(',')
+                                        .Select(v => v.Trim().Trim('"').Trim())
+                                        .Where(v => !string.IsNullOrEmpty(v))
+                                        .ToList();
+                                }
+
+                                // 创建多选选项
+                                foreach (var option in multipleChoiceOptions)
+                                {
+                                    var isSelected = selectedValues.Contains(option);
+                                    configItem.MultipleChoiceOptions.Add(new MultipleChoiceOption(option, isSelected));
+                                }
+                            }
+                            // 检查是否为单选类型
+                            else
+                            {
+                                var singleChoiceOptions = _modI18nService.GetSingleChoiceOptions(modId, key);
+                                if (singleChoiceOptions != null && singleChoiceOptions.Count > 0)
+                                {
+                                    configItem.IsChoiceType = true;
+                                    configItem.IsStringType = false;
+                                    configItem.ChoiceOptions = singleChoiceOptions;
+                                }
+                            }
+
                             result.Add(configItem);
                             
                             var commentSuffix = string.IsNullOrEmpty(comment) ? "" : $" # {comment}";
@@ -1287,6 +1341,12 @@ public class ModManagerService : IModManagerService
                             {
                                 formattedValue = boolVal.ToString().ToLower();
                             }
+                            else if (newValue is List<string> listVal)
+                            {
+                                // 多选类型：格式化为 TOML 数组
+                                var items = listVal.Select(item => $"\"{item}\"");
+                                formattedValue = $"[ {string.Join(", ", items)} ]";
+                            }
                             else if (newValue is int || newValue is long || newValue is float || newValue is double)
                             {
                                 // Keep numeric values as-is without quotes
@@ -1295,11 +1355,11 @@ public class ModManagerService : IModManagerService
                             else
                             {
                                 var valueStr = newValue.ToString();
-                                
+
                                 // Try to determine if the original value was numeric
                                 var originalValue = parts[1].Substring(0, commentIndex >= 0 ? commentIndex : parts[1].Length).Trim();
                                 var wasNumeric = IsNumericValue(originalValue.Trim('"') ?? "");
-                                
+
                                 if (wasNumeric && IsNumericValue(valueStr ?? ""))
                                 {
                                     // Keep as numeric without quotes
@@ -1891,6 +1951,86 @@ public class ModManagerService : IModManagerService
         {
             _loggingService.LogError(ex, "CheckSingleModDependenciesAsync failed for mod: {0}", modId);
             return (true, new List<string>());
+        }
+    }
+
+    public async Task<bool> ConfigSectionExistsAsync(string modId)
+    {
+        try
+        {
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+                return false;
+
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            var configPath = Path.Combine(gameRootPath, "UserData", "MelonPreferences.cfg");
+
+            if (!File.Exists(configPath))
+                return false;
+
+            var lines = await File.ReadAllLinesAsync(configPath);
+            var targetSection = $"[{modConfig.ConfigSectionName}]";
+
+            return lines.Any(line => line.Trim().Equals(targetSection, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "ConfigSectionExistsAsync failed for mod: {0}", modId);
+            return false;
+        }
+    }
+
+    public async Task<bool> ResetModConfigurationAsync(string modId)
+    {
+        try
+        {
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+                return false;
+
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            var configPath = Path.Combine(gameRootPath, "UserData", "MelonPreferences.cfg");
+
+            if (!File.Exists(configPath))
+                return false;
+
+            var lines = await File.ReadAllLinesAsync(configPath);
+            var newLines = new List<string>();
+            var targetSection = $"[{modConfig.ConfigSectionName}]";
+            var inTargetSection = false;
+
+            foreach (var line in lines)
+            {
+                var trimmed = line.Trim();
+
+                // 检测到目标配置段开始
+                if (trimmed.Equals(targetSection, StringComparison.OrdinalIgnoreCase))
+                {
+                    inTargetSection = true;
+                    continue; // 跳过配置段标题行
+                }
+
+                // 检测到新的配置段开始
+                if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
+                {
+                    inTargetSection = false;
+                }
+
+                // 不在目标配置段内，保留该行
+                if (!inTargetSection)
+                {
+                    newLines.Add(line);
+                }
+            }
+
+            await File.WriteAllLinesAsync(configPath, newLines);
+            _loggingService.LogInfo(Strings.ConfigurationReset, modConfig.ConfigSectionName);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ConfigurationResetFailed);
+            return false;
         }
     }
 }

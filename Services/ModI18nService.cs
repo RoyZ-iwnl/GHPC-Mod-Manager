@@ -12,6 +12,8 @@ public interface IModI18nService
     string GetLocalizedLabel(string modId, string configKey, string fallback);
     string GetLocalizedComment(string modId, string commentKey, string fallback);
     Task RefreshModI18nConfigAsync(bool forceRefresh = false);
+    List<string>? GetMultipleChoiceOptions(string modId, string configKey);
+    List<string>? GetSingleChoiceOptions(string modId, string configKey);
 }
 
 public class ModI18nService : IModI18nService
@@ -154,5 +156,39 @@ public class ModI18nService : IModI18nService
         }
 
         return fallback;
+    }
+
+    public List<string>? GetMultipleChoiceOptions(string modId, string configKey)
+    {
+        if (!_modI18nManager.ModConfigs.TryGetValue(modId, out var modConfig) ||
+            modConfig.MultipleChoice == null)
+            return null;
+
+        // 查找包含该 configKey 的键列表（逗号分隔）
+        foreach (var kvp in modConfig.MultipleChoice)
+        {
+            var keys = kvp.Key.Split(',').Select(k => k.Trim()).ToList();
+            if (keys.Contains(configKey))
+                return kvp.Value;
+        }
+
+        return null;
+    }
+
+    public List<string>? GetSingleChoiceOptions(string modId, string configKey)
+    {
+        if (!_modI18nManager.ModConfigs.TryGetValue(modId, out var modConfig) ||
+            modConfig.SingleChoice == null)
+            return null;
+
+        // 查找包含该 configKey 的键列表（逗号分隔）
+        foreach (var kvp in modConfig.SingleChoice)
+        {
+            var keys = kvp.Key.Split(',').Select(k => k.Trim()).ToList();
+            if (keys.Contains(configKey))
+                return kvp.Value;
+        }
+
+        return null;
     }
 }

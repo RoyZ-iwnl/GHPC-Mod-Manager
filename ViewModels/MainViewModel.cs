@@ -373,11 +373,16 @@ public partial class MainViewModel : ObservableObject
         else
             NavigateToPage(NavigationPage.InstalledMods);
 
-        // 先加载数据,不阻塞
-        await RefreshDataAsync();
+        // 只在非首次运行时自动加载数据（首次运行用户还在配置网络）
+        if (!_settingsService.Settings.IsFirstRun)
+            await RefreshDataAsync();
 
         // 检测 MelonLoader 是否已安装（可能在软件关闭期间被用户删除）
         await CheckMelonLoaderInstalledAsync();
+
+        // 首次运行跳过后台检查，避免 API 超限
+        if (_settingsService.Settings.IsFirstRun)
+            return;
 
         // 后台检测网络连接,不阻塞UI
         _ = Task.Run(async () =>
@@ -450,7 +455,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RefreshDataAsync()
+    public async Task RefreshDataAsync()
     {
         try
         {

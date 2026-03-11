@@ -89,12 +89,20 @@
                              Foreground="{DynamicResource OnSurfaceBrush}"
                              Background="{DynamicResource SurfaceVariantBrush}"
                              BorderBrush="{DynamicResource OutlineBrush}"/>
-                    <Button Content="{x:Static resources:Strings.SaveAsPreset}" 
-                           Command="{Binding SaveAsPresetCommand}" 
+                    <Button Content="{x:Static resources:Strings.SaveAsPreset}"
+                           Command="{Binding SaveAsPresetCommand}"
                            Width="85"
                            Margin="0,0,15,0"
                            Style="{DynamicResource FilledButtonStyle}"/>
-                    
+
+                    <!-- Reset Configuration Button -->
+                    <Button Content="{x:Static resources:Strings.ResetConfiguration}"
+                           Command="{Binding ResetConfigurationCommand}"
+                           Width="90"
+                           Margin="0,0,15,0"
+                           Style="{DynamicResource TextButtonStyle}"
+                           Foreground="{DynamicResource ErrorBrush}"/>
+
                     <!-- Search Box -->
                     <TextBlock Text="{x:Static resources:Strings.Search}" 
                               VerticalAlignment="Center" 
@@ -183,20 +191,20 @@
                                                 
                                                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
                                                     <!-- Boolean Value -->
-                                                    <CheckBox IsChecked="{Binding BoolValue, Mode=TwoWay}" 
+                                                    <CheckBox IsChecked="{Binding BoolValue, Mode=TwoWay}"
                                                               Visibility="{Binding IsBooleanType, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                               VerticalAlignment="Center"
                                                               Foreground="{DynamicResource OnSurfaceBrush}"/>
-                                                    
+
                                                     <!-- String/Number Value -->
-                                                    <TextBox Text="{Binding StringValue, Mode=TwoWay}" 
+                                                    <TextBox Text="{Binding StringValue, Mode=TwoWay}"
                                                              Visibility="{Binding IsStringType, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                              VerticalAlignment="Center"
                                                              Foreground="{DynamicResource OnSurfaceBrush}"
                                                              Background="{DynamicResource SurfaceVariantBrush}"
                                                              BorderBrush="{DynamicResource OutlineBrush}"/>
-                                                    
-                                                    <!-- Enum/Choice Value -->
+
+                                                    <!-- Single Choice (Dropdown) -->
                                                     <ComboBox ItemsSource="{Binding ChoiceOptions}"
                                                               SelectedItem="{Binding StringValue, Mode=TwoWay}"
                                                               Visibility="{Binding IsChoiceType, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -204,6 +212,19 @@
                                                               Foreground="{DynamicResource OnSurfaceBrush}"
                                                               Background="{DynamicResource SurfaceVariantBrush}"
                                                               BorderBrush="{DynamicResource OutlineBrush}"/>
+
+                                                    <!-- Multiple Choice (Checkboxes) -->
+                                                    <ItemsControl ItemsSource="{Binding MultipleChoiceOptions}"
+                                                                  Visibility="{Binding IsMultipleChoiceType, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <CheckBox Content="{Binding Name}"
+                                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                          Margin="0,2"
+                                                                          Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
                                                 </StackPanel>
                                             </Grid>
                                         </Border>

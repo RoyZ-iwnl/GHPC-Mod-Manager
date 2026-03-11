@@ -90,6 +90,7 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<MainWindowViewModel>();
                     services.AddTransient<SetupWizardViewModel>();
                     services.AddSingleton<MainViewModel>(); // 改为单例，避免导航时重新创建
+                    services.AddSingleton<Lazy<MainViewModel>>(sp => new Lazy<MainViewModel>(sp.GetRequiredService<MainViewModel>));
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
                     services.AddTransient<AnnouncementViewModel>();

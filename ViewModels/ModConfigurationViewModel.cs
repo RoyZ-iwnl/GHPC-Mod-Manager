@@ -12,6 +12,22 @@ using GHPC_Mod_Manager.Resources;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
+// 多选选项模型
+public partial class MultipleChoiceOption : ObservableObject
+{
+    [ObservableProperty]
+    private string _name = string.Empty;
+
+    [ObservableProperty]
+    private bool _isSelected;
+
+    public MultipleChoiceOption(string name, bool isSelected = false)
+    {
+        Name = name;
+        IsSelected = isSelected;
+    }
+}
+
 // 配置项详细信息
 public partial class ConfigurationItemViewModel : ObservableObject
 {
@@ -41,16 +57,22 @@ public partial class ConfigurationItemViewModel : ObservableObject
     
     [ObservableProperty]
     private bool _isChoiceType;
-    
+
+    [ObservableProperty]
+    private bool _isMultipleChoiceType; // 多选类型
+
     [ObservableProperty]
     private List<string> _choiceOptions = new();
-    
+
+    [ObservableProperty]
+    private ObservableCollection<MultipleChoiceOption> _multipleChoiceOptions = new(); // 多选选项
+
     [ObservableProperty]
     private bool _boolValue;
-    
+
     [ObservableProperty]
     private string _stringValue = string.Empty;
-    
+
     [ObservableProperty]
     private bool _isStandaloneComment; // 标识是否为单独一行的注释
     
@@ -102,18 +124,23 @@ public partial class ConfigurationItemViewModel : ObservableObject
         // 单独注释行不参与配置保存
         if (IsStandaloneComment)
             return string.Empty;
-            
+
         if (IsBooleanType)
             return BoolValue;
+        if (IsMultipleChoiceType)
+        {
+            // 返回选中项的列表
+            return MultipleChoiceOptions.Where(o => o.IsSelected).Select(o => o.Name).ToList();
+        }
         if (IsChoiceType)
             return StringValue;
-        
+
         // 尝试转换为数字
         if (double.TryParse(StringValue, out var doubleVal))
             return doubleVal;
         if (int.TryParse(StringValue, out var intVal))
             return intVal;
-            
+
         return StringValue;
     }
 }
@@ -345,7 +372,20 @@ public partial class ModConfigurationViewModel : ObservableObject
     private async Task LoadPresetAsync()
     {
         if (SelectedPreset == null) return;
-        
+
+        // 检查配置段是否存在
+        var configExists = await _modManagerService.ConfigSectionExistsAsync(ModId);
+        if (!configExists)
+        {
+            MessageBox.Show(
+                Strings.PresetCannotApplyNoConfig,
+                Strings.Warning,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            StatusMessage = Strings.ConfigSectionNotGenerated;
+            return;
+        }
+
         try
         {
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -366,7 +406,7 @@ public partial class ModConfigurationViewModel : ObservableObject
                     }
                 }
             });
-            
+
             StatusMessage = string.Format(Strings.PresetLoaded_, SelectedPreset.Name);
         }
         catch (Exception ex)
@@ -502,7 +542,62 @@ public partial class ModConfigurationViewModel : ObservableObject
     {
         OwnerWindow?.Close();
     }
-    
+
+    [RelayCommand]
+    private async Task ResetConfigurationAsync()
+    {
+        try
+        {
+            // 检查配置段是否存在
+            var configExists = await _modManagerService.ConfigSectionExistsAsync(ModId);
+            if (!configExists)
+            {
+                MessageBox.Show(
+                    Strings.ConfigSectionNotGenerated,
+                    Strings.Warning,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                StatusMessage = Strings.ConfigSectionNotGenerated;
+                return;
+            }
+
+            // 获取配置段名称用于显示
+            var modConfig = (await _modManagerService.GetModListAsync()).FirstOrDefault(m => m.Id == ModId);
+            var sectionName = modConfig?.Config.ConfigSectionName ?? ModId;
+
+            var result = MessageBox.Show(
+                string.Format(Strings.ConfirmResetConfiguration, sectionName).Replace("\\n", Environment.NewLine),
+                Strings.ConfirmDelete,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes) return;
+
+            var success = await _modManagerService.ResetModConfigurationAsync(ModId);
+            if (success)
+            {
+                StatusMessage = string.Format(Strings.ConfigurationReset, sectionName);
+
+                // 清空当前配置显示
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Configuration.Clear();
+                    HasConfiguration = false;
+                    UpdateFilteredConfigurationCount();
+                });
+            }
+            else
+            {
+                StatusMessage = Strings.ConfigurationResetFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ConfigurationResetFailed);
+            StatusMessage = Strings.ConfigurationResetFailed;
+        }
+    }
+
     private async Task SaveConfigurationAsync()
     {
         try
