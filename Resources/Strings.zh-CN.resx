@@ -132,6 +132,9 @@
   <data name="SettingsSaveError" xml:space="preserve">
     <value>设置保存错误</value>
   </data>
+  <data name="GitHubTokenMigratedToEncrypted" xml:space="preserve">
+    <value>GitHub Token 已迁移到加密存储</value>
+  </data>
   <data name="NetworkCheckFailed" xml:space="preserve">
     <value>✗ 网络连接检测失败</value>
   </data>
@@ -637,7 +640,7 @@
     <value>请选择MelonLoader版本</value>
   </data>
   <data name="MelonLoaderInstallFailed" xml:space="preserve">
-    <value>MelonLoader安装失败</value>
+    <value>MelonLoader安装失败，请尝试启用代理加速或填写Github token。</value>
   </data>
   <data name="MelonLoaderInstallationError" xml:space="preserve">
     <value>MelonLoader安装过程中发生错误</value>

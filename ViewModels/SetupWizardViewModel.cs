@@ -543,7 +543,7 @@ public partial class SetupWizardViewModel : ObservableObject
             _loggingService.LogInfo(Strings.StartingNetworkConnectionCheck);
             AddToNetworkLog(Strings.CheckingNetworkConnectionStatus);
             
-            IsNetworkAvailable = await _networkService.CheckNetworkConnectionAsync();
+            IsNetworkAvailable = await _networkService.CheckGitHubConnectionAsync();
             
             if (IsNetworkAvailable)
             {

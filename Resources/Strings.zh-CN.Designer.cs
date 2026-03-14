@@ -2923,6 +2923,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GitHub Token 已迁移到加密存储.
+        /// </summary>
+        public static string GitHubTokenMigratedToEncrypted {
+            get {
+                return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ← 返回.
         /// </summary>
         public static string GoBack {
@@ -3852,7 +3861,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MelonLoader安装失败.
+        ///   Looks up a localized string similar to MelonLoader安装失败，请尝试启用代理加速或填写Github token。.
         /// </summary>
         public static string MelonLoaderInstallFailed {
             get {

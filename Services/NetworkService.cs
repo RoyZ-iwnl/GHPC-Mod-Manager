@@ -11,7 +11,8 @@ namespace GHPC_Mod_Manager.Services;
 
 public interface INetworkService
 {
-    Task<bool> CheckNetworkConnectionAsync();
+    Task<bool> CheckNetworkConnectionAsync(); // 主程序启动检测main.json
+    Task<bool> CheckGitHubConnectionAsync(); // SetupWizard检测GitHub连接
     Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false);
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
@@ -150,16 +151,62 @@ public class NetworkService : INetworkService
 
     public async Task<bool> CheckNetworkConnectionAsync()
     {
+        // 主程序启动检测：使用 main.json 的 fallback 链测试连通性
+        var urls = _mainConfigService.GetMainConfigUrlCandidates();
+
+        foreach (var url in urls)
+        {
+            try
+            {
+                _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, url);
+
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(8));
+                using var request = new HttpRequestMessage(HttpMethod.Head, url);
+                using var response = await _httpClient.SendAsync(request, cts.Token);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.NetworkTestFailed, ex.Message);
+            }
+        }
+
+        _loggingService.LogError(Strings.NetworkCheckFailed);
+        return false;
+    }
+
+    public async Task<bool> CheckGitHubConnectionAsync()
+    {
+        // SetupWizard检测：测试GitHub API连通性（遵循代理设置）
+        const string testUrl = "https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
+
+        if (_settingsService.Settings.UseGitHubProxy)
+        {
+            var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+            var proxyUrl = $"https://{proxyDomain}/https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
+            _loggingService.LogInfo(Strings.TestingNetworkConnectionThroughProxy, proxyDomain);
+            return await TestConnectionAsync(proxyUrl);
+        }
+        else
+        {
+            _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
+            return await TestConnectionAsync(testUrl);
+        }
+    }
+
+    private async Task<bool> TestConnectionAsync(string url)
+    {
         try
         {
-            const string testUrl = "https://api.github.com/repos/RoyZ-iwnl/GHPC-Mod-Manager/releases/latest";
-            _loggingService.LogInfo(Strings.TestingDirectNetworkConnection, testUrl);
-
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            using var request = new HttpRequestMessage(HttpMethod.Get, testUrl);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("User-Agent", "GHPC-Mod-Manager");
 
-            // 添加 Token 支持
             var token = _settingsService.Settings.GitHubApiToken;
             if (!string.IsNullOrWhiteSpace(token))
                 request.Headers.Add("Authorization", $"token {token}");
@@ -167,17 +214,16 @@ public class NetworkService : INetworkService
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
             var content = await response.Content.ReadAsStringAsync(cts.Token);
 
-            // 检查是否返回 rate limit 错误
             if (content.Contains("API rate limit exceeded") || content.Contains("rate limit"))
             {
                 _loggingService.LogError(Strings.NetworkCheckFailed);
                 return false;
             }
 
-            // 检查是否返回正常的 release 数据
             if (response.IsSuccessStatusCode && (content.Contains("tag_name") || content.Contains("\"id\":")))
             {
-                _loggingService.LogInfo(Strings.NetworkTestSuccessfulViaDirect);
+                var isProxy = url.Contains("dmr.gg") || url.Contains("gh-proxy.com");
+                _loggingService.LogInfo(isProxy ? Strings.NetworkTestSuccessfulViaProxy : Strings.NetworkTestSuccessfulViaDirect);
                 return true;
             }
 

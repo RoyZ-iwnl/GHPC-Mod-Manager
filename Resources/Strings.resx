@@ -132,6 +132,9 @@
   <data name="SettingsSaveError" xml:space="preserve">
     <value>Error saving settings</value>
   </data>
+  <data name="GitHubTokenMigratedToEncrypted" xml:space="preserve">
+    <value>GitHub Token migrated to encrypted storage</value>
+  </data>
   <data name="NetworkCheckFailed" xml:space="preserve">
     <value>✗ Network connection check failed</value>
   </data>

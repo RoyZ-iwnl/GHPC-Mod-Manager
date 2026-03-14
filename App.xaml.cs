@@ -29,6 +29,7 @@ namespace GHPC_Mod_Manager
                 {
                     // Services
                     services.AddSingleton<ILoggingService, LoggingService>();
+                    services.AddSingleton<ISecureStorageService, SecureStorageService>();
                     services.AddSingleton<ISettingsService, SettingsService>();
                     services.AddSingleton<IMainConfigService, MainConfigService>();
                     services.AddSingleton<IThemeService, ThemeService>();
