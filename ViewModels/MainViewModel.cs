@@ -420,6 +420,10 @@ public partial class MainViewModel : ObservableObject
                 try
                 {
                     await Task.Delay(2000);
+
+                    // 优先显示公告
+                    await CheckAndShowAnnouncementAsync();
+
                     await CheckForAppUpdatesSilentlyAsync();
 
                     // 如果配置了 Token 或开启了代理，检查已安装 Mod 更新
@@ -427,9 +431,6 @@ public partial class MainViewModel : ObservableObject
                     {
                         await CheckForInstalledModUpdatesOnStartupAsync();
                     }
-
-                    // 加载公告并检查是否有新内容
-                    await CheckAndShowAnnouncementAsync();
                 }
                 catch (Exception ex)
                 {
@@ -489,16 +490,12 @@ public partial class MainViewModel : ObservableObject
 
             if (string.IsNullOrEmpty(content) || string.IsNullOrEmpty(md5)) return;
 
-            // 先判断是否为新公告和是否需要显示
+            // 判断是否为新公告
             var isNewAnnouncement = md5 != settings.LastAnnouncementMd5;
-            if (settings.DoNotShowAnnouncementBeforeUpdate || !isNewAnnouncement)
+
+            // 不是新公告，直接返回
+            if (!isNewAnnouncement)
             {
-                // 即使不显示，也要更新MD5
-                if (isNewAnnouncement)
-                {
-                    settings.LastAnnouncementMd5 = md5;
-                    await _settingsService.SaveSettingsAsync();
-                }
                 return;
             }
 
@@ -506,11 +503,28 @@ public partial class MainViewModel : ObservableObject
             settings.LastAnnouncementMd5 = md5;
             await _settingsService.SaveSettingsAsync();
 
-            // 有新公告且用户未勾选不再显示，显示窗口
-            await Application.Current.Dispatcher.InvokeAsync(() =>
+            // 显示公告窗口
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
-                var announcementWindow = _serviceProvider.GetRequiredService<AnnouncementWindow>();
-                announcementWindow.ShowDialog();
+                var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
+                await announcementViewModel.LoadAnnouncementAsync(lang);
+
+                if (announcementViewModel.HasContent)
+                {
+                    var announcementWindow = new AnnouncementWindow
+                    {
+                        DataContext = announcementViewModel,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    if (Application.Current.MainWindow != null)
+                    {
+                        announcementWindow.Owner = Application.Current.MainWindow;
+                        announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    }
+
+                    announcementWindow.ShowDialog();
+                }
             });
 
             // 窗口关闭后重新加载设置（用户可能勾选了复选框）
@@ -518,7 +532,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning("AnnouncementCheckFailed", ex.Message);
+            _loggingService.LogError(ex, "AnnouncementCheckFailed", ex.Message);
         }
     }
 
