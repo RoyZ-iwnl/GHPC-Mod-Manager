@@ -8,6 +8,7 @@ using System.Windows;
 using System.Diagnostics;
 using System.Reflection;
 using GHPC_Mod_Manager.Resources;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -25,6 +26,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IMainConfigService _mainConfigService;
     private readonly IModManagerService _modManagerService;
     private readonly Lazy<MainViewModel> _mainViewModel;
+    private readonly IServiceProvider _serviceProvider;
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
@@ -171,7 +173,8 @@ public partial class SettingsViewModel : ObservableObject
         IMelonLoaderService melonLoaderService,
         IMainConfigService mainConfigService,
         IModManagerService modManagerService,
-        Lazy<MainViewModel> mainViewModel)
+        Lazy<MainViewModel> mainViewModel,
+        IServiceProvider serviceProvider)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -185,6 +188,7 @@ public partial class SettingsViewModel : ObservableObject
         _mainConfigService = mainConfigService;
         _modManagerService = modManagerService;
         _mainViewModel = mainViewModel;
+        _serviceProvider = serviceProvider;
 
         LoadSettings();
         RefreshProxyServerList();
@@ -566,6 +570,37 @@ public partial class SettingsViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.ApplicationUpdateCheckFailed);
             MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ShowAnnouncementAsync()
+    {
+        try
+        {
+            var language = _settingsService.Settings.Language;
+            var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
+
+            await announcementViewModel.LoadAnnouncementAsync(language);
+
+            if (announcementViewModel.HasContent)
+            {
+                var announcementWindow = new Views.AnnouncementWindow
+                {
+                    DataContext = announcementViewModel,
+                    Owner = Application.Current.MainWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                announcementWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(string.Format(Strings.NoAnnouncementAvailable, language), Strings.Announcement, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.AnnouncementLoadFailed);
         }
     }
 

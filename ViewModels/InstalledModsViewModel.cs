@@ -143,6 +143,39 @@ public partial class InstalledModsViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    private async Task ReinstallModAsync(ModViewModel mod)
+    {
+        if (mod.Config == null) return;
+
+        try
+        {
+            IsDownloading = true;
+            StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
+
+            var progress = new Progress<DownloadProgress>(p =>
+            {
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+            });
+
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion ?? mod.InstalledVersion ?? "", progress);
+            StatusMessage = success
+                ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
+                : string.Format(Strings.InstallFailed, mod.DisplayName);
+
+            if (success) RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModInstallError, mod.Id);
+            StatusMessage = string.Format(Strings.InstallFailed, mod.DisplayName);
+        }
+        finally
+        {
+            IsDownloading = false;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task UninstallModAsync(ModViewModel mod)
     {
         var result = MessageBox.Show(
@@ -244,6 +277,7 @@ public partial class InstalledModsViewModel : ObservableObject
     partial void OnIsDownloadingChanged(bool value)
     {
         UpdateModCommand.NotifyCanExecuteChanged();
+        ReinstallModCommand.NotifyCanExecuteChanged();
         UninstallModCommand.NotifyCanExecuteChanged();
         ToggleModCommand.NotifyCanExecuteChanged();
     }
@@ -252,6 +286,7 @@ public partial class InstalledModsViewModel : ObservableObject
     {
         CheckForUpdatesCommand.NotifyCanExecuteChanged();
         UpdateModCommand.NotifyCanExecuteChanged();
+        ReinstallModCommand.NotifyCanExecuteChanged();
         UninstallModCommand.NotifyCanExecuteChanged();
         ToggleModCommand.NotifyCanExecuteChanged();
     }

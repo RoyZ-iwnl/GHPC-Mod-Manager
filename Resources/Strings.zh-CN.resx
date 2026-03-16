@@ -681,6 +681,15 @@
   <data name="SilentUpdateCheckFailed" xml:space="preserve">
     <value>静默更新检查失败: {0}</value>
   </data>
+  <data name="CheckingInstalledModUpdates" xml:space="preserve">
+    <value>正在检查已安装Mod更新...</value>
+  </data>
+  <data name="StartupModUpdateCheckFailed" xml:space="preserve">
+    <value>启动时Mod更新检查失败: {0}</value>
+  </data>
+  <data name="DoNotShowAnnouncementBeforeUpdate" xml:space="preserve">
+    <value>更新前不再显示公告</value>
+  </data>
   <data name="TranslationUpdatesFound" xml:space="preserve">
     <value>发现翻译更新: {0}</value>
   </data>
@@ -1968,6 +1977,9 @@
   <data name="CheckForUpdates" xml:space="preserve">
     <value>检查更新</value>
   </data>
+  <data name="ShowAnnouncement" xml:space="preserve">
+    <value>显示公告</value>
+  </data>
   <data name="NewVersionAvailable" xml:space="preserve">
     <value>发现新版本：</value>
   </data>
@@ -2490,6 +2502,9 @@
   <data name="GitHubApiTokenGetUrl" xml:space="preserve">
     <value>获取地址：https://github.com/settings/tokens</value>
   </data>
+  <data name="GitHubApiTokenPermissionHint" xml:space="preserve">
+    <value>需要Github账号，仅需勾选 public_repo 权限即可</value>
+  </data>
   <data name="FetchingGitHubReleasesWithToken" xml:space="preserve">
     <value>使用token获取GitHub发布信息：{0}</value>
   </data>
@@ -2759,5 +2774,41 @@
   </data>
   <data name="MelonLoaderReleaseLoadWarningZh" xml:space="preserve">
     <value>MelonLoader 版本列表加载失败，请检查网络连接。可以尝试使用代理加速或切换节点后重试。</value>
+  </data>
+  <data name="StartingNetworkDetection" xml:space="preserve">
+    <value>开始网络检测...</value>
+  </data>
+  <data name="FetchingMainConfig" xml:space="preserve">
+    <value>正在获取主配置...</value>
+  </data>
+  <data name="MainConfigFetchedFrom" xml:space="preserve">
+    <value>主配置获取成功: {0}</value>
+  </data>
+  <data name="MainConfigFetchFailed" xml:space="preserve">
+    <value>所有主配置URL均获取失败</value>
+  </data>
+  <data name="WillUseFallbackProxyList" xml:space="preserve">
+    <value>将使用内置代理服务器列表</value>
+  </data>
+  <data name="UpdatingProxyServerList" xml:space="preserve">
+    <value>正在更新代理服务器列表...</value>
+  </data>
+  <data name="ProxyServerListUpdated" xml:space="preserve">
+    <value>代理服务器列表已更新 (共{0}个节点)</value>
+  </data>
+  <data name="TestingGitHubConnectivity" xml:space="preserve">
+    <value>正在测试GitHub连通性...</value>
+  </data>
+  <data name="GitHubConnectivityTestFailed" xml:space="preserve">
+    <value>GitHub连通性测试失败</value>
+  </data>
+  <data name="NetworkDetectionException" xml:space="preserve">
+    <value>网络检测异常: {0}</value>
+  </data>
+  <data name="NetworkDetectionComplete" xml:space="preserve">
+    <value>网络检测完成: {0}</value>
+  </data>
+  <data name="MainConfigAllUrlsFailed" xml:space="preserve">
+    <value>所有主配置URL均失败</value>
   </data>
 </root>

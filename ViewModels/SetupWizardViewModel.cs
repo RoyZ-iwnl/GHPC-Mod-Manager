@@ -30,11 +30,10 @@ public partial class SetupWizardViewModel : ObservableObject
 
     partial void OnCurrentStepChanged(int value)
     {
-        // 进入代理设置步骤(步骤2)时，拉取最新主配置并刷新代理列表
+        // 进入代理设置步骤(步骤2)时，执行完整的网络检测流程
         if (value == 2)
         {
-            _ = RefreshProxyServersAsync();
-            _ = CheckNetworkAsync(); // 进入步骤2时才检查网络
+            _ = PerformNetworkDetectionAsync();
         }
 
         // 当步骤切换到游戏目录选择(步骤3)时，自动触发搜索
@@ -46,28 +45,6 @@ public partial class SetupWizardViewModel : ObservableObject
 
         OnPropertyChanged(nameof(ShowMelonLoaderReleaseLoadWarning));
         UpdateNavigationButtons();
-    }
-
-    private async Task RefreshProxyServersAsync()
-    {
-        await _mainConfigService.ForceReloadAsync();
-        var remote = _mainConfigService.GetRemoteProxyServers();
-        var lang = _settingsService.Settings.Language;
-        var newList = remote != null && remote.Count > 0
-            ? ProxyServerItem.BuildFromRemote(remote, lang)
-            : ProxyServerItem.BuildFallback();
-
-        // 必须回到UI线程才能正确触发ComboBox更新
-        await Application.Current.Dispatcher.InvokeAsync(() =>
-        {
-            AvailableProxyServers = newList;
-
-            // 根据已保存的枚举值找到对应项，找不到则选第一项
-            var savedEnum = _settingsService.Settings.GitHubProxyServer;
-            SelectedProxyServer = newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0];
-
-            UpdateNavigationButtons();
-        });
     }
 
     [ObservableProperty]
@@ -499,10 +476,7 @@ public partial class SetupWizardViewModel : ObservableObject
         try
         {
             AddToNetworkLog(Strings.ApplyingProxyAndRetesting);
-            
-            // Settings are automatically saved by property change handlers
-            // Just retry network check with new settings
-            await CheckNetworkAsync();
+            await PerformNetworkDetectionAsync();
         }
         catch (Exception ex)
         {
@@ -516,7 +490,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private async Task RetryNetworkCheckAsync()
     {
         AddToNetworkLog(Strings.UserClickedRetryNetworkCheck);
-        await CheckNetworkAsync();
+        await PerformNetworkDetectionAsync();
     }
 
     private void AddToNetworkLog(string message)
@@ -532,50 +506,89 @@ public partial class SetupWizardViewModel : ObservableObject
         ShowNetworkLog = false;
     }
 
-    private async Task CheckNetworkAsync()
+    private async Task PerformNetworkDetectionAsync()
     {
         IsCheckingNetwork = true;
         ShowNetworkFailed = false;
-        AddToNetworkLog(Strings.StartingNetworkConnectionCheck);
-        
+        ClearNetworkLog();
+        AddToNetworkLog(Strings.StartingNetworkDetection);
+
         try
         {
-            _loggingService.LogInfo(Strings.StartingNetworkConnectionCheck);
-            AddToNetworkLog(Strings.CheckingNetworkConnectionStatus);
-            
+            // Phase 1: 测试主配置连通性
+            AddToNetworkLog(Strings.FetchingMainConfig);
+            var mainConfigResult = await _mainConfigService.TestMainConfigConnectivityAsync();
+
+            if (mainConfigResult.Success)
+            {
+                AddToNetworkLog(string.Format(Strings.MainConfigFetchedFrom, mainConfigResult.SuccessfulUrl));
+            }
+            else
+            {
+                AddToNetworkLog(Strings.MainConfigFetchFailed);
+                foreach (var failedUrl in mainConfigResult.FailedUrls)
+                {
+                    AddToNetworkLog($"  ✗ {failedUrl}");
+                }
+                AddToNetworkLog(Strings.WillUseFallbackProxyList);
+            }
+
+            // Phase 2: 更新代理服务器列表
+            AddToNetworkLog(Strings.UpdatingProxyServerList);
+            await UpdateProxyServerListAsync(mainConfigResult.Config);
+
+            // Phase 3: 测试GitHub连通性
+            AddToNetworkLog(Strings.TestingGitHubConnectivity);
             IsNetworkAvailable = await _networkService.CheckGitHubConnectionAsync();
-            
+
             if (IsNetworkAvailable)
             {
                 AddToNetworkLog(Strings.NetworkCheckSuccessful);
-                _loggingService.LogInfo(Strings.NetworkCheckResult, Strings.ConnectionNormal);
                 ShowNetworkFailed = false;
             }
             else
             {
-                AddToNetworkLog(Strings.NetworkCheckFailed);
+                AddToNetworkLog(Strings.GitHubConnectivityTestFailed);
                 AddToNetworkLog(Strings.PossibleReasons);
                 AddToNetworkLog(Strings.UnstableNetworkConnection);
                 AddToNetworkLog(Strings.DNSResolutionProblem);
                 AddToNetworkLog(Strings.FirewallBlocking);
                 AddToNetworkLog(Strings.ProxyServerConfigProblem);
-                _loggingService.LogInfo(Strings.NetworkCheckResult, Strings.ConnectionFailed);
                 ShowNetworkFailed = true;
             }
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.NetworkCheckException);
+            _loggingService.LogError(ex, Strings.NetworkDetectionException);
             IsNetworkAvailable = false;
             ShowNetworkFailed = true;
-            AddToNetworkLog(string.Format(Strings.NetworkCheckException, ex.Message));
-            AddToNetworkLog(Strings.SuggestRetryOrCheckSettings);
+            AddToNetworkLog(string.Format(Strings.NetworkDetectionException, ex.Message));
         }
         finally
         {
             IsCheckingNetwork = false;
-            AddToNetworkLog(string.Format(Strings.NetworkCheckComplete, IsNetworkAvailable ? Strings.ConnectionNormalResult : Strings.ConnectionAbnormalResult));
+            AddToNetworkLog(string.Format(Strings.NetworkDetectionComplete,
+                IsNetworkAvailable ? Strings.ConnectionNormalResult : Strings.ConnectionAbnormalResult));
+            UpdateNavigationButtons();
         }
+    }
+
+    private async Task UpdateProxyServerListAsync(MainConfig? remoteConfig)
+    {
+        var remote = remoteConfig?.ProxyServers;
+        var lang = _settingsService.Settings.Language;
+        var newList = remote != null && remote.Count > 0
+            ? ProxyServerItem.BuildFromRemote(remote, lang)
+            : ProxyServerItem.BuildFallback();
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            AvailableProxyServers = newList;
+            var savedEnum = _settingsService.Settings.GitHubProxyServer;
+            SelectedProxyServer = newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0];
+        });
+
+        AddToNetworkLog(string.Format(Strings.ProxyServerListUpdated, newList.Count));
     }
 
     private async Task<bool> ValidateGameDirectoryAsync()
@@ -777,10 +790,10 @@ public partial class SetupWizardViewModel : ObservableObject
         {
             0 => true,
             1 => true,
-            // 启用代理时必须选了节点才能下一步
-            2 => !UseGitHubProxy || SelectedProxyServer != null,
+            // 步骤2: 必须完成网络检测且GitHub连通性测试通过
+            2 => !IsCheckingNetwork && IsNetworkAvailable && (!UseGitHubProxy || SelectedProxyServer != null),
             3 => !string.IsNullOrEmpty(GameRootPath),
-            4 => true, // 总是允许进入下一步：已安装则继续，未安装则进入安装
+            4 => true,
             5 => SelectedMelonLoaderVersion != null && !IsInstalling,
             6 => !IsGameRunning,
             7 => false,

@@ -132,8 +132,12 @@ public partial class AnnouncementWindow : Window
         // WebView2 导航完成，无需额外处理
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    private async void CloseButton_Click(object sender, RoutedEventArgs e)
     {
+        if (DataContext is AnnouncementViewModel viewModel)
+        {
+            await viewModel.SaveSettingsAsync();
+        }
         Close();
     }
 }

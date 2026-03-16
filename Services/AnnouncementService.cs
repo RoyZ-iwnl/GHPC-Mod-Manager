@@ -1,11 +1,13 @@
 using GHPC_Mod_Manager.Resources;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GHPC_Mod_Manager.Services;
 
 public interface IAnnouncementService
 {
-    Task<string?> GetAnnouncementAsync(string language);
+    Task<(string? content, string md5)> GetAnnouncementAsync(string language, bool forceRefresh = false);
 }
 
 public class AnnouncementService : IAnnouncementService
@@ -21,13 +23,10 @@ public class AnnouncementService : IAnnouncementService
         _settingsService = settingsService;
     }
 
-    public async Task<string?> GetAnnouncementAsync(string language)
+    public async Task<(string? content, string md5)> GetAnnouncementAsync(string language, bool forceRefresh = false)
     {
         try
         {
-            _loggingService.LogInfo(Strings.LoadingAnnouncement);
-
-            // Map language codes to file names
             var languageFileMap = new Dictionary<string, string>
             {
                 ["zh-CN"] = "zh-CN.md",
@@ -37,39 +36,32 @@ public class AnnouncementService : IAnnouncementService
             var fileName = languageFileMap.GetValueOrDefault(language, "en-US.md");
             var url = $"https://GHPC.DMR.gg/announce/{fileName}";
 
-            _loggingService.LogInfo(Strings.FetchingAnnouncementFrom, url);
-
             var response = await _httpClient.GetAsync(url);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                
-                // Return null if content is empty or just whitespace
-                if (string.IsNullOrWhiteSpace(content))
-                {
-                    _loggingService.LogInfo(Strings.AnnouncementContentEmpty, language);
-                    return null;
-                }
 
-                _loggingService.LogInfo(Strings.AnnouncementLoadedSuccessfully, language);
-                return content;
+                if (string.IsNullOrWhiteSpace(content))
+                    return (null, string.Empty);
+
+                var md5 = ComputeMd5(content);
+                return (content, md5);
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                _loggingService.LogInfo(Strings.NoAnnouncementAvailable, language);
-                return null;
-            }
-            else
-            {
-                _loggingService.LogWarning(Strings.AnnouncementFetchFailed, response.StatusCode.ToString(), response.ReasonPhrase ?? "Unknown");
-                return null;
-            }
+
+            return (null, string.Empty);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.AnnouncementLoadFailed);
-            return null;
+            return (null, string.Empty);
         }
+    }
+
+    private string ComputeMd5(string content)
+    {
+        using var md5 = MD5.Create();
+        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(content));
+        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
     }
 }

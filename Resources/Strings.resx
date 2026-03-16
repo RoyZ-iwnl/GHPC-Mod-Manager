@@ -681,6 +681,15 @@
   <data name="SilentUpdateCheckFailed" xml:space="preserve">
     <value>Silent update check failed: {0}</value>
   </data>
+  <data name="CheckingInstalledModUpdates" xml:space="preserve">
+    <value>Checking for installed mod updates...</value>
+  </data>
+  <data name="StartupModUpdateCheckFailed" xml:space="preserve">
+    <value>Startup mod update check failed: {0}</value>
+  </data>
+  <data name="DoNotShowAnnouncementBeforeUpdate" xml:space="preserve">
+    <value>Hide before updated</value>
+  </data>
   <data name="TranslationUpdatesFound" xml:space="preserve">
     <value>Translation updates found: {0}</value>
   </data>
@@ -1968,6 +1977,9 @@
   <data name="CheckForUpdates" xml:space="preserve">
     <value>Check for Updates</value>
   </data>
+  <data name="ShowAnnouncement" xml:space="preserve">
+    <value>Show Announcement</value>
+  </data>
   <data name="NewVersionAvailable" xml:space="preserve">
     <value>New version available:</value>
   </data>
@@ -2525,6 +2537,9 @@ Do you want to restart now?</value>
   <data name="GitHubApiTokenGetUrl" xml:space="preserve">
     <value>Get token at: https://github.com/settings/tokens</value>
   </data>
+  <data name="GitHubApiTokenPermissionHint" xml:space="preserve">
+    <value>Need Github account, only "public_repo" permission is required</value>
+  </data>
   <data name="FetchingGitHubReleasesWithToken" xml:space="preserve">
     <value>Fetching GitHub releases with token: {0}</value>
   </data>
@@ -2794,5 +2809,41 @@ Do you want to restart now?</value>
   </data>
   <data name="MelonLoaderReleaseLoadWarningZh" xml:space="preserve">
     <value>Failed to load the MelonLoader version list. Please check your network connection and try again.</value>
+  </data>
+  <data name="StartingNetworkDetection" xml:space="preserve">
+    <value>Starting network detection...</value>
+  </data>
+  <data name="FetchingMainConfig" xml:space="preserve">
+    <value>Fetching main configuration...</value>
+  </data>
+  <data name="MainConfigFetchedFrom" xml:space="preserve">
+    <value>Main config fetched from: {0}</value>
+  </data>
+  <data name="MainConfigFetchFailed" xml:space="preserve">
+    <value>Failed to fetch main config from all URLs</value>
+  </data>
+  <data name="WillUseFallbackProxyList" xml:space="preserve">
+    <value>Will use fallback proxy server list</value>
+  </data>
+  <data name="UpdatingProxyServerList" xml:space="preserve">
+    <value>Updating proxy server list...</value>
+  </data>
+  <data name="ProxyServerListUpdated" xml:space="preserve">
+    <value>Proxy server list updated ({0} servers available)</value>
+  </data>
+  <data name="TestingGitHubConnectivity" xml:space="preserve">
+    <value>Testing GitHub connectivity...</value>
+  </data>
+  <data name="GitHubConnectivityTestFailed" xml:space="preserve">
+    <value>GitHub connectivity test failed</value>
+  </data>
+  <data name="NetworkDetectionException" xml:space="preserve">
+    <value>Network detection error: {0}</value>
+  </data>
+  <data name="NetworkDetectionComplete" xml:space="preserve">
+    <value>Network detection complete: {0}</value>
+  </data>
+  <data name="MainConfigAllUrlsFailed" xml:space="preserve">
+    <value>All main config URLs failed</value>
   </data>
 </root>

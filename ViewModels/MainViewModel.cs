@@ -63,6 +63,7 @@ public partial class MainViewModel : ObservableObject
     private readonly INetworkService _networkService;
     private readonly IUpdateService _updateService;
     private readonly IMelonLoaderService _melonLoaderService;
+    private readonly IAnnouncementService _announcementService;
 
     // 子ViewModel（导航页面）
     private InstalledModsViewModel? _installedModsViewModel;
@@ -217,7 +218,8 @@ public partial class MainViewModel : ObservableObject
         ISettingsService settingsService,
         INetworkService networkService,
         IUpdateService updateService,
-        IMelonLoaderService melonLoaderService)
+        IMelonLoaderService melonLoaderService,
+        IAnnouncementService announcementService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -230,6 +232,7 @@ public partial class MainViewModel : ObservableObject
         _networkService = networkService;
         _updateService = updateService;
         _melonLoaderService = melonLoaderService;
+        _announcementService = announcementService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         IsGameRunning = _processService.IsGameRunning;
@@ -416,8 +419,17 @@ public partial class MainViewModel : ObservableObject
             {
                 try
                 {
-                    await Task.Delay(2000); // Brief delay to avoid slowing down initial load
+                    await Task.Delay(2000);
                     await CheckForAppUpdatesSilentlyAsync();
+
+                    // 如果配置了 Token 或开启了代理，检查已安装 Mod 更新
+                    if (ShouldPerformStartupModUpdateCheck())
+                    {
+                        await CheckForInstalledModUpdatesOnStartupAsync();
+                    }
+
+                    // 加载公告并检查是否有新内容
+                    await CheckAndShowAnnouncementAsync();
                 }
                 catch (Exception ex)
                 {
@@ -454,6 +466,130 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 判断是否应该在启动时检查 Mod 更新
+    /// </summary>
+    private bool ShouldPerformStartupModUpdateCheck()
+    {
+        var settings = _settingsService.Settings;
+        return !string.IsNullOrEmpty(settings.GitHubApiToken) || settings.UseGitHubProxy;
+    }
+
+    /// <summary>
+    /// 检查并显示公告
+    /// </summary>
+    private async Task CheckAndShowAnnouncementAsync()
+    {
+        try
+        {
+            var settings = _settingsService.Settings;
+
+            var lang = settings.Language;
+            var (content, md5) = await _announcementService.GetAnnouncementAsync(lang, forceRefresh: true);
+
+            if (string.IsNullOrEmpty(content) || string.IsNullOrEmpty(md5)) return;
+
+            // 先判断是否为新公告和是否需要显示
+            var isNewAnnouncement = md5 != settings.LastAnnouncementMd5;
+            if (settings.DoNotShowAnnouncementBeforeUpdate || !isNewAnnouncement)
+            {
+                // 即使不显示，也要更新MD5
+                if (isNewAnnouncement)
+                {
+                    settings.LastAnnouncementMd5 = md5;
+                    await _settingsService.SaveSettingsAsync();
+                }
+                return;
+            }
+
+            // 更新MD5
+            settings.LastAnnouncementMd5 = md5;
+            await _settingsService.SaveSettingsAsync();
+
+            // 有新公告且用户未勾选不再显示，显示窗口
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var announcementWindow = _serviceProvider.GetRequiredService<AnnouncementWindow>();
+                announcementWindow.ShowDialog();
+            });
+
+            // 窗口关闭后重新加载设置（用户可能勾选了复选框）
+            await _settingsService.LoadSettingsAsync();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("AnnouncementCheckFailed", ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 启动时静默检查已安装 Mod 的更新
+    /// </summary>
+    private async Task CheckForInstalledModUpdatesOnStartupAsync()
+    {
+        try
+        {
+            var installedMods = Mods.Where(m => m.IsInstalled && !m.IsManuallyInstalled).ToList();
+            if (installedMods.Count == 0) return;
+
+            foreach (var mod in installedMods)
+            {
+                try
+                {
+                    var releaseUrl = mod.Config.ReleaseUrl;
+                    if (string.IsNullOrEmpty(releaseUrl)) continue;
+
+                    var owner = GetRepoOwner(releaseUrl);
+                    var repo = GetRepoName(releaseUrl);
+                    if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo)) continue;
+
+                    var releases = await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: true);
+                    if (releases.Count > 0)
+                    {
+                        var latestVersion = releases[0].TagName?.TrimStart('v') ?? "";
+                        var installedVersion = mod.InstalledVersion?.TrimStart('v') ?? "";
+
+                        if (!string.IsNullOrEmpty(latestVersion))
+                        {
+                            mod.LatestVersion = latestVersion;
+                            mod.UpdateDate = releases[0].PublishedAt;
+                        }
+                    }
+                }
+                catch
+                {
+                    // 单个 Mod 检查失败不影响其他 Mod
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("StartupModUpdateCheckFailed", ex.Message);
+        }
+    }
+
+    // 从 ReleaseUrl 提取 owner
+    private string GetRepoOwner(string repoUrl)
+    {
+        try
+        {
+            var segments = new Uri(repoUrl).AbsolutePath.Trim('/').Split('/');
+            return segments.Length >= 2 ? segments[1] : "";
+        }
+        catch { return ""; }
+    }
+
+    // 从 ReleaseUrl 提取 repo
+    private string GetRepoName(string repoUrl)
+    {
+        try
+        {
+            var segments = new Uri(repoUrl).AbsolutePath.Trim('/').Split('/');
+            return segments.Length >= 3 ? segments[2] : "";
+        }
+        catch { return ""; }
+    }
+
     [RelayCommand]
     public async Task RefreshDataAsync()
     {
@@ -481,7 +617,7 @@ public partial class MainViewModel : ObservableObject
             {
                 Mods.Add(mod);
             }
-            
+
             // Apply filtering and sorting
             FilterAndSortMods();
 
@@ -502,9 +638,11 @@ public partial class MainViewModel : ObservableObject
             IsTranslationManuallyInstalled = await _translationManagerService.IsTranslationManuallyInstalledAsync();
             IsTranslationPluginEnabled = await _translationManagerService.IsTranslationPluginEnabledAsync();
 
-            // 分别检查翻译插件和资源更新（使用默认缓存行为）
+            // 翻译插件更新：7天缓存
             IsTranslationPluginUpdateAvailable = await _translationManagerService.IsXUnityUpdateAvailableAsync();
-            IsTranslationResourceUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync();
+            // 翻译资源更新：配置了Token或代理时强制刷新，否则使用缓存
+            var shouldForceRefreshTranslation = ShouldPerformStartupModUpdateCheck();
+            IsTranslationResourceUpdateAvailable = await _translationManagerService.IsTranslationUpdateAvailableAsync(forceRefresh: shouldForceRefreshTranslation);
             IsTranslationUpdateAvailable = IsTranslationPluginUpdateAvailable || IsTranslationResourceUpdateAvailable;
 
             // 获取最新XUnity版本（使用默认缓存行为）

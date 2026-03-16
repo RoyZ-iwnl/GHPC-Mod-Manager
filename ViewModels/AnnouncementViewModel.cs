@@ -11,6 +11,7 @@ public partial class AnnouncementViewModel : ObservableObject
     private readonly IAnnouncementService _announcementService;
     private readonly ILoggingService _loggingService;
     private readonly IThemeService _themeService;
+    private readonly ISettingsService _settingsService;
 
     [ObservableProperty]
     private string _htmlContent = string.Empty;
@@ -24,13 +25,25 @@ public partial class AnnouncementViewModel : ObservableObject
     [ObservableProperty]
     private string _errorMessage = string.Empty;
 
+    [ObservableProperty]
+    private bool _doNotShowAgain = false;
+
     public IRelayCommand? CloseCommand { get; set; }
 
-    public AnnouncementViewModel(IAnnouncementService announcementService, ILoggingService loggingService, IThemeService themeService)
+    public AnnouncementViewModel(IAnnouncementService announcementService, ILoggingService loggingService, IThemeService themeService, ISettingsService settingsService)
     {
         _announcementService = announcementService;
         _loggingService = loggingService;
         _themeService = themeService;
+        _settingsService = settingsService;
+
+        DoNotShowAgain = _settingsService.Settings.DoNotShowAnnouncementBeforeUpdate;
+    }
+
+    public async Task SaveSettingsAsync()
+    {
+        _settingsService.Settings.DoNotShowAnnouncementBeforeUpdate = DoNotShowAgain;
+        await _settingsService.SaveSettingsAsync();
     }
 
     public async Task LoadAnnouncementAsync(string language)
@@ -41,8 +54,8 @@ public partial class AnnouncementViewModel : ObservableObject
             HasContent = false;
             ErrorMessage = string.Empty;
 
-            var markdownContent = await _announcementService.GetAnnouncementAsync(language);
-            
+            var (markdownContent, md5) = await _announcementService.GetAnnouncementAsync(language);
+
             if (!string.IsNullOrWhiteSpace(markdownContent))
             {
                 // Create HTML with embedded marked.js for client-side markdown parsing

@@ -30,6 +30,10 @@ public interface IMainConfigService
     /// 强制重新加载主配置（等待完成），用于手动刷新
     /// </summary>
     Task ForceReloadAsync();
+    /// <summary>
+    /// 测试主配置连通性（三层回退），用于SetupWizard网络检测
+    /// </summary>
+    Task<MainConfigTestResult> TestMainConfigConnectivityAsync();
     IReadOnlyList<string> GetMainConfigUrlCandidates();
     string GetModConfigUrl();
     string GetModConfigUrlFallback();
@@ -95,6 +99,34 @@ public class MainConfigService : IMainConfigService
             _loggingService.LogInfo(Strings.MainConfigForceRefreshFailed);
             LogCurrentConfig();
         }
+    }
+
+    public async Task<MainConfigTestResult> TestMainConfigConnectivityAsync()
+    {
+        var result = new MainConfigTestResult();
+        var urls = GetMainConfigUrlCandidates();
+
+        foreach (var url in urls)
+        {
+            var (config, error) = await TryFetchMainConfigFromUrlAsync(url);
+            if (config != null)
+            {
+                result.Success = true;
+                result.Config = config;
+                result.SuccessfulUrl = url;
+
+                // 保存到服务状态和缓存
+                Config = config;
+                IsLoaded = true;
+                await SaveCacheAsync(config);
+
+                return result;
+            }
+            result.FailedUrls.Add(url);
+        }
+
+        result.ErrorMessage = Strings.MainConfigAllUrlsFailed;
+        return result;
     }
 
     public async Task LoadAsync()

@@ -601,6 +601,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking for installed mod updates....
+        /// </summary>
+        public static string CheckingInstalledModUpdates {
+            get {
+                return ResourceManager.GetString("CheckingInstalledModUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking mod conflicts for: {0}.
         /// </summary>
         public static string CheckingModConflicts {
@@ -1689,6 +1698,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide before updated.
+        /// </summary>
+        public static string DoNotShowAnnouncementBeforeUpdate {
+            get {
+                return ResourceManager.GetString("DoNotShowAnnouncementBeforeUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download attempt {0}/{1} failed for {2}, retrying: {3}.
         /// </summary>
         public static string DownloadAttemptRetrying {
@@ -2234,6 +2252,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FetchingGitHubReleasesWithToken {
             get {
                 return ResourceManager.GetString("FetchingGitHubReleasesWithToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetching main configuration....
+        /// </summary>
+        public static string FetchingMainConfig {
+            get {
+                return ResourceManager.GetString("FetchingMainConfig", resourceCulture);
             }
         }
         
@@ -2828,6 +2855,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubApiTokenHint {
             get {
                 return ResourceManager.GetString("GitHubApiTokenHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Need Github account, only &quot;public_repo&quot; permission is required.
+        /// </summary>
+        public static string GitHubApiTokenPermissionHint {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub connectivity test failed.
+        /// </summary>
+        public static string GitHubConnectivityTestFailed {
+            get {
+                return ResourceManager.GetString("GitHubConnectivityTestFailed", resourceCulture);
             }
         }
         
@@ -3446,6 +3491,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All main config URLs failed.
+        /// </summary>
+        public static string MainConfigAllUrlsFailed {
+            get {
+                return ResourceManager.GetString("MainConfigAllUrlsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  (builtin default).
         /// </summary>
         public static string MainConfigBuiltinDefault {
@@ -3469,6 +3523,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string MainConfigDevModeNotLoaded {
             get {
                 return ResourceManager.GetString("MainConfigDevModeNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main config fetched from: {0}.
+        /// </summary>
+        public static string MainConfigFetchedFrom {
+            get {
+                return ResourceManager.GetString("MainConfigFetchedFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to fetch main config from all URLs.
+        /// </summary>
+        public static string MainConfigFetchFailed {
+            get {
+                return ResourceManager.GetString("MainConfigFetchFailed", resourceCulture);
             }
         }
         
@@ -4868,6 +4940,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Network detection complete: {0}.
+        /// </summary>
+        public static string NetworkDetectionComplete {
+            get {
+                return ResourceManager.GetString("NetworkDetectionComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network detection error: {0}.
+        /// </summary>
+        public static string NetworkDetectionException {
+            get {
+                return ResourceManager.GetString("NetworkDetectionException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error opening network help page.
         /// </summary>
         public static string NetworkHelpOpenError {
@@ -5646,6 +5736,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proxy server list updated ({0} servers available).
+        /// </summary>
+        public static string ProxyServerListUpdated {
+            get {
+                return ResourceManager.GetString("ProxyServerListUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proxy settings applied successfully.
         /// </summary>
         public static string ProxySettingsApplied {
@@ -6177,6 +6276,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Announcement.
+        /// </summary>
+        public static string ShowAnnouncement {
+            get {
+                return ResourceManager.GetString("ShowAnnouncement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Log.
         /// </summary>
         public static string ShowLog {
@@ -6281,6 +6389,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string StartingNetworkConnectionCheck {
             get {
                 return ResourceManager.GetString("StartingNetworkConnectionCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting network detection....
+        /// </summary>
+        public static string StartingNetworkDetection {
+            get {
+                return ResourceManager.GetString("StartingNetworkDetection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup mod update check failed: {0}.
+        /// </summary>
+        public static string StartupModUpdateCheckFailed {
+            get {
+                return ResourceManager.GetString("StartupModUpdateCheckFailed", resourceCulture);
             }
         }
         
@@ -6524,6 +6650,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string TestingDirectNetworkConnection {
             get {
                 return ResourceManager.GetString("TestingDirectNetworkConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing GitHub connectivity....
+        /// </summary>
+        public static string TestingGitHubConnectivity {
+            get {
+                return ResourceManager.GetString("TestingGitHubConnectivity", resourceCulture);
             }
         }
         
@@ -7518,6 +7653,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updating proxy server list....
+        /// </summary>
+        public static string UpdatingProxyServerList {
+            get {
+                return ResourceManager.GetString("UpdatingProxyServerList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updating translation files....
         /// </summary>
         public static string UpdatingTranslationFiles {
@@ -7829,6 +7973,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string WelcomeToGHPCModManager {
             get {
                 return ResourceManager.GetString("WelcomeToGHPCModManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Will use fallback proxy server list.
+        /// </summary>
+        public static string WillUseFallbackProxyList {
+            get {
+                return ResourceManager.GetString("WillUseFallbackProxyList", resourceCulture);
             }
         }
         

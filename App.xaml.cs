@@ -130,9 +130,12 @@ namespace GHPC_Mod_Manager
                 settingsService.Settings.UseDnsOverHttps,
                 settingsService.Settings.Language);
 
-            // 加载主配置（后台拉取，不阻塞启动）
+            // 首次运行时跳过主配置加载，在 SetupWizard 步骤2手动触发
             var mainConfigService = _host.Services.GetRequiredService<IMainConfigService>();
-            await mainConfigService.LoadAsync();
+            if (!settingsService.Settings.IsFirstRun)
+            {
+                await mainConfigService.LoadAsync();
+            }
 
             // 将 -dev 参数传递给 SettingsViewModel 单例
             if (isDevMode)
@@ -169,8 +172,12 @@ namespace GHPC_Mod_Manager
             await processService.StartMonitoringAsync();
 
             // 检查并执行旧版本文件清理（后台运行，不阻断启动）
-            var versionCleanupService = _host.Services.GetRequiredService<IVersionCleanupService>();
-            _ = Task.Run(async () => await versionCleanupService.RunIfNeededAsync());
+            // 首次运行时跳过，避免触发 GitHub API
+            if (!settingsService.Settings.IsFirstRun)
+            {
+                var versionCleanupService = _host.Services.GetRequiredService<IVersionCleanupService>();
+                _ = Task.Run(async () => await versionCleanupService.RunIfNeededAsync());
+            }
 
             // Show log window if -log parameter is provided
             if (showLogWindow)

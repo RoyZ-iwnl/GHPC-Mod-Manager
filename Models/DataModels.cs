@@ -92,6 +92,14 @@ public class AppSettings
     /// 每次更新前由程序重置为空，下次启动时触发清理
     /// </summary>
     public string CleanupDoneForVersion { get; set; } = string.Empty;
+    /// <summary>
+    /// 上次显示的公告内容的MD5值
+    /// </summary>
+    public string LastAnnouncementMd5 { get; set; } = string.Empty;
+    /// <summary>
+    /// 更新前不再显示公告
+    /// </summary>
+    public bool DoNotShowAnnouncementBeforeUpdate { get; set; } = false;
 }
 
 /// <summary>
@@ -251,23 +259,145 @@ public class ModViewModel : INotifyPropertyChanged
 
     public string Id { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
-    public string? InstalledVersion { get; set; }
+
+    private string? _installedVersion;
+    public string? InstalledVersion
+    {
+        get => _installedVersion;
+        set
+        {
+            if (_installedVersion != value)
+            {
+                _installedVersion = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
+            }
+        }
+    }
 
     private string? _latestVersion;
     public string? LatestVersion
     {
         get => _latestVersion;
-        set => _latestVersion = value;
+        set
+        {
+            if (_latestVersion != value)
+            {
+                _latestVersion = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(LatestVersionWithDate));
+            }
+        }
     }
 
-    public bool IsInstalled { get; set; }
-    public bool IsEnabled { get; set; }
-    public bool IsManuallyInstalled { get; set; }
-    public bool IsTranslationPlugin { get; set; }
-    public bool IsSupportedManualMod { get; set; }
+    private bool _isInstalled;
+    public bool IsInstalled
+    {
+        get => _isInstalled;
+        set
+        {
+            if (_isInstalled != value)
+            {
+                _isInstalled = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
+                OnPropertyChanged(nameof(CanUninstall));
+                OnPropertyChanged(nameof(CanQuickReinstall));
+                OnPropertyChanged(nameof(CanInstallFresh));
+                OnPropertyChanged(nameof(CanDownloadInstall));
+                OnPropertyChanged(nameof(HasConfiguration));
+            }
+        }
+    }
+
+    private bool _isEnabled;
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set
+        {
+            if (_isEnabled != value)
+            {
+                _isEnabled = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUninstall));
+            }
+        }
+    }
+
+    private bool _isManuallyInstalled;
+    public bool IsManuallyInstalled
+    {
+        get => _isManuallyInstalled;
+        set
+        {
+            if (_isManuallyInstalled != value)
+            {
+                _isManuallyInstalled = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
+                OnPropertyChanged(nameof(HasConfiguration));
+            }
+        }
+    }
+
+    private bool _isTranslationPlugin;
+    public bool IsTranslationPlugin
+    {
+        get => _isTranslationPlugin;
+        set
+        {
+            if (_isTranslationPlugin != value)
+            {
+                _isTranslationPlugin = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
+                OnPropertyChanged(nameof(CanUninstall));
+                OnPropertyChanged(nameof(CanQuickReinstall));
+                OnPropertyChanged(nameof(CanInstallFresh));
+                OnPropertyChanged(nameof(CanDownloadInstall));
+                OnPropertyChanged(nameof(HasConfiguration));
+            }
+        }
+    }
+
+    private bool _isSupportedManualMod;
+    public bool IsSupportedManualMod
+    {
+        get => _isSupportedManualMod;
+        set
+        {
+            if (_isSupportedManualMod != value)
+            {
+                _isSupportedManualMod = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanReinstall));
+                OnPropertyChanged(nameof(HasConfiguration));
+            }
+        }
+    }
+
     public bool IsUnsupportedManualMod { get; set; }
-    // 是否有卸载备份可快速重装
-    public bool HasBackup { get; set; }
+
+    private bool _hasBackup;
+    public bool HasBackup
+    {
+        get => _hasBackup;
+        set
+        {
+            if (_hasBackup != value)
+            {
+                _hasBackup = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanQuickReinstall));
+                OnPropertyChanged(nameof(CanInstallFresh));
+            }
+        }
+    }
     private ModConfig _config = new();
     public ModConfig Config
     {
@@ -416,13 +546,29 @@ public class ModViewModel : INotifyPropertyChanged
                                     !string.IsNullOrEmpty(Config.ConfigSectionName);
 
     // Property to determine if this mod can be updated
-    public bool CanUpdate => IsInstalled && 
-                            !IsTranslationPlugin && 
-                            !IsManuallyInstalled && 
-                            !string.IsNullOrEmpty(LatestVersion) && 
-                            LatestVersion != GHPC_Mod_Manager.Resources.Strings.Unknown &&
-                            InstalledVersion != LatestVersion &&
-                            InstalledVersion != GHPC_Mod_Manager.Resources.Strings.Manual;
+    public bool CanUpdate
+    {
+        get
+        {
+            var installedVer = InstalledVersion?.TrimStart('v') ?? "";
+            var latestVer = LatestVersion?.TrimStart('v') ?? "";
+
+            var result = IsInstalled &&
+                        !IsTranslationPlugin &&
+                        !IsManuallyInstalled &&
+                        !string.IsNullOrEmpty(latestVer) &&
+                        latestVer != GHPC_Mod_Manager.Resources.Strings.Unknown &&
+                        installedVer != latestVer &&
+                        InstalledVersion != GHPC_Mod_Manager.Resources.Strings.Manual;
+
+            if (result)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CanUpdate=TRUE] {DisplayName}: Installed={InstalledVersion}, Latest={LatestVersion}");
+            }
+
+            return result;
+        }
+    }
     
     // Property to determine if this mod can be reinstalled (for supported manual mods)
     public bool CanReinstall => IsInstalled &&
@@ -494,4 +640,13 @@ public class MelonLoaderManifest
 
     [Newtonsoft.Json.JsonProperty("files")]
     public List<string> Files { get; set; } = new();
+}
+
+public class MainConfigTestResult
+{
+    public bool Success { get; set; }
+    public MainConfig? Config { get; set; }
+    public string? SuccessfulUrl { get; set; }
+    public List<string> FailedUrls { get; set; } = new();
+    public string? ErrorMessage { get; set; }
 }

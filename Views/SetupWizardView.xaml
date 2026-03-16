@@ -189,6 +189,10 @@
                                     <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
                                 </Hyperlink>
                             </TextBlock>
+                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenPermissionHint}"
+                                       FontSize="{DynamicResource BodySmall}"
+                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                       Margin="0,3,0,0"/>
                         </StackPanel>
 
                         <!-- Network Check Log -->

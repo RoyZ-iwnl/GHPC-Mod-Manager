@@ -73,6 +73,11 @@ public partial class MainWindowViewModel : ObservableObject
     {
         try
         {
+            // 检查用户是否勾选了不再显示
+            var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+            if (settingsService.Settings.DoNotShowAnnouncementBeforeUpdate)
+                return;
+
             await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();

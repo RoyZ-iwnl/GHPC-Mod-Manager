@@ -108,7 +108,9 @@ public class SettingsService : ISettingsService
                 GitHubApiToken = string.IsNullOrEmpty(_settings.GitHubApiToken)
                     ? string.Empty
                     : _secureStorage.Protect(_settings.GitHubApiToken),
-                CleanupDoneForVersion = _settings.CleanupDoneForVersion
+                CleanupDoneForVersion = _settings.CleanupDoneForVersion,
+                LastAnnouncementMd5 = _settings.LastAnnouncementMd5,
+                DoNotShowAnnouncementBeforeUpdate = _settings.DoNotShowAnnouncementBeforeUpdate
             };
 
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
