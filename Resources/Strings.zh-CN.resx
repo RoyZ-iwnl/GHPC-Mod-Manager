@@ -213,6 +213,18 @@
   <data name="MelonLoaderVersionNotDetectable" xml:space="preserve">
     <value>未找到MelonLoader DLL和Latest.log，无法检测版本</value>
   </data>
+  <data name="GameVersionFromAssets" xml:space="preserve">
+    <value>从资源文件检测到游戏版本：{0}</value>
+  </data>
+  <data name="GameVersionFromLog" xml:space="preserve">
+    <value>从 MelonLoader 日志检测到游戏版本：{0}</value>
+  </data>
+  <data name="GameVersionNotFound" xml:space="preserve">
+    <value>未找到游戏版本</value>
+  </data>
+  <data name="GameVersionReadError" xml:space="preserve">
+    <value>读取游戏版本时出错</value>
+  </data>
   <data name="MelonLoaderAssetNotFound" xml:space="preserve">
     <value>未找到MelonLoader版本 {0} 的安装文件</value>
   </data>

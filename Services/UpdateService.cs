@@ -10,8 +10,8 @@ namespace GHPC_Mod_Manager.Services;
 
 public interface IUpdateService
 {
-    Task<(bool hasUpdate, string? latestVersion, string? downloadUrl)> CheckForUpdatesAsync(bool includePrerelease = false);
-    Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null);
+    Task<(bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest)> CheckForUpdatesAsync(bool includePrerelease = false);
+    Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null, long? expectedSize = null, string? expectedDigest = null);
     string GetCurrentVersion();
 }
 
@@ -55,7 +55,7 @@ public class UpdateService : IUpdateService
         }
     }
 
-    public async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl)> CheckForUpdatesAsync(bool includePrerelease = false)
+    public async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest)> CheckForUpdatesAsync(bool includePrerelease = false)
     {
         return await CheckForUpdatesWithFallbackAsync(includePrerelease);
     }
@@ -66,7 +66,7 @@ public class UpdateService : IUpdateService
     /// 2. 失败时尝试所有代理服务器
     /// 3. 最后尝试直接访问GitHub API
     /// </summary>
-    private async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl)> CheckForUpdatesWithFallbackAsync(bool includePrerelease)
+    private async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest)> CheckForUpdatesWithFallbackAsync(bool includePrerelease)
     {
         var checkMethods = new List<(string name, Func<Task<List<GitHubRelease>?>> checker)>();
 
@@ -134,7 +134,7 @@ public class UpdateService : IUpdateService
         }
 
         _loggingService.LogError(new Exception("All update check methods failed"), Strings.UpdateCheckAllMethodsFailed);
-        return (false, null, null);
+        return (false, null, null, null, null);
     }
 
     private async Task<List<GitHubRelease>?> CheckWithProxy(GitHubProxyServer proxyServer)
@@ -174,7 +174,7 @@ public class UpdateService : IUpdateService
         }
     }
 
-    private (bool hasUpdate, string? latestVersion, string? downloadUrl) ProcessReleases(List<GitHubRelease> releases, bool includePrerelease)
+    private (bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest) ProcessReleases(List<GitHubRelease> releases, bool includePrerelease)
     {
         // Filter releases based on update channel setting
         var updateChannel = _settingsService.Settings.UpdateChannel;
@@ -201,7 +201,7 @@ public class UpdateService : IUpdateService
         if (!availableReleases.Any())
         {
             _loggingService.LogWarning(Strings.NoStableReleasesFound);
-            return (false, null, null);
+            return (false, null, null, null, null);
         }
 
         var latestRelease = availableReleases.First();
@@ -212,7 +212,7 @@ public class UpdateService : IUpdateService
         if (!IsNewerVersion(currentVersion, latestVersion))
         {
             // No log needed - this is normal operation
-            return (false, latestVersion, null);
+            return (false, latestVersion, null, null, null);
         }
 
         // Find download URL for the update package
@@ -223,11 +223,11 @@ public class UpdateService : IUpdateService
         if (asset == null)
         {
             _loggingService.LogWarning(Strings.NoDownloadableAsset);
-            return (false, latestVersion, null);
+            return (false, latestVersion, null, null, null);
         }
 
         _loggingService.LogInfo(Strings.UpdateAvailable, latestVersion, currentVersion);
-        return (true, latestVersion, asset.DownloadUrl);
+        return (true, latestVersion, asset.DownloadUrl, asset.Size, asset.Digest);
     }
 
     private List<GitHubProxyServer> GetAllProxyServers()
@@ -257,7 +257,7 @@ public class UpdateService : IUpdateService
         };
     }
 
-    public async Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null)
+    public async Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null, long? expectedSize = null, string? expectedDigest = null)
     {
         try
         {
@@ -270,7 +270,7 @@ public class UpdateService : IUpdateService
             var fileName = Path.GetFileName(new Uri(downloadUrl).LocalPath);
             var downloadPath = Path.Combine(tempDir, fileName);
 
-            var fileData = await _networkService.DownloadFileAsync(downloadUrl, progress);
+            var fileData = await _networkService.DownloadFileAsync(downloadUrl, progress, expectedSize: expectedSize, expectedDigest: expectedDigest, assetName: fileName);
             await File.WriteAllBytesAsync(downloadPath, fileData);
 
             _loggingService.LogInfo(Strings.UpdateDownloaded, downloadPath);

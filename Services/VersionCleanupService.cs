@@ -119,12 +119,12 @@ public class VersionCleanupService : IVersionCleanupService
 
             _loggingService.LogInfo(Strings.VersionCleanupDownloadingPrev, prevVersion);
             var prevZipPath = Path.Combine(tempDir, $"prev_{prevVersion}.zip");
-            var prevData = await _networkService.DownloadFileAsync(prevAsset.DownloadUrl);
+            var prevData = await _networkService.DownloadFileAsync(prevAsset.DownloadUrl, expectedSize: prevAsset.Size, expectedDigest: prevAsset.Digest, assetName: prevAsset.Name);
             await File.WriteAllBytesAsync(prevZipPath, prevData);
 
             _loggingService.LogInfo(Strings.VersionCleanupDownloadingCurrent, currentVersion);
             var currZipPath = Path.Combine(tempDir, $"curr_{currentVersion}.zip");
-            var currData = await _networkService.DownloadFileAsync(currentAsset.DownloadUrl);
+            var currData = await _networkService.DownloadFileAsync(currentAsset.DownloadUrl, expectedSize: currentAsset.Size, expectedDigest: currentAsset.Digest, assetName: currentAsset.Name);
             await File.WriteAllBytesAsync(currZipPath, currData);
 
             // 建立两个版本的文件名集合（只取文件名，不含路径）

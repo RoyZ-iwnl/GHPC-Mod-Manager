@@ -213,6 +213,18 @@
   <data name="MelonLoaderVersionNotDetectable" xml:space="preserve">
     <value>MelonLoader DLL and Latest.log not found, cannot detect version</value>
   </data>
+  <data name="GameVersionFromAssets" xml:space="preserve">
+    <value>Game version detected from assets: {0}</value>
+  </data>
+  <data name="GameVersionFromLog" xml:space="preserve">
+    <value>Game version detected from MelonLoader log: {0}</value>
+  </data>
+  <data name="GameVersionNotFound" xml:space="preserve">
+    <value>Game version not found</value>
+  </data>
+  <data name="GameVersionReadError" xml:space="preserve">
+    <value>Error reading game version</value>
+  </data>
   <data name="MelonLoaderAssetNotFound" xml:space="preserve">
     <value>MelonLoader asset not found for version {0}</value>
   </data>

@@ -2724,6 +2724,42 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game version detected from assets: {0}.
+        /// </summary>
+        public static string GameVersionFromAssets {
+            get {
+                return ResourceManager.GetString("GameVersionFromAssets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game version detected from MelonLoader log: {0}.
+        /// </summary>
+        public static string GameVersionFromLog {
+            get {
+                return ResourceManager.GetString("GameVersionFromLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game version not found.
+        /// </summary>
+        public static string GameVersionNotFound {
+            get {
+                return ResourceManager.GetString("GameVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error reading game version.
+        /// </summary>
+        public static string GameVersionReadError {
+            get {
+                return ResourceManager.GetString("GameVersionReadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generated.
         /// </summary>
         public static string Generated {

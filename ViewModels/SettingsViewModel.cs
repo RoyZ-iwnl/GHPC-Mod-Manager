@@ -531,7 +531,7 @@ public partial class SettingsViewModel : ObservableObject
             _loggingService.LogInfo(Strings.CheckingForApplicationUpdates);
 
             var currentVersion = _updateService.GetCurrentVersion();
-            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+            var (hasUpdate, latestVersion, downloadUrl, expectedSize, expectedDigest) = await _updateService.CheckForUpdatesAsync();
 
             if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
             {
@@ -552,7 +552,7 @@ public partial class SettingsViewModel : ObservableObject
                         _loggingService.LogInfo(Strings.DownloadingUpdateProgress, latestVersion, percentage.ToString("F1"), progressText, speedText);
                     });
 
-                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress);
+                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress, expectedSize, expectedDigest);
 
                     if (!success)
                     {

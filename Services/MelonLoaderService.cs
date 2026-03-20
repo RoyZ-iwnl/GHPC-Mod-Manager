@@ -21,7 +21,7 @@ public interface IMelonLoaderService
     bool IsMelonLoaderDisabled(string gameRootPath);
     /// <summary>通过下载当前版本ZIP建立索引，删除旧版本文件</summary>
     Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null);
-    /// <summary>从 Latest.log 读取游戏版本号，取最后一个+后的部分，如 20260210.1</summary>
+    /// <summary>从 sharedassets0.assets 读取游戏版本号，匹配日期格式如 20260319</summary>
     Task<string?> GetCurrentGameVersionAsync(string gameRootPath);
 }
 
@@ -468,9 +468,29 @@ public class MelonLoaderService : IMelonLoaderService
         {
             try
             {
+                // 方法1: 从 sharedassets0.assets 读取（无需 MelonLoader）
+                var assetsPath = Path.Combine(gameRootPath, "GHPC_Data", "sharedassets0.assets");
+                if (File.Exists(assetsPath))
+                {
+                    var data = File.ReadAllBytes(assetsPath);
+                    // 正则匹配日期格式版本号 (20260319 或 20260210.1)
+                    var pattern = new System.Text.RegularExpressions.Regex(@"20\d{6}(?:\.\d+)?");
+                    var match = pattern.Match(System.Text.Encoding.UTF8.GetString(data));
+
+                    if (match.Success)
+                    {
+                        _loggingService.LogInfo(Strings.GameVersionFromAssets, match.Value);
+                        return match.Value;
+                    }
+                }
+
+                // 方法2: Fallback - 从 MelonLoader/Latest.log 读取
                 var logPath = Path.Combine(gameRootPath, "MelonLoader", "Latest.log");
                 if (!File.Exists(logPath))
+                {
+                    _loggingService.LogInfo(Strings.GameVersionNotFound);
                     return null;
+                }
 
                 foreach (var line in File.ReadLines(logPath))
                 {
@@ -481,12 +501,20 @@ public class MelonLoaderService : IMelonLoaderService
                     var versionStr = line[(idx + "Game Version: ".Length)..].Trim();
                     // 取最后一个 + 后的部分
                     var plusIdx = versionStr.LastIndexOf('+');
-                    return plusIdx >= 0 ? versionStr[(plusIdx + 1)..] : null;
+                    var version = plusIdx >= 0 ? versionStr[(plusIdx + 1)..] : null;
+                    if (version != null)
+                    {
+                        _loggingService.LogInfo(Strings.GameVersionFromLog, version);
+                    }
+                    return version;
                 }
+
+                _loggingService.LogInfo(Strings.GameVersionNotFound);
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
+                _loggingService.LogError(ex, Strings.GameVersionReadError);
                 return null;
             }
         });

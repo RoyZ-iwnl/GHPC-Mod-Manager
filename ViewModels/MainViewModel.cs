@@ -447,7 +447,7 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+            var (hasUpdate, latestVersion, downloadUrl, _, _) = await _updateService.CheckForUpdatesAsync();
 
             if (hasUpdate && !string.IsNullOrEmpty(latestVersion))
             {
@@ -1603,7 +1603,7 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogInfo(Strings.CheckingForApplicationUpdates);
 
             var currentVersion = _updateService.GetCurrentVersion();
-            var (hasUpdate, latestVersion, downloadUrl) = await _updateService.CheckForUpdatesAsync();
+            var (hasUpdate, latestVersion, downloadUrl, expectedSize, expectedDigest) = await _updateService.CheckForUpdatesAsync();
 
             if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
             {
@@ -1627,7 +1627,7 @@ public partial class MainViewModel : ObservableObject
                         StatusMessage = $"Downloading update {latestVersion} - {percentage:F1}% ({progressText}) - {speedText}";
                     });
 
-                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress);
+                    var success = await _updateService.DownloadAndInstallUpdateAsync(downloadUrl, latestVersion, progress, expectedSize, expectedDigest);
 
                     if (!success)
                     {
