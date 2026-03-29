@@ -21,7 +21,7 @@ public interface IMelonLoaderService
     bool IsMelonLoaderDisabled(string gameRootPath);
     /// <summary>通过下载当前版本ZIP建立索引，删除旧版本文件</summary>
     Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null);
-    /// <summary>从 sharedassets0.assets 读取游戏版本号，匹配日期格式如 20260319</summary>
+    /// <summary>从 globalgamemanagers 读取游戏版本号，匹配格式如 0.1.0-alpha+20260319.1</summary>
     Task<string?> GetCurrentGameVersionAsync(string gameRootPath);
 }
 
@@ -50,9 +50,11 @@ public class MelonLoaderService : IMelonLoaderService
                 var melonLoaderDir = Path.Combine(gameRootPath, "MelonLoader");
                 var versionDll = Path.Combine(gameRootPath, "version.dll");
                 var dobbyDll = Path.Combine(gameRootPath, "dobby.dll");
+                var disabledDll = Path.Combine(gameRootPath, DisabledDllName);
 
                 var hasMelonLoaderDir = Directory.Exists(melonLoaderDir);
-                var hasVersionDll = File.Exists(versionDll) || File.Exists(dobbyDll);
+                // 禁用状态下 version.dll 被重命名为 version.dllGHPCMM，仍应识别为已安装
+                var hasVersionDll = File.Exists(versionDll) || File.Exists(dobbyDll) || File.Exists(disabledDll);
 
                 return hasMelonLoaderDir && hasVersionDll;
             }
@@ -468,19 +470,24 @@ public class MelonLoaderService : IMelonLoaderService
         {
             try
             {
-                // 方法1: 从 sharedassets0.assets 读取（无需 MelonLoader）
-                var assetsPath = Path.Combine(gameRootPath, "GHPC_Data", "sharedassets0.assets");
+                // 方法1: 从 globalgamemanagers 读取（无需 MelonLoader）
+                // 版本格式: 0.1.0-alpha+20260319.1，匹配完整格式避免误判
+                var assetsPath = Path.Combine(gameRootPath, "GHPC_Data", "globalgamemanagers");
                 if (File.Exists(assetsPath))
                 {
                     var data = File.ReadAllBytes(assetsPath);
-                    // 正则匹配日期格式版本号 (20260319 或 20260210.1)
-                    var pattern = new System.Text.RegularExpressions.Regex(@"20\d{6}(?:\.\d+)?");
+                    // 正则匹配完整版本格式，如 0.1.0-alpha+20260319.1
+                    var pattern = new System.Text.RegularExpressions.Regex(@"\d+\.\d+\.\d+-alpha\+20\d{6}(?:\.\d+)?");
                     var match = pattern.Match(System.Text.Encoding.UTF8.GetString(data));
 
                     if (match.Success)
                     {
-                        _loggingService.LogInfo(Strings.GameVersionFromAssets, match.Value);
-                        return match.Value;
+                        // 取 + 后的日期版本部分，如 20260319.1
+                        var fullVersion = match.Value;
+                        var plusIdx = fullVersion.IndexOf('+');
+                        var version = fullVersion[(plusIdx + 1)..];
+                        _loggingService.LogInfo(Strings.GameVersionFromAssets, version);
+                        return version;
                     }
                 }
 

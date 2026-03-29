@@ -3,268 +3,385 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:GHPC_Mod_Manager.Views"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="900" d:DesignWidth="1400">
+             d:DesignHeight="920"
+             d:DesignWidth="1440">
 
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
         <converters:InverseBooleanConverter x:Key="InvBool"/>
-        <converters:BooleanAndToVisibilityConverter x:Key="BoolAndToVis"/>
         <converters:StringToVisibilityConverter x:Key="StrToVis"/>
+
+        <Style x:Key="RailTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource NavRailTextBrush}"/>
+            <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+            <Setter Property="FontSize" Value="{DynamicResource TitleLarge}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="RailCaptionStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource NavRailMutedTextBrush}"/>
+            <Setter Property="FontSize" Value="{DynamicResource BodySmall}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="StatusPillTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+        </Style>
+
+        <Style x:Key="StatusPillBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Margin" Value="0,0,8,6"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource BackgroundBrush}">
+    <Grid Background="{DynamicResource CanvasBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ===== 左侧导航栏 ===== -->
-        <Border Grid.Column="0" Background="{DynamicResource SurfaceVariantBrush}">
-            <DockPanel>
-                <!-- 应用标题 -->
-                <StackPanel DockPanel.Dock="Top" Margin="12,16,12,8">
-                    <TextBlock Text="GHPC"
-                               FontSize="{DynamicResource TitleMedium}"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-                    <TextBlock Text="Mod Manager"
-                               FontSize="{DynamicResource LabelMedium}"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                               Opacity="0.7"/>
+        <Border Grid.Column="0"
+                Background="{DynamicResource NavRailBrush}"
+                BorderBrush="{DynamicResource NavRailBorderBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid Margin="24,22,20,22">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <Border Background="{DynamicResource AccentSoftBrush}"
+                            CornerRadius="{DynamicResource RadiusSmall}"
+                            Padding="10,6"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="GHPC"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   FontWeight="SemiBold"
+                                   FontSize="{DynamicResource LabelLarge}"/>
+                    </Border>
+
+                    <TextBlock Margin="0,16,0,6"
+                               Text="GHPC Mod Manager"
+                               Style="{StaticResource RailTitleStyle}"/>
                 </StackPanel>
 
-                <!-- 底部：设置按钮 -->
-
-                <!-- 导航项列表 -->
-                <ListBox ItemsSource="{Binding NavigationItems}"
+                <ListBox Grid.Row="1"
+                         Margin="0,28,0,20"
+                         ItemsSource="{Binding NavigationItems}"
                          SelectedItem="{Binding SelectedNavigationItem}"
-                         Style="{DynamicResource NavigationListBoxStyle}"
-                         Margin="0,8,0,0">
+                         Style="{DynamicResource NavigationListBoxStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Label}"
-                                       FontSize="{DynamicResource BodyMedium}"
-                                       Padding="0,2"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Ellipse Grid.Column="0"
+                                         Width="8"
+                                         Height="8"
+                                         Margin="0,0,12,0"
+                                         VerticalAlignment="Center"
+                                         Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Label}"
+                                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
+                                           FontSize="{DynamicResource BodyMedium}"
+                                           FontWeight="SemiBold"
+                                           TextWrapping="Wrap"/>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </DockPanel>
+
+                <Border Grid.Row="2"
+                        Background="#14000000"
+                        BorderBrush="{DynamicResource NavRailBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusMedium}"
+                        Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.GameStatus}"
+                                   Foreground="{DynamicResource NavRailTextBrush}"
+                                   FontWeight="SemiBold"
+                                   FontSize="{DynamicResource TitleSmall}"/>
+                        <TextBlock Margin="0,6,0,10"
+                                   Text="{Binding StatusMessage}"
+                                   Style="{StaticResource RailCaptionStyle}"/>
+                        <Button Content="{x:Static resources:Strings.Settings}"
+                                Command="{Binding OpenSettingsCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Border>
 
-        <!-- ===== 右侧内容区 ===== -->
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Margin="20,16,20,16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="32"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- 游戏状态栏 -->
-            <Grid Grid.Row="0" Background="{DynamicResource SurfaceVariantBrush}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Style="{StaticResource PageHeroCardStyle}" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- 游戏状态 GroupBox，内容自适应宽度 -->
-                <GroupBox Grid.Column="0"
-                          Header="{x:Static resources:Strings.GameStatus}"
-                          Margin="10,5,0,5" Padding="10,5"
-                          Background="{DynamicResource SurfaceBrush}"
-                          Foreground="{DynamicResource OnSurfaceBrush}"
-                          BorderBrush="{DynamicResource OutlineVariantBrush}">
-                    <StackPanel Orientation="Horizontal">
-                        <!-- 状态标签 -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
-                            <TextBlock Text="{x:Static resources:Strings.Status}"
-                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <Border Background="{DynamicResource SuccessBrush}"
-                                    CornerRadius="{DynamicResource RadiusExtraSmall}"
-                                    Padding="8,4"
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                        <TextBlock Margin="0,0,0,6"
+                                   Text="{Binding SelectedNavigationItem.Label}"
+                                   Style="{StaticResource PageTitleTextStyle}"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   Visibility="{Binding StatusMessage, Converter={StaticResource StrToVis}}"/>
+
+                        <WrapPanel Margin="0,10,0,0">
+                            <Border Style="{StaticResource StatusPillBorderStyle}"
+                                    Background="{DynamicResource SuccessContainerBrush}"
+                                    BorderBrush="{DynamicResource SuccessBrush}"
                                     Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
                                 <TextBlock Text="{x:Static resources:Strings.Running}"
-                                           Foreground="{DynamicResource OnSuccessBrush}"
-                                           FontWeight="Medium"
-                                           FontSize="{DynamicResource LabelMedium}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+                                           Style="{StaticResource StatusPillTextStyle}"
+                                           Foreground="{DynamicResource OnSuccessBrush}"/>
                             </Border>
-                            <Border Background="{DynamicResource SurfaceVariantBrush}"
-                                    CornerRadius="{DynamicResource RadiusExtraSmall}"
-                                    Padding="8,4"
+
+                            <Border Style="{StaticResource StatusPillBorderStyle}"
                                     Visibility="{Binding IsGameRunning, Converter={StaticResource InvBoolToVis}}">
                                 <TextBlock Text="{x:Static resources:Strings.NotRunning}"
-                                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                           FontWeight="Medium"
-                                           FontSize="{DynamicResource LabelMedium}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+                                           Style="{StaticResource StatusPillTextStyle}"
+                                           Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                             </Border>
-                        </StackPanel>
-                        <!-- 启动/停止按钮 -->
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="{x:Static resources:Strings.StartGame}"
-                                    Command="{Binding LaunchGameCommand}"
-                                    Margin="4" MinWidth="80"
-                                    Style="{DynamicResource FilledButtonStyle}"
-                                    IsEnabled="{Binding IsGameRunning, Converter={StaticResource InvBool}}"/>
-                            <Button Content="{x:Static resources:Strings.StopGame}"
-                                    Command="{Binding StopGameCommand}"
-                                    Margin="4" MinWidth="80"
-                                    Style="{DynamicResource OutlinedButtonStyle}"
-                                    IsEnabled="{Binding IsGameRunning}"/>
-                            <Button Content="{x:Static resources:Strings.OpenGameFolder}"
-                                    Command="{Binding OpenGameFolderCommand}"
-                                    Margin="4"
-                                    Style="{DynamicResource OutlinedButtonStyle}"/>
-                        </StackPanel>
+
+                            <Border Style="{StaticResource StatusPillBorderStyle}"
+                                    Background="{DynamicResource WarningContainerBrush}"
+                                    BorderBrush="{DynamicResource WarningBrush}"
+                                    Visibility="{Binding IsOfflineMode, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="{x:Static resources:Strings.OfflineModeTitle}"
+                                           Style="{StaticResource StatusPillTextStyle}"
+                                           Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                            </Border>
+
+                            <Border Style="{StaticResource StatusPillBorderStyle}"
+                                    Background="{DynamicResource AccentSoftBrush}"
+                                    BorderBrush="{DynamicResource AccentBrush}"
+                                    Visibility="{Binding IsAppUpdateAvailable, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="{Binding LatestAppVersion}"
+                                           Style="{StaticResource StatusPillTextStyle}"
+                                           Foreground="{DynamicResource AccentStrongBrush}"/>
+                            </Border>
+                        </WrapPanel>
                     </StackPanel>
-                </GroupBox>
 
-                <!-- 设置按钮，固定在右侧垂直居中 -->
-                <Button Grid.Column="2"
-                        Content="{x:Static resources:Strings.Settings}"
-                        Command="{Binding OpenSettingsCommand}"
-                        Style="{DynamicResource TextButtonStyle}"
-                        MinHeight="80" MinWidth="100"
-                        VerticalAlignment="Center"
-                        Margin="0,0,12,0"/>
-            </Grid>
+                    <WrapPanel Grid.Column="1"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top"
+                               Margin="0,-4,-4,0">
+                        <Button Content="{x:Static resources:Strings.StartGame}"
+                                Command="{Binding LaunchGameCommand}"
+                                IsEnabled="{Binding IsGameRunning, Converter={StaticResource InvBool}}"
+                                Margin="0,4,8,4"
+                                Style="{DynamicResource FilledButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.OpenGameFolder}"
+                                Command="{Binding OpenGameFolderCommand}"
+                                Margin="0,4,0,4"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
 
-            <!-- 更新横幅区（App更新 + 翻译更新，叠加显示） -->
-            <Grid Grid.Row="1">
-                <!-- App更新横幅 -->
-                <Border Background="{DynamicResource PrimaryBrush}"
-                        Padding="12,8" Margin="10,4,10,0"
-                        CornerRadius="{DynamicResource RadiusSmall}"
+            <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                <Border Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource ErrorContainerBrush}"
+                        BorderBrush="{DynamicResource ErrorBrush}"
+                        Visibility="{Binding HasDelistedMods, Converter={StaticResource BoolToVis}}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.DelistedModBannerTitle}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"
+                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                        <TextBlock Margin="0,4,0,0"
+                                   Text="{x:Static resources:Strings.DelistedModBannerMessage}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,12,0,0"
+                        Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource WarningContainerBrush}"
+                        BorderBrush="{DynamicResource WarningBrush}"
+                        Visibility="{Binding HasUnknownFieldsMods, Converter={StaticResource BoolToVis}}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.UnknownConfigFieldsBannerTitle}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"
+                                   Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                        <TextBlock Margin="0,4,0,0"
+                                   Text="{x:Static resources:Strings.UnknownConfigFieldsBannerMessage}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Margin="0,12,0,0"
+                        Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource AccentSoftBrush}"
+                        BorderBrush="{DynamicResource AccentBrush}"
                         Visibility="{Binding IsAppUpdateAvailable, Converter={StaticResource BoolToVis}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="⚠" FontSize="20"
-                                   Margin="0,0,10,0" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource OnPrimaryBrush}"/>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource OnPrimaryBrush}">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock>
                                 <Run Text="{x:Static resources:Strings.NewVersionAvailable}"/>
                                 <Run Text=" "/>
-                                <Run Text="{Binding LatestAppVersion, Mode=OneWay}"/>
+                                <Run Text="{Binding LatestAppVersion}"/>
                             </TextBlock>
-                            <TextBlock Text="{x:Static resources:Strings.ClickToDownloadAndInstall}"
-                                       FontSize="{DynamicResource LabelSmall}"
-                                       Foreground="{DynamicResource OnPrimaryBrush}" Opacity="0.9"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="{x:Static resources:Strings.ClickToDownloadAndInstall}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"/>
                         </StackPanel>
-                        <Button Grid.Column="2"
+                        <Button Grid.Column="1"
                                 Content="{x:Static resources:Strings.CheckForUpdates}"
                                 Command="{Binding DownloadAndInstallAppUpdateCommand}"
-                                Margin="10,0,0,0"
-                                Style="{DynamicResource FilledButtonStyle}"
-                                Background="{DynamicResource OnPrimaryBrush}"
-                                Foreground="{DynamicResource PrimaryBrush}"/>
+                                Margin="16,0,0,0"
+                                Style="{DynamicResource FilledButtonStyle}"/>
                     </Grid>
                 </Border>
 
-                <!-- 翻译更新横幅 -->
-                <Border Background="{DynamicResource SecondaryBrush}"
-                        Padding="12,8" Margin="10,4,10,0"
-                        CornerRadius="{DynamicResource RadiusSmall}"
+                <Border Margin="0,12,0,0"
+                        Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource SecondaryContainerBrush}"
+                        BorderBrush="{DynamicResource SecondaryBrush}"
                         Visibility="{Binding IsTranslationUpdateAvailable, Converter={StaticResource BoolToVis}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="🌐" FontSize="20"
-                                   Margin="0,0,10,0" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource OnSecondaryBrush}"/>
-                        <TextBlock Grid.Column="1" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSecondaryBrush}"
-                                   VerticalAlignment="Center">
-                            <Run Text="{x:Static resources:Strings.TranslationUpdateAvailable}"/>
-                        </TextBlock>
-                        <Button Grid.Column="2"
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{x:Static resources:Strings.TranslationUpdateAvailable}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"
+                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="{x:Static resources:Strings.GoToTranslationManagement}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
+                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1"
                                 Content="{x:Static resources:Strings.GoToTranslation}"
                                 Command="{Binding GoToTranslationManagementCommand}"
-                                Margin="10,0,0,0"
+                                Margin="16,0,0,0"
                                 Style="{DynamicResource FilledButtonStyle}"
-                                Background="{DynamicResource OnSecondaryBrush}"
-                                Foreground="{DynamicResource SecondaryBrush}"/>
+                                Background="{DynamicResource SecondaryBrush}"
+                                Foreground="{DynamicResource SurfaceBrush}"/>
                     </Grid>
                 </Border>
-            </Grid>
+            </StackPanel>
 
-            <!-- 当前子页面内容 -->
-            <ContentControl Grid.Row="2" Content="{Binding CurrentPageView}"/>
+            <Border Grid.Row="2"
+                    Margin="0,12,0,12"
+                    Style="{StaticResource PageSurfaceCardStyle}"
+                    Padding="0">
+                <ContentControl Margin="16"
+                                Content="{Binding CurrentPageView}"/>
+            </Border>
 
-            <!-- 状态栏 -->
-            <StatusBar Grid.Row="3" Height="32" Style="{DynamicResource MaterialStatusBarStyle}">
-                <StatusBarItem>
-                    <StackPanel Orientation="Horizontal">
+            <Border Grid.Row="3"
+                    Style="{StaticResource PageToolbarCardStyle}"
+                    Padding="6,2">
+                <StatusBar Style="{DynamicResource MaterialStatusBarStyle}">
+                    <StatusBarItem>
                         <TextBlock Text="{Binding StatusMessage}"
-                                   FontFamily="{DynamicResource DefaultFontFamily}"
-                                   FontSize="{DynamicResource LabelMedium}"/>
-                        <ProgressBar Width="100" Height="4" Margin="10,0,0,0"
-                                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
-                    </StackPanel>
-                </StatusBarItem>
-            </StatusBar>
+                                   FontSize="{DynamicResource LabelLarge}"
+                                   VerticalAlignment="Center"/>
+                    </StatusBarItem>
+                    <Separator/>
+                    <StatusBarItem>
+                        <TextBlock Text="{Binding SelectedNavigationItem.Label}"
+                                   FontSize="{DynamicResource LabelLarge}"
+                                   VerticalAlignment="Center"/>
+                    </StatusBarItem>
+                    <StatusBarItem HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{x:Static resources:Strings.LoadingAnnouncement}"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
+                            <ProgressBar Width="120"
+                                         Height="6"
+                                         IsIndeterminate="True"
+                                         Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
+                        </StackPanel>
+                    </StatusBarItem>
+                </StatusBar>
+            </Border>
 
-            <!-- 游戏运行遮罩（从Row1开始，不遮挡游戏状态栏Row0，保持停止游戏按钮可点击） -->
-            <Grid Grid.Row="1" Grid.RowSpan="3"
-                  Background="{DynamicResource ScrimBrush}" Opacity="0.8"
+            <Grid Grid.Row="1"
+                  Grid.RowSpan="3"
+                  Background="{DynamicResource ScrimBrush}"
+                  Opacity="0.92"
                   Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
                 <Border Background="{DynamicResource SurfaceBrush}"
-                        CornerRadius="{DynamicResource RadiusMedium}"
-                        Padding="32"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"
                         BorderBrush="{DynamicResource OutlineVariantBrush}"
-                        BorderThickness="1">
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusLarge}"
+                        Padding="30"
+                        Width="440"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.GameRunning}"
-                                   FontSize="{DynamicResource HeadlineSmall}"
-                                   FontWeight="Medium"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                        <TextBlock Text="{x:Static resources:Strings.GameRunningCannotOperate}"
-                                   TextAlignment="Center"
-                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                   FontSize="{DynamicResource BodyMedium}"/>
+                                   Style="{StaticResource PageTitleTextStyle}"
+                                   TextAlignment="Center"/>
+                        <TextBlock Margin="0,12,0,20"
+                                   Text="{x:Static resources:Strings.GameRunningCannotOperate}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   TextAlignment="Center"/>
+                        <Button Content="{x:Static resources:Strings.StopGame}"
+                                Command="{Binding StopGameCommand}"
+                                HorizontalAlignment="Center"
+                                Style="{DynamicResource FilledButtonStyle}"/>
                     </StackPanel>
                 </Border>
             </Grid>
 
-            <!-- MelonLoader未安装遮罩 -->
-            <Grid Grid.Row="1" Grid.RowSpan="3"
-                  Background="{DynamicResource ScrimBrush}" Opacity="0.8"
+            <Grid Grid.Row="1"
+                  Grid.RowSpan="3"
+                  Background="{DynamicResource ScrimBrush}"
+                  Opacity="0.92"
                   Visibility="{Binding IsMelonLoaderNotInstalled, Converter={StaticResource BoolToVis}}">
                 <Border Background="{DynamicResource SurfaceBrush}"
-                        CornerRadius="{DynamicResource RadiusMedium}"
-                        Padding="32"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"
                         BorderBrush="{DynamicResource OutlineVariantBrush}"
-                        BorderThickness="1">
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource RadiusLarge}"
+                        Padding="30"
+                        Width="480"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.MelonLoaderNotInstalledTitle}"
-                                   FontSize="{DynamicResource HeadlineSmall}"
-                                   FontWeight="Medium"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderNotInstalledMessage}"
-                                   TextAlignment="Center"
-                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                   FontSize="{DynamicResource BodyMedium}"
-                                   MaxWidth="360" TextWrapping="Wrap" Margin="0,0,0,16"/>
+                                   Style="{StaticResource PageTitleTextStyle}"
+                                   TextAlignment="Center"/>
+                        <TextBlock Margin="0,12,0,20"
+                                   Text="{x:Static resources:Strings.MelonLoaderNotInstalledMessage}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   TextAlignment="Center"/>
                         <Button Content="{x:Static resources:Strings.InstallMelonLoader}"
                                 Command="{Binding GoToInstallMelonLoaderCommand}"
                                 HorizontalAlignment="Center"
@@ -272,25 +389,29 @@
                     </StackPanel>
                 </Border>
             </Grid>
-
         </Grid>
 
-        <!-- MelonLoader禁用遮罩（覆盖整个主界面） -->
-        <Grid Grid.Column="0" Grid.ColumnSpan="2"
-              Background="{DynamicResource ScrimBrush}" Opacity="0.8"
+        <Grid Grid.ColumnSpan="2"
+              Background="{DynamicResource ScrimBrush}"
+              Opacity="0.94"
               Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BoolToVis}}">
             <Border Background="{DynamicResource SurfaceBrush}"
-                    CornerRadius="{DynamicResource RadiusMedium}"
-                    Padding="32"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
                     BorderBrush="{DynamicResource OutlineVariantBrush}"
-                    BorderThickness="1">
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusLarge}"
+                    Padding="30"
+                    Width="460"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                 <StackPanel>
                     <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabledOverlayHint}"
-                               FontSize="{DynamicResource HeadlineSmall}"
-                               FontWeight="Medium"
-                               Foreground="{DynamicResource OnSurfaceBrush}"
-                               HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                               Style="{StaticResource PageTitleTextStyle}"
+                               TextAlignment="Center"/>
+                    <TextBlock Margin="0,12,0,20"
+                               Text="{Binding StatusMessage}"
+                               Style="{StaticResource PageSubtitleTextStyle}"
+                               TextAlignment="Center"
+                               Visibility="{Binding StatusMessage, Converter={StaticResource StrToVis}}"/>
                     <Button Content="{x:Static resources:Strings.Settings}"
                             Command="{Binding OpenSettingsCommand}"
                             HorizontalAlignment="Center"
@@ -298,6 +419,5 @@
                 </StackPanel>
             </Border>
         </Grid>
-
     </Grid>
 </UserControl>

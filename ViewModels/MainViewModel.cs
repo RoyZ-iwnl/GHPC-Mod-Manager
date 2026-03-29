@@ -27,6 +27,52 @@ public enum NavigationPage
     Translation
 }
 
+internal static class ModInstallCompatibilityHelper
+{
+    public static async Task<bool> ConfirmInstallAsync(
+        ModViewModel mod,
+        string? currentGameVersion,
+        ISettingsService settingsService,
+        IMelonLoaderService melonLoaderService)
+    {
+        var supportedVersions = mod.SupportedGameVersions
+            .Select(NormalizeVersion)
+            .Where(version => !string.IsNullOrWhiteSpace(version))
+            .Where(version => !string.Equals(version, Strings.Unknown, StringComparison.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (supportedVersions.Count == 0)
+            return true;
+
+        var resolvedCurrentVersion = NormalizeVersion(currentGameVersion);
+        if (string.IsNullOrWhiteSpace(resolvedCurrentVersion))
+        {
+            var gameRoot = settingsService.Settings.GameRootPath;
+            if (!string.IsNullOrWhiteSpace(gameRoot))
+                resolvedCurrentVersion = NormalizeVersion(await melonLoaderService.GetCurrentGameVersionAsync(gameRoot));
+        }
+
+        if (string.IsNullOrWhiteSpace(resolvedCurrentVersion))
+            return true;
+
+        if (supportedVersions.Contains(resolvedCurrentVersion, StringComparer.OrdinalIgnoreCase))
+            return true;
+
+        var supportedVersionText = string.Join(", ", supportedVersions);
+        var result = MessageBox.Show(
+            string.Format(Strings.GameVersionMismatchDialogMessage, mod.DisplayName, resolvedCurrentVersion, supportedVersionText),
+            Strings.GameVersionMismatchDialogTitle,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        return result == MessageBoxResult.Yes;
+    }
+
+    private static string NormalizeVersion(string? version)
+        => version?.Trim().TrimStart('v', 'V') ?? string.Empty;
+}
+
 // 配置项视图模型
 public partial class ConfigurationItem : ObservableObject
 {
@@ -51,6 +97,7 @@ public partial class MainViewModel : ObservableObject
 
     // Instance flag to prevent re-initialization when navigating back from settings
     private bool _isInitialized = false;
+    private bool _hasPerformedStartupIntegrityCheck = false;
 
     private readonly IModManagerService _modManagerService;
     private readonly ITranslationManagerService _translationManagerService;
@@ -173,6 +220,20 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isMelonLoaderNotInstalled = false;
+
+    // 已安装下架Mod数量（用于横幅显示）
+    [ObservableProperty]
+    private int _delistedModCount;
+
+    // 是否有已安装的下架Mod
+    public bool HasDelistedMods => DelistedModCount > 0;
+
+    // 含有未知字段的Mod数量（无论是否已安装）
+    [ObservableProperty]
+    private int _unknownFieldsModCount;
+
+    // 是否有含未知字段的Mod
+    public bool HasUnknownFieldsMods => UnknownFieldsModCount > 0;
 
     public void RefreshMelonLoaderState()
     {
@@ -378,7 +439,10 @@ public partial class MainViewModel : ObservableObject
 
         // 只在非首次运行时自动加载数据（首次运行用户还在配置网络）
         if (!_settingsService.Settings.IsFirstRun)
+        {
             await RefreshDataAsync();
+            await CheckManagedModIntegrityAsync(promptOnMismatch: false);
+        }
 
         // 检测 MelonLoader 是否已安装（可能在软件关闭期间被用户删除）
         await CheckMelonLoaderInstalledAsync();
@@ -639,6 +703,12 @@ public partial class MainViewModel : ObservableObject
             _installedModsViewModel?.SetModsSource(Mods);
             _modBrowserViewModel?.SetModsSource(Mods);
 
+            // 计算下架Mod和未知字段Mod数量（用于横幅显示）
+            DelistedModCount = Mods.Count(m => m.IsInstalled && m.IsDelisted);
+            UnknownFieldsModCount = Mods.Count(m => m.HasUnknownConfigFields);
+            OnPropertyChanged(nameof(HasDelistedMods));
+            OnPropertyChanged(nameof(HasUnknownFieldsMods));
+
             // 如果当前正在显示详情页，用新数据重新初始化（确保按钮状态正确）
             if (_modDetailViewModel?.Mod != null && CurrentPageView is ModDetailView)
             {
@@ -689,6 +759,9 @@ public partial class MainViewModel : ObservableObject
             MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             return;
         }
+
+        if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, null, _settingsService, _melonLoaderService))
+            return;
 
         try
         {
@@ -901,6 +974,9 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, null, _settingsService, _melonLoaderService))
+            return;
+
         try
         {
             IsDownloading = true;
@@ -917,7 +993,7 @@ public partial class MainViewModel : ObservableObject
             
             // Reinstall the mod using the regular installation method
             // This will convert it from manually installed to managed
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true);
 
             if (success)
             {
@@ -1270,6 +1346,32 @@ public partial class MainViewModel : ObservableObject
                 }
             }
 
+            // 检查已安装的下架Mod
+            var delistedMods = Mods.Where(m => m.IsInstalled && m.IsDelisted).ToList();
+            if (delistedMods.Any())
+            {
+                var delistedNames = delistedMods.Select(m => m.DisplayName).ToList();
+                var delistedText = string.Join("\n• ", delistedNames);
+                var result = MessageBox.Show(
+                    string.Format(Strings.DelistedModWarningMessage, "• " + delistedText),
+                    Strings.DelistedModDetectedOnLaunch,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No)
+                {
+                    StatusMessage = Strings.Ready;
+                    return;
+                }
+            }
+
+            var integrityOkay = await CheckManagedModIntegrityAsync(promptOnMismatch: true);
+            if (!integrityOkay)
+            {
+                StatusMessage = Strings.Ready;
+                return;
+            }
+
             StatusMessage = Strings.StartingGame;
             var success = await _processService.LaunchGameAsync(gameRootPath);
 
@@ -1287,6 +1389,52 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.LaunchGameError);
             StatusMessage = Strings.GameLaunchFailed;
         }
+    }
+
+    private async Task<bool> CheckManagedModIntegrityAsync(bool promptOnMismatch)
+    {
+        if (!promptOnMismatch && _hasPerformedStartupIntegrityCheck)
+            return true;
+
+        var issues = await _modManagerService.CheckManagedModsIntegrityAsync();
+        if (!promptOnMismatch)
+            _hasPerformedStartupIntegrityCheck = true;
+
+        if (!issues.Any())
+            return true;
+
+        var groupedIssues = issues
+            .GroupBy(issue => issue.ModDisplayName)
+            .Select(group =>
+            {
+                var lines = group.Select(issue =>
+                {
+                    var status = issue.IssueType == ModIntegrityIssueType.Missing
+                        ? (Strings.ResourceManager.GetString("ManagedModIntegrityIssueMissing") ??
+                           (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "缺失" : "Missing"))
+                        : (Strings.ResourceManager.GetString("ManagedModIntegrityIssueModified") ??
+                           (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "已修改" : "Modified"));
+                    return $"  - {issue.RelativePath} [{status}]";
+                });
+                return $"{group.Key}\n{string.Join("\n", lines)}";
+            })
+            .ToList();
+
+        var issueText = string.Join("\n\n", groupedIssues);
+        var messageTemplate = promptOnMismatch
+            ? (Strings.ResourceManager.GetString("ManagedModIntegrityLaunchMessage") ??
+               (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+                    ? "检测到已安装受管 Mod 的文件完整性异常：\n\n{0}\n\n建议先修复或重装这些 Mod。仍要继续启动游戏吗？"
+                    : "Detected integrity issues in installed managed mods:\n\n{0}\n\nFixing or reinstalling these mods is recommended. Continue launching the game anyway?"))
+            : (Strings.ResourceManager.GetString("ManagedModIntegrityStartupMessage") ??
+               (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+                    ? "检测到已安装受管 Mod 的文件完整性异常：\n\n{0}\n\n建议修复或重装这些 Mod。"
+                    : "Detected integrity issues in installed managed mods:\n\n{0}\n\nFixing or reinstalling these mods is recommended."));
+        var message = string.Format(messageTemplate, issueText);
+
+        var buttons = promptOnMismatch ? MessageBoxButton.YesNo : MessageBoxButton.OK;
+        var result = MessageBox.Show(message, Strings.Warning, buttons, MessageBoxImage.Warning);
+        return !promptOnMismatch || result == MessageBoxResult.Yes;
     }
 
     /// <summary>
@@ -1400,6 +1548,16 @@ public partial class MainViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.FailedToOpenGameDirectory);
             MessageBox.Show(string.Format(Strings.UnableToOpenGameDirectory, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    [RelayCommand]
+    private void GoToInstalledMods()
+    {
+        var navItem = NavigationItems.FirstOrDefault(n => n.Page == NavigationPage.InstalledMods);
+        if (navItem != null)
+            SelectedNavigationItem = navItem;
+        else
+            NavigateToPage(NavigationPage.InstalledMods);
     }
 
     [RelayCommand]

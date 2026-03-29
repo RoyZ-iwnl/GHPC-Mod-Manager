@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GHPC_Mod_Manager.Models;
 
@@ -140,7 +142,18 @@ public class ModConfig
     public string MainBinaryFileName { get; set; } = string.Empty;
     public string ConfigSectionName { get; set; } = string.Empty;
     public InstallMethod InstallMethod { get; set; } = InstallMethod.DirectRelease;
+    // Legacy scripted fields are kept for compatibility detection only.
     public string? InstallScript_Base64 { get; set; }
+    public string? UninstallScript_Base64 { get; set; }
+    public string? EnableScript_Base64 { get; set; }
+    /// <summary>
+    /// Replace 模式的目标目录（相对于 GameRoot）。
+    /// </summary>
+    public string? ReplaceTargetPath { get; set; }
+    /// <summary>
+    /// Replace 模式单文件下载时的目标文件名（可选）。
+    /// </summary>
+    public string? ReplaceFileName { get; set; }
     public List<string> Conflicts { get; set; } = new();
     public List<string> Requirements { get; set; } = new();
 
@@ -153,25 +166,107 @@ public class ModConfig
 
     [JsonProperty("SupportedGameVersions")]
     public List<string> SupportedGameVersions { get; set; } = new();
+
+    // 已下架：为true时列表不显示，但已安装的仍提供信息提示和启动检查
+    [JsonProperty("Delisted")]
+    public bool Delisted { get; set; } = false;
+
+    // 未知字段存储（用于检测新版本添加的字段）
+    [JsonExtensionData]
+    public Dictionary<string, object>? UnknownFields { get; set; }
+
+    // 是否含有未知字段
+    [JsonIgnore]
+    public bool HasUnknownFields => UnknownFields != null && UnknownFields.Count > 0;
+
+    [JsonIgnore]
+    public bool HasLegacyScriptConfig =>
+        InstallMethod == InstallMethod.Scripted ||
+        !string.IsNullOrWhiteSpace(InstallScript_Base64) ||
+        !string.IsNullOrWhiteSpace(UninstallScript_Base64) ||
+        !string.IsNullOrWhiteSpace(EnableScript_Base64);
 }
 
 public enum InstallMethod
 {
     DirectRelease,
+    Replace,
     Scripted
 }
 
 public class ModInstallManifest
 {
+    public const int CurrentSchemaVersion = 2;
+    public int SchemaVersion { get; set; } = CurrentSchemaVersion;
     public Dictionary<string, ModInstallInfo> InstalledMods { get; set; } = new();
+}
+
+public class InstalledFileInfo
+{
+    public string RelativePath { get; set; } = string.Empty;
+    public string Sha256 { get; set; } = string.Empty;
+    public long FileSize { get; set; }
+}
+
+public sealed class InstalledFileInfoJsonConverter : JsonConverter<InstalledFileInfo>
+{
+    public override InstalledFileInfo? ReadJson(JsonReader reader, Type objectType, InstalledFileInfo? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.String)
+        {
+            return new InstalledFileInfo
+            {
+                RelativePath = (reader.Value?.ToString() ?? string.Empty).Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar)
+            };
+        }
+
+        if (reader.TokenType == JsonToken.StartObject)
+        {
+            var obj = JObject.Load(reader);
+            return obj.ToObject<InstalledFileInfo>(serializer);
+        }
+
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
+        throw new JsonSerializationException($"Unexpected token {reader.TokenType} when reading InstalledFileInfo.");
+    }
+
+    public override void WriteJson(JsonWriter writer, InstalledFileInfo? value, JsonSerializer serializer)
+    {
+        serializer.Serialize(writer, value);
+    }
 }
 
 public class ModInstallInfo
 {
     public string ModId { get; set; } = string.Empty;
     public string Version { get; set; } = string.Empty;
-    public List<string> InstalledFiles { get; set; } = new();
+    [JsonProperty(ItemConverterType = typeof(InstalledFileInfoJsonConverter))]
+    public List<InstalledFileInfo> InstalledFiles { get; set; } = new();
+    public List<string> BackupFiles { get; set; } = new();
     public DateTime InstallDate { get; set; } = DateTime.Now;
+
+    [JsonIgnore]
+    public bool HasStructuredInstalledFiles => InstalledFiles.Any(f => !string.IsNullOrWhiteSpace(f.Sha256) || f.FileSize > 0);
+}
+
+public enum ModIntegrityIssueType
+{
+    Missing,
+    Modified
+}
+
+public class ModIntegrityIssue
+{
+    public string ModId { get; set; } = string.Empty;
+    public string ModDisplayName { get; set; } = string.Empty;
+    public string RelativePath { get; set; } = string.Empty;
+    public ModIntegrityIssueType IssueType { get; set; }
+    public string ExpectedSha256 { get; set; } = string.Empty;
+    public string ActualSha256 { get; set; } = string.Empty;
 }
 
 public class TranslationInstallManifest
@@ -383,6 +478,12 @@ public class ModViewModel : INotifyPropertyChanged
 
     public bool IsUnsupportedManualMod { get; set; }
 
+    // 已下架：来自Config.Delisted，用于UI显示判断
+    public bool IsDelisted => Config?.Delisted == true;
+
+    // 含有未知配置字段：来自Config.HasUnknownFields，用于UI警告
+    public bool HasUnknownConfigFields => Config?.HasUnknownFields == true;
+
     private bool _hasBackup;
     public bool HasBackup
     {
@@ -412,6 +513,8 @@ public class ModViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(Tags));
             OnPropertyChanged(nameof(SupportedGameVersions));
             OnPropertyChanged(nameof(SupportedVersionsText));
+            OnPropertyChanged(nameof(IsDelisted));
+            OnPropertyChanged(nameof(HasUnknownConfigFields));
         }
     }
 
@@ -554,6 +657,7 @@ public class ModViewModel : INotifyPropertyChanged
             var latestVer = LatestVersion?.TrimStart('v') ?? "";
 
             var result = IsInstalled &&
+                        IsEnabled &&
                         !IsTranslationPlugin &&
                         !IsManuallyInstalled &&
                         !string.IsNullOrEmpty(latestVer) &&

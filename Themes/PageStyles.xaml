@@ -1,0 +1,119 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="PageSurfaceCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RadiusMedium}"/>
+        <Setter Property="Padding" Value="18"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <Style x:Key="PageSectionCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerBrush}"/>
+    </Style>
+
+    <Style x:Key="PageToolbarCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
+        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+
+    <Style x:Key="PageSidebarCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
+        <Setter Property="Padding" Value="20"/>
+    </Style>
+
+    <Style x:Key="PageHeroCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
+        <Setter Property="Background" Value="{DynamicResource HeroGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentSoftBrush}"/>
+        <Setter Property="Padding" Value="22"/>
+    </Style>
+
+    <Style x:Key="PageBannerCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
+        <Setter Property="Padding" Value="16,14"/>
+    </Style>
+
+    <Style x:Key="PageTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource HeadlineLarge}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnBackgroundBrush}"/>
+    </Style>
+
+    <Style x:Key="HeroEyebrowTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="PageSubtitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodyMedium}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="PageSectionTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource TitleMedium}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+    </Style>
+
+    <Style x:Key="PageSectionHintTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodySmall}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+    </Style>
+
+    <Style x:Key="MetaLabelTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+    </Style>
+
+    <Style x:Key="MetaValueTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodyMedium}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="MonoMetaValueTextStyle" TargetType="TextBlock" BasedOn="{StaticResource MetaValueTextStyle}">
+        <Setter Property="FontFamily" Value="{DynamicResource MonospaceFontFamily}"/>
+    </Style>
+
+    <Style x:Key="FieldLabelTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodySmall}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="Margin" Value="0,0,0,6"/>
+    </Style>
+
+    <Style x:Key="FieldValueTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodyMedium}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="BadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="BadgeBorderStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Margin" Value="0,0,8,6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+    </Style>
+
+    <Style x:Key="EmptyStateTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource BodyLarge}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+</ResourceDictionary>

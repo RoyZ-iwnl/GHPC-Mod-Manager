@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -228,6 +229,87 @@ public class BooleanAndToVisibilityConverter : IMultiValueConverter
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class ResponsiveCardWidthConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length == 0 || values[0] is not double viewportWidth || double.IsNaN(viewportWidth) || viewportWidth <= 0)
+            return 520d;
+
+        var availableWidth = Math.Max(360d, viewportWidth - 12d);
+        const double columnGap = 12d;
+        const double singleColumnThreshold = 960d;
+        const double minSingleColumnWidth = 360d;
+        const double minTwoColumnWidth = 420d;
+
+        if (availableWidth < singleColumnThreshold)
+            return Math.Max(minSingleColumnWidth, availableWidth);
+
+        var twoColumnWidth = Math.Floor((availableWidth - columnGap) / 2d);
+        return Math.Max(minTwoColumnWidth, twoColumnWidth);
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class ResponsiveColumnCountConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is not double viewportWidth || double.IsNaN(viewportWidth) || viewportWidth <= 0)
+            return 1;
+
+        return viewportWidth >= 880d ? 2 : 1;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class CollectionSummaryConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var noneText = culture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase) ? "无" : "None";
+
+        if (value is not IEnumerable enumerable)
+            return noneText;
+
+        var maxItems = 2;
+        if (parameter is string parameterText && int.TryParse(parameterText, out var parsedMax) && parsedMax > 0)
+            maxItems = parsedMax;
+
+        var items = new List<string>();
+        foreach (var item in enumerable)
+        {
+            var text = item?.ToString()?.Trim();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            items.Add(text);
+        }
+
+        if (items.Count == 0)
+            return noneText;
+
+        if (items.Count <= maxItems)
+            return string.Join(", ", items);
+
+        var visibleItems = items.Take(maxItems);
+        return $"{string.Join(", ", visibleItems)} +{items.Count - maxItems}";
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

@@ -4,55 +4,84 @@
         xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="{x:Static resources:Strings.Announcement}"
-        Width="600" Height="800"
+        Width="760"
+        Height="860"
+        MinWidth="620"
+        MinHeight="700"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        Background="{DynamicResource SurfaceBrush}">
-    
+        Background="{DynamicResource BackgroundBrush}">
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Loading indicator -->
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ProgressBar IsIndeterminate="True" Width="200" Height="4" Margin="0,0,0,10"/>
-            <TextBlock Text="{x:Static resources:Strings.LoadingAnnouncement}" 
-                      HorizontalAlignment="Center" FontSize="14"/>
-        </StackPanel>
+        <Border Grid.Row="0"
+                Style="{StaticResource PageHeroCardStyle}">
+            <StackPanel>
+                <TextBlock Text="NOTICE"
+                           Style="{StaticResource HeroEyebrowTextStyle}"/>
+                <TextBlock Margin="0,6,0,0"
+                           Text="{x:Static resources:Strings.Announcement}"
+                           Style="{StaticResource PageTitleTextStyle}"/>
+            </StackPanel>
+        </Border>
 
-        <!-- Error message -->
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
-            <TextBlock Text="{Binding ErrorMessage}" 
-                      HorizontalAlignment="Center" FontSize="14" 
-                      Foreground="Red" TextWrapping="Wrap"/>
-        </StackPanel>
+        <Border Grid.Row="1"
+                Margin="0,18,0,18"
+                Style="{StaticResource PageSurfaceCardStyle}"
+                Padding="10"
+                Background="{DynamicResource SurfaceBrush}">
+            <Grid>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ProgressBar IsIndeterminate="True"
+                                 Width="220"
+                                 Height="6"
+                                 Margin="0,0,0,12"/>
+                    <TextBlock Text="{x:Static resources:Strings.LoadingAnnouncement}"
+                               Style="{StaticResource PageSubtitleTextStyle}"/>
+                </StackPanel>
 
-        <!-- Markdown content -->
-        <wv2:WebView2 x:Name="AnnouncementWebView"
-                     Grid.Row="0" Margin="0,0,0,10"
-                     Visibility="{Binding HasContent, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     NavigationCompleted="AnnouncementWebView_NavigationCompleted"/>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Style="{StaticResource EmptyStateTextStyle}"
+                               Foreground="{DynamicResource ErrorBrush}"
+                               MaxWidth="460"/>
+                </StackPanel>
 
-        <!-- No content message -->
-        <TextBlock Grid.Row="0" Text="No announcement available" 
-                  HorizontalAlignment="Center" VerticalAlignment="Center"
-                  FontSize="14" Foreground="Gray"
-                  Visibility="{Binding HasContent, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                <wv2:WebView2 x:Name="AnnouncementWebView"
+                              Margin="0"
+                              Visibility="{Binding HasContent, Converter={StaticResource BooleanToVisibilityConverter}}"
+                              NavigationCompleted="AnnouncementWebView_NavigationCompleted"/>
 
-        <!-- Bottom panel with checkbox and close button -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <CheckBox Content="{x:Static resources:Strings.DoNotShowAnnouncementBeforeUpdate}"
-                      IsChecked="{Binding DoNotShowAgain}"
-                      VerticalAlignment="Center"
-                      Margin="0,0,20,0"/>
-            <Button Content="{x:Static resources:Strings.Close}"
-                    Width="100" Height="35"
-                    Style="{DynamicResource FilledButtonStyle}"
-                    Click="CloseButton_Click"/>
-        </StackPanel>
+                <TextBlock Text="No announcement available"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource EmptyStateTextStyle}"
+                           Visibility="{Binding HasContent, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Style="{StaticResource PageToolbarCardStyle}">
+            <DockPanel>
+                <CheckBox Content="{x:Static resources:Strings.DoNotShowAnnouncementBeforeUpdate}"
+                          IsChecked="{Binding DoNotShowAgain}"
+                          VerticalAlignment="Center"
+                          DockPanel.Dock="Left"/>
+                <Button Content="{x:Static resources:Strings.Close}"
+                        Width="120"
+                        HorizontalAlignment="Right"
+                        Style="{DynamicResource FilledButtonStyle}"
+                        Click="CloseButton_Click"/>
+            </DockPanel>
+        </Border>
     </Grid>
 </Window>

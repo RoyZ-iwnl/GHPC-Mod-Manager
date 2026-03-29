@@ -1396,7 +1396,7 @@
     <value>Manual</value>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>None</value>
   </data>
   <data name="TranslationPlugin" xml:space="preserve">
     <value>Translation Plugin</value>
@@ -1559,6 +1559,48 @@
   </data>
   <data name="ModNotFound" xml:space="preserve">
     <value>Mod not found</value>
+  </data>
+  <data name="CannotUninstallManualModWithoutBinaryName" xml:space="preserve">
+    <value>Cannot uninstall manual mod without MainBinaryFileName: {0}. The manager cannot determine which file belongs to this mod.</value>
+  </data>
+  <data name="ExecutingUninstallScript" xml:space="preserve">
+    <value>Executing uninstall script for mod: {0}</value>
+  </data>
+  <data name="ExecutingUninstallScriptForDisable" xml:space="preserve">
+    <value>Executing uninstall script after disabling mod: {0}</value>
+  </data>
+  <data name="ExecutingEnableScript" xml:space="preserve">
+    <value>Executing enable script before restoring mod: {0}</value>
+  </data>
+  <data name="ScriptedModMissingInstallScript" xml:space="preserve">
+    <value>Scripted mod is missing install script: {0}</value>
+  </data>
+  <data name="NonScriptedModHasInstallScript" xml:space="preserve">
+    <value>Non-scripted mod has install script configured (InstallMethod should be 'Scripted'): {0}</value>
+  </data>
+  <data name="NonScriptedModHasUninstallScript" xml:space="preserve">
+    <value>Non-scripted mod has uninstall script configured (InstallMethod should be 'Scripted'): {0}</value>
+  </data>
+  <data name="NonScriptedModHasEnableScript" xml:space="preserve">
+    <value>Non-scripted mod has enable script configured (InstallMethod should be 'Scripted'): {0}</value>
+  </data>
+  <data name="EnableScriptCompleted" xml:space="preserve">
+    <value>Enable script completed with exit code: {0}</value>
+  </data>
+  <data name="FailedToStartEnableScript" xml:space="preserve">
+    <value>Failed to start enable script process</value>
+  </data>
+  <data name="EnableScriptError" xml:space="preserve">
+    <value>Enable script error: {0}</value>
+  </data>
+  <data name="UninstallScriptCompleted" xml:space="preserve">
+    <value>Uninstall script completed with exit code: {0}</value>
+  </data>
+  <data name="FailedToStartUninstallScript" xml:space="preserve">
+    <value>Failed to start uninstall script process</value>
+  </data>
+  <data name="UninstallScriptError" xml:space="preserve">
+    <value>Uninstall script error: {0}</value>
   </data>
   <data name="ModToggleFileError" xml:space="preserve">
     <value>Mod toggle file error</value>
@@ -2325,6 +2367,36 @@
   <data name="ErrorRecordingDirectoryState" xml:space="preserve">
     <value>Error recording directory state for {0}: {1}</value>
   </data>
+  <data name="SkippingDirectoryNoAccess" xml:space="preserve">
+    <value>Skipping directory due to access restriction: {0}</value>
+  </data>
+  <data name="FilesScannedBeforeScript" xml:space="preserve">
+    <value>Scanned {0} files before script execution</value>
+  </data>
+  <data name="FilesScannedAfterScript" xml:space="preserve">
+    <value>Scanned {0} files after script execution</value>
+  </data>
+  <data name="ScriptNewFilesDetected" xml:space="preserve">
+    <value>Script created {0} new files</value>
+  </data>
+  <data name="ScriptModifiedFilesDetected" xml:space="preserve">
+    <value>Script modified {0} existing files</value>
+  </data>
+  <data name="ScriptExecutionStarted" xml:space="preserve">
+    <value>Script execution started: {0}</value>
+  </data>
+  <data name="ScriptExecutionCompleted" xml:space="preserve">
+    <value>Script execution completed with exit code: {0}</value>
+  </data>
+  <data name="ScriptExecutionFailed" xml:space="preserve">
+    <value>Script execution failed with exit code: {0}</value>
+  </data>
+  <data name="DirectoryScanned" xml:space="preserve">
+    <value>Scanned directory: {0} ({1} files)</value>
+  </data>
+  <data name="CheckingSpecificDirectory" xml:space="preserve">
+    <value>Checking specific directory: {0} before={1} files, after={2} files</value>
+  </data>
   <data name="FailedToProcessCacheFile" xml:space="preserve">
     <value>Failed to process cache file {0}: {1}</value>
   </data>
@@ -2501,6 +2573,93 @@ These mods may not work properly. Do you still want to launch the game?</value>
 {0}
 
 These mods may not work properly. Do you still want to launch the game?</value>
+  </data>
+  <data name="DelistedModDetectedOnLaunch" xml:space="preserve">
+    <value>Delisted MOD Detected</value>
+  </data>
+  <data name="DelistedModWarningMessage" xml:space="preserve">
+    <value>The following installed mods have been delisted:
+
+{0}
+
+These mods may have issues or are no longer maintained. Do you still want to launch the game?</value>
+  </data>
+  <data name="DeprecatedScriptedConfigMessage" xml:space="preserve">
+    <value>Mod {0} still uses the deprecated Scripted configuration and can no longer be installed or updated.</value>
+  </data>
+  <data name="InvalidReplaceTargetPathMessage" xml:space="preserve">
+    <value>Mod {0} has an invalid ReplaceTargetPath.</value>
+  </data>
+  <data name="ReplaceInstallWarningMessage" xml:space="preserve">
+    <value>{0} directly replaces game files.
+
+This mod may stop working or be overwritten after a game update or Steam file verification.
+
+Do you want to continue installing it?</value>
+  </data>
+  <data name="ReplaceLeftoverBackupDetectedMessage" xml:space="preserve">
+    <value>Detected leftover .GHPCMM backup files for {0}.
+
+Yes: open the directory for manual handling
+No: delete the leftover backups and continue
+Cancel: abort the current operation
+
+After deleting leftover backups, running Steam file verification is recommended.</value>
+  </data>
+  <data name="ReplaceTargetDirectoryEmptyMessage" xml:space="preserve">
+    <value>{0} left its target directory empty after uninstall:
+{1}
+
+If the directory originally belonged to the base game, Steam file verification is recommended.</value>
+  </data>
+  <data name="DirectRestoreConflictDetectedMessage" xml:space="preserve">
+    <value>Quick reinstall for {0} was canceled because different files already exist at the target paths.
+
+Conflicting files:
+{1}
+
+Please redownload and reinstall the mod, or handle these files manually first.</value>
+  </data>
+  <data name="ManagedBackupRequiredMessage" xml:space="preserve">
+    <value>Failed to create the required backup for {0}. The current operation was canceled to avoid data loss.</value>
+  </data>
+  <data name="ManagedModIntegrityIssueMissing" xml:space="preserve">
+    <value>Missing</value>
+  </data>
+  <data name="ManagedModIntegrityIssueModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="ManagedModIntegrityStartupMessage" xml:space="preserve">
+    <value>Detected integrity issues in installed managed mods:
+
+{0}
+
+Fixing or reinstalling these mods is recommended.</value>
+  </data>
+  <data name="ManagedModIntegrityLaunchMessage" xml:space="preserve">
+    <value>Detected integrity issues in installed managed mods:
+
+{0}
+
+Fixing or reinstalling these mods is recommended. Continue launching the game anyway?</value>
+  </data>
+  <data name="DelistedModBannerTitle" xml:space="preserve">
+    <value>Delisted Mod Installed</value>
+  </data>
+  <data name="DelistedModBannerMessage" xml:space="preserve">
+    <value>You have installed delisted mods that may have issues or are no longer maintained.</value>
+  </data>
+  <data name="UnknownConfigFieldsBannerTitle" xml:space="preserve">
+    <value>Unknown Mod Settings Detected</value>
+  </data>
+  <data name="UnknownConfigFieldsBannerMessage" xml:space="preserve">
+    <value>Some mods contain unknown settings. Please check for Mod Manager updates to ensure full compatibility.</value>
+  </data>
+  <data name="DelistedBadge" xml:space="preserve">
+    <value>Delisted</value>
+  </data>
+  <data name="UnknownConfigFieldsBadge" xml:space="preserve">
+    <value>Unknown Settings</value>
   </data>
   <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
     <value>Checking mod conflicts and dependencies...</value>
@@ -2857,5 +3016,13 @@ Do you want to restart now?</value>
   </data>
   <data name="MainConfigAllUrlsFailed" xml:space="preserve">
     <value>All main config URLs failed</value>
+  </data>
+  <data name="GameVersionMismatchDialogTitle" xml:space="preserve">
+    <value>Game Version Warning</value>
+  </data>
+  <data name="GameVersionMismatchDialogMessage" xml:space="preserve">
+    <value>Your local game version ({1}) does not match the supported version for {0} ({2}). The mod may not work correctly.
+
+Do you want to continue installing?</value>
   </data>
 </root>

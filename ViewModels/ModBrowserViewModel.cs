@@ -167,6 +167,9 @@ public partial class ModBrowserViewModel : ObservableObject
 
         var filtered = _allMods.AsEnumerable();
 
+        // 浏览页彻底隐藏下架Mod，仅在已安装页保留显示
+        filtered = filtered.Where(m => !m.IsDelisted);
+
         // 仅显示未安装
         if (ShowUninstalledOnly)
         {
@@ -191,8 +194,8 @@ public partial class ModBrowserViewModel : ObservableObject
         var result = filtered.ToList();
         FilteredMods = new ObservableCollection<ModViewModel>(result);
         FilteredModCount = selectedTagKeys.Count > 0 || !string.IsNullOrWhiteSpace(SearchText) || ShowUninstalledOnly
-            ? $"{result.Count} / {_allMods.Count}"
-            : $"{_allMods.Count}";
+            ? $"{result.Count} / {_allMods.Count(m => !m.IsDelisted)}"
+            : $"{_allMods.Count(m => !m.IsDelisted)}";
     }
 
     [RelayCommand]
@@ -237,6 +240,9 @@ public partial class ModBrowserViewModel : ObservableObject
             MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             return;
         }
+
+        if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, CurrentGameVersion, _settingsService, _melonLoaderService))
+            return;
 
         try
         {
@@ -301,7 +307,7 @@ public partial class ModBrowserViewModel : ObservableObject
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, preferBackup: preferBackup);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, skipConflictCheck: true, preferBackup: preferBackup);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);

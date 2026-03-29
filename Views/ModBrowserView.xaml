@@ -6,324 +6,450 @@
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="1200">
+             d:DesignHeight="720"
+             d:DesignWidth="1180">
 
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
-        <converters:InverseBooleanConverter x:Key="InvBool"/>
         <converters:StringToVisibilityConverter x:Key="StrToVis"/>
         <converters:GameVersionMatchBrushConverter x:Key="GameVersionMatchBrush"/>
         <converters:GameVersionMatchBoolConverter x:Key="GameVersionMatchBool"/>
+        <converters:ResponsiveCardWidthConverter x:Key="ResponsiveCardWidthConverter"/>
+        <converters:CollectionSummaryConverter x:Key="CollectionSummaryConverter"/>
+
+        <Style x:Key="CompactFilledButtonStyle" TargetType="Button" BasedOn="{StaticResource FilledButtonStyle}">
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
+        </Style>
+
+        <Style x:Key="CompactOutlinedButtonStyle" TargetType="Button" BasedOn="{StaticResource OutlinedButtonStyle}">
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
+        </Style>
+
+        <Style x:Key="DenseBrowserCardStyle" TargetType="Border" BasedOn="{StaticResource PageSectionCardStyle}">
+            <Setter Property="Padding" Value="18,16"/>
+            <Setter Property="Height" Value="296"/>
+        </Style>
+
+        <Style x:Key="BrowserMetaLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldLabelTextStyle}">
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="BrowserSummaryTextStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldValueTextStyle}">
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+        </Style>
+
+        <Style x:Key="BrowserDescriptionTextStyle" TargetType="TextBlock" BasedOn="{StaticResource PageSubtitleTextStyle}">
+            <Setter Property="MaxHeight" Value="18"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Config.Requirements.Count}" Value="0"/>
+                        <Condition Binding="{Binding Config.Conflicts.Count}" Value="0"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="MaxHeight" Value="42"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="BrowserBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Margin" Value="0,0,8,6"/>
+        </Style>
+
+        <Style x:Key="BrowserBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
+        </Style>
+
+        <Style x:Key="BrowserInfoBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Margin" Value="0,0,6,6"/>
+        </Style>
+
+        <Style x:Key="BrowserInfoBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
+            <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource BackgroundBrush}">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- 工具栏 -->
-        <Grid Grid.Row="0" Margin="12,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0"
+                Style="{StaticResource PageToolbarCardStyle}">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="{x:Static resources:Strings.Search}"
-                           VerticalAlignment="Center" Margin="0,0,8,0"
-                           Foreground="{DynamicResource OnSurfaceBrush}"/>
-                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Width="220" Margin="0,0,12,0"
-                         Style="{DynamicResource OutlinedTextBoxStyle}"/>
-                <TextBlock Text="{Binding FilteredModCount}"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                           FontSize="{DynamicResource LabelMedium}"/>
-            </StackPanel>
+                    <StackPanel Grid.Column="0"
+                                Margin="0,0,18,0">
+                        <TextBlock Text="{x:Static resources:Strings.Search}"
+                                   Style="{StaticResource FieldLabelTextStyle}"/>
+                        <TextBox Width="260"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                    </StackPanel>
 
-            <!-- 右侧按钮 -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button Content="{x:Static resources:Strings.ClearTagFilter}"
-                        Command="{Binding ClearTagFilterCommand}"
-                        Style="{DynamicResource TextButtonStyle}"
-                        Margin="0,0,4,0"/>
-                <Button Content="{x:Static resources:Strings.Refresh}"
-                        Command="{Binding RefreshCommand}"
-                        Style="{DynamicResource TextButtonStyle}"
-                        Margin="0,0,4,0"/>
-                <Button Content="{x:Static resources:Strings.CheckForUpdates}"
-                        Command="{Binding CheckForUpdatesCommand}"
-                        Style="{DynamicResource OutlinedButtonStyle}"/>
-            </StackPanel>
-        </Grid>
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Bottom">
+                        <TextBlock Text="{Binding FilteredModCount}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                   Visibility="{Binding FilteredMods.Count, Converter={StaticResource BoolToVis}}"/>
+                        <TextBlock Text="{x:Static resources:Strings.NoModsMatchFilter}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                   Visibility="{Binding FilteredMods.Count, Converter={StaticResource InvBoolToVis}}"/>
+                    </StackPanel>
 
-        <!-- Tag筛选栏 -->
-        <Border Grid.Row="1"
-                Background="{DynamicResource SurfaceVariantBrush}"
-                Padding="8,6" Margin="0,0,0,4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" Margin="4,0,4,4">
-                    <TextBlock Text="{x:Static resources:Strings.FilterByTags}"
-                               FontSize="{DynamicResource LabelSmall}"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                               VerticalAlignment="Center"/>
-                    <CheckBox Content="{x:Static resources:Strings.ShowUninstalledOnly}"
-                              IsChecked="{Binding ShowUninstalledOnly}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"/>
+                    <WrapPanel Grid.Column="2"
+                               VerticalAlignment="Bottom">
+                        <CheckBox Content="{x:Static resources:Strings.ShowUninstalledOnly}"
+                                  IsChecked="{Binding ShowUninstalledOnly}"
+                                  Margin="0,0,12,8"/>
+                        <Button Content="{x:Static resources:Strings.ClearTagFilter}"
+                                Command="{Binding ClearTagFilterCommand}"
+                                Margin="0,0,8,8"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.Refresh}"
+                                Command="{Binding RefreshCommand}"
+                                Margin="0,0,8,8"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.CheckForUpdates}"
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Margin="0,0,0,8"
+                                Style="{DynamicResource FilledButtonStyle}"/>
+                    </WrapPanel>
                 </Grid>
 
-                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Disabled">
-                    <ItemsControl ItemsSource="{Binding AvailableTags}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ToggleButton Content="{Binding DisplayName}"
-                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                              Style="{DynamicResource ChipToggleButtonStyle}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
+                <TextBlock Margin="0,12,0,8"
+                           Text="{x:Static resources:Strings.FilterByTags}"
+                           Style="{StaticResource FieldLabelTextStyle}"/>
+
+                <ItemsControl ItemsSource="{Binding AvailableTags}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Content="{Binding DisplayName}"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          Style="{DynamicResource ChipToggleButtonStyle}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </Border>
 
-        <!-- 无结果提示 -->
-        <TextBlock Grid.Row="2"
-                   Text="{x:Static resources:Strings.NoModsMatchFilter}"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                   FontSize="{DynamicResource BodyLarge}"
-                   Visibility="{Binding FilteredMods.Count, Converter={StaticResource InvBoolToVis}}"/>
+        <Grid Grid.Row="1" Margin="0,14,0,0">
+            <Border Style="{StaticResource PageSectionCardStyle}"
+                    Visibility="{Binding FilteredMods.Count, Converter={StaticResource InvBoolToVis}}">
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="24">
+                    <TextBlock Text="{x:Static resources:Strings.NoModsMatchFilter}"
+                               Style="{StaticResource EmptyStateTextStyle}"/>
+                </StackPanel>
+            </Border>
 
-        <!-- MOD列表 -->
-        <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding FilteredMods}"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  IsReadOnly="True"
-                  SelectionUnit="FullRow"
-                  CanUserSortColumns="False"
-                  CanUserResizeColumns="False">
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDataGridCellStyle}">
-                    <Setter Property="Focusable" Value="False"/>
-                    <Setter Property="IsTabStop" Value="False"/>
-                </Style>
-            </DataGrid.CellStyle>
-
-            <DataGrid.Columns>
-
-                <!-- 名称列（点击进入详情） -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Name}" Width="*" MinWidth="100">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellTemplate>
+            <ScrollViewer x:Name="ResultsScrollViewer"
+                          Style="{StaticResource AppScrollViewerStyle}"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Visibility="{Binding FilteredMods.Count, Converter={StaticResource BoolToVis}}">
+                <ItemsControl ItemsSource="{Binding FilteredMods}"
+                              Width="{Binding ElementName=ResultsScrollViewer, Path=ActualWidth}"
+                              Margin="0,0,-12,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{DynamicResource TextButtonStyle}"
-                                    Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding}"
-                                    Padding="4,0" MinWidth="0" BorderThickness="0" Background="Transparent"
-                                    HorizontalAlignment="Left"
-                                    ToolTip="{Binding DisplayName}">
-                                <TextBlock Text="{Binding DisplayName}"
-                                           Foreground="{DynamicResource PrimaryBrush}"
-                                           TextDecorations="Underline"
-                                           TextTrimming="CharacterEllipsis"/>
-                            </Button>
+                            <Border Margin="0,0,12,16"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource DenseBrowserCardStyle}">
+                                <Border.Width>
+                                    <MultiBinding Converter="{StaticResource ResponsiveCardWidthConverter}">
+                                        <Binding ElementName="ResultsScrollViewer" Path="ActualWidth"/>
+                                    </MultiBinding>
+                                </Border.Width>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="124"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0"
+                                                Grid.Column="0"
+                                                Margin="0,0,16,0">
+                                        <Button Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                HorizontalAlignment="Left"
+                                                Style="{DynamicResource TextButtonStyle}"
+                                                Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       FontSize="{DynamicResource TitleMedium}"
+                                                       FontWeight="SemiBold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource AccentBrush}"/>
+                                        </Button>
+                                        <TextBlock Margin="0,4,0,0"
+                                                   Text="{Binding Id}"
+                                                   Style="{StaticResource MonoMetaValueTextStyle}"
+                                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                    </StackPanel>
+
+                                    <Grid Grid.Row="0"
+                                          Grid.RowSpan="3"
+                                          Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0"
+                                                    HorizontalAlignment="Right">
+                                            <WrapPanel HorizontalAlignment="Right">
+                                                <Border Style="{StaticResource BrowserBadgeBorderStyle}"
+                                                        Background="{DynamicResource SuccessContainerBrush}"
+                                                        BorderBrush="{DynamicResource SuccessBrush}"
+                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                               Style="{StaticResource BrowserBadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnSuccessBrush}"/>
+                                                </Border>
+
+                                                <Border Style="{StaticResource BrowserBadgeBorderStyle}"
+                                                        Background="{DynamicResource ErrorContainerBrush}"
+                                                        BorderBrush="{DynamicResource ErrorBrush}"
+                                                        Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
+                                                               Style="{StaticResource BrowserBadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                </Border>
+                                            </WrapPanel>
+
+                                            <ItemsControl Margin="0,8,0,0"
+                                                          HorizontalAlignment="Right"
+                                                          ItemsSource="{Binding SupportedGameVersions}"
+                                                          Visibility="{Binding SupportedGameVersions.Count, Converter={StaticResource BoolToVis}}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel HorizontalAlignment="Right"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Style="{StaticResource BrowserBadgeBorderStyle}">
+                                                            <Border.Background>
+                                                                <MultiBinding Converter="{StaticResource GameVersionMatchBrush}">
+                                                                    <Binding/>
+                                                                    <Binding Path="DataContext.CurrentGameVersion"
+                                                                             RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                </MultiBinding>
+                                                            </Border.Background>
+                                                            <TextBlock Text="{Binding}">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource BrowserBadgeTextStyle}">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Value="match">
+                                                                                <DataTrigger.Binding>
+                                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                                                                                        <Binding/>
+                                                                                        <Binding Path="DataContext.CurrentGameVersion"
+                                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                                    </MultiBinding>
+                                                                                </DataTrigger.Binding>
+                                                                                <Setter Property="Foreground" Value="{DynamicResource OnSuccessBrush}"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Value="mismatch">
+                                                                                <DataTrigger.Binding>
+                                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                                                                                        <Binding/>
+                                                                                        <Binding Path="DataContext.CurrentGameVersion"
+                                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                                    </MultiBinding>
+                                                                                </DataTrigger.Binding>
+                                                                                <Setter Property="Foreground" Value="{DynamicResource OnWarningBrush}"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Bottom">
+                                            <Button Content="{x:Static resources:Strings.QuickReinstall}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,0,8"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource CompactOutlinedButtonStyle}"
+                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
+
+                                            <Button Content="{Binding DataContext.RedownloadReinstallText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    Command="{Binding DataContext.RedownloadInstallCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,0,8"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource CompactFilledButtonStyle}"
+                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
+
+                                            <Button Content="{x:Static resources:Strings.InstallLatestVersion}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,0,8"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource CompactFilledButtonStyle}"
+                                                    Visibility="{Binding CanInstallFresh, Converter={StaticResource BoolToVis}}"/>
+
+                                            <Button Content="{x:Static resources:Strings.Update}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,0,8"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource CompactFilledButtonStyle}"
+                                                    Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
+
+                                            <Button Content="{x:Static resources:Strings.ViewDetails}"
+                                                    Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource CompactOutlinedButtonStyle}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Border Grid.Row="1"
+                                            Grid.Column="0"
+                                            Margin="0,10,16,0"
+                                            Padding="0,1,0,0">
+                                        <TextBlock Text="{Binding LocalizedDescription}"
+                                                   Style="{StaticResource BrowserDescriptionTextStyle}"
+                                                   Visibility="{Binding LocalizedDescription, Converter={StaticResource StrToVis}}"/>
+                                    </Border>
+
+                                     <Grid Grid.Row="2"
+                                           Grid.Column="0"
+                                           Margin="0,12,16,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0"
+                                                    Margin="0,0,12,0"
+                                                    VerticalAlignment="Top">
+                                            <TextBlock Text="{x:Static resources:Strings.DependenciesSection}"
+                                                       Style="{StaticResource BrowserMetaLabelStyle}"
+                                                       Visibility="{Binding Config.Requirements.Count, Converter={StaticResource BoolToVis}}"/>
+                                            <ItemsControl ItemsSource="{Binding Config.Requirements}"
+                                                          Visibility="{Binding Config.Requirements.Count, Converter={StaticResource BoolToVis}}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}"
+                                                                Background="{DynamicResource SecondaryContainerBrush}"
+                                                                BorderBrush="{DynamicResource SecondaryBrush}">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
+                                                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <TextBlock Text="{x:Static resources:Strings.ConflictsSection}"
+                                                       Style="{StaticResource BrowserMetaLabelStyle}"
+                                                       Visibility="{Binding Config.Conflicts.Count, Converter={StaticResource BoolToVis}}"/>
+                                            <ItemsControl ItemsSource="{Binding Config.Conflicts}"
+                                                          Visibility="{Binding Config.Conflicts.Count, Converter={StaticResource BoolToVis}}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}"
+                                                                Background="{DynamicResource WarningContainerBrush}"
+                                                                BorderBrush="{DynamicResource WarningBrush}">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
+                                                                       Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1"
+                                                    VerticalAlignment="Top">
+                                            <TextBlock Text="{x:Static resources:Strings.ModTags}"
+                                                       Style="{StaticResource BrowserMetaLabelStyle}"
+                                                       Visibility="{Binding LocalizedTags.Count, Converter={StaticResource BoolToVis}}"/>
+                                            <ItemsControl ItemsSource="{Binding LocalizedTags}"
+                                                          Visibility="{Binding LocalizedTags.Count, Converter={StaticResource BoolToVis}}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
+                                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <!-- 最新版本：内容过长时横向滚动 -->
-                <!--<DataGridTemplateColumn Header="{x:Static resources:Strings.LatestVersion}" Width="*" MinWidth="120">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding LatestVersionWithDate}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding LatestVersionWithDate}"
-                                       Margin="4,0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-
-                <!-- Tags列：单行截断 + ToolTip完整内容 -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.ModTags}" Width="200" MinWidth="200">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding LocalizedTagsText}"
-                                       VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding LocalizedTagsText}"
-                                       FontSize="{DynamicResource LabelSmall}"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       Margin="4,0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <!-- 支持版本列：列头截断+ToolTip -->
-                <DataGridTemplateColumn Width="170" MinWidth="170">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="ToolTip" Value="{x:Static resources:Strings.SupportedVersions}"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.Header>
-                        <TextBlock Text="{x:Static resources:Strings.SupportedVersions}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip="{x:Static resources:Strings.SupportedVersions}"/>
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding SupportedGameVersions}"
-                                          VerticalAlignment="Center" Margin="4,0">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border CornerRadius="3" Margin="1" Padding="4,1">
-                                            <Border.Background>
-                                                <MultiBinding Converter="{StaticResource GameVersionMatchBrush}">
-                                                    <Binding/>
-                                                    <Binding Path="DataContext.CurrentGameVersion"
-                                                             RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                                </MultiBinding>
-                                            </Border.Background>
-                                            <TextBlock Text="{Binding}"
-                                                       FontSize="{DynamicResource LabelSmall}"
-                                                       VerticalAlignment="Center">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Value="match">
-                                                                <DataTrigger.Binding>
-                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
-                                                                        <Binding/>
-                                                                        <Binding Path="DataContext.CurrentGameVersion"
-                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                                                    </MultiBinding>
-                                                                </DataTrigger.Binding>
-                                                                <Setter Property="Foreground" Value="{DynamicResource OnSuccessBrush}"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Value="mismatch">
-                                                                <DataTrigger.Binding>
-                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
-                                                                        <Binding/>
-                                                                        <Binding Path="DataContext.CurrentGameVersion"
-                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                                                    </MultiBinding>
-                                                                </DataTrigger.Binding>
-                                                                <Setter Property="Foreground" Value="{DynamicResource OnWarningBrush}"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <!-- 操作列 -->
-                <DataGridTemplateColumn Header="{x:Static resources:Strings.Actions}" Width="350" MinWidth="350">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDataGridColumnHeaderStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellStyle>
-                        <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDataGridCellStyle}">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTemplateColumn.CellStyle>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
-                                <!-- 未安装且有备份：快速重装 -->
-                                <Button Content="{x:Static resources:Strings.QuickReinstall}"
-                                        Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        MinWidth="80" Margin="2"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
-
-                                <!-- 未安装且有备份：重新下载重装 -->
-                                <Button Content="{Binding DataContext.RedownloadReinstallText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        Command="{Binding DataContext.RedownloadInstallCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        MinWidth="110" Margin="2"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
-
-                                <!-- 未安装且无备份：安装最新版 -->
-                                <Button Content="{x:Static resources:Strings.InstallLatestVersion}"
-                                        Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        MinWidth="80" Margin="2"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        Visibility="{Binding CanInstallFresh, Converter={StaticResource BoolToVis}}"/>
-
-                                <!-- 已安装：更新/详情 -->
-                                <StackPanel Orientation="Horizontal"
-                                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                    <Button Content="{x:Static resources:Strings.Update}"
-                                            Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            MinWidth="60" Margin="2"
-                                            Style="{DynamicResource FilledButtonStyle}"
-                                            Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
-                                    <Button Content="{x:Static resources:Strings.ViewDetails}"
-                                            Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            MinWidth="60" Margin="2"
-                                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                                </StackPanel>
-
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-            </DataGrid.Columns>
-        </DataGrid>
-
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

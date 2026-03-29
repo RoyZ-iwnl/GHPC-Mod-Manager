@@ -3,81 +3,132 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GHPC_Mod_Manager.Views"
         xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
         mc:Ignorable="d"
-        Title="{x:Static resources:Strings.ProgramLogs}" Height="500" Width="800"
+        Title="{x:Static resources:Strings.ProgramLogs}"
+        Width="1080"
+        Height="760"
+        MinWidth="860"
+        MinHeight="620"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource BackgroundBrush}">
-    
-    <Grid Background="{DynamicResource BackgroundBrush}">
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
-            <Button Content="{x:Static resources:Strings.ExportLogs}" Click="ExportLogsButton_Click"
-                    Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.CopySelected}" Click="CopySelectedButton_Click"
-                    Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.CopyAll}" Click="CopyAllButton_Click"
-                    Width="100" Margin="0,0,10,0" Style="{DynamicResource OutlinedButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.ClearLogs}" Click="ClearLogsButton_Click"
-                    Width="100" Style="{DynamicResource FilledButtonStyle}"/>
-        </StackPanel>
+        <Border Grid.Row="0"
+                Style="{StaticResource PageHeroCardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <!-- Filter Panel -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,10" HorizontalAlignment="Left">
-            <TextBlock Text="{x:Static resources:Strings.Filter}" VerticalAlignment="Center" Margin="0,0,10,0"
-                       Foreground="{DynamicResource OnBackgroundBrush}"/>
-            <CheckBox Name="ShowInfoCheckBox" Content="{x:Static resources:Strings.Information}" IsChecked="True"
-                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
-                      Margin="0,0,15,0" Foreground="{DynamicResource OnBackgroundBrush}"/>
-            <CheckBox Name="ShowWarningCheckBox" Content="{x:Static resources:Strings.Warning}" IsChecked="True"
-                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
-                      Margin="0,0,15,0" Foreground="{DynamicResource OnBackgroundBrush}"/>
-            <CheckBox Name="ShowErrorCheckBox" Content="{x:Static resources:Strings.Error}" IsChecked="True"
-                      Checked="FilterCheckBox_Changed" Unchecked="FilterCheckBox_Changed"
-                      Foreground="{DynamicResource OnBackgroundBrush}"/>
-        </StackPanel>
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="DIAGNOSTICS"
+                               Style="{StaticResource HeroEyebrowTextStyle}"/>
+                    <TextBlock Margin="0,6,0,0"
+                               Text="{x:Static resources:Strings.ProgramLogs}"
+                               Style="{StaticResource PageTitleTextStyle}"/>
+                </StackPanel>
 
-        <!-- Log Content -->
-        <ListView Grid.Row="2" Name="LogListView" Margin="10,0,10,10"
-                  Background="{DynamicResource SurfaceBrush}"
-                  Foreground="{DynamicResource OnSurfaceBrush}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="{x:Static resources:Strings.Time}" Width="120" DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss}"/>
-                    <GridViewColumn Header="{x:Static resources:Strings.Level}" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Level}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Level}" Value="Error">
-                                                    <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Level}" Value="Warning">
-                                                    <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Level}" Value="Information">
-                                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="{x:Static resources:Strings.Message}" Width="800" DisplayMemberBinding="{Binding Message}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                <WrapPanel Grid.Column="1"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top">
+                    <Button Content="{x:Static resources:Strings.ExportLogs}"
+                            Click="ExportLogsButton_Click"
+                            Margin="0,0,8,0"
+                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                    <Button Content="{x:Static resources:Strings.CopySelected}"
+                            Click="CopySelectedButton_Click"
+                            Margin="0,0,8,0"
+                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                    <Button Content="{x:Static resources:Strings.CopyAll}"
+                            Click="CopyAllButton_Click"
+                            Margin="0,0,8,0"
+                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                    <Button Content="{x:Static resources:Strings.ClearLogs}"
+                            Click="ClearLogsButton_Click"
+                            Style="{DynamicResource FilledButtonStyle}"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="0,18,0,18"
+                Style="{StaticResource PageToolbarCardStyle}">
+            <WrapPanel>
+                <TextBlock Text="{x:Static resources:Strings.Filter}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,14,0"
+                           Style="{StaticResource FieldLabelTextStyle}"/>
+                <CheckBox Name="ShowInfoCheckBox"
+                          Content="{x:Static resources:Strings.Information}"
+                          IsChecked="True"
+                          Margin="0,0,16,0"
+                          Checked="FilterCheckBox_Changed"
+                          Unchecked="FilterCheckBox_Changed"/>
+                <CheckBox Name="ShowWarningCheckBox"
+                          Content="{x:Static resources:Strings.Warning}"
+                          IsChecked="True"
+                          Margin="0,0,16,0"
+                          Checked="FilterCheckBox_Changed"
+                          Unchecked="FilterCheckBox_Changed"/>
+                <CheckBox Name="ShowErrorCheckBox"
+                          Content="{x:Static resources:Strings.Error}"
+                          IsChecked="True"
+                          Checked="FilterCheckBox_Changed"
+                          Unchecked="FilterCheckBox_Changed"/>
+            </WrapPanel>
+        </Border>
+
+        <Border Grid.Row="2"
+                Style="{StaticResource PageSectionCardStyle}"
+                Padding="0">
+            <ListView Name="LogListView"
+                      Margin="0"
+                      Background="Transparent"
+                      BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="{x:Static resources:Strings.Time}"
+                                        Width="120"
+                                        DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss}"/>
+                        <GridViewColumn Header="{x:Static resources:Strings.Level}"
+                                        Width="110">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Level}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Level}" Value="Error">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                                        <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Level}" Value="Information">
+                                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{x:Static resources:Strings.Message}"
+                                        Width="760"
+                                        DisplayMemberBinding="{Binding Message}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
     </Grid>
 </Window>

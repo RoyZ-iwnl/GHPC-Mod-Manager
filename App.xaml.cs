@@ -20,9 +20,48 @@ namespace GHPC_Mod_Manager
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            // Check for -log / -dev command line arguments
+            // 解析命令行参数
             bool showLogWindow = e.Args.Contains("-log") || e.Args.Contains("--log");
-            bool isDevMode = e.Args.Contains("-dev") || e.Args.Contains("--dev");
+            bool isDevMode = false;
+            string? devConfigPath = null;
+
+            // 解析 -dev 参数，支持三种格式：
+            // 1. -dev 或 --dev（单独使用，仅启用 dev 模式）
+            // 2. -dev:"path" 或 --dev:"path"（冒号分隔）
+            // 3. -dev="path" 或 --dev="path"（等号分隔）
+            // 注：快捷方式启动不支持双引号参数，推荐使用冒号或等号格式
+            for (int i = 0; i < e.Args.Length; i++)
+            {
+                var arg = e.Args[i];
+                // 检查是否是 -dev 或 --dev 参数（可能带路径）
+                if (arg.StartsWith("-dev") || arg.StartsWith("--dev"))
+                {
+                    isDevMode = true;
+
+                    // 检查冒号或等号分隔的路径
+                    int separatorIndex = -1;
+                    if (arg.Contains(':'))
+                        separatorIndex = arg.IndexOf(':');
+                    else if (arg.Contains('='))
+                        separatorIndex = arg.IndexOf('=');
+
+                    if (separatorIndex > 0 && separatorIndex < arg.Length - 1)
+                    {
+                        // 提取冒号/等号后的路径
+                        devConfigPath = arg.Substring(separatorIndex + 1);
+                    }
+                    else if (arg == "-dev" || arg == "--dev")
+                    {
+                        // 单独的 -dev 参数，检查下一个参数是否是路径（不以 - 开头）
+                        if (i + 1 < e.Args.Length && !e.Args[i + 1].StartsWith("-"))
+                        {
+                            devConfigPath = e.Args[i + 1];
+                            i++; // 跳过路径参数
+                        }
+                    }
+                    break;
+                }
+            }
             
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -130,19 +169,23 @@ namespace GHPC_Mod_Manager
                 settingsService.Settings.UseDnsOverHttps,
                 settingsService.Settings.Language);
 
+            // 设置 -dev 参数，必须在 mainConfigService.LoadAsync() 之前
+            if (isDevMode)
+            {
+                startupLoggingService.LogInfo("Dev mode enabled via -dev argument");
+                DevMode.IsEnabled = true;
+                if (!string.IsNullOrWhiteSpace(devConfigPath))
+                {
+                    DevMode.MainConfigUrlOverride = devConfigPath;
+                    startupLoggingService.LogInfo($"Dev config path: {devConfigPath}");
+                }
+            }
+
             // 首次运行时跳过主配置加载，在 SetupWizard 步骤2手动触发
             var mainConfigService = _host.Services.GetRequiredService<IMainConfigService>();
             if (!settingsService.Settings.IsFirstRun)
             {
                 await mainConfigService.LoadAsync();
-            }
-
-            // 将 -dev 参数传递给 SettingsViewModel 单例
-            if (isDevMode)
-            {
-                var loggingService2 = _host.Services.GetRequiredService<ILoggingService>();
-                loggingService2.LogInfo("Dev mode enabled via -dev argument");
-                DevMode.IsEnabled = true;
             }
 
             // 初始化主题系统

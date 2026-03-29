@@ -16,6 +16,7 @@ public partial class InstalledModsViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ISettingsService _settingsService;
+    private readonly IMelonLoaderService _melonLoaderService;
 
     // 所有已安装MOD（原始数据，由MainViewModel注入）
     private List<ModViewModel> _allInstalledMods = new();
@@ -51,12 +52,13 @@ public partial class InstalledModsViewModel : ObservableObject
     // 通知MainViewModel执行检查更新（true=只检查已安装）
     public event EventHandler<bool>? CheckForUpdatesRequested;
 
-    public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService)
+    public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
     {
         _modManagerService = modManagerService;
         _loggingService = loggingService;
         _serviceProvider = serviceProvider;
         _settingsService = settingsService;
+        _melonLoaderService = melonLoaderService;
     }
 
     partial void OnSearchTextChanged(string value) => FilterMods();
@@ -147,6 +149,9 @@ public partial class InstalledModsViewModel : ObservableObject
     {
         if (mod.Config == null) return;
 
+        if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, null, _settingsService, _melonLoaderService))
+            return;
+
         try
         {
             IsDownloading = true;
@@ -157,7 +162,7 @@ public partial class InstalledModsViewModel : ObservableObject
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion ?? mod.InstalledVersion ?? "", progress);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion ?? mod.InstalledVersion ?? "", progress, skipDependencyCheck: true, skipConflictCheck: true);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);

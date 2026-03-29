@@ -1,4 +1,4 @@
-﻿<Application x:Class="GHPC_Mod_Manager.App"
+<Application x:Class="GHPC_Mod_Manager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GHPC_Mod_Manager"
@@ -7,8 +7,10 @@
         <!-- 默认加载浅色主题 -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/Foundation.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/ControlStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/PageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <!-- Register converters -->

@@ -1,6 +1,7 @@
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -240,6 +241,7 @@ public class ModBackupService : IModBackupService
 
             // Copy files to uninstalled backup, preserving directory structure
             var filePathMapping = new Dictionary<string, string>(); // backupFileName -> originalRelativePath
+            var fileSha256Mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); // backupFileName -> sha256
             
             foreach (var relativePath in modFiles)
             {
@@ -254,11 +256,24 @@ public class ModBackupService : IModBackupService
                     filePathMapping[encodedFileName] = relativePath;
                     
                     File.Copy(sourceFile, backupFile, true);
+                    fileSha256Mapping[encodedFileName] = await CalculateFileSha256Async(sourceFile);
                 }
+            }
+
+            if (!filePathMapping.Any())
+            {
+                if (Directory.Exists(versionedBackupPath))
+                {
+                    Directory.Delete(versionedBackupPath, true);
+                }
+
+                _loggingService.LogWarning(Strings.NoFilesFoundToDisableForMod, modId);
+                return false;
             }
             
             // Update backup manifest to include file path mapping
             backupManifest.FilePathMapping = filePathMapping;
+            backupManifest.FileSha256Mapping = fileSha256Mapping;
 
             // Save backup manifest
             var manifestPath = Path.Combine(versionedBackupPath, "backup_manifest.json");
@@ -477,6 +492,14 @@ public class ModBackupService : IModBackupService
             return false;
         }
     }
+
+    private static async Task<string> CalculateFileSha256Async(string filePath)
+    {
+        using var sha256 = SHA256.Create();
+        using var stream = File.OpenRead(filePath);
+        var hashBytes = await sha256.ComputeHashAsync(stream);
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
 }
 
 // Backup manifest model
@@ -487,4 +510,5 @@ public class ModBackupManifest
     public DateTime BackupDate { get; set; }
     public List<string> OriginalFiles { get; set; } = new();
     public Dictionary<string, string>? FilePathMapping { get; set; } = new(); // backupFileName -> originalRelativePath
+    public Dictionary<string, string>? FileSha256Mapping { get; set; } = new(); // backupFileName -> sha256
 }

@@ -1,149 +1,113 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib">
-    
-    <!-- Material Design 3 深色主题颜色系统 -->
-    
-    <!-- 主要颜色 -->
-    <Color x:Key="Primary">#BB86FC</Color>
-    <Color x:Key="OnPrimary">#381E72</Color>
-    <Color x:Key="PrimaryContainer">#4F378B</Color>
-    <Color x:Key="OnPrimaryContainer">#EADDFF</Color>
-    
-    <!-- 次要颜色 -->
-    <Color x:Key="Secondary">#CCC2DC</Color>
-    <Color x:Key="OnSecondary">#332D41</Color>
-    <Color x:Key="SecondaryContainer">#4A4458</Color>
-    <Color x:Key="OnSecondaryContainer">#E8DEF8</Color>
-    
-    <!-- 第三颜色 -->
-    <Color x:Key="Tertiary">#EFB8C8</Color>
-    <Color x:Key="OnTertiary">#492532</Color>
-    <Color x:Key="TertiaryContainer">#633B48</Color>
-    <Color x:Key="OnTertiaryContainer">#FFD8E4</Color>
-    
-    <!-- 表面颜色 -->
-    <Color x:Key="Surface">#10101A</Color>
-    <Color x:Key="OnSurface">#E6E1E5</Color>
-    <Color x:Key="SurfaceVariant">#49454F</Color>
-    <Color x:Key="OnSurfaceVariant">#CAC4D0</Color>
-    <Color x:Key="SurfaceTint">#BB86FC</Color>
-    <Color x:Key="SurfaceContainer">#211F26</Color>
-    
-    <!-- 背景颜色 -->
-    <Color x:Key="Background">#10101A</Color>
-    <Color x:Key="OnBackground">#E6E1E5</Color>
-    
-    <!-- 错误颜色 -->
-    <Color x:Key="Error">#FFB4AB</Color>
-    <Color x:Key="OnError">#690005</Color>
-    <Color x:Key="ErrorContainer">#93000A</Color>
-    <Color x:Key="OnErrorContainer">#FFDAD6</Color>
-    
-    <!-- 轮廓颜色 -->
-    <Color x:Key="Outline">#938F99</Color>
-    <Color x:Key="OutlineVariant">#49454F</Color>
-    
-    <!-- 阴影和叠加 -->
-    <Color x:Key="Shadow">#000000</Color>
-    <Color x:Key="Scrim">#000000</Color>
-    <Color x:Key="InverseSurface">#E6E1E5</Color>
-    <Color x:Key="InverseOnSurface">#313033</Color>
-    <Color x:Key="InversePrimary">#6750A4</Color>
-    
-    <!-- 成功颜色 -->
-    <Color x:Key="Success">#4CAF50</Color>
-    <Color x:Key="OnSuccess">#1B5E20</Color>
-    <Color x:Key="SuccessContainer">#2E7D32</Color>
-    
-    <!-- 警告颜色 -->
-    <Color x:Key="Warning">#FF9800</Color>
-    <Color x:Key="OnWarning">#E65100</Color>
-    <Color x:Key="WarningContainer">#F57C00</Color>
-    
-    <!-- 转换为画刷资源 -->
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
-    <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimary}"/>
-    <SolidColorBrush x:Key="PrimaryContainerBrush" Color="{StaticResource PrimaryContainer}"/>
-    <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="{StaticResource OnPrimaryContainer}"/>
-    
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
-    <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSecondary}"/>
-    <SolidColorBrush x:Key="SecondaryContainerBrush" Color="{StaticResource SecondaryContainer}"/>
-    <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="{StaticResource OnSecondaryContainer}"/>
-    
-    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
-    <SolidColorBrush x:Key="OnTertiaryBrush" Color="{StaticResource OnTertiary}"/>
-    <SolidColorBrush x:Key="TertiaryContainerBrush" Color="{StaticResource TertiaryContainer}"/>
-    <SolidColorBrush x:Key="OnTertiaryContainerBrush" Color="{StaticResource OnTertiaryContainer}"/>
-    
-    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
-    <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurface}"/>
-    <SolidColorBrush x:Key="SurfaceVariantBrush" Color="{StaticResource SurfaceVariant}"/>
-    <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="{StaticResource OnSurfaceVariant}"/>
-    <SolidColorBrush x:Key="SurfaceTintBrush" Color="{StaticResource SurfaceTint}"/>
-    <SolidColorBrush x:Key="SurfaceContainerBrush" Color="{StaticResource SurfaceContainer}"/>
-    
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Background}"/>
-    <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackground}"/>
-    
-    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource Error}"/>
-    <SolidColorBrush x:Key="OnErrorBrush" Color="{StaticResource OnError}"/>
-    <SolidColorBrush x:Key="ErrorContainerBrush" Color="{StaticResource ErrorContainer}"/>
-    <SolidColorBrush x:Key="OnErrorContainerBrush" Color="{StaticResource OnErrorContainer}"/>
-    
-    <SolidColorBrush x:Key="OutlineBrush" Color="{StaticResource Outline}"/>
-    <SolidColorBrush x:Key="OutlineVariantBrush" Color="{StaticResource OutlineVariant}"/>
-    
-    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource Shadow}"/>
-    <SolidColorBrush x:Key="ScrimBrush" Color="{StaticResource Scrim}"/>
-    <SolidColorBrush x:Key="InverseSurfaceBrush" Color="{StaticResource InverseSurface}"/>
-    <SolidColorBrush x:Key="InverseOnSurfaceBrush" Color="{StaticResource InverseOnSurface}"/>
-    <SolidColorBrush x:Key="InversePrimaryBrush" Color="{StaticResource InversePrimary}"/>
-    
-    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
-    <SolidColorBrush x:Key="OnSuccessBrush" Color="{StaticResource OnSuccess}"/>
-    <SolidColorBrush x:Key="SuccessContainerBrush" Color="{StaticResource SuccessContainer}"/>
-    
-    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Warning}"/>
-    <SolidColorBrush x:Key="OnWarningBrush" Color="{StaticResource OnWarning}"/>
-    <SolidColorBrush x:Key="WarningContainerBrush" Color="{StaticResource WarningContainer}"/>
-    
-    <!-- 表面高度 -->
-    <system:Double x:Key="Elevation0">0</system:Double>
-    <system:Double x:Key="Elevation1">1</system:Double>
-    <system:Double x:Key="Elevation2">3</system:Double>
-    <system:Double x:Key="Elevation3">6</system:Double>
-    <system:Double x:Key="Elevation4">8</system:Double>
-    <system:Double x:Key="Elevation5">12</system:Double>
-    
-    <!-- 圆角半径 -->
-    <CornerRadius x:Key="RadiusNone">0</CornerRadius>
-    <CornerRadius x:Key="RadiusExtraSmall">4</CornerRadius>
-    <CornerRadius x:Key="RadiusSmall">8</CornerRadius>
-    <CornerRadius x:Key="RadiusMedium">12</CornerRadius>
-    <CornerRadius x:Key="RadiusLarge">16</CornerRadius>
-    <CornerRadius x:Key="RadiusExtraLarge">28</CornerRadius>
-    
-    <!-- 字体大小 -->
-    <system:Double x:Key="DisplayLarge">57</system:Double>
-    <system:Double x:Key="DisplayMedium">45</system:Double>
-    <system:Double x:Key="DisplaySmall">36</system:Double>
-    <system:Double x:Key="HeadlineLarge">32</system:Double>
-    <system:Double x:Key="HeadlineMedium">28</system:Double>
-    <system:Double x:Key="HeadlineSmall">24</system:Double>
-    <system:Double x:Key="TitleLarge">22</system:Double>
-    <system:Double x:Key="TitleMedium">16</system:Double>
-    <system:Double x:Key="TitleSmall">14</system:Double>
-    <system:Double x:Key="LabelLarge">14</system:Double>
-    <system:Double x:Key="LabelMedium">12</system:Double>
-    <system:Double x:Key="LabelSmall">11</system:Double>
-    <system:Double x:Key="BodyLarge">16</system:Double>
-    <system:Double x:Key="BodyMedium">14</system:Double>
-    <system:Double x:Key="BodySmall">12</system:Double>
-    
-    <!-- 字体家族 -->
-    <FontFamily x:Key="DefaultFontFamily">Microsoft YaHei UI, Segoe UI, Arial, sans-serif</FontFamily>
-    <FontFamily x:Key="MonospaceFontFamily">Consolas, Courier New, monospace</FontFamily>
-    
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="CanvasColor">#0C131C</Color>
+    <Color x:Key="SurfaceColor">#121C27</Color>
+    <Color x:Key="SurfaceAltColor">#172433</Color>
+    <Color x:Key="SurfaceContainerColor">#1B2A3B</Color>
+    <Color x:Key="OnSurfaceColor">#EDF3FC</Color>
+    <Color x:Key="OnSurfaceMutedColor">#96A6BD</Color>
+    <Color x:Key="BorderColor">#27364A</Color>
+    <Color x:Key="BorderStrongColor">#3A4E68</Color>
+
+    <Color x:Key="AccentColor">#62A1FF</Color>
+    <Color x:Key="AccentStrongColor">#A3C6FF</Color>
+    <Color x:Key="AccentSoftColor">#173967</Color>
+    <Color x:Key="OnAccentColor">#061525</Color>
+
+    <Color x:Key="NavRailColor">#081019</Color>
+    <Color x:Key="NavRailBorderColor">#1A283A</Color>
+    <Color x:Key="NavRailTextColor">#F0F5FF</Color>
+    <Color x:Key="NavRailMutedTextColor">#7E91AC</Color>
+
+    <Color x:Key="SuccessColor">#43C983</Color>
+    <Color x:Key="SuccessSoftColor">#0F3B2A</Color>
+    <Color x:Key="OnSuccessColor">#04170D</Color>
+
+    <Color x:Key="WarningColor">#F2B356</Color>
+    <Color x:Key="WarningSoftColor">#4A320C</Color>
+    <Color x:Key="OnWarningColor">#1D1203</Color>
+
+    <Color x:Key="DangerColor">#F07B73</Color>
+    <Color x:Key="DangerSoftColor">#4B1F22</Color>
+    <Color x:Key="OnDangerColor">#210608</Color>
+
+    <Color x:Key="SecondaryColor">#90A4C2</Color>
+    <Color x:Key="SecondarySoftColor">#243244</Color>
+    <Color x:Key="TertiaryColor">#88B8D9</Color>
+
+    <Color x:Key="ShadowColor">#55000000</Color>
+    <Color x:Key="ScrimColor">#C9000000</Color>
+
+    <SolidColorBrush x:Key="CanvasBrush" Color="{StaticResource CanvasColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}"/>
+    <SolidColorBrush x:Key="SurfaceContainerBrush" Color="{StaticResource SurfaceContainerColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="{StaticResource OnSurfaceMutedColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{StaticResource BorderStrongColor}"/>
+
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentStrongBrush" Color="{StaticResource AccentStrongColor}"/>
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource AccentSoftColor}"/>
+    <SolidColorBrush x:Key="OnAccentBrush" Color="{StaticResource OnAccentColor}"/>
+
+    <SolidColorBrush x:Key="NavRailBrush" Color="{StaticResource NavRailColor}"/>
+    <SolidColorBrush x:Key="NavRailBorderBrush" Color="{StaticResource NavRailBorderColor}"/>
+    <SolidColorBrush x:Key="NavRailTextBrush" Color="{StaticResource NavRailTextColor}"/>
+    <SolidColorBrush x:Key="NavRailMutedTextBrush" Color="{StaticResource NavRailMutedTextColor}"/>
+
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="SuccessContainerBrush" Color="{StaticResource SuccessSoftColor}"/>
+    <SolidColorBrush x:Key="OnSuccessBrush" Color="{StaticResource OnSuccessColor}"/>
+
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="WarningContainerBrush" Color="{StaticResource WarningSoftColor}"/>
+    <SolidColorBrush x:Key="OnWarningBrush" Color="{StaticResource OnWarningColor}"/>
+
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource DangerColor}"/>
+    <SolidColorBrush x:Key="ErrorContainerBrush" Color="{StaticResource DangerSoftColor}"/>
+    <SolidColorBrush x:Key="OnErrorBrush" Color="{StaticResource OnDangerColor}"/>
+    <SolidColorBrush x:Key="OnErrorContainerBrush" Color="{StaticResource DangerColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryContainerBrush" Color="{StaticResource SecondarySoftColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="{StaticResource OnSurfaceColor}"/>
+
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource TertiaryColor}"/>
+    <SolidColorBrush x:Key="TertiaryContainerBrush" Color="{StaticResource SecondarySoftColor}"/>
+    <SolidColorBrush x:Key="OnTertiaryBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="OnTertiaryContainerBrush" Color="{StaticResource OnSurfaceColor}"/>
+
+    <SolidColorBrush x:Key="OutlineBrush" Color="{StaticResource BorderStrongColor}"/>
+    <SolidColorBrush x:Key="OutlineVariantBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource ShadowColor}"/>
+    <SolidColorBrush x:Key="ScrimBrush" Color="{StaticResource ScrimColor}"/>
+
+    <LinearGradientBrush x:Key="HeroGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#163153" Offset="0"/>
+        <GradientStop Color="#11253D" Offset="0.55"/>
+        <GradientStop Color="#0F1D31" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="AccentGlowBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#7FB4FF" Offset="0"/>
+        <GradientStop Color="#447EE4" Offset="1"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource CanvasColor}"/>
+    <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnAccentColor}"/>
+    <SolidColorBrush x:Key="PrimaryContainerBrush" Color="{StaticResource AccentSoftColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="{StaticResource AccentStrongColor}"/>
+    <SolidColorBrush x:Key="SurfaceVariantBrush" Color="{StaticResource SurfaceAltColor}"/>
+    <SolidColorBrush x:Key="SurfaceTintBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="InverseSurfaceBrush" Color="#EDF3FC"/>
+    <SolidColorBrush x:Key="InverseOnSurfaceBrush" Color="#101926"/>
+    <SolidColorBrush x:Key="InversePrimaryBrush" Color="#2E5CA5"/>
+    <SolidColorBrush x:Key="OnWarningContainerBrush" Color="{StaticResource WarningColor}"/>
+
 </ResourceDictionary>

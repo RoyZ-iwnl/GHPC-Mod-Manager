@@ -1,199 +1,326 @@
 <UserControl x:Class="GHPC_Mod_Manager.Views.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
-             xmlns:models="clr-namespace:GHPC_Mod_Manager.Models"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
-    
+             mc:Ignorable="d"
+             d:DesignHeight="760"
+             d:DesignWidth="1180">
+
     <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
+        <converters:InverseBooleanConverter x:Key="InvBool"/>
         <converters:UpdateChannelDisplayConverter x:Key="UpdateChannelDisplayConverter"/>
+
+        <Style x:Key="SettingsRowStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
     </UserControl.Resources>
-    
-    <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-            <TextBlock Text="{x:Static resources:Strings.ProgramSettings}" 
-                      FontSize="{DynamicResource HeadlineSmall}" 
-                      FontWeight="Medium" 
-                      VerticalAlignment="Center"
-                      Foreground="{DynamicResource OnBackgroundBrush}"/>
-        </StackPanel>
-        
-        <!-- Settings Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+
+        <Border Grid.Row="0" Style="{StaticResource PageHeroCardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="SYSTEM SETTINGS"
+                               Style="{StaticResource HeroEyebrowTextStyle}"/>
+                    <TextBlock Margin="0,6,0,10"
+                               Text="{x:Static resources:Strings.ProgramSettings}"
+                               Style="{StaticResource PageTitleTextStyle}"/>
+                    <TextBlock Text="{x:Static resources:Strings.ThemeSettings}"
+                               Style="{StaticResource PageSubtitleTextStyle}"/>
+                </StackPanel>
+
+                <WrapPanel Grid.Column="1"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top">
+                    <Button Content="{x:Static resources:Strings.SaveSettings}"
+                            Command="{Binding SaveSettingsCommand}"
+                            Margin="0,0,8,0"
+                            Style="{DynamicResource FilledButtonStyle}"/>
+                    <Button Content="{x:Static resources:Strings.BackToMain}"
+                            Command="{Binding BackToMainCommand}"
+                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1"
+                      Style="{StaticResource AppScrollViewerStyle}"
+                      Margin="0,18,0,18"
+                      VerticalScrollBarVisibility="Auto">
+            <Grid HorizontalAlignment="Center"
+                  MaxWidth="980">
             <StackPanel>
-                
-                <!-- Language Settings -->
-                <GroupBox Header="{x:Static resources:Strings.LanguageSettings}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.ProgramLanguage}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <ComboBox ItemsSource="{Binding AvailableLanguages}" 
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.LanguageSettings}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{x:Static resources:Strings.ProgramLanguage}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <Grid Style="{StaticResource SettingsRowStyle}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ProgramLanguage}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableLanguages}"
                                       SelectedItem="{Binding SelectedLanguage}"
-                                      MinWidth="120" MaxWidth="200">
+                                      MaxWidth="260"
+                                      HorizontalAlignment="Left">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Converter={x:Static converters:LanguageDisplayConverter.Instance}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                        </StackPanel>
-                    </StackPanel>
-                </GroupBox>
-                
-                <!-- Theme Settings -->
-                <GroupBox Header="{x:Static resources:Strings.ThemeSettings}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.AppTheme}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <ComboBox ItemsSource="{Binding AvailableThemes}" 
+                        </Grid>
+
+                        <Grid Style="{StaticResource SettingsRowStyle}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.AppTheme}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableThemes}"
                                       SelectedItem="{Binding SelectedTheme}"
-                                      MinWidth="120" MaxWidth="200" Margin="0,0,10,0">
+                                      MaxWidth="260"
+                                      HorizontalAlignment="Left">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Converter={x:Static converters:ThemeDisplayConverter.Instance}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Content="{x:Static resources:Strings.Apply}" Command="{Binding ChangeThemeCommand}" 
-                                    MinWidth="60" Style="{DynamicResource FilledButtonStyle}"/>
-                        </StackPanel>
+                            <Button Grid.Column="2"
+                                    Content="{x:Static resources:Strings.Apply}"
+                                    Command="{Binding ChangeThemeCommand}"
+                                    Margin="12,0,0,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.UpdateChannel}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableUpdateChannels}"
+                                      SelectedItem="{Binding SelectedUpdateChannel, Mode=TwoWay}"
+                                      MaxWidth="320"
+                                      HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource UpdateChannelDisplayConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
                     </StackPanel>
-                </GroupBox>
-                
-                <!-- Game Path Settings -->
-                <GroupBox Header="{x:Static resources:Strings.GamePath}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.GameRootDirectory}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <TextBox Text="{Binding GameRootPath}" IsReadOnly="True" Margin="0,0,10,0" MinWidth="300" MaxWidth="400"/>
-                            <Button Content="{x:Static resources:Strings.Browse}" Command="{Binding BrowseGameDirectoryCommand}" 
-                                    MinWidth="80" Style="{DynamicResource OutlinedButtonStyle}"/>
-                        </StackPanel>
+                </Border>
+
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.GamePath}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{x:Static resources:Strings.GameRootDirectory}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.GameRootDirectory}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding GameRootPath}"
+                                     IsReadOnly="True"
+                                     Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                            <Button Grid.Column="2"
+                                    Content="{x:Static resources:Strings.Browse}"
+                                    Command="{Binding BrowseGameDirectoryCommand}"
+                                    Margin="12,0,0,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                        </Grid>
                     </StackPanel>
-                </GroupBox>
-                
-                <!-- 数据源配置（始终显示 Token + 代理；开发模式下额外显示 URL 字段） -->
-                <GroupBox Header="{x:Static resources:Strings.DataSourceConfiguration}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <!-- GitHub API Token -->
-                        <StackPanel Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.GitHubApiToken}" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding GitHubApiToken}" HorizontalAlignment="Stretch" MaxWidth="600"/>
-                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
-                                       FontSize="{DynamicResource BodySmall}"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       Margin="0,3,0,0"/>
-                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenHint}"
-                                       FontSize="{DynamicResource BodySmall}"
-                                       Foreground="{DynamicResource ErrorBrush}"
-                                       Margin="0,3,0,0"/>
-                            <TextBlock Margin="0,3,0,0" FontSize="{DynamicResource BodySmall}">
-                                <Hyperlink NavigateUri="https://github.com/settings/tokens" RequestNavigate="Hyperlink_RequestNavigate">
-                                    <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
-                                </Hyperlink>
-                            </TextBlock>
-                            <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenPermissionHint}"
-                                       FontSize="{DynamicResource BodySmall}"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       Margin="0,3,0,0"/>
-                        </StackPanel>
+                </Border>
 
-                        <!-- GitHub 代理加速 -->
-                        <StackPanel Margin="0,0,0,10" Visibility="{Binding IsGitHubProxyVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <CheckBox IsChecked="{Binding UseGitHubProxy}" IsEnabled="{Binding IsGitHubProxyEnabled}" Margin="0,0,0,5">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}" FontWeight="Medium"/>
-                                    <TextBlock Text="{x:Static resources:Strings.GitHubProxyDescription}"
-                                               FontSize="{DynamicResource BodySmall}"
-                                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                               Margin="0,2,0,0"/>
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.DataSourceConfiguration}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <TextBlock Text="{x:Static resources:Strings.GitHubApiToken}"
+                                   Style="{StaticResource FieldLabelTextStyle}"/>
+                        <TextBox Margin="0,0,0,8"
+                                 Text="{Binding GitHubApiToken}"
+                                 Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                        <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenHint}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                   Foreground="{DynamicResource ErrorBrush}"/>
+                        <TextBlock Margin="0,6,0,0"
+                                   Style="{StaticResource PageSectionHintTextStyle}">
+                            <Hyperlink NavigateUri="https://github.com/settings/tokens"
+                                       RequestNavigate="Hyperlink_RequestNavigate">
+                                <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,6,0,16"
+                                   Text="{x:Static resources:Strings.GitHubApiTokenPermissionHint}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding UseGitHubProxy}"
+                                  IsEnabled="{Binding IsGitHubProxyEnabled}"
+                                  Visibility="{Binding IsGitHubProxyVisible, Converter={StaticResource BoolToVis}}">
+                            <CheckBox.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{x:Static resources:Strings.UseGitHubProxy}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Margin="0,2,0,0"
+                                               Text="{x:Static resources:Strings.GitHubProxyDescription}"
+                                               Style="{StaticResource PageSectionHintTextStyle}"/>
                                 </StackPanel>
-                            </CheckBox>
-                        <StackPanel Margin="20,5,0,0" Visibility="{Binding UseGitHubProxy, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Text="{x:Static resources:Strings.GitHubProxyServer}" Margin="0,0,0,5"/>
-                                <ComboBox ItemsSource="{Binding AvailableProxyServers}"
-                                          SelectedItem="{Binding SelectedProxyServer}"
-                                          Width="310" HorizontalAlignment="Left">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding DisplayName}"/>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </StackPanel>
-                        </StackPanel>
+                            </CheckBox.Content>
+                        </CheckBox>
 
-                        <!-- 内置 DNS over HTTPS（仅中文用户显示） -->
-                        <StackPanel Margin="0,0,0,10" Visibility="{Binding IsDnsOverHttpsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <CheckBox IsChecked="{Binding UseDnsOverHttps}" Margin="0,0,0,5">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="启用内置 DNS over HTTPS (DoH)" FontWeight="Medium"/>
-                                    <TextBlock Text="按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。"
-                                               FontSize="{DynamicResource BodySmall}"
-                                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                               Margin="0,2,0,0"/>
+                        <Grid Margin="24,0,0,16"
+                              Visibility="{Binding UseGitHubProxy, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.GitHubProxyServer}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableProxyServers}"
+                                      SelectedItem="{Binding SelectedProxyServer}"
+                                      MaxWidth="320"
+                                      HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <CheckBox Margin="0,0,0,16"
+                                  IsChecked="{Binding UseDnsOverHttps}"
+                                  Visibility="{Binding IsDnsOverHttpsVisible, Converter={StaticResource BoolToVis}}">
+                            <CheckBox.Content>
+                                <StackPanel>
+                                    <TextBlock Text="启用内置 DNS over HTTPS (DoH)"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Margin="0,2,0,0"
+                                               Text="按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。"
+                                               Style="{StaticResource PageSectionHintTextStyle}"/>
                                 </StackPanel>
-                            </CheckBox>
-                        </StackPanel>
+                            </CheckBox.Content>
+                        </CheckBox>
 
-                        <!-- 开发模式下显示数据源 URL 字段 -->
-                        <StackPanel Visibility="{Binding IsDevMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Separator Margin="0,5,0,10"/>
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="{x:Static resources:Strings.MainConfigURL}" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding MainConfigUrl}" HorizontalAlignment="Stretch" MaxWidth="600"/>
-                            </StackPanel>
-                        </StackPanel>
+                        <Grid Margin="0,0,0,16"
+                              Visibility="{Binding IsDevMode, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.MainConfigURL}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding MainConfigUrl}"
+                                     Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                        </Grid>
 
-                        <!-- 强制刷新云端配置（始终显示） -->
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <WrapPanel VerticalAlignment="Center">
                             <Button Content="{x:Static resources:Strings.ForceRefreshCloudConfigurations}"
                                     Command="{Binding ForceRefreshConfigurationsCommand}"
-                                    MinWidth="200" MaxWidth="300"
-                                    Style="{DynamicResource OutlinedButtonStyle}"
-                                    Margin="0,0,10,0"/>
+                                    Margin="0,0,12,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                             <TextBlock Text="{Binding RefreshStatus}"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource SuccessBrush}"/>
-                        </StackPanel>
+                                       Style="{StaticResource FieldValueTextStyle}"
+                                       VerticalAlignment="Center"/>
+                        </WrapPanel>
                     </StackPanel>
-                </GroupBox>
-                
-                <!-- MelonLoader 管理 -->
-                <GroupBox Header="{x:Static resources:Strings.MelonLoaderManagement}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <!-- 当前版本与状态 -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="{x:Static resources:Strings.MelonLoaderInstalledVersion}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding MelonLoaderInstalledVersion}" VerticalAlignment="Center" FontWeight="Medium" Margin="0,0,12,0"/>
-                            <TextBlock VerticalAlignment="Center"
-                                       Foreground="{DynamicResource ErrorBrush}"
-                                       Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Run Text="("/>
-                                <Run Text="{x:Static resources:Strings.MelonLoaderDisabled}"/>
-                                <Run Text=")"/>
-                            </TextBlock>
-                        </StackPanel>
-                        <!-- 禁用/启用按钮（仅已安装时显示） -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
-                                    Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                </Border>
+
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderManagement}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{Binding MelonLoaderInstalledVersion}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <WrapPanel Margin="0,0,0,14">
+                            <Border Style="{StaticResource BadgeBorderStyle}"
+                                    Background="{DynamicResource SuccessContainerBrush}"
+                                    BorderBrush="{DynamicResource SuccessBrush}"
+                                    Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                           Style="{StaticResource BadgeTextStyle}"
+                                           Foreground="{DynamicResource OnSuccessBrush}"/>
+                            </Border>
+
+                            <Border Style="{StaticResource BadgeBorderStyle}"
+                                    Background="{DynamicResource WarningContainerBrush}"
+                                    BorderBrush="{DynamicResource WarningBrush}"
+                                    Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabled}"
+                                           Style="{StaticResource BadgeTextStyle}"
+                                           Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                            </Border>
+                        </WrapPanel>
+
+                        <WrapPanel Margin="0,0,0,14"
+                                   Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BoolToVis}}">
                             <Button Command="{Binding ToggleMelonLoaderCommand}"
-                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
-                                    MinWidth="120" Margin="0,0,10,0"
+                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
+                                    Margin="0,0,12,8"
                                     Style="{DynamicResource OutlinedButtonStyle}">
                                 <Button.Content>
                                     <TextBlock>
@@ -210,16 +337,28 @@
                                     </TextBlock>
                                 </Button.Content>
                             </Button>
-                        </StackPanel>
-                        <!-- 覆盖安装/更新版本 -->
-                        <StackPanel Orientation="Horizontal">
-                            <ComboBox ItemsSource="{Binding MelonLoaderReleases}"
+                        </WrapPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.MelonLoaderInstalledVersion}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding MelonLoaderReleases}"
                                       SelectedItem="{Binding SelectedMelonLoaderRelease}"
                                       DisplayMemberPath="TagName"
-                                      MinWidth="160" Margin="0,0,10,0"/>
-                            <Button Command="{Binding ReinstallMelonLoaderCommand}"
-                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InverseBooleanConverter}}"
-                                    MinWidth="160"
+                                      MaxWidth="260"
+                                      HorizontalAlignment="Left"/>
+                            <Button Grid.Column="2"
+                                    Command="{Binding ReinstallMelonLoaderCommand}"
+                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
+                                    Margin="12,0,0,0"
                                     Style="{DynamicResource FilledButtonStyle}">
                                 <Button.Content>
                                     <TextBlock>
@@ -236,96 +375,104 @@
                                     </TextBlock>
                                 </Button.Content>
                             </Button>
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
-                </GroupBox>
+                </Border>
 
-                <!-- Maintenance -->
-                <GroupBox Header="{x:Static resources:Strings.MaintenanceTools}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <Button Content="{x:Static resources:Strings.CleanTempFiles}" Command="{Binding CleanTempFilesCommand}" 
-                                    MinWidth="120" MaxWidth="150" Margin="0,0,10,0"
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.MaintenanceTools}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{x:Static resources:Strings.ViewLogs}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+                        <WrapPanel>
+                            <Button Content="{x:Static resources:Strings.CleanTempFiles}"
+                                    Command="{Binding CleanTempFilesCommand}"
+                                    Margin="0,0,12,8"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
-                            <Button Content="{x:Static resources:Strings.CleanupDownloadedMods}" Command="{Binding CleanupModBackupsCommand}" 
-                                    MinWidth="120" MaxWidth="180" Margin="0,0,10,0"
+                            <Button Content="{x:Static resources:Strings.CleanupDownloadedMods}"
+                                    Command="{Binding CleanupModBackupsCommand}"
+                                    Margin="0,0,12,8"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
-                            <Button Content="{x:Static resources:Strings.ViewLogs}" Command="{Binding ShowLogWindowCommand}" 
-                                    MinWidth="80" MaxWidth="120"
+                            <Button Content="{x:Static resources:Strings.ViewLogs}"
+                                    Command="{Binding ShowLogWindowCommand}"
+                                    Margin="0,0,0,8"
                                     Style="{DynamicResource TextButtonStyle}"/>
-                        </StackPanel>
+                        </WrapPanel>
                     </StackPanel>
-                </GroupBox>
-                
-                <!-- About -->
-                <GroupBox Header="{x:Static resources:Strings.About}" Margin="0,0,0,15">
-                    <StackPanel Margin="10">
-                        <!-- Update Channel -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.UpdateChannel}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <ComboBox ItemsSource="{Binding AvailableUpdateChannels}"
-                                      SelectedItem="{Binding SelectedUpdateChannel, Mode=TwoWay}"
-                                      MinWidth="250">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource UpdateChannelDisplayConverter}}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
+                </Border>
 
-                        <!-- Application Version and Check for Updates -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.ApplicationVersion}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding ApplicationVersion}" VerticalAlignment="Center" FontWeight="Medium" MinWidth="100" Margin="0,0,10,0"/>
+                <Border Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static resources:Strings.About}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <TextBlock Margin="0,4,0,16"
+                                   Text="{Binding ApplicationVersion}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ApplicationVersion}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ApplicationVersion}"
+                                       Style="{StaticResource FieldValueTextStyle}"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ProjectUrl}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Style="{DynamicResource TextButtonStyle}"
+                                    Command="{Binding OpenProjectUrlCommand}">
+                                <TextBlock Text="https://github.com/RoyZ-iwnl/GHPC-Mod-Manager/"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource AccentBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <WrapPanel Margin="0,0,0,8">
                             <Button Content="{x:Static resources:Strings.CheckForUpdates}"
                                     Command="{Binding CheckForAppUpdatesCommand}"
-                                    Style="{DynamicResource OutlinedButtonStyle}"
-                                    MinWidth="120"
-                                    Margin="10,0,0,0"/>
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                             <Button Content="{x:Static resources:Strings.ShowAnnouncement}"
                                     Command="{Binding ShowAnnouncementCommand}"
-                                    Style="{DynamicResource OutlinedButtonStyle}"
-                                    MinWidth="120"
-                                    Margin="10,0,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{x:Static resources:Strings.ProjectUrl}" VerticalAlignment="Center" MinWidth="120" Margin="0,0,10,0"/>
-                            <Button Style="{DynamicResource TextButtonStyle}"
-                                    Command="{Binding OpenProjectUrlCommand}"
-                                    Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent">
-                                <TextBlock Foreground="{DynamicResource PrimaryBrush}" TextDecorations="Underline">
-                                    https://github.com/RoyZ-iwnl/GHPC-Mod-Manager/
-                                </TextBlock>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0"
-                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                             <Button Content="{x:Static resources:Strings.FollowBilibili}"
                                     Command="{Binding OpenFollowBilibiliCommand}"
+                                    Margin="0,0,12,8"
                                     Style="{DynamicResource FilledButtonStyle}"
-                                    MinWidth="120" Margin="0,0,10,0"/>
+                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
                             <Button Content="{x:Static resources:Strings.JoinGhpcCommunity}"
                                     Command="{Binding OpenGhpcCommunityCommand}"
+                                    Margin="0,0,0,8"
                                     Style="{DynamicResource FilledButtonStyle}"
-                                    MinWidth="140"/>
-                        </StackPanel>
+                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
+                        </WrapPanel>
                     </StackPanel>
-                </GroupBox>
-                
+                </Border>
             </StackPanel>
+            </Grid>
         </ScrollViewer>
-        
-        <!-- Action Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="{x:Static resources:Strings.SaveSettings}" Command="{Binding SaveSettingsCommand}" 
-                    MinWidth="100" Margin="0,0,10,0"
-                    Style="{DynamicResource FilledButtonStyle}"/>
-            <Button Content="{x:Static resources:Strings.BackToMain}" Command="{Binding BackToMainCommand}" 
-                    MinWidth="120"
-                    Style="{DynamicResource OutlinedButtonStyle}"/>
-        </StackPanel>
-        
+
     </Grid>
 </UserControl>

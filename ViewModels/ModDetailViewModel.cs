@@ -26,6 +26,7 @@ public partial class ModDetailViewModel : ObservableObject
     private readonly IModBackupService _modBackupService;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
+    private readonly IMelonLoaderService _melonLoaderService;
 
     // 当前展示的MOD
     [ObservableProperty]
@@ -84,12 +85,13 @@ public partial class ModDetailViewModel : ObservableObject
 
     public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
-    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService)
+    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
     {
         _modManagerService = modManagerService;
         _modBackupService = modBackupService;
         _loggingService = loggingService;
         _settingsService = settingsService;
+        _melonLoaderService = melonLoaderService;
     }
 
     /// <summary>
@@ -124,7 +126,7 @@ public partial class ModDetailViewModel : ObservableObject
             Dependencies.Add(new RelatedModInfo
             {
                 ModId = reqId,
-                DisplayName = relatedMod?.DisplayName ?? reqId,
+                DisplayName = GetRelatedModDisplayName(reqId, relatedMod),
                 IsInstalled = relatedMod?.IsInstalled ?? false,
                 IsEnabled = relatedMod?.IsEnabled ?? false
             });
@@ -137,7 +139,7 @@ public partial class ModDetailViewModel : ObservableObject
             Conflicts.Add(new RelatedModInfo
             {
                 ModId = conflictId,
-                DisplayName = relatedMod?.DisplayName ?? conflictId,
+                DisplayName = GetRelatedModDisplayName(conflictId, relatedMod),
                 IsInstalled = relatedMod?.IsInstalled ?? false,
                 IsEnabled = relatedMod?.IsEnabled ?? false
             });
@@ -145,6 +147,22 @@ public partial class ModDetailViewModel : ObservableObject
 
         HasDependencies = Dependencies.Count > 0;
         HasConflicts = Conflicts.Count > 0;
+    }
+
+    private string GetRelatedModDisplayName(string modId, ModViewModel? relatedMod)
+    {
+        if (!string.IsNullOrWhiteSpace(relatedMod?.DisplayName))
+        {
+            return relatedMod.DisplayName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(modId) &&
+            !string.Equals(modId, Strings.Unknown, StringComparison.OrdinalIgnoreCase))
+        {
+            return modId;
+        }
+
+        return _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "无" : "None";
     }
 
     private async Task LoadReleasesAsync()
@@ -186,6 +204,9 @@ public partial class ModDetailViewModel : ObservableObject
     private async Task InstallSelectedVersionCoreAsync(bool preferBackup)
     {
         if (Mod == null || SelectedRelease == null) return;
+
+        if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(Mod, null, _settingsService, _melonLoaderService))
+            return;
 
         try
         {
@@ -250,7 +271,7 @@ public partial class ModDetailViewModel : ObservableObject
             }
 
             var success = await _modManagerService.InstallModAsync(
-                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, preferBackup: preferBackup);
+                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, skipConflictCheck: true, preferBackup: preferBackup);
 
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, Mod.DisplayName)

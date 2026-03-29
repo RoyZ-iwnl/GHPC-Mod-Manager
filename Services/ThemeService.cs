@@ -72,6 +72,11 @@ public class ThemeService : IThemeService
                 _ => "/Themes/LightTheme.xaml"
             };
 
+            var foundationResource = new ResourceDictionary
+            {
+                Source = new Uri("/Themes/Foundation.xaml", UriKind.Relative)
+            };
+
             _loggingService.LogInfo(Strings.LoadingThemeResource, themeResourcePath);
 
             var themeResource = new ResourceDictionary
@@ -85,9 +90,16 @@ public class ThemeService : IThemeService
                 Source = new Uri("/Themes/ControlStyles.xaml", UriKind.Relative)
             };
 
-            // 重新构建资源字典 - 确保主题颜色在前，控件样式在后
+            var pageStyles = new ResourceDictionary
+            {
+                Source = new Uri("/Themes/PageStyles.xaml", UriKind.Relative)
+            };
+
+            // 重新构建资源字典 - 先基础token，再主题，再控件和页面样式
+            Application.Current.Resources.MergedDictionaries.Add(foundationResource);
             Application.Current.Resources.MergedDictionaries.Add(themeResource);
             Application.Current.Resources.MergedDictionaries.Add(controlStyles);
+            Application.Current.Resources.MergedDictionaries.Add(pageStyles);
 
             _loggingService.LogInfo(Strings.ThemeResourceApplied, theme, Application.Current.Resources.MergedDictionaries.Count);
             

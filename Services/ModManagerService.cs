@@ -2,7 +2,6 @@ using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.ViewModels;
 using Newtonsoft.Json;
 using System.IO;
-using System.Text;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
 
@@ -11,7 +10,7 @@ namespace GHPC_Mod_Manager.Services;
 public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
-    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool preferBackup = true);
+    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true);
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
@@ -39,9 +38,10 @@ public interface IModManagerService
 
     // 检查配置段是否存在
     Task<bool> ConfigSectionExistsAsync(string modId);
+    Task<List<ModIntegrityIssue>> CheckManagedModsIntegrityAsync();
 }
 
-public class ModManagerService : IModManagerService
+public partial class ModManagerService : IModManagerService
 {
     private readonly ISettingsService _settingsService;
     private readonly INetworkService _networkService;
@@ -88,13 +88,19 @@ public class ModManagerService : IModManagerService
             var installInfo = _installManifest.InstalledMods.GetValueOrDefault(modConfig.Id);
             if (installInfo != null)
             {
-                bool modFilesExist = IsModActuallyInstalled(modConfig.MainBinaryFileName, modsPath, installInfo);
+                // MainBinaryFileName 为空时依赖清单判断，否则用传统方式
+                bool useManifestState = IsReplaceMode(modConfig) || string.IsNullOrEmpty(modConfig.MainBinaryFileName);
+                bool modFilesExist = useManifestState
+                    ? IsModActuallyInstalledFromManifest(installInfo)
+                    : IsModActuallyInstalled(modConfig.MainBinaryFileName, modsPath, installInfo);
 
                 if (modFilesExist)
                 {
                     viewModel.IsInstalled = true;
                     viewModel.InstalledVersion = installInfo.Version;
-                    viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
+                    viewModel.IsEnabled = useManifestState
+                        ? IsModEnabledFromManifest(installInfo)
+                        : IsModEnabled(modConfig.MainBinaryFileName, modsPath);
                 }
                 else
                 {
@@ -105,7 +111,8 @@ public class ModManagerService : IModManagerService
             }
             else
             {
-                if (IsModInstalled(modConfig.MainBinaryFileName, modsPath))
+                // 无清单记录时，只有 MainBinaryFileName 非空才能检测手动安装
+                if (!string.IsNullOrEmpty(modConfig.MainBinaryFileName) && IsModInstalled(modConfig.MainBinaryFileName, modsPath))
                 {
                     viewModel.IsInstalled = true;
                     viewModel.IsManuallyInstalled = true;
@@ -130,14 +137,26 @@ public class ModManagerService : IModManagerService
             }
             try
             {
-                var releases = await _networkService.GetGitHubReleasesAsync(
-                    GetRepoOwner(vm.Config.ReleaseUrl),
-                    GetRepoName(vm.Config.ReleaseUrl),
-                    forceRefresh
-                );
-                var latestRelease = releases.FirstOrDefault();
-                vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
-                vm.UpdateDate = latestRelease?.PublishedAt;
+                // 区分 GitHub 源和直接下载源
+                if (IsGitHubApiUrl(vm.Config.ReleaseUrl))
+                {
+                    // GitHub 模式：调用 API 获取版本
+                    var releases = await _networkService.GetGitHubReleasesAsync(
+                        GetRepoOwner(vm.Config.ReleaseUrl),
+                        GetRepoName(vm.Config.ReleaseUrl),
+                        forceRefresh
+                    );
+                    var latestRelease = releases.FirstOrDefault();
+                    vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                    vm.UpdateDate = latestRelease?.PublishedAt;
+                }
+                else
+                {
+                    // 直接下载模式：从 URL 解析版本
+                    vm.LatestVersion = ParseVersionFromUrl(vm.Config.ReleaseUrl);
+                    vm.UpdateDate = null;  // 非 GitHub 源无发布日期
+                }
+
                 vm.HasBackup = !string.IsNullOrWhiteSpace(vm.LatestVersion) &&
                                vm.LatestVersion != GHPC_Mod_Manager.Resources.Strings.Unknown &&
                                await _modBackupService.CheckModBackupExistsAsync(vm.Id, vm.LatestVersion);
@@ -235,7 +254,7 @@ public class ModManagerService : IModManagerService
                 // 统一用正斜杠比较，避免Windows路径分隔符不一致导致匹配失败
                 var relativeModPath = Path.GetRelativePath(_settingsService.Settings.GameRootPath, modFile).Replace('\\', '/');
                 if (_installManifest.InstalledMods.Values.Any(m =>
-                    m.InstalledFiles.Any(f => f.Replace('\\', '/') == relativeModPath)))
+                    m.InstalledFiles.Any(f => f.RelativePath.Replace('\\', '/') == relativeModPath)))
                     continue;
 
                 // Skip XUnity AutoTranslator (translation plugin) and its backup
@@ -265,14 +284,21 @@ public class ModManagerService : IModManagerService
                         LatestVersion = GHPC_Mod_Manager.Resources.Strings.Unknown
                     };
 
-                    // Try to get latest version from GitHub
+                    // Try to get latest version (支持 GitHub 和直接下载源)
                     try
                     {
-                        var releases = await _networkService.GetGitHubReleasesAsync(
-                            GetRepoOwner(matchingConfig.ReleaseUrl),
-                            GetRepoName(matchingConfig.ReleaseUrl)
-                        );
-                        supportedManualMod.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                        if (IsGitHubApiUrl(matchingConfig.ReleaseUrl))
+                        {
+                            var releases = await _networkService.GetGitHubReleasesAsync(
+                                GetRepoOwner(matchingConfig.ReleaseUrl),
+                                GetRepoName(matchingConfig.ReleaseUrl)
+                            );
+                            supportedManualMod.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                        }
+                        else
+                        {
+                            supportedManualMod.LatestVersion = ParseVersionFromUrl(matchingConfig.ReleaseUrl);
+                        }
                     }
                     catch
                     {
@@ -305,44 +331,38 @@ public class ModManagerService : IModManagerService
         }
     }
 
-    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool preferBackup = true)
+    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true)
     {
         try
         {
             _loggingService.LogInfo(Strings.Installing, modConfig.Id, version);
+
+            if (!EnsureManagedConfigSupported(modConfig))
+                return false;
+
+            if (!ShowReplaceInstallWarningIfNeeded(modConfig))
+                return false;
 
             // Check if we can reinstall from backup first (quick install)
             var hasBackup = await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version);
             if (hasBackup && preferBackup)
             {
                 _loggingService.LogInfo(Strings.AttemptingQuickReinstallFromBackup, modConfig.Id, version);
-                
-                var quickInstallSuccess = await _modBackupService.ReinstallModFromBackupAsync(modConfig.Id, version);
-                if (quickInstallSuccess)
+
+                var quickReinstallResult = await TryQuickReinstallAsync(modConfig, version);
+                var quickInstallInfo = quickReinstallResult.InstallInfo;
+                if (quickInstallInfo != null)
                 {
-                    // Update install manifest for quick reinstall
                     await LoadManifestAsync();
-                    var quickGameRootPath = _settingsService.Settings.GameRootPath;
-                    var quickModsPath = Path.Combine(quickGameRootPath, "Mods");
-                    var quickNewFiles = Directory.GetFiles(quickModsPath, "*.dll", SearchOption.AllDirectories)
-                        .Where(f => Path.GetFileName(f).Equals(modConfig.MainBinaryFileName, StringComparison.OrdinalIgnoreCase))
-                        .Select(f => Path.GetRelativePath(quickGameRootPath, f))
-                        .ToList();
-
-                    var quickInstallInfo = new ModInstallInfo
-                    {
-                        ModId = modConfig.Id,
-                        Version = version,
-                        InstalledFiles = quickNewFiles,
-                        InstallDate = DateTime.Now
-                    };
-
                     _installManifest.InstalledMods[modConfig.Id] = quickInstallInfo;
                     await SaveManifestAsync();
 
                     _loggingService.LogInfo(Strings.ModReinstalledFromBackup, modConfig.Id, version);
                     return true;
                 }
+
+                if (quickReinstallResult.ShouldAbortInstall)
+                    return false;
             }
             else if (hasBackup && !preferBackup)
             {
@@ -365,52 +385,23 @@ public class ModManagerService : IModManagerService
                 }
             }
 
-            // Check for conflicts
-            var (hasConflicts, conflictingMods) = await CheckModConflictsAsync(modConfig);
-            if (hasConflicts)
+            // 冲突检查：skipConflictCheck=true时跳过（ViewModel已在调用前处理冲突对话框）
+            if (!skipConflictCheck)
             {
-                var conflictingModNames = conflictingMods.Select(GetModDisplayName).ToList();
-                var currentModName = GetModDisplayName(modConfig.Id);
-                var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
-                
-                var dialogResult = MessageBox.Show(message, Strings.ModConflictDetected, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (dialogResult == MessageBoxResult.No)
+                var (hasConflicts, conflictingMods) = await CheckModConflictsAsync(modConfig);
+                if (hasConflicts)
                 {
-                    return false;
+                    var conflictingModNames = conflictingMods.Select(GetModDisplayName).ToList();
+                    var currentModName = GetModDisplayName(modConfig.Id);
+                    var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
+
+                    var dialogResult = MessageBox.Show(message, Strings.ModConflictDetected, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (dialogResult == MessageBoxResult.No)
+                    {
+                        return false;
+                    }
                 }
             }
-
-            var releases = await _networkService.GetGitHubReleasesAsync(
-                GetRepoOwner(modConfig.ReleaseUrl),
-                GetRepoName(modConfig.ReleaseUrl)
-            );
-
-            var targetRelease = releases.FirstOrDefault(r => r.TagName == version);
-            if (targetRelease == null)
-            {
-                _loggingService.LogError(Strings.ModVersionNotFound, modConfig.Id, version);
-                return false;
-            }
-
-            var asset = targetRelease.Assets.FirstOrDefault(a => a.Name.Contains(modConfig.TargetFileNameKeyword));
-            if (asset == null)
-            {
-                _loggingService.LogError(Strings.ModAssetNotFound, modConfig.Id, modConfig.TargetFileNameKeyword);
-                return false;
-            }
-
-            var gameRootPath = _settingsService.Settings.GameRootPath;
-            var modsPath = Path.Combine(gameRootPath, "Mods");
-            Directory.CreateDirectory(modsPath);
-
-            // 创建文件操作追踪器
-            var tracker = new FileOperationTracker(_loggingService, _settingsService);
-            var trackedOps = new TrackedFileOperations(tracker, _loggingService);
-
-            // 开始追踪文件操作
-            tracker.StartTracking($"mod_install_{modConfig.Id}_{version}", modsPath);
-
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
 
             // 下载完成后检查游戏是否已启动，避免写入冲突
             if (_processService.IsGameRunning)
@@ -419,48 +410,24 @@ public class ModManagerService : IModManagerService
                 return false;
             }
 
-            if (modConfig.InstallMethod == InstallMethod.Scripted && !string.IsNullOrEmpty(modConfig.InstallScript_Base64))
-            {
-                var confirmed = await ShowScriptWarningAsync();
-                if (!confirmed) return false;
+            var downloadResult = await DownloadModPackageAsync(modConfig, version, progress);
+            if (downloadResult == null)
+                return false;
 
-                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
-                
-                await ExecuteInstallScriptWithTrackingAsync(modConfig.InstallScript_Base64, tempDownloadPath, gameRootPath, modConfig.MainBinaryFileName, tracker, progress);
-            }
-            else if (asset.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-            {
-                // 单个DLL文件直接复制
-                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
-                var targetPath = Path.Combine(modsPath, asset.Name);
-                await trackedOps.CopyFileAsync(tempDownloadPath, targetPath);
-                
-                // 清理临时文件
-                File.Delete(tempDownloadPath);
-            }
-            else
-            {
-                await trackedOps.ExtractZipAsync(downloadData, modsPath);
-            }
+            ModInstallInfo? installInfo = IsReplaceMode(modConfig)
+                ? await InstallReplaceModeAsync(modConfig, version, downloadResult.Value.Data, downloadResult.Value.FileName)
+                : await InstallDirectReleaseModeAsync(modConfig, version, downloadResult.Value.Data, downloadResult.Value.FileName);
 
-            // 停止追踪并获取结果
-            tracker.StopTracking();
-            var result = tracker.GetResult();
-            var processedFiles = result.GetAllProcessedFiles();
-
-            if (!processedFiles.Any())
+            if (installInfo == null || !installInfo.InstalledFiles.Any())
             {
                 _loggingService.LogError(Strings.NoFilesProcessedDuringInstallation, modConfig.Id);
                 return false;
             }
 
-            var installInfo = new ModInstallInfo
+            if (!await RefreshUninstalledBackupAsync(installInfo))
             {
-                ModId = modConfig.Id,
-                Version = version,
-                InstalledFiles = processedFiles, // 使用追踪器记录的实际处理文件
-                InstallDate = DateTime.Now
-            };
+                _loggingService.LogWarning("Failed to refresh uninstalled backup after install: {0} {1}", modConfig.Id, version);
+            }
 
             _installManifest.InstalledMods[modConfig.Id] = installInfo;
             await SaveManifestAsync();
@@ -477,6 +444,7 @@ public class ModManagerService : IModManagerService
 
     public async Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null)
     {
+        string previousVersion = string.Empty;
         try
         {
             _loggingService.LogInfo(Strings.UpdatingMod, modId, "current", newVersion);
@@ -489,35 +457,20 @@ public class ModManagerService : IModManagerService
                 return false;
             }
 
+            if (!EnsureManagedConfigSupported(modConfig))
+                return false;
+
             // Check if mod is currently installed
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var currentInstallInfo))
             {
                 _loggingService.LogError(Strings.ModNotInstalledCannotUpdate, modId);
                 return false;
             }
+            previousVersion = currentInstallInfo.Version;
 
-            // Step 1: Download new version first
-            var releases = await _networkService.GetGitHubReleasesAsync(
-                GetRepoOwner(modConfig.ReleaseUrl),
-                GetRepoName(modConfig.ReleaseUrl)
-            );
-
-            var targetRelease = releases.FirstOrDefault(r => r.TagName == newVersion);
-            if (targetRelease == null)
-            {
-                _loggingService.LogError(Strings.ModVersionNotFound, modId, newVersion);
+            var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress);
+            if (downloadResult == null)
                 return false;
-            }
-
-            var asset = targetRelease.Assets.FirstOrDefault(a => a.Name.Contains(modConfig.TargetFileNameKeyword));
-            if (asset == null)
-            {
-                _loggingService.LogError(Strings.ModAssetNotFound, modId, modConfig.TargetFileNameKeyword);
-                return false;
-            }
-
-            // Download the new version
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
 
             // 下载完成后检查游戏是否已启动，避免写入冲突
             if (_processService.IsGameRunning)
@@ -526,94 +479,38 @@ public class ModManagerService : IModManagerService
                 return false;
             }
 
-            // Step 2: Uninstall current version (move to uninstalled backup)
-            await _modBackupService.UninstallModWithBackupAsync(modId, currentInstallInfo.Version, currentInstallInfo.InstalledFiles);
-
-            var gameRootPath = _settingsService.Settings.GameRootPath;
-
-            // Delete current files
-            foreach (var relativePath in currentInstallInfo.InstalledFiles)
+            var currentPaths = GetInstalledRelativePaths(currentInstallInfo);
+            var backupCreated = await _modBackupService.UninstallModWithBackupAsync(modId, currentInstallInfo.Version, currentPaths);
+            if (!backupCreated)
             {
-                var fullPath = Path.Combine(gameRootPath, relativePath);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
+                ShowManagedBackupFailureMessage(modId);
+                return false;
             }
 
-            // Clean up empty directories
-            var directories = currentInstallInfo.InstalledFiles
-                .Select(f => Path.GetDirectoryName(Path.Combine(gameRootPath, f)))
-                .Where(d => !string.IsNullOrEmpty(d))
-                .Distinct()
-                .OrderByDescending(d => d?.Length ?? 0);
+            await DeleteManagedFilesAsync(currentPaths);
 
-            foreach (var directory in directories)
+            if (IsReplaceMode(modConfig))
             {
-                if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
-                {
-                    Directory.Delete(directory);
-                }
+                await RestoreImmediateBackupFilesAsync(modId, currentInstallInfo.BackupFiles);
+                await ShowReplaceEmptyDirectoryWarningIfNeededAsync(modConfig);
             }
 
-            // Step 3: Install new version using tracking system
-            var modsPath = Path.Combine(gameRootPath, "Mods");
-            Directory.CreateDirectory(modsPath);
+            var newInstallInfo = IsReplaceMode(modConfig)
+                ? await InstallReplaceModeAsync(modConfig, newVersion, downloadResult.Value.Data, downloadResult.Value.FileName)
+                : await InstallDirectReleaseModeAsync(modConfig, newVersion, downloadResult.Value.Data, downloadResult.Value.FileName);
 
-            // Create file operation tracker for update
-            var tracker = new FileOperationTracker(_loggingService, _settingsService);
-            var trackedOps = new TrackedFileOperations(tracker, _loggingService);
+            if (newInstallInfo == null)
+                throw new InvalidOperationException($"No files were installed for {modId}.");
 
-            // Start tracking file operations
-            tracker.StartTracking($"mod_update_{modId}_{newVersion}", modsPath);
-
-            if (modConfig.InstallMethod == InstallMethod.Scripted && !string.IsNullOrEmpty(modConfig.InstallScript_Base64))
+            if (!await RefreshUninstalledBackupAsync(newInstallInfo))
             {
-                var confirmed = await ShowScriptWarningAsync();
-                if (!confirmed) 
-                {
-                    // Restore from backup if user cancels
-                    await _modBackupService.ReinstallModFromBackupAsync(modId, currentInstallInfo.Version);
-                    return false;
-                }
-
-                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
-                await ExecuteInstallScriptWithTrackingAsync(modConfig.InstallScript_Base64, tempDownloadPath, gameRootPath, modConfig.MainBinaryFileName, tracker, progress);
+                _loggingService.LogWarning("Failed to refresh uninstalled backup after update: {0} {1}", modId, newVersion);
             }
-            else if (asset.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-            {
-                // Single DLL file direct copy
-                var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, asset.Name);
-                var targetPath = Path.Combine(modsPath, asset.Name);
-                await trackedOps.CopyFileAsync(tempDownloadPath, targetPath);
-                
-                // Clean up temp file
-                File.Delete(tempDownloadPath);
-            }
-            else
-            {
-                await trackedOps.ExtractZipAsync(downloadData, modsPath);
-            }
-
-            // Stop tracking and get results
-            tracker.StopTracking();
-            var trackingResult = tracker.GetResult();
-            var processedFiles = trackingResult.GetAllProcessedFiles();
-
-            // Step 4: Update install manifest with new version
-            var newInstallInfo = new ModInstallInfo
-            {
-                ModId = modId,
-                Version = newVersion,
-                InstalledFiles = processedFiles, // Use tracked processed files
-                InstallDate = DateTime.Now
-            };
 
             _installManifest.InstalledMods[modId] = newInstallInfo;
             await SaveManifestAsync();
 
-            // Step 5: Delete old backup now that new installation is successful
-            await _modBackupService.DeleteModBackupAsync(modId, currentInstallInfo.Version);
+            await _modBackupService.DeleteModBackupAsync(modId, previousVersion);
 
             _loggingService.LogInfo(Strings.ModUpdatedSuccessfully, modId);
             return true;
@@ -626,10 +523,16 @@ public class ModManagerService : IModManagerService
             try
             {
                 await LoadManifestAsync();
-                if (_installManifest.InstalledMods.TryGetValue(modId, out var backupInfo))
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                if (modConfig != null)
                 {
-                    await _modBackupService.ReinstallModFromBackupAsync(modId, backupInfo.Version);
-                    _loggingService.LogInfo(Strings.RestoredModFromBackupAfterFailedUpdate, modId);
+                    var restoredInstallInfo = (await TryQuickReinstallAsync(modConfig, previousVersion)).InstallInfo;
+                    if (restoredInstallInfo != null)
+                    {
+                        _installManifest.InstalledMods[modId] = restoredInstallInfo;
+                        await SaveManifestAsync();
+                        _loggingService.LogInfo(Strings.RestoredModFromBackupAfterFailedUpdate, modId);
+                    }
                 }
             }
             catch (Exception restoreEx)
@@ -654,67 +557,35 @@ public class ModManagerService : IModManagerService
             _loggingService.LogInfo(Strings.UninstallingMod, modId);
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
-            var disabledBackupPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled", modId);
-            var uninstalledBackupPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "uninstalled", $"{modId}_v{installInfo.Version}");
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
 
-            // Check if mod is currently disabled (has backup in disabled folder)
-            if (Directory.Exists(disabledBackupPath))
+            if (HasDisabledBackup(installInfo))
             {
                 _loggingService.LogInfo(Strings.ModDisabledMovingBackupToUninstalled, modId);
-                
-                // Create uninstalled backup directory
-                Directory.CreateDirectory(Path.GetDirectoryName(uninstalledBackupPath)!);
-                
-                // Move disabled backup to uninstalled backup
-                if (Directory.Exists(uninstalledBackupPath))
+                if (!await MoveDisabledBackupToUninstalledAsync(installInfo))
                 {
-                    Directory.Delete(uninstalledBackupPath, true);
+                    ShowManagedBackupFailureMessage(modId);
+                    return false;
                 }
-                Directory.Move(disabledBackupPath, uninstalledBackupPath);
-                
-                // Create proper uninstalled backup manifest
-                var backupManifest = new
-                {
-                    ModId = modId,
-                    Version = installInfo.Version,
-                    BackupDate = DateTime.Now,
-                    OriginalFiles = installInfo.InstalledFiles
-                };
-                
-                var manifestPath = Path.Combine(uninstalledBackupPath, "backup_manifest.json");
-                var manifestJson = System.Text.Json.JsonSerializer.Serialize(backupManifest, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(manifestPath, manifestJson);
-                
+
                 _loggingService.LogInfo(Strings.MovedDisabledBackupToUninstalled, modId);
             }
             else
             {
-                // Mod is currently enabled, create backup before uninstalling
-                await _modBackupService.UninstallModWithBackupAsync(modId, installInfo.Version, installInfo.InstalledFiles);
-
-                // Delete active files after backup
-                foreach (var relativePath in installInfo.InstalledFiles)
+                var currentPaths = GetInstalledRelativePaths(installInfo);
+                var backupCreated = await _modBackupService.UninstallModWithBackupAsync(modId, installInfo.Version, currentPaths);
+                if (!backupCreated)
                 {
-                    var fullPath = Path.Combine(gameRootPath, relativePath);
-                    if (File.Exists(fullPath))
-                    {
-                        File.Delete(fullPath);
-                    }
+                    ShowManagedBackupFailureMessage(modId);
+                    return false;
                 }
 
-                // Clean up empty directories
-                var directories = installInfo.InstalledFiles
-                    .Select(f => Path.GetDirectoryName(Path.Combine(gameRootPath, f)))
-                    .Where(d => !string.IsNullOrEmpty(d))
-                    .Distinct()
-                    .OrderByDescending(d => d?.Length ?? 0);
+                await DeleteManagedFilesAsync(currentPaths);
 
-                foreach (var directory in directories)
+                if (modConfig != null && IsReplaceMode(modConfig))
                 {
-                    if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
-                    {
-                        Directory.Delete(directory);
-                    }
+                    await RestoreImmediateBackupFilesAsync(modId, installInfo.BackupFiles);
+                    await ShowReplaceEmptyDirectoryWarningIfNeededAsync(modConfig);
                 }
             }
 
@@ -794,9 +665,16 @@ public class ModManagerService : IModManagerService
                     var matchingConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
                     if (matchingConfig != null)
                     {
+                        // MainBinaryFileName 为空时无法处理手动安装（无标识文件）
+                        if (string.IsNullOrEmpty(matchingConfig.MainBinaryFileName))
+                        {
+                            _loggingService.LogError(Strings.CannotUninstallManualModWithoutBinaryName, modId);
+                            return false;
+                        }
+
                         var fileName = matchingConfig.MainBinaryFileName;
                         var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
-                        
+
                         filesToDelete.AddRange(foundFiles);
                     }
                 }
@@ -922,7 +800,7 @@ public class ModManagerService : IModManagerService
             // For managed mods, get files from install manifest
             if (_installManifest.InstalledMods.TryGetValue(modId, out var installInfo))
             {
-                modFiles = installInfo.InstalledFiles.ToList();
+                modFiles = GetInstalledRelativePaths(installInfo);
             }
             // For manual mods, try to find the actual files based on mod type
             else if (isManualMod)
@@ -976,10 +854,38 @@ public class ModManagerService : IModManagerService
             // Use backup service for enable/disable operations
             if (enable)
             {
+                var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                if (modConfig != null && installInfo != null && IsReplaceMode(modConfig))
+                {
+                    var enabledInstallInfo = await EnableReplaceModAsync(modConfig, installInfo);
+                    if (enabledInstallInfo == null)
+                        return false;
+
+                    _installManifest.InstalledMods[modId] = enabledInstallInfo;
+                    await SaveManifestAsync();
+                    return true;
+                }
+
                 return await _modBackupService.EnableModFromBackupAsync(modId);
             }
             else
             {
+                if (installInfo != null)
+                {
+                    var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                    if (modConfig != null && IsReplaceMode(modConfig))
+                    {
+                        var replaceDisabled = await DisableReplaceModAsync(installInfo);
+                        if (!replaceDisabled)
+                            return false;
+
+                        installInfo.BackupFiles.Clear();
+                        _installManifest.InstalledMods[modId] = installInfo;
+                        await SaveManifestAsync();
+                        return true;
+                    }
+                }
+
                 return await _modBackupService.DisableModWithBackupAsync(modId, modFiles);
             }
         }
@@ -1406,12 +1312,15 @@ public class ModManagerService : IModManagerService
         try
         {
             var manifestPath = Path.Combine(_settingsService.AppDataPath, "mod_install_manifest.json");
+            _installManifest = new ModInstallManifest();
             if (File.Exists(manifestPath))
             {
                 var json = await File.ReadAllTextAsync(manifestPath);
                 var manifest = JsonConvert.DeserializeObject<ModInstallManifest>(json);
                 _installManifest = manifest ?? new ModInstallManifest();
             }
+
+            await MigrateManifestIfNeededAsync();
         }
         catch (Exception ex)
         {
@@ -1438,6 +1347,7 @@ public class ModManagerService : IModManagerService
         try
         {
             _availableMods = await GetModConfigsWithFallbackAsync(forceRefresh);
+            NormalizeModConfigs(_availableMods);
         }
         catch (Exception ex)
         {
@@ -1455,7 +1365,10 @@ public class ModManagerService : IModManagerService
             var url = urls[i];
             var configs = await _networkService.GetModConfigAsync(url, forceRefresh);
             if (configs.Count > 0)
+            {
+                NormalizeModConfigs(configs);
                 return configs;
+            }
 
             lastResult = configs;
             var hasNext = i < urls.Count - 1;
@@ -1533,7 +1446,7 @@ public class ModManagerService : IModManagerService
         var gameRootPath = _settingsService.Settings.GameRootPath;
 
         // 检查manifest中记录的任意一个文件是否存在
-        foreach (var relativePath in installInfo.InstalledFiles)
+        foreach (var relativePath in GetInstalledRelativePaths(installInfo))
         {
             var fullPath = Path.Combine(gameRootPath, relativePath);
             if (File.Exists(fullPath))
@@ -1550,6 +1463,61 @@ public class ModManagerService : IModManagerService
             return true;
 
         // uninstalled备份不代表已安装，不在此检查
+        return false;
+    }
+
+    /// <summary>
+    /// 仅依赖清单判断MOD是否实际存在（用于 Replace 等清单托管安装）
+    /// </summary>
+    private bool IsModActuallyInstalledFromManifest(ModInstallInfo installInfo)
+    {
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+
+        // 检查清单中记录的任意一个文件是否存在
+        foreach (var relativePath in GetInstalledRelativePaths(installInfo))
+        {
+            var fullPath = Path.Combine(gameRootPath, relativePath);
+            if (File.Exists(fullPath))
+            {
+                return true;
+            }
+        }
+
+        // 检查是否在 disabled 备份中
+        var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled", installInfo.ModId);
+        if (Directory.Exists(disabledPath) &&
+            Directory.GetFiles(disabledPath, "*", SearchOption.TopDirectoryOnly)
+                .Any(f => Path.GetFileName(f) != "backup_paths.json"))
+            return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// 仅依赖清单判断MOD是否启用（用于 Replace 等清单托管安装）
+    /// 启用状态：清单文件中至少有一个存在且不在 disabled 备份中
+    /// </summary>
+    private bool IsModEnabledFromManifest(ModInstallInfo installInfo)
+    {
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+
+        // 如果在 disabled 备份中，则禁用
+        var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled", installInfo.ModId);
+        if (Directory.Exists(disabledPath) &&
+            Directory.GetFiles(disabledPath, "*", SearchOption.TopDirectoryOnly)
+                .Any(f => Path.GetFileName(f) != "backup_paths.json"))
+            return false;
+
+        // 检查清单文件中是否有存在的文件
+        foreach (var relativePath in GetInstalledRelativePaths(installInfo))
+        {
+            var fullPath = Path.Combine(gameRootPath, relativePath);
+            if (File.Exists(fullPath))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -1573,107 +1541,64 @@ public class ModManagerService : IModManagerService
         return segments.Length >= 3 ? segments[2] : "";
     }
 
-    private async Task<bool> ShowScriptWarningAsync()
+    /// <summary>
+    /// 检测 ReleaseUrl 是否为 GitHub API URL
+    /// GitHub API URL 格式: https://api.github.com/repos/owner/repo/...
+    /// </summary>
+    private bool IsGitHubApiUrl(string url)
     {
-        return await App.Current.Dispatcher.InvokeAsync(() =>
-        {
-            var result = System.Windows.MessageBox.Show(
-                GHPC_Mod_Manager.Resources.Strings.ScriptModSecurityWarning,
-                GHPC_Mod_Manager.Resources.Strings.SecurityWarningTitle,
-                System.Windows.MessageBoxButton.YesNo,
-                System.Windows.MessageBoxImage.Warning
-            );
-            return result == System.Windows.MessageBoxResult.Yes;
-        });
+        return url.Contains("api.github.com/repos");
     }
 
-    private async Task ExecuteInstallScriptWithTrackingAsync(string base64Script, string downloadedFilePath, string gameRootPath, string targetFileName, IFileOperationTracker tracker, IProgress<DownloadProgress>? progress)
-    {
-        // 记录脚本执行前的文件状态
-        var filesBeforeScript = new Dictionary<string, DateTime>();
-        await RecordDirectoryStateAsync(gameRootPath, filesBeforeScript);
-
-        var scriptContent = Encoding.UTF8.GetString(Convert.FromBase64String(base64Script));
-        var tempBatFile = Path.Combine(_settingsService.TempPath, $"install_{Guid.NewGuid()}.bat");
-
-        await File.WriteAllTextAsync(tempBatFile, scriptContent);
-        
-        var processInfo = new System.Diagnostics.ProcessStartInfo
-        {
-            FileName = tempBatFile,
-            WorkingDirectory = gameRootPath,
-            Arguments = $"\"{downloadedFilePath}\" \"{gameRootPath}\" \"{targetFileName}\"",
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        var scriptStartTime = DateTime.Now;
-
-        using var process = System.Diagnostics.Process.Start(processInfo);
-        if (process != null)
-        {
-            await process.WaitForExitAsync();
-        }
-        else
-        {
-            _loggingService.LogError(Strings.FailedToStartScriptProcess);
-        }
-        
-        // 检测脚本执行后文件的变化
-        var filesAfterScript = new Dictionary<string, DateTime>();
-        await RecordDirectoryStateAsync(gameRootPath, filesAfterScript);
-
-        // 分析脚本创建/修改的文件
-        foreach (var (filePath, lastWriteTime) in filesAfterScript)
-        {
-            var relativePath = Path.GetRelativePath(gameRootPath, filePath);
-
-            if (!filesBeforeScript.ContainsKey(filePath))
-            {
-                // 新创建的文件
-                tracker.RecordFileOperation(new FileOperation
-                {
-                    Type = FileOperationType.Create,
-                    SourcePath = "script_created",
-                    TargetPath = filePath,
-                    FileSize = File.Exists(filePath) ? new System.IO.FileInfo(filePath).Length : 0
-                });
-            }
-            else if (lastWriteTime > scriptStartTime)
-            {
-                // 文件在脚本执行期间被修改
-                tracker.RecordFileOperation(new FileOperation
-                {
-                    Type = FileOperationType.Overwrite,
-                    SourcePath = "script_modified",
-                    TargetPath = filePath,
-                    FileSize = File.Exists(filePath) ? new System.IO.FileInfo(filePath).Length : 0
-                });
-            }
-        }
-
-        // Clean up temp files
-        File.Delete(tempBatFile);
-        if (File.Exists(downloadedFilePath))
-        {
-            File.Delete(downloadedFilePath);
-        }
-    }
-
-    private async Task RecordDirectoryStateAsync(string directory, Dictionary<string, DateTime> fileStates)
+    /// <summary>
+    /// 从 URL 提取文件名
+    /// </summary>
+    private string GetFileNameFromUrl(string url)
     {
         try
         {
-            var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                fileStates[file] = File.GetLastWriteTime(file);
-            }
+            var uri = new Uri(url);
+            return Path.GetFileName(uri.AbsolutePath);
         }
-        catch (Exception ex)
+        catch
         {
-            _loggingService.LogError(Strings.ErrorRecordingDirectoryState, directory, ex.Message);
+            return string.Empty;
         }
+    }
+
+    /// <summary>
+    /// 从 URL 文件名中解析版本号
+    ///
+    /// 支持的格式示例:
+    ///   - mod_v1.2.3.zip → v1.2.3
+    ///   - mod-1.2.3.zip → 1.2.3
+    ///   - v2.0/file.zip → v2.0
+    ///   - MyMod_2.5.1_beta.zip → 2.5.1
+    ///
+    /// 以后可扩展:
+    ///   - 自定义版本解析规则（通过 ModConfig 配置 VersionPattern 字段）
+    ///   - 支持更多版本格式（日期版本如 20240101、自定义命名）
+    ///   - 从外部版本检查 API/文件获取（通过 ModConfig 配置 VersionCheckUrl 字段）
+    ///   - 从 HTTP 响应头获取版本信息
+    /// </summary>
+    private string ParseVersionFromUrl(string url)
+    {
+        var fileName = GetFileNameFromUrl(url);
+        if (string.IsNullOrEmpty(fileName))
+            return Strings.Unknown;
+
+        // 正则匹配常见版本格式
+        // 匹配: v1.2.3, v1.2, 1.2.3, 1.2（支持可选的 v/V 前缀）
+        var versionPattern = @"[vV]?(\d+\.\d+(\.\d+)?)";
+        var match = System.Text.RegularExpressions.Regex.Match(fileName, versionPattern);
+
+        if (match.Success)
+        {
+            // 保留原始格式（包括 v 前缀）
+            return match.Value;
+        }
+
+        return Strings.Unknown;
     }
 
     private async Task<string> SaveTempDownloadFileAsync(byte[] downloadData, string originalFileName)
@@ -1754,13 +1679,11 @@ public class ModManagerService : IModManagerService
             var enabledMods = new List<string>();
             foreach (var kvp in _installManifest.InstalledMods)
             {
+                var installInfo = kvp.Value;
                 var modConfig = _availableMods.FirstOrDefault(m => m.Id == kvp.Key);
-                if (modConfig != null && !string.IsNullOrEmpty(modConfig.MainBinaryFileName))
+                if (modConfig != null && IsModEnabledFromManifest(installInfo))
                 {
-                    if (IsModEnabled(modConfig.MainBinaryFileName, modsPath))
-                    {
-                        enabledMods.Add(kvp.Key);
-                    }
+                    enabledMods.Add(kvp.Key);
                 }
             }
 
@@ -1840,13 +1763,11 @@ public class ModManagerService : IModManagerService
             var enabledMods = new List<string>();
             foreach (var kvp in _installManifest.InstalledMods)
             {
+                var installInfo = kvp.Value;
                 var modConfig = _availableMods.FirstOrDefault(m => m.Id == kvp.Key);
-                if (modConfig != null && !string.IsNullOrEmpty(modConfig.MainBinaryFileName))
+                if (modConfig != null && IsModEnabledFromManifest(installInfo))
                 {
-                    if (IsModEnabled(modConfig.MainBinaryFileName, modsPath))
-                    {
-                        enabledMods.Add(kvp.Key);
-                    }
+                    enabledMods.Add(kvp.Key);
                 }
             }
 
@@ -1906,6 +1827,7 @@ public class ModManagerService : IModManagerService
 
     /// <summary>
     /// 获取指定MOD的所有GitHub Releases（用于版本选择下拉）
+    /// 非 GitHub 源返回解析的版本作为虚拟 Release
     /// </summary>
     public async Task<List<GitHubRelease>> GetModReleasesAsync(string modId)
     {
@@ -1917,13 +1839,33 @@ public class ModManagerService : IModManagerService
             if (modConfig == null || string.IsNullOrEmpty(modConfig.ReleaseUrl))
                 return new List<GitHubRelease>();
 
-            var owner = GetRepoOwner(modConfig.ReleaseUrl);
-            var repo = GetRepoName(modConfig.ReleaseUrl);
-            if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo))
-                return new List<GitHubRelease>();
+            if (IsGitHubApiUrl(modConfig.ReleaseUrl))
+            {
+                // GitHub 模式：获取所有 releases
+                var owner = GetRepoOwner(modConfig.ReleaseUrl);
+                var repo = GetRepoName(modConfig.ReleaseUrl);
+                if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo))
+                    return new List<GitHubRelease>();
 
-            // 获取所有releases（利用现有缓存机制）
-            return await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: false);
+                return await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: false);
+            }
+            else
+            {
+                // 直接下载模式：返回解析的版本作为虚拟 Release
+                var parsedVersion = ParseVersionFromUrl(modConfig.ReleaseUrl);
+                if (parsedVersion == Strings.Unknown)
+                    return new List<GitHubRelease>();
+
+                return new List<GitHubRelease>
+                {
+                    new GitHubRelease
+                    {
+                        TagName = parsedVersion,
+                        Name = parsedVersion,
+                        PublishedAt = DateTime.Now
+                    }
+                };
+            }
         }
         catch (Exception ex)
         {

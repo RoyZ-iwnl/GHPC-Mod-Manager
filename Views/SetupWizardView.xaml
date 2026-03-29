@@ -16,32 +16,38 @@
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:StepVisibilityConverter x:Key="StepVisibilityConverter"/>
         <converters:ChineseLanguageToVisibilityConverter x:Key="ChineseLanguageToVisibilityConverter"/>
+
+        <Style x:Key="WizardStepCardStyle" TargetType="Border" BasedOn="{StaticResource PageSectionCardStyle}">
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+        </Style>
     </UserControl.Resources>
     
-    <Grid Margin="20" Background="{DynamicResource BackgroundBrush}">
+    <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <!-- Title -->
-        <TextBlock Grid.Row="0" Text="{x:Static resources:Strings.SetupWizardTitle}" 
-                   FontSize="{DynamicResource HeadlineMedium}" FontWeight="Medium" 
-                   HorizontalAlignment="Center" Margin="0,0,0,20"
-                   Foreground="{DynamicResource OnBackgroundBrush}"/>
+        <Border Grid.Row="0"
+                Style="{StaticResource PageHeroCardStyle}">
+            <StackPanel>
+                <TextBlock Text="FIRST RUN"
+                           Style="{StaticResource HeroEyebrowTextStyle}"/>
+                <TextBlock Margin="0,6,0,0"
+                           Text="{x:Static resources:Strings.SetupWizardTitle}"
+                           Style="{StaticResource PageTitleTextStyle}"/>
+            </StackPanel>
+        </Border>
         
         <!-- Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" Margin="0,18,0,18" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 
                 <!-- Step 0: Language Selection -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=0}"
-                        Background="{DynamicResource SurfaceBrush}"
-                        BorderBrush="{DynamicResource OutlineVariantBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="{DynamicResource RadiusMedium}" 
-                        Padding="24" Margin="0,16">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel HorizontalAlignment="Center">
                         <!-- App Icon -->
                         <Image Source="/app.ico" Width="64" Height="64" Margin="0,0,0,20" 
@@ -73,11 +79,7 @@
                 
                 <!-- Step 1: Welcome Page -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=1}"
-                        Background="{DynamicResource SurfaceBrush}"
-                        BorderBrush="{DynamicResource OutlineVariantBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="{DynamicResource RadiusMedium}" 
-                        Padding="24" Margin="0,16">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel HorizontalAlignment="Center">
                         <!-- Welcome Title -->
                         <TextBlock Text="{x:Static resources:Strings.WelcomeToGHPCModManager}" 
@@ -111,7 +113,7 @@
                 
                 <!-- Step 2: Network Check -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=2}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step2NetworkCheck}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         
@@ -252,7 +254,7 @@
                 
                 <!-- Step 3: Game Directory -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=3}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step3GameDirectory}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         <TextBlock Text="{x:Static resources:Strings.PleaseSelectGHPCLocation}" Margin="0,0,0,10"/>
@@ -265,7 +267,7 @@
                 
                 <!-- Step 4: MelonLoader Check -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=4}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step4MelonLoaderCheck}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         <StackPanel Margin="0,0,0,10">
@@ -298,7 +300,7 @@
                 
                 <!-- Step 5: Install MelonLoader -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=5}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step5InstallMelonLoader}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         <TextBlock Text="{x:Static resources:Strings.PleaseSelectMelonLoaderVersion}" Margin="0,0,0,10"/>
@@ -319,7 +321,7 @@
                 
                 <!-- Step 6: First Run -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=6}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step6FirstRunGuide}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         <TextBlock Text="{x:Static resources:Strings.InstallSuccessNeedGameRun}" Margin="0,0,0,10" TextWrapping="Wrap"/>
@@ -329,7 +331,7 @@
                 
                 <!-- Step 7: Wait for game exit -->
                 <Border Visibility="{Binding CurrentStep, Converter={StaticResource StepVisibilityConverter}, ConverterParameter=7}"
-                        BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Padding="20" Margin="0,10">
+                        Style="{StaticResource WizardStepCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.Step7WaitGameExit}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -347,13 +349,18 @@
         </ScrollViewer>
         
         <!-- Navigation Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="{x:Static resources:Strings.Previous}" Command="{Binding BackCommand}" 
-                    IsEnabled="{Binding IsBackEnabled}" 
-                    Width="90" Margin="0,0,10,0"/>
-            <Button Content="{x:Static resources:Strings.Next}" Command="{Binding NextCommand}" 
-                    IsEnabled="{Binding IsNextEnabled}" 
-                    Width="90"/>
-        </StackPanel>
+        <Border Grid.Row="2"
+                Style="{StaticResource PageToolbarCardStyle}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{x:Static resources:Strings.Previous}" Command="{Binding BackCommand}" 
+                        IsEnabled="{Binding IsBackEnabled}" 
+                        Width="100" Margin="0,0,10,0"
+                        Style="{DynamicResource OutlinedButtonStyle}"/>
+                <Button Content="{x:Static resources:Strings.Next}" Command="{Binding NextCommand}" 
+                        IsEnabled="{Binding IsNextEnabled}" 
+                        Width="100"
+                        Style="{DynamicResource FilledButtonStyle}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

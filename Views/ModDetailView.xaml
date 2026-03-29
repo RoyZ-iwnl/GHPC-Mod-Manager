@@ -6,385 +6,388 @@
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="900">
+             d:DesignHeight="720"
+             d:DesignWidth="1180">
 
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
         <converters:StringToVisibilityConverter x:Key="StrToVis"/>
+        <converters:StringToInverseVisibilityConverter x:Key="StrToInvVis"/>
+
+        <Style x:Key="DetailItemCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource RadiusSmall}"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource BackgroundBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- 顶部：返回按钮 + MOD名称 -->
-        <Border Grid.Row="0" Background="{DynamicResource SurfaceVariantBrush}" Padding="12,8">
+        <Border Grid.Row="0" Style="{StaticResource PageHeroCardStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0"
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="MOD DETAIL"
+                               Style="{StaticResource HeroEyebrowTextStyle}"/>
+                    <TextBlock Margin="0,6,0,8"
+                               Text="{Binding Mod.DisplayName}"
+                               Style="{StaticResource PageTitleTextStyle}"/>
+                    <TextBlock Text="{Binding Mod.Id}"
+                               Style="{StaticResource MonoMetaValueTextStyle}"
+                               Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+
+                    <WrapPanel Margin="0,14,0,0">
+                        <Border Style="{StaticResource BadgeBorderStyle}"
+                                Background="{DynamicResource SuccessContainerBrush}"
+                                BorderBrush="{DynamicResource SuccessBrush}"
+                                Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                       Style="{StaticResource BadgeTextStyle}"
+                                       Foreground="{DynamicResource OnSuccessBrush}"/>
+                        </Border>
+
+                        <Border Style="{StaticResource BadgeBorderStyle}"
+                                Visibility="{Binding Mod.IsManuallyInstalled, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="{x:Static resources:Strings.Manual}"
+                                       Style="{StaticResource BadgeTextStyle}"
+                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                        </Border>
+
+                        <Border Style="{StaticResource BadgeBorderStyle}"
+                                Background="{DynamicResource ErrorContainerBrush}"
+                                BorderBrush="{DynamicResource ErrorBrush}"
+                                Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="{x:Static resources:Strings.UnsupportedManualMod}"
+                                       Style="{StaticResource BadgeTextStyle}"
+                                       Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                        </Border>
+
+                        <Border Style="{StaticResource BadgeBorderStyle}"
+                                Background="{DynamicResource AccentSoftBrush}"
+                                BorderBrush="{DynamicResource AccentBrush}"
+                                Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="{x:Static resources:Strings.Update}"
+                                       Style="{StaticResource BadgeTextStyle}"
+                                       Foreground="{DynamicResource AccentStrongBrush}"/>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+
+                <Button Grid.Column="1"
                         Content="{x:Static resources:Strings.GoBack}"
                         Command="{Binding GoBackCommand}"
-                        Style="{DynamicResource TextButtonStyle}"
-                        Margin="0,0,16,0"/>
-
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Mod.DisplayName}"
-                               FontSize="{DynamicResource TitleMedium}"
-                               FontWeight="SemiBold"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-                    <TextBlock Text="{Binding Mod.Id}"
-                               FontSize="{DynamicResource LabelSmall}"
-                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                               Opacity="0.7"/>
-                </StackPanel>
+                        VerticalAlignment="Top"
+                        Style="{DynamicResource OutlinedButtonStyle}"/>
             </Grid>
         </Border>
 
-        <!-- 详情内容区：两列布局 -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="300"/>
-            </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Row="1"
+                      Style="{StaticResource AppScrollViewerStyle}"
+                      Margin="0,18,0,0"
+                      VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="26"/>
+                    <ColumnDefinition Width="380"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- 不受支持的手动mod专用界面 -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="16"
-                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
-                <StackPanel MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Border Background="{DynamicResource WarningContainerBrush}"
-                            BorderBrush="{DynamicResource WarningBrush}"
-                            BorderThickness="2"
-                            CornerRadius="{DynamicResource RadiusMedium}"
-                            Padding="24">
+                <StackPanel Grid.Column="0">
+                    <Border Style="{StaticResource PageSectionCardStyle}"
+                            Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
                         <StackPanel>
-                            <TextBlock Text="⚠️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                             <TextBlock Text="{x:Static resources:Strings.UnsupportedManualMod}"
-                                       FontSize="{DynamicResource TitleMedium}"
-                                       FontWeight="SemiBold"
-                                       TextAlignment="Center"
-                                       Foreground="{DynamicResource OnWarningContainerBrush}"
-                                       Margin="0,0,0,12"/>
-                            <TextBlock Text="{x:Static resources:Strings.UnsupportedManualModDescription}"
-                                       TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Foreground="{DynamicResource OnWarningContainerBrush}"
-                                       Opacity="0.9"
-                                       Margin="0,0,0,24"/>
+                                       Style="{StaticResource PageSectionTitleTextStyle}"
+                                       Foreground="{DynamicResource ErrorBrush}"/>
+                            <TextBlock Margin="0,10,0,0"
+                                       Text="{x:Static resources:Strings.UnsupportedManualModDescription}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"/>
+                        </StackPanel>
+                    </Border>
 
-                            <!-- 操作按钮 -->
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="{x:Static resources:Strings.Toggle}"
-                                        Command="{Binding ToggleCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="100" Margin="0,0,12,0"/>
-                                <Button Content="{x:Static resources:Strings.Uninstall}"
-                                        Command="{Binding UninstallManualModCommand}"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        MinWidth="100"/>
-                            </StackPanel>
+                    <Border Margin="0,0,0,16"
+                            Style="{StaticResource PageSectionCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.ModDescription}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <TextBlock Margin="0,10,0,0"
+                                       Text="{Binding Mod.LocalizedDescription}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
+                                       Visibility="{Binding Mod.LocalizedDescription, Converter={StaticResource StrToVis}}"/>
+                            <TextBlock Margin="0,10,0,0"
+                                       Text="{Binding Mod.Id}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
+                                       Visibility="{Binding Mod.LocalizedDescription, Converter={StaticResource StrToInvVis}}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,0,0,16"
+                            Style="{StaticResource PageSectionCardStyle}"
+                            Visibility="{Binding Mod.LocalizedTags.Count, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.ModTags}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <ItemsControl Margin="0,12,0,0"
+                                          ItemsSource="{Binding Mod.LocalizedTags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource BadgeBorderStyle}">
+                                            <TextBlock Text="{Binding}"
+                                                       Style="{StaticResource BadgeTextStyle}"
+                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,0,0,16"
+                            Style="{StaticResource PageSectionCardStyle}"
+                            Visibility="{Binding Mod.SupportedGameVersions.Count, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.SupportedVersions}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <ItemsControl Margin="0,12,0,0"
+                                          ItemsSource="{Binding Mod.SupportedGameVersions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource BadgeBorderStyle}">
+                                            <TextBlock Text="{Binding}"
+                                                       Style="{StaticResource BadgeTextStyle}"
+                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                     </Border>
                 </StackPanel>
-            </ScrollViewer>
 
-            <!-- 左列：简介 + 游戏版本 + 操作按钮（正常mod） -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="16,16,8,16"
-                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
-                <StackPanel>
-
-                    <!-- Tags行 -->
-                    <StackPanel Visibility="{Binding Mod.Tags.Count, Converter={StaticResource BoolToVis}}"
-                                Margin="0,0,0,16">
-                        <TextBlock Text="{x:Static resources:Strings.ModTags}"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   Margin="0,0,0,6"/>
-                        <ItemsControl ItemsSource="{Binding Mod.LocalizedTags}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource PrimaryContainerBrush}"
-                                            CornerRadius="10" Padding="10,4" Margin="3,2">
-                                        <TextBlock Text="{Binding}"
-                                                   FontSize="{DynamicResource LabelSmall}"
-                                                   Foreground="{DynamicResource OnPrimaryContainerBrush}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                    <!-- 简介 -->
-                    <StackPanel Visibility="{Binding Mod.LocalizedDescription, Converter={StaticResource StrToVis}}"
-                                Margin="0,0,0,16">
-                        <TextBlock Text="{x:Static resources:Strings.ModDescription}"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   Margin="0,0,0,6"/>
-                        <Border Background="{DynamicResource SurfaceVariantBrush}"
-                                CornerRadius="{DynamicResource RadiusSmall}"
-                                Padding="12,10">
-                            <TextBlock Text="{Binding Mod.LocalizedDescription}"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       LineHeight="22"/>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- 支持的游戏版本 -->
-                    <StackPanel Visibility="{Binding Mod.SupportedGameVersions.Count, Converter={StaticResource BoolToVis}}"
-                                Margin="0,0,0,16">
-                        <TextBlock Text="{x:Static resources:Strings.SupportedVersions}"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   Margin="0,0,0,6"/>
-                        <ItemsControl ItemsSource="{Binding Mod.SupportedGameVersions}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource SurfaceVariantBrush}"
-                                            BorderBrush="{DynamicResource OutlineVariantBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="4" Padding="8,3" Margin="3,2">
-                                        <TextBlock Text="{Binding}"
-                                                   FontSize="{DynamicResource LabelSmall}"
-                                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                    <!-- 版本信息 + 安装/管理 -->
-                    <Border Background="{DynamicResource SurfaceVariantBrush}"
-                            CornerRadius="{DynamicResource RadiusSmall}"
-                            Padding="16,12" Margin="0,0,0,16">
+                <StackPanel Grid.Column="2">
+                    <Border Style="{StaticResource PageSidebarCardStyle}">
                         <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.Actions}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
 
-                            <!-- 已安装版本 -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
-                                        Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{x:Static resources:Strings.InstalledVersion}"
-                                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                           Margin="0,0,8,0"/>
-                                <TextBlock Text="{Binding Mod.InstalledVersion}"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource SuccessBrush}"/>
+                            <StackPanel Margin="0,16,0,0"
+                                        Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
+                                <Button Content="{x:Static resources:Strings.Toggle}"
+                                        Command="{Binding ToggleCommand}"
+                                        Margin="0,0,0,10"
+                                        Style="{DynamicResource OutlinedButtonStyle}"/>
+                                <Button Content="{x:Static resources:Strings.Uninstall}"
+                                        Command="{Binding UninstallManualModCommand}"
+                                        Style="{DynamicResource FilledButtonStyle}"/>
                             </StackPanel>
 
-                            <!-- 版本选择下拉 -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="{x:Static resources:Strings.SelectVersion}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                           Margin="0,0,8,0"/>
+                            <StackPanel Margin="0,16,0,0"
+                                        Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
+                                <TextBlock Text="{x:Static resources:Strings.InstalledVersion}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}"/>
+                                <TextBlock Text="{Binding Mod.InstalledVersion}"
+                                           Style="{StaticResource FieldValueTextStyle}"
+                                           Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}"/>
+
+                                <TextBlock Margin="0,14,0,6"
+                                           Text="{x:Static resources:Strings.SelectVersion}"
+                                           Style="{StaticResource FieldLabelTextStyle}"/>
                                 <TextBlock Text="{x:Static resources:Strings.LoadingReleases}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                           Opacity="0.7"
+                                           Style="{StaticResource PageSubtitleTextStyle}"
                                            Visibility="{Binding IsLoadingReleases, Converter={StaticResource BoolToVis}}"/>
                                 <ComboBox ItemsSource="{Binding AvailableReleases}"
                                           SelectedItem="{Binding SelectedRelease}"
                                           DisplayMemberPath="TagName"
-                                          MinWidth="140"
                                           Visibility="{Binding IsLoadingReleases, Converter={StaticResource InvBoolToVis}}"/>
+
+                                <WrapPanel Margin="0,18,0,0"
+                                           Visibility="{Binding Mod.IsInstalled, Converter={StaticResource InvBoolToVis}}">
+                                    <Button Content="{x:Static resources:Strings.QuickReinstall}"
+                                            Command="{Binding InstallSelectedVersionCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"
+                                            Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
+                                    <Button Content="{Binding RedownloadReinstallText}"
+                                            Command="{Binding RedownloadInstallSelectedVersionCommand}"
+                                            Margin="0,0,0,8"
+                                            Style="{DynamicResource FilledButtonStyle}"
+                                            Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
+                                    <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
+                                            Command="{Binding RedownloadInstallSelectedVersionCommand}"
+                                            Margin="0,0,0,8"
+                                            Style="{DynamicResource FilledButtonStyle}"
+                                            Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource InvBoolToVis}}"/>
+                                </WrapPanel>
+
+                                <WrapPanel Margin="0,18,0,0"
+                                           Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
+                                    <Button Content="{x:Static resources:Strings.Update}"
+                                            Command="{Binding UpdateCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource FilledButtonStyle}"
+                                            Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}"/>
+                                    <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
+                                            Command="{Binding InstallSelectedVersionCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                                    <Button Content="{x:Static resources:Strings.Toggle}"
+                                            Command="{Binding ToggleCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                                    <Button Content="{x:Static resources:Strings.Configure}"
+                                            Command="{Binding ConfigureCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"
+                                            Visibility="{Binding Mod.HasConfiguration, Converter={StaticResource BoolToVis}}"/>
+                                    <Button Content="{x:Static resources:Strings.Uninstall}"
+                                            Command="{Binding UninstallCommand}"
+                                            Margin="0,0,0,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                                </WrapPanel>
+
+                                <Button Content="{x:Static resources:Strings.ViewOnGitHub}"
+                                        Command="{Binding OpenGitHubCommand}"
+                                        Margin="0,12,0,0"
+                                        HorizontalAlignment="Left"
+                                        Style="{DynamicResource TextButtonStyle}"
+                                        Visibility="{Binding Mod.GitHubRepositoryUrl, Converter={StaticResource StrToVis}}"/>
                             </StackPanel>
 
-                            <!-- 安装按钮（未安装时） -->
-                            <WrapPanel Margin="0,0,0,0"
-                                       Visibility="{Binding Mod.IsInstalled, Converter={StaticResource InvBoolToVis}}">
-                                <Button Content="{x:Static resources:Strings.QuickReinstall}"
-                                        Command="{Binding InstallSelectedVersionCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="120" Margin="0,0,8,4"
-                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
-                                <Button Content="{Binding RedownloadReinstallText}"
-                                        Command="{Binding RedownloadInstallSelectedVersionCommand}"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        MinWidth="140" Margin="0,0,8,4"
-                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource BoolToVis}}"/>
-                                <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
-                                        Command="{Binding RedownloadInstallSelectedVersionCommand}"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        MinWidth="120" Margin="0,0,8,4"
-                                        Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource InvBoolToVis}}"/>
-                            </WrapPanel>
-
-                            <!-- 管理按钮（已安装时） -->
-                            <WrapPanel Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
-                                <Button Content="{x:Static resources:Strings.Update}"
-                                        Command="{Binding UpdateCommand}"
-                                        Style="{DynamicResource FilledButtonStyle}"
-                                        MinWidth="80" Margin="0,0,8,4"
-                                        Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}"/>
-                                <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
-                                        Command="{Binding InstallSelectedVersionCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="120" Margin="0,0,8,4"/>
-                                <Button Content="{x:Static resources:Strings.Toggle}"
-                                        Command="{Binding ToggleCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="80" Margin="0,0,8,4"/>
-                                <Button Content="{x:Static resources:Strings.Configure}"
-                                        Command="{Binding ConfigureCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="80" Margin="0,0,8,4"
-                                        Visibility="{Binding Mod.HasConfiguration, Converter={StaticResource BoolToVis}}"/>
-                                <Button Content="{x:Static resources:Strings.Uninstall}"
-                                        Command="{Binding UninstallCommand}"
-                                        Style="{DynamicResource OutlinedButtonStyle}"
-                                        MinWidth="80" Margin="0,0,0,4"/>
-                            </WrapPanel>
-
-                            <!-- 状态消息 -->
-                            <TextBlock Text="{Binding StatusMessage}"
-                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                                       FontSize="{DynamicResource LabelSmall}"
-                                       TextWrapping="Wrap"
-                                       Margin="0,8,0,0"
+                            <TextBlock Margin="0,14,0,0"
+                                       Text="{Binding StatusMessage}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
                                        Visibility="{Binding StatusMessage, Converter={StaticResource StrToVis}}"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- GitHub链接 -->
-                    <Button Content="{x:Static resources:Strings.ViewOnGitHub}"
-                            Command="{Binding OpenGitHubCommand}"
-                            Style="{DynamicResource OutlinedButtonStyle}"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,16"
-                            Visibility="{Binding Mod.GitHubRepositoryUrl, Converter={StaticResource StrToVis}}"/>
+                    <Border Margin="0,16,0,0"
+                            Style="{StaticResource PageSidebarCardStyle}"
+                            Visibility="{Binding HasDependencies, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.DependenciesSection}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <ItemsControl Margin="0,14,0,0"
+                                          ItemsSource="{Binding Dependencies}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource DetailItemCardStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
 
+                                                <Button Grid.Column="0"
+                                                        Padding="0"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalAlignment="Left"
+                                                        Style="{DynamicResource TextButtonStyle}"
+                                                        Command="{Binding DataContext.NavigateToDependencyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding ModId}">
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource AccentBrush}"/>
+                                                </Button>
+
+                                                <Border Grid.Column="1"
+                                                        Style="{StaticResource BadgeBorderStyle}"
+                                                        Background="{DynamicResource SuccessContainerBrush}"
+                                                        BorderBrush="{DynamicResource SuccessBrush}"
+                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                               Style="{StaticResource BadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnSuccessBrush}"/>
+                                                </Border>
+
+                                                <Border Grid.Column="1"
+                                                        Style="{StaticResource BadgeBorderStyle}"
+                                                        Background="{DynamicResource WarningContainerBrush}"
+                                                        BorderBrush="{DynamicResource WarningBrush}"
+                                                        Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.DependencyMissing}"
+                                                               Style="{StaticResource BadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,16,0,0"
+                            Style="{StaticResource PageSidebarCardStyle}"
+                            Visibility="{Binding HasConflicts, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.ConflictsSection}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <ItemsControl Margin="0,14,0,0"
+                                          ItemsSource="{Binding Conflicts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource DetailItemCardStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Button Grid.Column="0"
+                                                        Padding="0"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        HorizontalAlignment="Left"
+                                                        Style="{DynamicResource TextButtonStyle}"
+                                                        Command="{Binding DataContext.NavigateToDependencyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding ModId}">
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource AccentBrush}"/>
+                                                </Button>
+
+                                                <Border Grid.Column="1"
+                                                        Style="{StaticResource BadgeBorderStyle}"
+                                                        Background="{DynamicResource WarningContainerBrush}"
+                                                        BorderBrush="{DynamicResource WarningBrush}"
+                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                               Style="{StaticResource BadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-            </ScrollViewer>
-
-            <!-- 右列：依赖 + 冲突（不受支持的手动mod不显示） -->
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="8,16,16,16"
-                          Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
-                <StackPanel>
-
-                    <!-- 依赖列表 -->
-                    <StackPanel Visibility="{Binding HasDependencies, Converter={StaticResource BoolToVis}}"
-                                Margin="0,0,0,16">
-                        <TextBlock Text="{x:Static resources:Strings.DependenciesSection}"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   Margin="0,0,0,8"/>
-                        <ItemsControl ItemsSource="{Binding Dependencies}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource SurfaceVariantBrush}"
-                                            CornerRadius="{DynamicResource RadiusSmall}"
-                                            Padding="12,8" Margin="0,3">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Button Grid.Column="0"
-                                                    Style="{DynamicResource TextButtonStyle}"
-                                                    Command="{Binding DataContext.NavigateToDependencyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding ModId}"
-                                                    HorizontalAlignment="Left"
-                                                    Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent">
-                                                <TextBlock Text="{Binding DisplayName}"
-                                                           Foreground="{DynamicResource PrimaryBrush}"
-                                                           TextDecorations="Underline"/>
-                                            </Button>
-
-                                            <!-- 安装状态标签 -->
-                                            <Border Grid.Column="1"
-                                                    Background="{DynamicResource SuccessBrush}"
-                                                    CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
-                                                    Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                           FontSize="{DynamicResource LabelSmall}"
-                                                           Foreground="{DynamicResource OnSuccessBrush}"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"/>
-                                            </Border>
-                                            <Border Grid.Column="1"
-                                                    Background="{DynamicResource ErrorBrush}"
-                                                    CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
-                                                    Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
-                                                <TextBlock Text="{x:Static resources:Strings.DependencyMissing}"
-                                                           FontSize="{DynamicResource LabelSmall}"
-                                                           Foreground="{DynamicResource OnErrorBrush}"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                    <!-- 冲突列表 -->
-                    <StackPanel Visibility="{Binding HasConflicts, Converter={StaticResource BoolToVis}}"
-                                Margin="0,0,0,16">
-                        <TextBlock Text="{x:Static resources:Strings.ConflictsSection}"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource OnSurfaceBrush}"
-                                   Margin="0,0,0,8"/>
-                        <ItemsControl ItemsSource="{Binding Conflicts}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource SurfaceVariantBrush}"
-                                            CornerRadius="{DynamicResource RadiusSmall}"
-                                            Padding="12,8" Margin="0,3">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Button Grid.Column="0"
-                                                    Style="{DynamicResource TextButtonStyle}"
-                                                    Command="{Binding DataContext.NavigateToDependencyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding ModId}"
-                                                    HorizontalAlignment="Left"
-                                                    Padding="0" MinWidth="0" BorderThickness="0" Background="Transparent">
-                                                <TextBlock Text="{Binding DisplayName}"
-                                                           Foreground="{DynamicResource PrimaryBrush}"
-                                                           TextDecorations="Underline"/>
-                                            </Button>
-
-                                            <Border Grid.Column="1"
-                                                    Background="{DynamicResource WarningBrush}"
-                                                    CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
-                                                    Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                           FontSize="{DynamicResource LabelSmall}"
-                                                           Foreground="{DynamicResource OnWarningBrush}"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                </StackPanel>
-            </ScrollViewer>
-
-        </Grid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

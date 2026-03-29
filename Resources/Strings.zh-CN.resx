@@ -1390,13 +1390,13 @@
     <value>启用 MelonLoader 失败</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
-    <value>MelonLoader 已临时禁用，Mod 功能不可用</value>
+    <value>MelonLoader已临时禁用</value>
   </data>
   <data name="Manual" xml:space="preserve">
     <value>手动</value>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>未知</value>
+    <value>无</value>
   </data>
   <data name="TranslationPlugin" xml:space="preserve">
     <value>翻译插件</value>
@@ -1559,6 +1559,48 @@
   </data>
   <data name="ModNotFound" xml:space="preserve">
     <value>模组未找到</value>
+  </data>
+  <data name="CannotUninstallManualModWithoutBinaryName" xml:space="preserve">
+    <value>无法卸载无 MainBinaryFileName 的手动安装模组: {0}。管理器无法确定该模组对应的文件。</value>
+  </data>
+  <data name="ExecutingUninstallScript" xml:space="preserve">
+    <value>正在执行模组卸载脚本: {0}</value>
+  </data>
+  <data name="ExecutingUninstallScriptForDisable" xml:space="preserve">
+    <value>禁用后执行卸载脚本: {0}</value>
+  </data>
+  <data name="ExecutingEnableScript" xml:space="preserve">
+    <value>恢复前执行启用脚本: {0}</value>
+  </data>
+  <data name="ScriptedModMissingInstallScript" xml:space="preserve">
+    <value>脚本安装模式的 Mod 缺少安装脚本: {0}</value>
+  </data>
+  <data name="NonScriptedModHasInstallScript" xml:space="preserve">
+    <value>非脚本模式的 Mod 配置了安装脚本（InstallMethod 应为 'Scripted'）: {0}</value>
+  </data>
+  <data name="NonScriptedModHasUninstallScript" xml:space="preserve">
+    <value>非脚本模式的 Mod 配置了卸载脚本（InstallMethod 应为 'Scripted'）: {0}</value>
+  </data>
+  <data name="NonScriptedModHasEnableScript" xml:space="preserve">
+    <value>非脚本模式的 Mod 配置了启用脚本（InstallMethod 应为 'Scripted'）: {0}</value>
+  </data>
+  <data name="EnableScriptCompleted" xml:space="preserve">
+    <value>启用脚本执行完成，退出码: {0}</value>
+  </data>
+  <data name="FailedToStartEnableScript" xml:space="preserve">
+    <value>无法启动启用脚本进程</value>
+  </data>
+  <data name="EnableScriptError" xml:space="preserve">
+    <value>启用脚本错误: {0}</value>
+  </data>
+  <data name="UninstallScriptCompleted" xml:space="preserve">
+    <value>卸载脚本执行完成，退出码: {0}</value>
+  </data>
+  <data name="FailedToStartUninstallScript" xml:space="preserve">
+    <value>无法启动卸载脚本进程</value>
+  </data>
+  <data name="UninstallScriptError" xml:space="preserve">
+    <value>卸载脚本错误: {0}</value>
   </data>
   <data name="ModToggleFileError" xml:space="preserve">
     <value>模组切换文件错误</value>
@@ -2325,6 +2367,36 @@
   <data name="ErrorRecordingDirectoryState" xml:space="preserve">
     <value>记录目录状态时出错 {0}：{1}</value>
   </data>
+  <data name="SkippingDirectoryNoAccess" xml:space="preserve">
+    <value>跳过无权限访问的目录：{0}</value>
+  </data>
+  <data name="FilesScannedBeforeScript" xml:space="preserve">
+    <value>脚本执行前扫描了 {0} 个文件</value>
+  </data>
+  <data name="FilesScannedAfterScript" xml:space="preserve">
+    <value>脚本执行后扫描了 {0} 个文件</value>
+  </data>
+  <data name="ScriptNewFilesDetected" xml:space="preserve">
+    <value>脚本创建了 {0} 个新文件</value>
+  </data>
+  <data name="ScriptModifiedFilesDetected" xml:space="preserve">
+    <value>脚本修改了 {0} 个现有文件</value>
+  </data>
+  <data name="ScriptExecutionStarted" xml:space="preserve">
+    <value>脚本开始执行：{0}</value>
+  </data>
+  <data name="ScriptExecutionCompleted" xml:space="preserve">
+    <value>脚本执行完成，退出代码：{0}</value>
+  </data>
+  <data name="ScriptExecutionFailed" xml:space="preserve">
+    <value>脚本执行失败，退出代码：{0}</value>
+  </data>
+  <data name="DirectoryScanned" xml:space="preserve">
+    <value>扫描目录：{0}（{1} 个文件）</value>
+  </data>
+  <data name="CheckingSpecificDirectory" xml:space="preserve">
+    <value>检查特定目录：{0}，前={1} 个文件，后={2} 个文件</value>
+  </data>
   <data name="FailedToProcessCacheFile" xml:space="preserve">
     <value>处理缓存文件失败 {0}：{1}</value>
   </data>
@@ -2466,6 +2538,93 @@
 {0}
 
 这些MOD可能无法正常工作。是否仍要启动游戏?</value>
+  </data>
+  <data name="DelistedModDetectedOnLaunch" xml:space="preserve">
+    <value>检测到已下架MOD</value>
+  </data>
+  <data name="DelistedModWarningMessage" xml:space="preserve">
+    <value>以下已安装的MOD已被下架:
+
+{0}
+
+这些MOD可能存在问题或不再维护。是否仍要启动游戏?</value>
+  </data>
+  <data name="DeprecatedScriptedConfigMessage" xml:space="preserve">
+    <value>Mod {0} 仍在使用已废弃的 Scripted 配置，当前版本不再支持安装或更新。</value>
+  </data>
+  <data name="InvalidReplaceTargetPathMessage" xml:space="preserve">
+    <value>Mod {0} 的 ReplaceTargetPath 无效。</value>
+  </data>
+  <data name="ReplaceInstallWarningMessage" xml:space="preserve">
+    <value>{0} 会直接替换游戏文件。
+
+游戏更新或通过 Steam 检查游戏完整性后，此 Mod 可能会失效或被覆盖。
+
+是否继续安装？</value>
+  </data>
+  <data name="ReplaceLeftoverBackupDetectedMessage" xml:space="preserve">
+    <value>检测到 {0} 残留的 .GHPCMM 备份文件。
+
+是：打开目录手动处理
+否：删除这些残留备份后继续
+取消：终止当前操作
+
+删除残留备份后，建议通过 Steam 检查游戏完整性。</value>
+  </data>
+  <data name="ReplaceTargetDirectoryEmptyMessage" xml:space="preserve">
+    <value>{0} 卸载后目标目录已为空：
+{1}
+
+如该目录原本属于游戏原版内容，建议通过 Steam 检查游戏完整性。</value>
+  </data>
+  <data name="DirectRestoreConflictDetectedMessage" xml:space="preserve">
+    <value>检测到 {0} 的快速重装目标位置已存在不同文件，已取消本次快速重装。
+
+冲突文件：
+{1}
+
+建议改为重新下载安装，或先手动处理这些文件。</value>
+  </data>
+  <data name="ManagedBackupRequiredMessage" xml:space="preserve">
+    <value>无法为 {0} 创建所需备份，当前操作已中止以避免数据丢失。</value>
+  </data>
+  <data name="ManagedModIntegrityIssueMissing" xml:space="preserve">
+    <value>缺失</value>
+  </data>
+  <data name="ManagedModIntegrityIssueModified" xml:space="preserve">
+    <value>已修改</value>
+  </data>
+  <data name="ManagedModIntegrityStartupMessage" xml:space="preserve">
+    <value>检测到已安装受管 Mod 的文件完整性异常：
+
+{0}
+
+建议修复或重装这些 Mod。</value>
+  </data>
+  <data name="ManagedModIntegrityLaunchMessage" xml:space="preserve">
+    <value>检测到已安装受管 Mod 的文件完整性异常：
+
+{0}
+
+建议先修复或重装这些 Mod。仍要继续启动游戏吗？</value>
+  </data>
+  <data name="DelistedModBannerTitle" xml:space="preserve">
+    <value>已安装下架MOD</value>
+  </data>
+  <data name="DelistedModBannerMessage" xml:space="preserve">
+    <value>您安装了已下架的MOD，这些MOD可能存在问题或不再维护。</value>
+  </data>
+  <data name="UnknownConfigFieldsBannerTitle" xml:space="preserve">
+    <value>检测到未知MOD设置</value>
+  </data>
+  <data name="UnknownConfigFieldsBannerMessage" xml:space="preserve">
+    <value>部分MOD包含未知设置，请检查模组管理器更新以确保完整兼容。</value>
+  </data>
+  <data name="DelistedBadge" xml:space="preserve">
+    <value>已下架</value>
+  </data>
+  <data name="UnknownConfigFieldsBadge" xml:space="preserve">
+    <value>未知设置</value>
   </data>
   <data name="CheckingModConflictsAndDependencies" xml:space="preserve">
     <value>正在检查MOD冲突和依赖...</value>
@@ -2822,5 +2981,13 @@
   </data>
   <data name="MainConfigAllUrlsFailed" xml:space="preserve">
     <value>所有主配置URL均失败</value>
+  </data>
+  <data name="GameVersionMismatchDialogTitle" xml:space="preserve">
+    <value>游戏版本警告</value>
+  </data>
+  <data name="GameVersionMismatchDialogMessage" xml:space="preserve">
+    <value>{0} 支持的游戏版本为 {2}，但你当前本地游戏版本是 {1}，两者不一致，Mod 可能无法正常工作。
+
+是否仍要继续安装？</value>
   </data>
 </root>
