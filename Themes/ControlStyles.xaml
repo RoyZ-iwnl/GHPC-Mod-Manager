@@ -566,7 +566,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
                     <Border Background="{TemplateBinding Background}"
-                            CornerRadius="999"/>
+                            CornerRadius="2"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -635,7 +635,7 @@
                                 Grid.Column="1"
                                 Margin="12,0,0,0"
                                 Background="{DynamicResource SurfaceContainerBrush}"
-                                CornerRadius="999"
+                                CornerRadius="2"
                                 Visibility="Collapsed"/>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -667,7 +667,7 @@
                         <Border x:Name="TrackBorder"
                                 Margin="3"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="999"/>
+                                CornerRadius="2"/>
                         <Track x:Name="PART_Track"
                                Margin="3"
                                Orientation="{TemplateBinding Orientation}"

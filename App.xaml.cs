@@ -84,6 +84,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IUpdateService, UpdateService>();
                     services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
                     services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
+                    services.AddSingleton<IDialogService, DialogService>();
 
                     services.ConfigureHttpClientDefaults(builder =>
                     {
@@ -134,6 +135,7 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
                     services.AddTransient<AnnouncementViewModel>();
+                    services.AddTransient<ModInfoDumperViewModel>();
                     // 子页面ViewModel（单例，数据共享）
                     services.AddSingleton<InstalledModsViewModel>();
                     services.AddSingleton<ModBrowserViewModel>();
@@ -144,6 +146,7 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<SetupWizardView>();
                     services.AddSingleton<MainView>(); // 改为单例，避免导航时重新创建
                     services.AddTransient<SettingsView>();
+                    services.AddTransient<ModInfoDumperWindow>();
                     // 子页面View（Transient，每次导航到详情页创建新实例）
                     services.AddSingleton<InstalledModsView>();
                     services.AddSingleton<ModBrowserView>();

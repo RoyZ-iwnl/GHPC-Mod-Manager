@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Services;
 using GHPC_Mod_Manager.Models;
+using GHPC_Mod_Manager.Views;
+using GHPC_Mod_Manager.Helpers;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
@@ -240,13 +242,11 @@ public partial class SettingsViewModel : ObservableObject
             // 如果语言改变了，提示用户重启应用
             if (languageChanged)
             {
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     Strings.LanguageChangedRestartRequired,
-                    Strings.RestartRequired,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Information);
+                    Strings.RestartRequired);
 
-                if (result == MessageBoxResult.Yes)
+                if (result)
                 {
                     // 重启应用
                     RestartApplication();
@@ -259,7 +259,7 @@ public partial class SettingsViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(Strings.SettingsSavedSuccessfully, Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowSuccess(Strings.SettingsSavedSuccessfully, Strings.Success);
             }
 
             _loggingService.LogInfo(Strings.SettingsSaved);
@@ -267,7 +267,7 @@ public partial class SettingsViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.SettingsSaveError);
-            MessageBox.Show(Strings.SettingsSaveFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.SettingsSaveFailed, Strings.Error);
         }
     }
 
@@ -295,7 +295,7 @@ public partial class SettingsViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.RestartApplicationError);
-            MessageBox.Show(Strings.RestartApplicationFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.RestartApplicationFailed, Strings.Error);
         }
     }
 
@@ -356,7 +356,7 @@ public partial class SettingsViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(Strings.PleaseSelectGHPCExe, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.PleaseSelectGHPCExe, Strings.Error);
             }
         }
     }
@@ -396,14 +396,14 @@ public partial class SettingsViewModel : ObservableObject
                     }
                 }
 
-                MessageBox.Show(Strings.TempFilesCleaned_, Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowSuccess(Strings.TempFilesCleaned_, Strings.Success);
                 _loggingService.LogInfo(Strings.TempFilesCleaned);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.TempFilesCleanError);
-            MessageBox.Show(Strings.TempFilesCleanFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.TempFilesCleanFailed, Strings.Error);
         }
     }
 
@@ -412,13 +412,11 @@ public partial class SettingsViewModel : ObservableObject
     {
         try
         {
-            var result = MessageBox.Show(
+            var result = MessageDialogHelper.Confirm(
                 Strings.ConfirmCleanupModBackups,
-                Strings.ConfirmCleanup,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                Strings.ConfirmCleanup);
 
-            if (result == MessageBoxResult.Yes)
+            if (result)
             {
                 var freedBytes = await _modBackupService.CleanupModBackupsAsync();
                 var freedMB = (freedBytes / (1024.0 * 1024.0)).ToString("F1");
@@ -426,21 +424,17 @@ public partial class SettingsViewModel : ObservableObject
                 // 刷新MainViewModel的Mod列表，更新HasBackup状态
                 await _mainViewModel.Value.RefreshDataAsync();
 
-                MessageBox.Show(
+                MessageDialogHelper.ShowSuccess(
                     string.Format(Strings.CleanupModBackupsSuccessful, freedMB),
-                    Strings.Success,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    Strings.Success);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.CleanupModBackupsFailed, ex.Message);
-            MessageBox.Show(
+            MessageDialogHelper.ShowError(
                 string.Format(Strings.CleanupModBackupsFailed, ex.Message),
-                Strings.Error,
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+                Strings.Error);
         }
     }
 
@@ -535,13 +529,11 @@ public partial class SettingsViewModel : ObservableObject
 
             if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
             {
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     $"{Strings.NewVersionAvailable} {latestVersion}\n{Strings.ApplicationVersion}: {currentVersion}\n\n{Strings.DoYouWantToDownloadAndInstall}",
-                    Strings.CheckForUpdates,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Information);
+                    Strings.CheckForUpdates);
 
-                if (result == MessageBoxResult.Yes)
+                if (result)
                 {
                     var progress = new Progress<DownloadProgress>(downloadProgress =>
                     {
@@ -556,20 +548,20 @@ public partial class SettingsViewModel : ObservableObject
 
                     if (!success)
                     {
-                        MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageDialogHelper.ShowError(Strings.FailedToDownloadOrInstall, Strings.Error);
                     }
                     // If success, the application will exit and restart
                 }
             }
             else
             {
-                MessageBox.Show(string.Format(Strings.YouAreUsingLatestVersion, currentVersion), Strings.CheckForUpdates, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowInformation(string.Format(Strings.YouAreUsingLatestVersion, currentVersion), Strings.CheckForUpdates);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.ApplicationUpdateCheckFailed);
-            MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError($"Failed to check for updates: {ex.Message}", Strings.Error);
         }
     }
 
@@ -595,7 +587,7 @@ public partial class SettingsViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(string.Format(Strings.NoAnnouncementAvailable, language), Strings.Announcement, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowInformation(string.Format(Strings.NoAnnouncementAvailable, language), Strings.Announcement);
             }
         }
         catch (Exception ex)
@@ -667,7 +659,7 @@ public partial class SettingsViewModel : ObservableObject
                 }
                 else
                 {
-                    MessageBox.Show(Strings.MelonLoaderEnableFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageDialogHelper.ShowError(Strings.MelonLoaderEnableFailed, Strings.Error);
                 }
             }
             else
@@ -680,7 +672,7 @@ public partial class SettingsViewModel : ObservableObject
                 }
                 else
                 {
-                    MessageBox.Show(Strings.MelonLoaderDisableFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageDialogHelper.ShowError(Strings.MelonLoaderDisableFailed, Strings.Error);
                 }
             }
         }
@@ -699,7 +691,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         if (SelectedMelonLoaderRelease == null)
         {
-            MessageBox.Show(Strings.PleaseSelectMelonLoaderVersion, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.PleaseSelectMelonLoaderVersion, Strings.Error);
             return;
         }
 
@@ -720,7 +712,7 @@ public partial class SettingsViewModel : ObservableObject
                     gameRoot, MelonLoaderInstalledVersion, progress);
                 if (!uninstallOk)
                 {
-                    MessageBox.Show(Strings.MelonLoaderUninstallFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageDialogHelper.ShowError(Strings.MelonLoaderUninstallFailed, Strings.Error);
                     return;
                 }
             }
@@ -730,22 +722,30 @@ public partial class SettingsViewModel : ObservableObject
             {
                 var installedVersion = SelectedMelonLoaderRelease.TagName;
                 await LoadMelonLoaderStatusAsync();
-                MessageBox.Show(string.Format(Strings.MelonLoaderInstalled, installedVersion),
-                    Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowSuccess(string.Format(Strings.MelonLoaderInstalled, installedVersion),
+                    Strings.Success);
             }
             else
             {
-                MessageBox.Show(Strings.MelonLoaderInstallFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.MelonLoaderInstallFailed, Strings.Error);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.MelonLoaderInstallError, SelectedMelonLoaderRelease.TagName);
-            MessageBox.Show(Strings.MelonLoaderInstallationError, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.MelonLoaderInstallationError, Strings.Error);
         }
         finally
         {
             IsMelonLoaderOperating = false;
         }
+    }
+
+    [RelayCommand]
+    private void ShowModInfoDumper()
+    {
+        var window = _serviceProvider.GetRequiredService<ModInfoDumperWindow>();
+        window.Owner = Application.Current.MainWindow;
+        window.ShowDialog();
     }
 }

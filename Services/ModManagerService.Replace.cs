@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Windows;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 using Newtonsoft.Json;
 
 namespace GHPC_Mod_Manager.Services;
@@ -86,7 +87,7 @@ public partial class ModManagerService
 
     private string GetLocalizedResourceText(string resourceKey, string fallback)
     {
-        return Strings.ResourceManager.GetString(resourceKey) ?? fallback;
+        return Strings.ResourceManager.GetString(resourceKey, Strings.Culture) ?? fallback;
     }
 
     private bool EnsureManagedConfigSupported(ModConfig modConfig)
@@ -102,7 +103,7 @@ public partial class ModManagerService
                     : "Mod {0} still uses the deprecated Scripted configuration and can no longer be installed or updated."),
             GetLocalizedName(modConfig));
 
-        MessageBox.Show(message, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+        MessageDialogHelper.ShowWarningAsync(message, Strings.Warning).Wait();
         _loggingService.LogWarning("Blocked deprecated scripted mod config: {0}", modConfig.Id);
         return false;
     }
@@ -514,7 +515,7 @@ public partial class ModManagerService
             GetLocalizedName(modConfig),
             fileList);
 
-        MessageBox.Show(message, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+        MessageDialogHelper.ShowWarningAsync(message, Strings.Warning).Wait();
     }
 
     private Task<string?> BackupExistingFileAsync(string modId, string relativePath)
@@ -646,8 +647,8 @@ public partial class ModManagerService
                     : "Detected leftover .GHPCMM backup files for {0}.\n\nYes: open the directory for manual handling\nNo: delete the leftover backups and continue\nCancel: abort the current operation\n\nAfter deleting leftover backups, running Steam file verification is recommended."),
             GetLocalizedName(modConfig));
 
-        var result = MessageBox.Show(message, Strings.Warning, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-        if (result == MessageBoxResult.Yes)
+        var result = MessageDialogHelper.ShowAsync(message, Strings.Warning, MessageDialogButton.YesNoCancel, MessageDialogImage.Warning).Result;
+        if (result == MessageDialogResult.Yes)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -658,7 +659,7 @@ public partial class ModManagerService
             return Task.FromResult(false);
         }
 
-        if (result == MessageBoxResult.Cancel)
+        if (result == MessageDialogResult.Cancel)
             return Task.FromResult(false);
 
         foreach (var staleBackup in staleBackups)
@@ -680,7 +681,7 @@ public partial class ModManagerService
                     : "{0} directly replaces game files.\n\nThis mod may stop working or be overwritten after a game update or Steam file verification.\n\nDo you want to continue installing it?"),
             GetLocalizedName(modConfig));
 
-        return MessageBox.Show(message, Strings.Warning, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
+        return MessageDialogHelper.ConfirmAsync(message, Strings.Warning).Result;
     }
 
     private void ShowManagedBackupFailureMessage(string modId)
@@ -695,7 +696,7 @@ public partial class ModManagerService
                     : "Failed to create the required backup for {0}. The current operation was canceled to avoid data loss."),
             modDisplayName);
 
-        MessageBox.Show(message, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageDialogHelper.ShowErrorAsync(message, Strings.Error).Wait();
     }
 
     private async Task<ModInstallInfo?> InstallReplaceModeAsync(ModConfig modConfig, string version, byte[] downloadData, string downloadedFileName)
@@ -709,7 +710,7 @@ public partial class ModManagerService
                         ? "Mod {0} 的 ReplaceTargetPath 无效。"
                         : "Mod {0} has an invalid ReplaceTargetPath."),
                 GetLocalizedName(modConfig));
-            MessageBox.Show(message, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            await MessageDialogHelper.ShowErrorAsync(message, Strings.Error);
             return null;
         }
 
@@ -848,7 +849,7 @@ public partial class ModManagerService
                     : "{0} left its target directory empty after uninstall:\n{1}\n\nIf the directory originally belonged to the base game, Steam file verification is recommended."),
             GetLocalizedName(modConfig),
             fullPath);
-        MessageBox.Show(message, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+        MessageDialogHelper.ShowWarningAsync(message, Strings.Warning).Wait();
         return Task.CompletedTask;
     }
 

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Services;
+using GHPC_Mod_Manager.Helpers;
 using System.Collections.ObjectModel;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
@@ -58,6 +59,12 @@ public partial class ModBrowserViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isDownloading;
+
+    [ObservableProperty]
+    private double _progressValue;
+
+    [ObservableProperty]
+    private bool _hasDeterminateProgress;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -193,9 +200,8 @@ public partial class ModBrowserViewModel : ObservableObject
 
         var result = filtered.ToList();
         FilteredMods = new ObservableCollection<ModViewModel>(result);
-        FilteredModCount = selectedTagKeys.Count > 0 || !string.IsNullOrWhiteSpace(SearchText) || ShowUninstalledOnly
-            ? $"{result.Count} / {_allMods.Count(m => !m.IsDelisted)}"
-            : $"{_allMods.Count(m => !m.IsDelisted)}";
+        var totalCount = _allMods.Count(m => !m.IsDelisted);
+        FilteredModCount = $"{result.Count} / {totalCount}";
     }
 
     [RelayCommand]
@@ -237,7 +243,7 @@ public partial class ModBrowserViewModel : ObservableObject
     {
         if (string.IsNullOrEmpty(mod.LatestVersion))
         {
-            MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.CannotGetModVersionInfo, Strings.Error);
             return;
         }
 
@@ -247,6 +253,8 @@ public partial class ModBrowserViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
 
             // 检查冲突：已安装的MOD中是否有与当前MOD冲突的
@@ -262,15 +270,13 @@ public partial class ModBrowserViewModel : ObservableObject
                     IsDownloading = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
-                    var firstResult = MessageBox.Show(msg, Strings.ConflictDialogTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (firstResult != MessageBoxResult.Yes) return;
+                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDialogTitle);
+                    if (!firstResult) return;
 
-                    var secondResult = MessageBox.Show(
+                    var secondResult = MessageDialogHelper.Confirm(
                         Strings.ConflictInstallConfirm,
-                        Strings.ConflictDialogTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (secondResult != MessageBoxResult.Yes) return;
+                        Strings.ConflictDialogTitle);
+                    if (!secondResult) return;
 
                     IsDownloading = true;
                 }
@@ -287,9 +293,8 @@ public partial class ModBrowserViewModel : ObservableObject
                     var missingNames = string.Join("\n• ", missingIds.Select(id =>
                         _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
                     var msg = $"{Strings.DependencyDialogMessage}\n• {missingNames}";
-                    var result = MessageBox.Show(msg, Strings.DependencyDialogTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result != MessageBoxResult.OK) return;
+                    var result = MessageDialogHelper.ConfirmOK(msg, Strings.DependencyDialogTitle);
+                    if (!result) return;
 
                     // 用户确认后跳转到第一个缺失依赖的详情页
                     var firstMissingMod = _allMods.FirstOrDefault(m => missingIds.Contains(m.Id));
@@ -304,6 +309,8 @@ public partial class ModBrowserViewModel : ObservableObject
 
             var progress = new Progress<DownloadProgress>(p =>
             {
+                HasDeterminateProgress = true;
+                ProgressValue = p.ProgressPercentage;
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
@@ -321,6 +328,8 @@ public partial class ModBrowserViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             IsDownloading = false;
         }
     }

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Services;
+using GHPC_Mod_Manager.Helpers;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
@@ -45,6 +46,12 @@ public partial class ModDetailViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isInstalling;
+
+    [ObservableProperty]
+    private double _progressValue;
+
+    [ObservableProperty]
+    private bool _hasDeterminateProgress;
 
     [ObservableProperty]
     private bool _hasSelectedReleaseBackup;
@@ -211,10 +218,14 @@ public partial class ModDetailViewModel : ObservableObject
         try
         {
             IsInstalling = true;
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, Mod.DisplayName);
 
             var progress = new Progress<DownloadProgress>(p =>
             {
+                HasDeterminateProgress = true;
+                ProgressValue = p.ProgressPercentage;
                 StatusMessage = $"{string.Format(Strings.Installing, Mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
@@ -231,16 +242,14 @@ public partial class ModDetailViewModel : ObservableObject
                     IsInstalling = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
-                    var firstResult = MessageBox.Show(msg, Strings.ConflictDialogTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (firstResult != MessageBoxResult.Yes) return;
+                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDialogTitle);
+                    if (!firstResult) return;
 
                     // 二次确认
-                    var secondResult = MessageBox.Show(
+                    var secondResult = MessageDialogHelper.Confirm(
                         Strings.ConflictInstallConfirm,
-                        Strings.ConflictDialogTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (secondResult != MessageBoxResult.Yes) return;
+                        Strings.ConflictDialogTitle);
+                    if (!secondResult) return;
 
                     IsInstalling = true;
                 }
@@ -258,9 +267,8 @@ public partial class ModDetailViewModel : ObservableObject
                     var missingNames = string.Join("\n• ", missingIds.Select(id =>
                         _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
                     var msg = $"{Strings.DependencyDialogMessage}\n• {missingNames}";
-                    var result = MessageBox.Show(msg, Strings.DependencyDialogTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result != MessageBoxResult.OK) return;
+                    var result = MessageDialogHelper.ConfirmOK(msg, Strings.DependencyDialogTitle);
+                    if (!result) return;
 
                     // 跳转到第一个缺失依赖的详情页
                     var firstMissingId = missingIds.First();
@@ -291,6 +299,8 @@ public partial class ModDetailViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             IsInstalling = false;
         }
     }
@@ -323,11 +333,10 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageBox.Show(
+        var result = MessageDialogHelper.Confirm(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
-            Strings.ConfirmUninstall,
-            MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (result != MessageBoxResult.Yes) return;
+            Strings.ConfirmUninstall);
+        if (!result) return;
 
         try
         {
@@ -352,11 +361,10 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageBox.Show(
+        var result = MessageDialogHelper.Confirm(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
-            Strings.ConfirmUninstall,
-            MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (result != MessageBoxResult.Yes) return;
+            Strings.ConfirmUninstall);
+        if (!result) return;
 
         try
         {
@@ -417,10 +425,14 @@ public partial class ModDetailViewModel : ObservableObject
         try
         {
             IsInstalling = true;
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             StatusMessage = string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName);
 
             var progress = new Progress<DownloadProgress>(p =>
             {
+                HasDeterminateProgress = true;
+                ProgressValue = p.ProgressPercentage;
                 StatusMessage = $"{string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
@@ -435,7 +447,12 @@ public partial class ModDetailViewModel : ObservableObject
             _loggingService.LogError(ex, Strings.ModUpdateFailed, Mod.Id);
             StatusMessage = string.Format(Strings.ModUpdateFailed, Mod.DisplayName);
         }
-        finally { IsInstalling = false; }
+        finally
+        {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
+            IsInstalling = false;
+        }
     }
 
     // 通知MainViewModel打开配置窗口

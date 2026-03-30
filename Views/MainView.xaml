@@ -17,7 +17,7 @@
 
         <Style x:Key="RailTitleStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource NavRailTextBrush}"/>
-            <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+            <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
             <Setter Property="FontSize" Value="{DynamicResource TitleLarge}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
@@ -61,14 +61,14 @@
                             CornerRadius="{DynamicResource RadiusSmall}"
                             Padding="10,6"
                             HorizontalAlignment="Left">
-                        <TextBlock Text="GHPC"
+                        <TextBlock Text="Gunner HEAT PC!"
                                    Foreground="{DynamicResource AccentBrush}"
                                    FontWeight="SemiBold"
                                    FontSize="{DynamicResource LabelLarge}"/>
                     </Border>
 
                     <TextBlock Margin="0,16,0,6"
-                               Text="GHPC Mod Manager"
+                               Text="{x:Static resources:Strings.GHPCModManager}"
                                Style="{StaticResource RailTitleStyle}"/>
                 </StackPanel>
 
@@ -108,21 +108,12 @@
                         BorderThickness="1"
                         CornerRadius="{DynamicResource RadiusMedium}"
                         Padding="14">
-                    <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.GameStatus}"
-                                   Foreground="{DynamicResource NavRailTextBrush}"
-                                   FontWeight="SemiBold"
-                                   FontSize="{DynamicResource TitleSmall}"/>
-                        <TextBlock Margin="0,6,0,10"
-                                   Text="{Binding StatusMessage}"
-                                   Style="{StaticResource RailCaptionStyle}"/>
-                        <Button Content="{x:Static resources:Strings.Settings}"
-                                Command="{Binding OpenSettingsCommand}"
-                                Style="{DynamicResource OutlinedButtonStyle}"
-                                Background="#12000000"
-                                Foreground="{DynamicResource NavRailTextBrush}"
-                                BorderBrush="{DynamicResource NavRailBorderBrush}"/>
-                    </StackPanel>
+                    <Button Content="{x:Static resources:Strings.Settings}"
+                            Command="{Binding OpenSettingsCommand}"
+                            Style="{DynamicResource OutlinedButtonStyle}"
+                            Background="#12000000"
+                            Foreground="{DynamicResource NavRailTextBrush}"
+                            BorderBrush="{DynamicResource NavRailBorderBrush}"/>
                 </Border>
             </Grid>
         </Border>
@@ -307,7 +298,7 @@
                     Padding="6,2">
                 <StatusBar Style="{DynamicResource MaterialStatusBarStyle}">
                     <StatusBarItem>
-                        <TextBlock Text="{Binding StatusMessage}"
+                        <TextBlock Text="{Binding FooterStatusMessage}"
                                    FontSize="{DynamicResource LabelLarge}"
                                    VerticalAlignment="Center"/>
                     </StatusBarItem>
@@ -319,14 +310,17 @@
                     </StatusBarItem>
                     <StatusBarItem HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{x:Static resources:Strings.LoadingAnnouncement}"
+                            <TextBlock Text="{Binding FooterProgressText}"
                                        Margin="0,0,8,0"
                                        VerticalAlignment="Center"
-                                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
-                            <ProgressBar Width="120"
+                                       Visibility="{Binding IsFooterBusy, Converter={StaticResource BoolToVis}}"/>
+                            <ProgressBar Width="150"
                                          Height="6"
-                                         IsIndeterminate="True"
-                                         Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
+                                         Minimum="0"
+                                         Maximum="100"
+                                         Value="{Binding FooterProgressValue}"
+                                         IsIndeterminate="{Binding IsFooterProgressIndeterminate}"
+                                         Visibility="{Binding IsFooterBusy, Converter={StaticResource BoolToVis}}"/>
                         </StackPanel>
                     </StatusBarItem>
                 </StatusBar>

@@ -90,72 +90,84 @@
 
         <Border Grid.Row="0"
                 Style="{StaticResource PageToolbarCardStyle}">
-            <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0"
-                                Margin="0,0,18,0">
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,12,0">
                         <TextBlock Text="{x:Static resources:Strings.Search}"
                                    Style="{StaticResource FieldLabelTextStyle}"/>
                         <TextBox Width="260"
                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{DynamicResource OutlinedTextBoxStyle}"/>
                     </StackPanel>
+                    <TextBlock Text="{Binding FilteredModCount}"
+                               Style="{StaticResource PageSectionHintTextStyle}"
+                               VerticalAlignment="Bottom"
+                               Margin="0,0,0,6"
+                               Width="80"
+                               TextAlignment="Center"
+                               Visibility="{Binding FilteredMods.Count, Converter={StaticResource BoolToVis}}"/>
+                    <TextBlock Text="{x:Static resources:Strings.NoModsMatchFilter}"
+                               Style="{StaticResource PageSectionHintTextStyle}"
+                               VerticalAlignment="Bottom"
+                               Margin="0,0,0,6"
+                               Width="80"
+                               TextAlignment="Center"
+                               Visibility="{Binding FilteredMods.Count, Converter={StaticResource InvBoolToVis}}"/>
+                </StackPanel>
 
-                    <StackPanel Grid.Column="1"
-                                VerticalAlignment="Bottom">
-                        <TextBlock Text="{Binding FilteredModCount}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"
-                                   Visibility="{Binding FilteredMods.Count, Converter={StaticResource BoolToVis}}"/>
-                        <TextBlock Text="{x:Static resources:Strings.NoModsMatchFilter}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"
-                                   Visibility="{Binding FilteredMods.Count, Converter={StaticResource InvBoolToVis}}"/>
-                    </StackPanel>
+                <StackPanel Grid.Column="1"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="{x:Static resources:Strings.FilterByTags}"
+                               Style="{StaticResource FieldLabelTextStyle}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,4"/>
+                    <ItemsControl ItemsSource="{Binding AvailableTags}"
+                                  HorizontalAlignment="Center">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ToggleButton Content="{Binding DisplayName}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              Style="{DynamicResource ChipToggleButtonStyle}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
 
-                    <WrapPanel Grid.Column="2"
-                               VerticalAlignment="Bottom">
-                        <CheckBox Content="{x:Static resources:Strings.ShowUninstalledOnly}"
-                                  IsChecked="{Binding ShowUninstalledOnly}"
-                                  Margin="0,0,12,8"/>
+                <StackPanel Grid.Column="2"
+                            VerticalAlignment="Center">
+                    <CheckBox Content="{x:Static resources:Strings.ShowUninstalledOnly}"
+                              IsChecked="{Binding ShowUninstalledOnly}"
+                              Margin="0,0,0,8"
+                              HorizontalAlignment="Right"/>
+                    <WrapPanel HorizontalAlignment="Right">
                         <Button Content="{x:Static resources:Strings.ClearTagFilter}"
                                 Command="{Binding ClearTagFilterCommand}"
-                                Margin="0,0,8,8"
+                                Margin="0,0,8,0"
                                 Style="{DynamicResource OutlinedButtonStyle}"/>
                         <Button Content="{x:Static resources:Strings.Refresh}"
                                 Command="{Binding RefreshCommand}"
-                                Margin="0,0,8,8"
+                                Margin="0,0,8,0"
                                 Style="{DynamicResource OutlinedButtonStyle}"/>
                         <Button Content="{x:Static resources:Strings.CheckForUpdates}"
                                 Command="{Binding CheckForUpdatesCommand}"
-                                Margin="0,0,0,8"
                                 Style="{DynamicResource FilledButtonStyle}"/>
                     </WrapPanel>
-                </Grid>
-
-                <TextBlock Margin="0,12,0,8"
-                           Text="{x:Static resources:Strings.FilterByTags}"
-                           Style="{StaticResource FieldLabelTextStyle}"/>
-
-                <ItemsControl ItemsSource="{Binding AvailableTags}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ToggleButton Content="{Binding DisplayName}"
-                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                          Style="{DynamicResource ChipToggleButtonStyle}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <Grid Grid.Row="1" Margin="0,14,0,0">

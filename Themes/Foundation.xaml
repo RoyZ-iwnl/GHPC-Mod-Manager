@@ -3,7 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <FontFamily x:Key="DefaultFontFamily">Microsoft YaHei UI, Segoe UI, Arial, sans-serif</FontFamily>
-    <FontFamily x:Key="DisplayFontFamily">Bahnschrift SemiBold, Microsoft YaHei UI, Segoe UI, Arial</FontFamily>
+    <FontFamily x:Key="DisplayFontFamily">Microsoft YaHei UI, Segoe UI, Arial, sans-serif</FontFamily>
     <FontFamily x:Key="MonospaceFontFamily">Consolas, Courier New, monospace</FontFamily>
 
     <system:Double x:Key="DisplayLarge">48</system:Double>

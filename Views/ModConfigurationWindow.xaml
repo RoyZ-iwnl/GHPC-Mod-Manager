@@ -5,15 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
         xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="1280"
-        Height="760"
-        MinWidth="760"
-        MinHeight="520"
+        Width="1600"
+        Height="900"
+        MinWidth="1280"
+        MinHeight="760"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None">
+
+    <!-- WindowChrome保留系统边框和阴影效果 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <ResourceDictionary>
@@ -23,7 +34,17 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="20">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
+
+        <!-- 主内容 -->
+        <Grid Grid.Row="1" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -150,6 +171,8 @@
                                                                  Background="Transparent"
                                                                  FontStyle="Italic"
                                                                  Foreground="{DynamicResource TertiaryBrush}"
+                                                                 TextWrapping="Wrap"
+                                                                 AcceptsReturn="True"
                                                                  ToolTip="{x:Static resources:Strings.ClickToSelectAndCopyComment}"
                                                                  Visibility="{Binding HasComment, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                     </StackPanel>
@@ -218,5 +241,6 @@
                 </WrapPanel>
             </Grid>
         </Border>
+        </Grid>
     </Grid>
 </Window>

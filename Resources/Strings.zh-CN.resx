@@ -1809,6 +1809,15 @@
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
   </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>还原</value>
+  </data>
   <data name="FetchingAnnouncementFrom" xml:space="preserve">
     <value>正在从以下地址获取公告: {0}</value>
   </data>
@@ -2713,7 +2722,7 @@
     <value>清除筛选</value>
   </data>
   <data name="NoModsMatchFilter" xml:space="preserve">
-    <value>没有符合筛选条件的MOD</value>
+    <value>无匹配</value>
   </data>
   <data name="GoBack" xml:space="preserve">
     <value>← 返回</value>
@@ -2989,5 +2998,101 @@
     <value>{0} 支持的游戏版本为 {2}，但你当前本地游戏版本是 {1}，两者不一致，Mod 可能无法正常工作。
 
 是否仍要继续安装？</value>
+  </data>
+  <data name="ModInfoDumper" xml:space="preserve">
+    <value>模组信息导出</value>
+  </data>
+  <data name="ModInfoDumperTitle" xml:space="preserve">
+    <value>模组信息导出 - 诊断工具</value>
+  </data>
+  <data name="ModInfoDumperDescription" xml:space="preserve">
+    <value>导出已安装模组信息用于问题诊断</value>
+  </data>
+  <data name="ModInfoCopyToClipboard" xml:space="preserve">
+    <value>复制模组信息</value>
+  </data>
+  <data name="PackAllInfo" xml:space="preserve">
+    <value>打包全部信息</value>
+  </data>
+  <data name="PackAllInfoConfirmTitle" xml:space="preserve">
+    <value>确认打包</value>
+  </data>
+  <data name="PackAllInfoConfirmMessage" xml:space="preserve">
+    <value>是否确定是最近一次游戏出现问题？将打包最近一次运行的日志。</value>
+  </data>
+  <data name="ModInfoCopied" xml:space="preserve">
+    <value>模组信息已复制到剪贴板</value>
+  </data>
+  <data name="PackCreatedSuccess" xml:space="preserve">
+    <value>诊断包已创建于：{0}</value>
+  </data>
+  <data name="PackCreatedFailed" xml:space="preserve">
+    <value>创建诊断包失败：{0}</value>
+  </data>
+  <data name="NoModsInstalled" xml:space="preserve">
+    <value>没有已安装的模组</value>
+  </data>
+  <data name="FileNotFoundSkip" xml:space="preserve">
+    <value>文件不存在，已跳过：{0}</value>
+  </data>
+  <data name="GeneratingModInfo" xml:space="preserve">
+    <value>正在生成模组信息...</value>
+  </data>
+  <data name="CreatingPackage" xml:space="preserve">
+    <value>正在创建诊断包...</value>
+  </data>
+  <data name="ModInfoFiles" xml:space="preserve">
+    <value>文件：</value>
+  </data>
+  <data name="ModInfoStatus" xml:space="preserve">
+    <value>状态：</value>
+  </data>
+  <data name="ModInfoVersion" xml:space="preserve">
+    <value>版本：</value>
+  </data>
+  <data name="ModInfoEnabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="ModInfoDisabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="ModInfoManual" xml:space="preserve">
+    <value>手动安装</value>
+  </data>
+  <data name="ModInfoGenerated" xml:space="preserve">
+    <value>生成时间：</value>
+  </data>
+  <data name="ModInfoGameVersion" xml:space="preserve">
+    <value>游戏版本：</value>
+  </data>
+  <data name="ModInfoMelonLoaderVersion" xml:space="preserve">
+    <value>MelonLoader版本：</value>
+  </data>
+  <data name="ModInfoTotalMods" xml:space="preserve">
+    <value>模组总数：</value>
+  </data>
+  <data name="ModInfoModList" xml:space="preserve">
+    <value>模组列表</value>
+  </data>
+  <data name="PackagingFiles" xml:space="preserve">
+    <value>正在打包文件...</value>
+  </data>
+  <data name="ReadingFileInfo" xml:space="preserve">
+    <value>正在读取文件信息：{0}</value>
+  </data>
+  <data name="CalculatingFileHash" xml:space="preserve">
+    <value>正在计算文件哈希：{0}</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
   </data>
 </root>

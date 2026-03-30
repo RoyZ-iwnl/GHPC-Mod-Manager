@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Views;
 
@@ -15,7 +16,7 @@ public partial class SetupWizardView : UserControl
         DataContext = viewModel;
     }
     
-    private void CopyLogButton_Click(object sender, RoutedEventArgs e)
+    private async void CopyLogButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -24,17 +25,17 @@ public partial class SetupWizardView : UserControl
                 if (!string.IsNullOrEmpty(logContent))
                 {
                     Clipboard.SetText(logContent);
-                    MessageBox.Show(Strings.LogContentCopiedToClipboard, Strings.CopySuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+                    await MessageDialogHelper.ShowSuccessAsync(Strings.LogContentCopiedToClipboard, Strings.CopySuccess);
                 }
                 else
                 {
-                    MessageBox.Show(Strings.NoLogContentToCopy, Strings.Tip, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    await MessageDialogHelper.ShowWarningAsync(Strings.NoLogContentToCopy, Strings.Tip);
                 }
             }
         }
         catch (System.Exception ex)
         {
-            MessageBox.Show(string.Format(Strings.CopyFailed, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            await MessageDialogHelper.ShowErrorAsync(string.Format(Strings.CopyFailed, ex.Message), Strings.Error);
         }
     }
 

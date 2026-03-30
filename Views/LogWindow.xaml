@@ -4,131 +4,153 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
         mc:Ignorable="d"
         Title="{x:Static resources:Strings.ProgramLogs}"
         Width="1080"
-        Height="760"
+        Height="792"
         MinWidth="860"
         MinHeight="620"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None">
 
-    <Grid Margin="20">
+    <!-- WindowChrome保留系统边框和阴影效果 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"
-                Style="{StaticResource PageHeroCardStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
 
-                <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                    <TextBlock Text="DIAGNOSTICS"
-                               Style="{StaticResource HeroEyebrowTextStyle}"/>
-                    <TextBlock Margin="0,6,0,0"
-                               Text="{x:Static resources:Strings.ProgramLogs}"
-                               Style="{StaticResource PageTitleTextStyle}"/>
-                </StackPanel>
+        <!-- 主内容 -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <WrapPanel Grid.Column="1"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Top">
-                    <Button Content="{x:Static resources:Strings.ExportLogs}"
-                            Click="ExportLogsButton_Click"
-                            Margin="0,0,8,0"
-                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                    <Button Content="{x:Static resources:Strings.CopySelected}"
-                            Click="CopySelectedButton_Click"
-                            Margin="0,0,8,0"
-                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                    <Button Content="{x:Static resources:Strings.CopyAll}"
-                            Click="CopyAllButton_Click"
-                            Margin="0,0,8,0"
-                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                    <Button Content="{x:Static resources:Strings.ClearLogs}"
-                            Click="ClearLogsButton_Click"
-                            Style="{DynamicResource FilledButtonStyle}"/>
+            <Border Grid.Row="0"
+                    Style="{StaticResource PageHeroCardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                        <TextBlock Text="DIAGNOSTICS"
+                                   Style="{StaticResource HeroEyebrowTextStyle}"/>
+                        <TextBlock Margin="0,6,0,0"
+                                   Text="{x:Static resources:Strings.ProgramLogs}"
+                                   Style="{StaticResource PageTitleTextStyle}"/>
+                    </StackPanel>
+
+                    <WrapPanel Grid.Column="1"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top">
+                        <Button Content="{x:Static resources:Strings.ExportLogs}"
+                                Click="ExportLogsButton_Click"
+                                Margin="0,0,8,0"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.CopySelected}"
+                                Click="CopySelectedButton_Click"
+                                Margin="0,0,8,0"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.CopyAll}"
+                                Click="CopyAllButton_Click"
+                                Margin="0,0,8,0"
+                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.ClearLogs}"
+                                Click="ClearLogsButton_Click"
+                                Style="{DynamicResource FilledButtonStyle}"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Margin="0,18,0,18"
+                    Style="{StaticResource PageToolbarCardStyle}">
+                <WrapPanel>
+                    <TextBlock Text="{x:Static resources:Strings.Filter}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,14,0"
+                               Style="{StaticResource FieldLabelTextStyle}"/>
+                    <CheckBox Name="ShowInfoCheckBox"
+                              Content="{x:Static resources:Strings.Information}"
+                              IsChecked="True"
+                              Margin="0,0,16,0"
+                              Checked="FilterCheckBox_Changed"
+                              Unchecked="FilterCheckBox_Changed"/>
+                    <CheckBox Name="ShowWarningCheckBox"
+                              Content="{x:Static resources:Strings.Warning}"
+                              IsChecked="True"
+                              Margin="0,0,16,0"
+                              Checked="FilterCheckBox_Changed"
+                              Unchecked="FilterCheckBox_Changed"/>
+                    <CheckBox Name="ShowErrorCheckBox"
+                              Content="{x:Static resources:Strings.Error}"
+                              IsChecked="True"
+                              Checked="FilterCheckBox_Changed"
+                              Unchecked="FilterCheckBox_Changed"/>
                 </WrapPanel>
-            </Grid>
-        </Border>
+            </Border>
 
-        <Border Grid.Row="1"
-                Margin="0,18,0,18"
-                Style="{StaticResource PageToolbarCardStyle}">
-            <WrapPanel>
-                <TextBlock Text="{x:Static resources:Strings.Filter}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,14,0"
-                           Style="{StaticResource FieldLabelTextStyle}"/>
-                <CheckBox Name="ShowInfoCheckBox"
-                          Content="{x:Static resources:Strings.Information}"
-                          IsChecked="True"
-                          Margin="0,0,16,0"
-                          Checked="FilterCheckBox_Changed"
-                          Unchecked="FilterCheckBox_Changed"/>
-                <CheckBox Name="ShowWarningCheckBox"
-                          Content="{x:Static resources:Strings.Warning}"
-                          IsChecked="True"
-                          Margin="0,0,16,0"
-                          Checked="FilterCheckBox_Changed"
-                          Unchecked="FilterCheckBox_Changed"/>
-                <CheckBox Name="ShowErrorCheckBox"
-                          Content="{x:Static resources:Strings.Error}"
-                          IsChecked="True"
-                          Checked="FilterCheckBox_Changed"
-                          Unchecked="FilterCheckBox_Changed"/>
-            </WrapPanel>
-        </Border>
-
-        <Border Grid.Row="2"
-                Style="{StaticResource PageSectionCardStyle}"
-                Padding="0">
-            <ListView Name="LogListView"
-                      Margin="0"
-                      Background="Transparent"
-                      BorderThickness="0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="{x:Static resources:Strings.Time}"
-                                        Width="120"
-                                        DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss}"/>
-                        <GridViewColumn Header="{x:Static resources:Strings.Level}"
-                                        Width="110">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Level}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Level}" Value="Error">
-                                                        <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Level}" Value="Warning">
-                                                        <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Level}" Value="Information">
-                                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="{x:Static resources:Strings.Message}"
-                                        Width="760"
-                                        DisplayMemberBinding="{Binding Message}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Border>
+            <Border Grid.Row="2"
+                    Style="{StaticResource PageSectionCardStyle}"
+                    Padding="0">
+                <ListView Name="LogListView"
+                          Margin="0"
+                          Background="Transparent"
+                          BorderThickness="0">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="{x:Static resources:Strings.Time}"
+                                            Width="120"
+                                            DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss}"/>
+                            <GridViewColumn Header="{x:Static resources:Strings.Level}"
+                                            Width="110">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Level}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Level}" Value="Error">
+                                                            <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                                            <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Level}" Value="Information">
+                                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{x:Static resources:Strings.Message}"
+                                            Width="760"
+                                            DisplayMemberBinding="{Binding Message}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Views;
 
@@ -90,11 +91,11 @@ public partial class LogWindow : Window
         _filteredLogEntries.Clear();
     }
 
-    private void CopySelectedButton_Click(object sender, RoutedEventArgs e)
+    private async void CopySelectedButton_Click(object sender, RoutedEventArgs e)
     {
         if (LogListView.SelectedItems.Count == 0)
         {
-            MessageBox.Show(Strings.SelectLogsToCompany, Strings.Tip, MessageBoxButton.OK, MessageBoxImage.Information);
+            await MessageDialogHelper.ShowInformationAsync(Strings.SelectLogsToCompany, Strings.Tip);
             return;
         }
 
@@ -107,19 +108,19 @@ public partial class LogWindow : Window
         try
         {
             Clipboard.SetText(sb.ToString());
-            MessageBox.Show(string.Format(Strings.LogsCopiedToClipboard, LogListView.SelectedItems.Count), Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+            await MessageDialogHelper.ShowSuccessAsync(string.Format(Strings.LogsCopiedToClipboard, LogListView.SelectedItems.Count), Strings.Success);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(string.Format(Strings.CopyToClipboardError, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            await MessageDialogHelper.ShowErrorAsync(string.Format(Strings.CopyToClipboardError, ex.Message), Strings.Error);
         }
     }
 
-    private void CopyAllButton_Click(object sender, RoutedEventArgs e)
+    private async void CopyAllButton_Click(object sender, RoutedEventArgs e)
     {
         if (_filteredLogEntries.Count == 0)
         {
-            MessageBox.Show(Strings.NoLogsToCopy, Strings.Tip, MessageBoxButton.OK, MessageBoxImage.Information);
+            await MessageDialogHelper.ShowInformationAsync(Strings.NoLogsToCopy, Strings.Tip);
             return;
         }
 
@@ -132,15 +133,15 @@ public partial class LogWindow : Window
         try
         {
             Clipboard.SetText(sb.ToString());
-            MessageBox.Show(string.Format(Strings.AllLogsCopiedToClipboard, _filteredLogEntries.Count), Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+            await MessageDialogHelper.ShowSuccessAsync(string.Format(Strings.AllLogsCopiedToClipboard, _filteredLogEntries.Count), Strings.Success);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(string.Format(Strings.CopyToClipboardError, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            await MessageDialogHelper.ShowErrorAsync(string.Format(Strings.CopyToClipboardError, ex.Message), Strings.Error);
         }
     }
 
-    private void ExportLogsButton_Click(object sender, RoutedEventArgs e)
+    private async void ExportLogsButton_Click(object sender, RoutedEventArgs e)
     {
         var saveDialog = new SaveFileDialog
         {
@@ -167,11 +168,11 @@ public partial class LogWindow : Window
                 }
 
                 File.WriteAllText(saveDialog.FileName, sb.ToString());
-                MessageBox.Show($"{Strings.Success}: {saveDialog.FileName}", Strings.Success, MessageBoxButton.OK, MessageBoxImage.Information);
+                await MessageDialogHelper.ShowSuccessAsync($"{Strings.Success}: {saveDialog.FileName}", Strings.Success);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Strings.Error}: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                await MessageDialogHelper.ShowErrorAsync($"{Strings.Error}: {ex.Message}", Strings.Error);
             }
         }
     }

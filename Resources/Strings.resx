@@ -1390,7 +1390,7 @@
     <value>Failed to enable MelonLoader</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
-    <value>MelonLoader is temporarily disabled, mod functions unavailable</value>
+    <value>MelonLoader disabled</value>
   </data>
   <data name="Manual" xml:space="preserve">
     <value>Manual</value>
@@ -1808,6 +1808,15 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Restore</value>
   </data>
   <data name="FetchingAnnouncementFrom" xml:space="preserve">
     <value>Fetching announcement from: {0}</value>
@@ -2748,7 +2757,7 @@ Do you want to restart now?</value>
     <value>Clear Filter</value>
   </data>
   <data name="NoModsMatchFilter" xml:space="preserve">
-    <value>No mods match the current filter</value>
+    <value>No match</value>
   </data>
   <data name="GoBack" xml:space="preserve">
     <value>← Back</value>
@@ -3024,5 +3033,101 @@ Do you want to restart now?</value>
     <value>Your local game version ({1}) does not match the supported version for {0} ({2}). The mod may not work correctly.
 
 Do you want to continue installing?</value>
+  </data>
+  <data name="ModInfoDumper" xml:space="preserve">
+    <value>Mod Info Dumper</value>
+  </data>
+  <data name="ModInfoDumperTitle" xml:space="preserve">
+    <value>Mod Info Dumper - Diagnostic Tool</value>
+  </data>
+  <data name="ModInfoDumperDescription" xml:space="preserve">
+    <value>Export installed mod info for troubleshooting</value>
+  </data>
+  <data name="ModInfoCopyToClipboard" xml:space="preserve">
+    <value>Copy Mod Info</value>
+  </data>
+  <data name="PackAllInfo" xml:space="preserve">
+    <value>Pack All Info</value>
+  </data>
+  <data name="PackAllInfoConfirmTitle" xml:space="preserve">
+    <value>Confirm Pack</value>
+  </data>
+  <data name="PackAllInfoConfirmMessage" xml:space="preserve">
+    <value>Is this from the most recent game crash/issue? The latest.log will be included.</value>
+  </data>
+  <data name="ModInfoCopied" xml:space="preserve">
+    <value>Mod info copied to clipboard</value>
+  </data>
+  <data name="PackCreatedSuccess" xml:space="preserve">
+    <value>Diagnostic package created at: {0}</value>
+  </data>
+  <data name="PackCreatedFailed" xml:space="preserve">
+    <value>Failed to create diagnostic package: {0}</value>
+  </data>
+  <data name="NoModsInstalled" xml:space="preserve">
+    <value>No mods installed</value>
+  </data>
+  <data name="FileNotFoundSkip" xml:space="preserve">
+    <value>File not found, skipped: {0}</value>
+  </data>
+  <data name="GeneratingModInfo" xml:space="preserve">
+    <value>Generating mod info...</value>
+  </data>
+  <data name="CreatingPackage" xml:space="preserve">
+    <value>Creating diagnostic package...</value>
+  </data>
+  <data name="ModInfoFiles" xml:space="preserve">
+    <value>Files:</value>
+  </data>
+  <data name="ModInfoStatus" xml:space="preserve">
+    <value>Status:</value>
+  </data>
+  <data name="ModInfoVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="ModInfoEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="ModInfoDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="ModInfoManual" xml:space="preserve">
+    <value>Manual Install</value>
+  </data>
+  <data name="ModInfoGenerated" xml:space="preserve">
+    <value>Generated:</value>
+  </data>
+  <data name="ModInfoGameVersion" xml:space="preserve">
+    <value>Game Version:</value>
+  </data>
+  <data name="ModInfoMelonLoaderVersion" xml:space="preserve">
+    <value>MelonLoader Version:</value>
+  </data>
+  <data name="ModInfoTotalMods" xml:space="preserve">
+    <value>Total Mods:</value>
+  </data>
+  <data name="ModInfoModList" xml:space="preserve">
+    <value>Mod List</value>
+  </data>
+  <data name="PackagingFiles" xml:space="preserve">
+    <value>Packaging files...</value>
+  </data>
+  <data name="ReadingFileInfo" xml:space="preserve">
+    <value>Reading file info: {0}</value>
+  </data>
+  <data name="CalculatingFileHash" xml:space="preserve">
+    <value>Calculating hash for: {0}</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
   </data>
 </root>

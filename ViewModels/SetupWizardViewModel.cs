@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Services;
+using GHPC_Mod_Manager.Helpers;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
@@ -296,13 +297,11 @@ public partial class SetupWizardViewModel : ObservableObject
             _settingsService.ApplyLanguageSetting();
             
             // 显示重启提示
-            var result = MessageBox.Show(
-                Strings.LanguageChangedConfirmRestart, 
-                Strings.LanguageChanged, 
-                MessageBoxButton.YesNo, 
-                MessageBoxImage.Question);
-                
-            if (result == MessageBoxResult.Yes)
+            var result = MessageDialogHelper.Confirm(
+                Strings.LanguageChangedConfirmRestart,
+                Strings.LanguageChanged);
+
+            if (result)
             {
                 // 重启应用程序
                 RestartApplication();
@@ -446,7 +445,7 @@ public partial class SetupWizardViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(Strings.PleaseSelectGHPCExe, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.PleaseSelectGHPCExe, Strings.Error);
             }
         }
     }
@@ -595,14 +594,14 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         if (string.IsNullOrEmpty(GameRootPath))
         {
-            MessageBox.Show(Strings.PleaseSelectGameDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.PleaseSelectGameDirectory, Strings.Error);
             return false;
         }
 
         var ghpcExe = Path.Combine(GameRootPath, "GHPC.exe");
         if (!File.Exists(ghpcExe))
         {
-            MessageBox.Show(Strings.GHPCExeNotFoundInDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.GHPCExeNotFoundInDirectory, Strings.Error);
             return false;
         }
 
@@ -637,7 +636,7 @@ public partial class SetupWizardViewModel : ObservableObject
             if (!_hasShownBepInExWarning)
             {
                 _loggingService.LogWarning(Strings.BepInExDetectedLog, GameRootPath);
-                MessageBox.Show(Strings.BepInExDetectedMessage, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageDialogHelper.ShowWarning(Strings.BepInExDetectedMessage, Strings.Warning);
                 _hasShownBepInExWarning = true;
             }
         }
@@ -679,7 +678,7 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         if (SelectedMelonLoaderVersion == null)
         {
-            MessageBox.Show(Strings.PleaseSelectMelonLoaderVersion, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.PleaseSelectMelonLoaderVersion, Strings.Error);
             return;
         }
 
@@ -706,13 +705,13 @@ public partial class SetupWizardViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(Strings.MelonLoaderInstallFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.MelonLoaderInstallFailed, Strings.Error);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.MelonLoaderInstallError);
-            MessageBox.Show(Strings.MelonLoaderInstallationError, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.MelonLoaderInstallationError, Strings.Error);
         }
         finally
         {
@@ -734,13 +733,13 @@ public partial class SetupWizardViewModel : ObservableObject
             }
             else
             {
-                MessageBox.Show(Strings.GameLaunchFailed, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.GameLaunchFailed, Strings.Error);
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.GameLaunchError);
-            MessageBox.Show(Strings.GameLaunchErrorOccurred, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.GameLaunchErrorOccurred, Strings.Error);
         }
     }
 
@@ -763,7 +762,7 @@ public partial class SetupWizardViewModel : ObservableObject
                 }
                 else
                 {
-                    MessageBox.Show(Strings.SetupIncompleteWarning, Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageDialogHelper.ShowWarning(Strings.SetupIncompleteWarning, Strings.Warning);
                     StatusMessage = Strings.PleaseRunGameAgain;
                 }
             });
@@ -840,14 +839,14 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         if (string.IsNullOrEmpty(GameRootPath))
         {
-            MessageBox.Show(Strings.PleaseSelectGameDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.PleaseSelectGameDirectory, Strings.Error);
             return false;
         }
 
         var ghpcExe = Path.Combine(GameRootPath, "GHPC.exe");
         if (!File.Exists(ghpcExe))
         {
-            MessageBox.Show(Strings.GHPCExeNotFoundInDirectory, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.GHPCExeNotFoundInDirectory, Strings.Error);
             return false;
         }
 
@@ -857,13 +856,11 @@ public partial class SetupWizardViewModel : ObservableObject
             if (!_hasShownSteamWarning)
             {
                 _hasShownSteamWarning = true;
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.ConfirmOK(
                     Strings.NonSteamVersionWarning,
-                    Strings.VersionWarningTitle,
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning);
+                    Strings.VersionWarningTitle);
 
-                if (result == MessageBoxResult.Cancel)
+                if (!result)
                 {
                     return false;
                 }

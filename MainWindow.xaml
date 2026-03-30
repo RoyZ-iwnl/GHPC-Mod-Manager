@@ -5,20 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GHPC_Mod_Manager"
         xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
         mc:Ignorable="d"
-        Title="{Binding Title}"
+        Title="GHPC Mod Manager"
         MinHeight="760"
         MinWidth="1180"
         WindowStartupLocation="CenterScreen"
         Icon="app.ico"
-        Background="{DynamicResource BackgroundBrush}">
-    
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None"
+        ResizeMode="CanResize">
+
+    <!-- WindowChrome保留系统边框和阴影效果 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
     <Window.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </Window.Resources>
-    
+
     <Grid>
-        <ContentPresenter Content="{Binding CurrentView}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
+
+        <!-- 主内容区域 -->
+        <ContentPresenter Grid.Row="1" Content="{Binding CurrentView}"/>
     </Grid>
 </Window>

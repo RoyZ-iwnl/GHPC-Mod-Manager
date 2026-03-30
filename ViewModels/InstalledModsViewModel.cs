@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -35,6 +36,12 @@ public partial class InstalledModsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isDownloading;
+
+    [ObservableProperty]
+    private double _progressValue;
+
+    [ObservableProperty]
+    private bool _hasDeterminateProgress;
 
     // 由MainViewModel同步，检查更新期间禁用按钮
     [ObservableProperty]
@@ -119,10 +126,14 @@ public partial class InstalledModsViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             StatusMessage = string.Format(Strings.Updating, mod.DisplayName);
 
             var progress = new Progress<DownloadProgress>(p =>
             {
+                HasDeterminateProgress = true;
+                ProgressValue = p.ProgressPercentage;
                 StatusMessage = $"{string.Format(Strings.Updating, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
@@ -140,6 +151,8 @@ public partial class InstalledModsViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -155,10 +168,14 @@ public partial class InstalledModsViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
 
             var progress = new Progress<DownloadProgress>(p =>
             {
+                HasDeterminateProgress = true;
+                ProgressValue = p.ProgressPercentage;
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
@@ -176,6 +193,8 @@ public partial class InstalledModsViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -183,13 +202,10 @@ public partial class InstalledModsViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task UninstallModAsync(ModViewModel mod)
     {
-        var result = MessageBox.Show(
+        if (!await MessageDialogHelper.ConfirmAsync(
             string.Format(Strings.ConfirmUninstallMod, mod.DisplayName),
-            Strings.ConfirmUninstall,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-
-        if (result != MessageBoxResult.Yes) return;
+            Strings.ConfirmUninstall))
+            return;
 
         try
         {
@@ -213,6 +229,8 @@ public partial class InstalledModsViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateProgress = false;
+            ProgressValue = 0;
             IsDownloading = false;
         }
     }

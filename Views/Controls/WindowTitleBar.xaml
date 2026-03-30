@@ -1,0 +1,119 @@
+<UserControl x:Class="GHPC_Mod_Manager.Views.Controls.WindowTitleBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+             xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             Height="32"
+             Background="{DynamicResource SurfaceContainerBrush}">
+
+    <UserControl.Resources>
+        <!-- 标题栏按钮样式 -->
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 关闭按钮样式 -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource ErrorBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource OnErrorBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- 标题文字区域 -->
+        <TextBlock x:Name="TitleText"
+                   Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                   Margin="12,0,0,0"
+                   VerticalAlignment="Center"
+                   FontFamily="{DynamicResource DefaultFontFamily}"
+                   FontSize="{DynamicResource LabelLarge}"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource OnSurfaceBrush}"/>
+
+        <!-- 窗口控制按钮 -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <!-- 最小化按钮 -->
+            <Button Style="{StaticResource TitleBarButtonStyle}"
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                    Click="Minimize_Click"
+                    ToolTip="{x:Static resources:Strings.Minimize}">
+                <Path Data="M 0,6 L 12,6"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.5"
+                      Width="12"
+                      Height="12"/>
+            </Button>
+
+            <!-- 最大化/还原按钮 -->
+            <Button x:Name="MaximizeButton"
+                    Style="{StaticResource TitleBarButtonStyle}"
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                    Click="Maximize_Click">
+                <Path x:Name="MaximizePath"
+                      Data="M 2,2 L 2,12 L 12,12 L 12,2 Z"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.5"
+                      Width="12"
+                      Height="12"/>
+            </Button>
+
+            <!-- 关闭按钮 -->
+            <Button Style="{StaticResource CloseButtonStyle}"
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                    Click="Close_Click"
+                    ToolTip="{x:Static resources:Strings.Close}">
+                <Path Data="M 2,2 L 12,12 M 12,2 L 2,12"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.5"
+                      Width="12"
+                      Height="12"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

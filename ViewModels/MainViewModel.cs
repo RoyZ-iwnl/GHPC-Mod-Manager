@@ -3,8 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Services;
 using GHPC_Mod_Manager.Views;
+using GHPC_Mod_Manager.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using GHPC_Mod_Manager.Resources;
@@ -60,13 +62,11 @@ internal static class ModInstallCompatibilityHelper
             return true;
 
         var supportedVersionText = string.Join(", ", supportedVersions);
-        var result = MessageBox.Show(
+        var result = MessageDialogHelper.Confirm(
             string.Format(Strings.GameVersionMismatchDialogMessage, mod.DisplayName, resolvedCurrentVersion, supportedVersionText),
-            Strings.GameVersionMismatchDialogTitle,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning);
+            Strings.GameVersionMismatchDialogTitle);
 
-        return result == MessageBoxResult.Yes;
+        return result;
     }
 
     private static string NormalizeVersion(string? version)
@@ -124,6 +124,21 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private UserControl? _currentPageView;
+
+    [ObservableProperty]
+    private string _footerStatusMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _isFooterBusy;
+
+    [ObservableProperty]
+    private bool _isFooterProgressIndeterminate;
+
+    [ObservableProperty]
+    private double _footerProgressValue;
+
+    [ObservableProperty]
+    private string _footerProgressText = string.Empty;
 
     [ObservableProperty]
     private ObservableCollection<NavigationItem> _navigationItems = new();
@@ -187,6 +202,12 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isDownloading;
+
+    [ObservableProperty]
+    private double _operationProgressValue;
+
+    [ObservableProperty]
+    private bool _hasDeterminateOperationProgress;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -322,6 +343,9 @@ public partial class MainViewModel : ObservableObject
             var mod = Mods.FirstOrDefault(m => m.Id == modId);
             if (mod != null) await ConfigureModAsync(mod);
         };
+        _installedModsViewModel.PropertyChanged += OnChildViewModelPropertyChanged;
+        _modBrowserViewModel.PropertyChanged += OnChildViewModelPropertyChanged;
+        _modDetailViewModel.PropertyChanged += OnChildViewModelPropertyChanged;
 
         // 初始化导航项
         NavigationItems = new ObservableCollection<NavigationItem>
@@ -339,6 +363,8 @@ public partial class MainViewModel : ObservableObject
             if (e.PropertyName == nameof(SearchText))
                 FilterAndSortMods();
         };
+
+        UpdateShellStatus();
     }
 
     // 导航到指定页面
@@ -673,6 +699,8 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsLoading = true;
             StatusMessage = Strings.RefreshingData;
 
@@ -756,7 +784,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (mod.LatestVersion == null || mod.LatestVersion == "Unknown")
         {
-            MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.CannotGetModVersionInfo, Strings.Error);
             return;
         }
 
@@ -766,6 +794,8 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
             
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -773,7 +803,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-                
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {percentage:F1}% ({progressText}) - {speedText}";
             });
             
@@ -796,6 +827,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -803,28 +836,24 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task UninstallModAsync(ModViewModel mod)
     {
-        var result = MessageBox.Show(
+        var result = MessageDialogHelper.Confirm(
             string.Format(Strings.ConfirmUninstallMod, mod.DisplayName),
-            Strings.ConfirmUninstall,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
+            Strings.ConfirmUninstall);
 
-        if (result != MessageBoxResult.Yes) return;
+        if (!result) return;
 
         try
         {
             StatusMessage = string.Format(Strings.UninstallingMod_, mod.DisplayName);
-            
+
             if (mod.IsManuallyInstalled)
             {
                 // Show warning for manual mods with option to proceed
-                var manualUninstallResult = MessageBox.Show(
+                var manualUninstallResult = MessageDialogHelper.Confirm(
                     string.Format(Strings.ManualModUninstallWarning, mod.DisplayName),
-                    Strings.ManualModUninstall,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-                    
-                if (manualUninstallResult != MessageBoxResult.Yes) return;
+                    Strings.ManualModUninstall);
+
+                if (!manualUninstallResult) return;
                 
                 // Use manual uninstall method
                 var success = await _modManagerService.UninstallManualModAsync(mod.Id);
@@ -925,6 +954,8 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = string.Format(Strings.UpdatingMod, mod.DisplayName, mod.InstalledVersion, mod.LatestVersion);
             
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -932,7 +963,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-                
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{string.Format(Strings.UpdatingMod, mod.DisplayName, mod.InstalledVersion, mod.LatestVersion)} - {percentage:F1}% ({progressText}) - {speedText}";
             });
             
@@ -955,6 +987,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -970,7 +1004,7 @@ public partial class MainViewModel : ObservableObject
 
         if (mod.LatestVersion == null || mod.LatestVersion == "Unknown")
         {
-            MessageBox.Show(Strings.CannotGetModVersionInfo, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.CannotGetModVersionInfo, Strings.Error);
             return;
         }
 
@@ -980,6 +1014,8 @@ public partial class MainViewModel : ObservableObject
         try
         {
             IsDownloading = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
             
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -987,7 +1023,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-                
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {percentage:F1}% ({progressText}) - {speedText}";
             });
             
@@ -1012,6 +1049,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -1027,11 +1066,13 @@ public partial class MainViewModel : ObservableObject
 
             if (string.IsNullOrEmpty(latestVersion))
             {
-                MessageBox.Show(Strings.CannotGetTranslationVersions, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.CannotGetTranslationVersions, Strings.Error);
                 return;
             }
 
             IsDownloading = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = Strings.InstallingTranslationSystem;
             
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -1039,7 +1080,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-                
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{Strings.InstallingTranslationSystem} - {percentage:F1}% ({progressText}) - {speedText}";
             });
             
@@ -1062,6 +1104,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsDownloading = false;
         }
     }
@@ -1072,17 +1116,17 @@ public partial class MainViewModel : ObservableObject
         // Check if translation was manually installed
         if (IsTranslationManuallyInstalled)
         {
-            MessageBox.Show(
+            MessageDialogHelper.ShowWarning(
                 Strings.CannotUpdateManuallyInstalledTranslation,
-                Strings.Error,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+                Strings.Error);
             return;
         }
 
         try
         {
             IsTranslationUpdating = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = Strings.UpdatingTranslationFiles;
 
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -1090,7 +1134,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{Strings.UpdatingTranslationFiles} - {percentage:F1}% ({progressText}) - {speedText}";
             });
 
@@ -1117,6 +1162,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsTranslationUpdating = false;
         }
     }
@@ -1127,17 +1174,17 @@ public partial class MainViewModel : ObservableObject
         // Check if translation was manually installed
         if (IsTranslationManuallyInstalled)
         {
-            MessageBox.Show(
+            MessageDialogHelper.ShowWarning(
                 Strings.CannotUpdateManuallyInstalledTranslation,
-                Strings.Error,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+                Strings.Error);
             return;
         }
 
         try
         {
             IsTranslationUpdating = true;
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             StatusMessage = Strings.UpdatingTranslationPlugin;
 
             var progress = new Progress<DownloadProgress>(downloadProgress =>
@@ -1145,7 +1192,8 @@ public partial class MainViewModel : ObservableObject
                 var speedText = downloadProgress.GetFormattedSpeed();
                 var progressText = downloadProgress.GetFormattedProgress();
                 var percentage = downloadProgress.ProgressPercentage;
-
+                HasDeterminateOperationProgress = true;
+                OperationProgressValue = percentage;
                 StatusMessage = $"{Strings.UpdatingTranslationPlugin} - {percentage:F1}% ({progressText}) - {speedText}";
             });
 
@@ -1172,6 +1220,8 @@ public partial class MainViewModel : ObservableObject
         }
         finally
         {
+            HasDeterminateOperationProgress = false;
+            OperationProgressValue = 0;
             IsTranslationUpdating = false;
         }
     }
@@ -1182,21 +1232,17 @@ public partial class MainViewModel : ObservableObject
         // Check if translation was manually installed
         if (IsTranslationManuallyInstalled)
         {
-            MessageBox.Show(
+            MessageDialogHelper.ShowWarning(
                 Strings.CannotUninstallManuallyInstalledTranslation,
-                Strings.Error,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+                Strings.Error);
             return;
         }
 
-        var result = MessageBox.Show(
+        var result = MessageDialogHelper.Confirm(
             Strings.ConfirmUninstallTranslation,
-            Strings.ConfirmUninstall,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
+            Strings.ConfirmUninstall);
 
-        if (result != MessageBoxResult.Yes) return;
+        if (!result) return;
 
         try
         {
@@ -1292,7 +1338,7 @@ public partial class MainViewModel : ObservableObject
             var gameRootPath = _settingsService.Settings.GameRootPath;
             if (string.IsNullOrEmpty(gameRootPath))
             {
-                MessageBox.Show(Strings.GamePathNotSet, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.GamePathNotSet, Strings.Error);
                 return;
             }
 
@@ -1309,13 +1355,11 @@ public partial class MainViewModel : ObservableObject
                     .ToList();
 
                 var conflictText = string.Join("\n", conflictMessages);
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     string.Format(Strings.ConflictWarningMessage, conflictText),
-                    Strings.ConflictDetectedOnLaunch,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    Strings.ConflictDetectedOnLaunch);
 
-                if (result == MessageBoxResult.No)
+                if (!result)
                 {
                     StatusMessage = Strings.Ready;
                     return;
@@ -1333,13 +1377,11 @@ public partial class MainViewModel : ObservableObject
                     .ToList();
 
                 var depText = string.Join("\n", depMessages);
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     string.Format(Strings.DependencyWarningMessage, depText),
-                    Strings.DependencyMissingOnLaunch,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    Strings.DependencyMissingOnLaunch);
 
-                if (result == MessageBoxResult.No)
+                if (!result)
                 {
                     StatusMessage = Strings.Ready;
                     return;
@@ -1352,13 +1394,11 @@ public partial class MainViewModel : ObservableObject
             {
                 var delistedNames = delistedMods.Select(m => m.DisplayName).ToList();
                 var delistedText = string.Join("\n• ", delistedNames);
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     string.Format(Strings.DelistedModWarningMessage, "• " + delistedText),
-                    Strings.DelistedModDetectedOnLaunch,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    Strings.DelistedModDetectedOnLaunch);
 
-                if (result == MessageBoxResult.No)
+                if (!result)
                 {
                     StatusMessage = Strings.Ready;
                     return;
@@ -1410,9 +1450,9 @@ public partial class MainViewModel : ObservableObject
                 var lines = group.Select(issue =>
                 {
                     var status = issue.IssueType == ModIntegrityIssueType.Missing
-                        ? (Strings.ResourceManager.GetString("ManagedModIntegrityIssueMissing") ??
+                        ? (Strings.ResourceManager.GetString("ManagedModIntegrityIssueMissing", Strings.Culture) ??
                            (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "缺失" : "Missing"))
-                        : (Strings.ResourceManager.GetString("ManagedModIntegrityIssueModified") ??
+                        : (Strings.ResourceManager.GetString("ManagedModIntegrityIssueModified", Strings.Culture) ??
                            (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "已修改" : "Modified"));
                     return $"  - {issue.RelativePath} [{status}]";
                 });
@@ -1422,19 +1462,25 @@ public partial class MainViewModel : ObservableObject
 
         var issueText = string.Join("\n\n", groupedIssues);
         var messageTemplate = promptOnMismatch
-            ? (Strings.ResourceManager.GetString("ManagedModIntegrityLaunchMessage") ??
+            ? (Strings.ResourceManager.GetString("ManagedModIntegrityLaunchMessage", Strings.Culture) ??
                (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
                     ? "检测到已安装受管 Mod 的文件完整性异常：\n\n{0}\n\n建议先修复或重装这些 Mod。仍要继续启动游戏吗？"
                     : "Detected integrity issues in installed managed mods:\n\n{0}\n\nFixing or reinstalling these mods is recommended. Continue launching the game anyway?"))
-            : (Strings.ResourceManager.GetString("ManagedModIntegrityStartupMessage") ??
+            : (Strings.ResourceManager.GetString("ManagedModIntegrityStartupMessage", Strings.Culture) ??
                (_settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
                     ? "检测到已安装受管 Mod 的文件完整性异常：\n\n{0}\n\n建议修复或重装这些 Mod。"
                     : "Detected integrity issues in installed managed mods:\n\n{0}\n\nFixing or reinstalling these mods is recommended."));
         var message = string.Format(messageTemplate, issueText);
 
-        var buttons = promptOnMismatch ? MessageBoxButton.YesNo : MessageBoxButton.OK;
-        var result = MessageBox.Show(message, Strings.Warning, buttons, MessageBoxImage.Warning);
-        return !promptOnMismatch || result == MessageBoxResult.Yes;
+        if (promptOnMismatch)
+        {
+            return MessageDialogHelper.Confirm(message, Strings.Warning);
+        }
+        else
+        {
+            MessageDialogHelper.ShowWarning(message, Strings.Warning);
+            return true;
+        }
     }
 
     /// <summary>
@@ -1482,7 +1528,7 @@ public partial class MainViewModel : ObservableObject
         var gameRootPath = _settingsService.Settings.GameRootPath;
         if (string.IsNullOrEmpty(gameRootPath) || !System.IO.Directory.Exists(gameRootPath))
         {
-            MessageBox.Show(Strings.GamePathNotSet, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageDialogHelper.ShowError(Strings.GamePathNotSet, Strings.Error);
             return;
         }
 
@@ -1517,7 +1563,7 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.FailedToOpenGitHubPage, mod.DisplayName);
-            MessageBox.Show(string.Format(Strings.UnableToOpenGitHubPage, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(string.Format(Strings.UnableToOpenGitHubPage, ex.Message), Strings.Error);
         }
     }
 
@@ -1530,7 +1576,7 @@ public partial class MainViewModel : ObservableObject
             
             if (string.IsNullOrEmpty(gameRootPath) || !System.IO.Directory.Exists(gameRootPath))
             {
-                MessageBox.Show(Strings.GameDirectoryNotSetOrNotFound, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageDialogHelper.ShowError(Strings.GameDirectoryNotSetOrNotFound, Strings.Error);
                 return;
             }
 
@@ -1546,7 +1592,7 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.FailedToOpenGameDirectory);
-            MessageBox.Show(string.Format(Strings.UnableToOpenGameDirectory, ex.Message), Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(string.Format(Strings.UnableToOpenGameDirectory, ex.Message), Strings.Error);
         }
     }
 
@@ -1689,8 +1735,8 @@ public partial class MainViewModel : ObservableObject
             if (updatesFound > 0)
             {
                 var updatesList = string.Join("\n", updatedMods);
-                MessageBox.Show($"{string.Format(Strings.ModUpdatesFound, updatesFound)}\n\n{updatesList}",
-                    Strings.Information, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowInformation($"{string.Format(Strings.ModUpdatesFound, updatesFound)}\n\n{updatesList}",
+                    Strings.Information);
             }
         }
         catch (Exception ex)
@@ -1765,13 +1811,11 @@ public partial class MainViewModel : ObservableObject
 
             if (hasUpdate && !string.IsNullOrEmpty(latestVersion) && !string.IsNullOrEmpty(downloadUrl))
             {
-                var result = MessageBox.Show(
+                var result = MessageDialogHelper.Confirm(
                     $"New version available: {latestVersion}\nCurrent version: {currentVersion}\n\nDo you want to download and install the update?",
-                    "Update Available",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Information);
+                    "Update Available");
 
-                if (result == MessageBoxResult.Yes)
+                if (result)
                 {
                     IsDownloading = true;
                     StatusMessage = $"Downloading update {latestVersion}...";
@@ -1790,7 +1834,7 @@ public partial class MainViewModel : ObservableObject
                     if (!success)
                     {
                         StatusMessage = "Update download failed";
-                        MessageBox.Show("Failed to download or install the update. Please try again later.", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageDialogHelper.ShowError("Failed to download or install the update. Please try again later.", Strings.Error);
                     }
                     // If success, the application will exit and restart
                 }
@@ -1802,14 +1846,14 @@ public partial class MainViewModel : ObservableObject
             else
             {
                 StatusMessage = "No updates available";
-                MessageBox.Show($"You are using the latest version ({currentVersion})", "No Updates", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialogHelper.ShowInformation($"You are using the latest version ({currentVersion})", "No Updates");
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.ApplicationUpdateCheckFailed);
             StatusMessage = "Update check failed";
-            MessageBox.Show($"Failed to check for updates: {ex.Message}", Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError($"Failed to check for updates: {ex.Message}", Strings.Error);
         }
         finally
         {
@@ -1828,13 +1872,11 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            var result = MessageBox.Show(
+            var result = MessageDialogHelper.Confirm(
                 $"{Strings.NewVersionAvailable} {LatestAppVersion}\n{Strings.ApplicationVersion}: {_updateService.GetCurrentVersion()}\n\n{Strings.DoYouWantToDownloadAndInstall}",
-                Strings.CheckForUpdates,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information);
+                Strings.CheckForUpdates);
 
-            if (result == MessageBoxResult.Yes)
+            if (result)
             {
                 IsDownloading = true;
                 StatusMessage = string.Format(Strings.DownloadingUpdate, LatestAppVersion);
@@ -1853,7 +1895,7 @@ public partial class MainViewModel : ObservableObject
                 if (!success)
                 {
                     StatusMessage = Strings.UpdateDownloadFailed;
-                    MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageDialogHelper.ShowError(Strings.FailedToDownloadOrInstall, Strings.Error);
                 }
                 // If success, the application will exit and restart
             }
@@ -1866,7 +1908,7 @@ public partial class MainViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.UpdateInstallFailed);
             StatusMessage = Strings.UpdateDownloadFailed;
-            MessageBox.Show(Strings.FailedToDownloadOrInstall, Strings.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageDialogHelper.ShowError(Strings.FailedToDownloadOrInstall, Strings.Error);
         }
         finally
         {
@@ -1908,11 +1950,9 @@ public partial class MainViewModel : ObservableObject
                 // 弹窗提示用户
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    MessageBox.Show(
+                    MessageDialogHelper.ShowWarning(
                         Strings.OfflineModeMessage,
-                        Strings.OfflineModeTitle,
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                        Strings.OfflineModeTitle);
                 });
             }
         }
@@ -1931,18 +1971,159 @@ public partial class MainViewModel : ObservableObject
     partial void OnIsDownloadingChanged(bool value)
     {
         UpdateAllCommandsCanExecute();
+        UpdateShellStatus();
     }
 
     partial void OnIsTranslationUpdatingChanged(bool value)
     {
         UpdateAllCommandsCanExecute();
+        UpdateShellStatus();
     }
 
     partial void OnIsCheckingUpdatesChanged(bool value)
     {
         UpdateAllCommandsCanExecute();
         // 同步检查状态到子VM，禁用其检查更新按钮防止重复触发
-        _installedModsViewModel.IsCheckingUpdates = value;
+        if (_installedModsViewModel != null)
+            _installedModsViewModel.IsCheckingUpdates = value;
+        UpdateShellStatus();
+    }
+
+    partial void OnIsLoadingChanged(bool value)
+    {
+        UpdateShellStatus();
+    }
+
+    partial void OnStatusMessageChanged(string value)
+    {
+        UpdateShellStatus();
+    }
+
+    partial void OnCurrentPageViewChanged(UserControl? value)
+    {
+        UpdateShellStatus();
+    }
+
+    private void OnChildViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(InstalledModsViewModel.IsDownloading)
+            or nameof(InstalledModsViewModel.ProgressValue)
+            or nameof(InstalledModsViewModel.HasDeterminateProgress)
+            or nameof(InstalledModsViewModel.StatusMessage)
+            or nameof(InstalledModsViewModel.IsCheckingUpdates)
+            or nameof(ModBrowserViewModel.IsDownloading)
+            or nameof(ModBrowserViewModel.ProgressValue)
+            or nameof(ModBrowserViewModel.HasDeterminateProgress)
+            or nameof(ModBrowserViewModel.StatusMessage)
+            or nameof(ModDetailViewModel.IsInstalling)
+            or nameof(ModDetailViewModel.IsLoadingReleases)
+            or nameof(ModDetailViewModel.ProgressValue)
+            or nameof(ModDetailViewModel.HasDeterminateProgress)
+            or nameof(ModDetailViewModel.StatusMessage))
+        {
+            UpdateShellStatus();
+        }
+    }
+
+    private void UpdateShellStatus()
+    {
+        if (TryGetMainShellState(out var message, out var isBusy, out var isIndeterminate, out var progressValue))
+        {
+            ApplyShellStatus(message, isBusy, isIndeterminate, progressValue);
+            return;
+        }
+
+        if (_modDetailViewModel != null && CurrentPageView is ModDetailView)
+        {
+            if (_modDetailViewModel.IsLoadingReleases)
+            {
+                ApplyShellStatus(Strings.LoadingReleases, true, true, 0);
+                return;
+            }
+
+            if (_modDetailViewModel.IsInstalling)
+            {
+                ApplyShellStatus(
+                    _modDetailViewModel.StatusMessage,
+                    true,
+                    !_modDetailViewModel.HasDeterminateProgress,
+                    _modDetailViewModel.ProgressValue);
+                return;
+            }
+
+            ApplyShellStatus(_modDetailViewModel.StatusMessage, false, false, 0);
+            return;
+        }
+
+        if (_installedModsViewModel != null && ReferenceEquals(CurrentPageView, _installedModsView))
+        {
+            if (_installedModsViewModel.IsDownloading)
+            {
+                ApplyShellStatus(
+                    _installedModsViewModel.StatusMessage,
+                    true,
+                    !_installedModsViewModel.HasDeterminateProgress,
+                    _installedModsViewModel.ProgressValue);
+                return;
+            }
+
+            ApplyShellStatus(_installedModsViewModel.StatusMessage, false, false, 0);
+            return;
+        }
+
+        if (_modBrowserViewModel != null && ReferenceEquals(CurrentPageView, _modBrowserView))
+        {
+            if (_modBrowserViewModel.IsDownloading)
+            {
+                ApplyShellStatus(
+                    _modBrowserViewModel.StatusMessage,
+                    true,
+                    !_modBrowserViewModel.HasDeterminateProgress,
+                    _modBrowserViewModel.ProgressValue);
+                return;
+            }
+
+            ApplyShellStatus(_modBrowserViewModel.StatusMessage, false, false, 0);
+            return;
+        }
+
+        ApplyShellStatus(StatusMessage, false, false, 0);
+    }
+
+    private bool TryGetMainShellState(out string message, out bool isBusy, out bool isIndeterminate, out double progressValue)
+    {
+        if (IsLoading || IsCheckingUpdates)
+        {
+            message = StatusMessage;
+            isBusy = true;
+            isIndeterminate = true;
+            progressValue = 0;
+            return true;
+        }
+
+        if (IsDownloading || IsTranslationUpdating)
+        {
+            message = StatusMessage;
+            isBusy = true;
+            isIndeterminate = !HasDeterminateOperationProgress;
+            progressValue = OperationProgressValue;
+            return true;
+        }
+
+        message = string.Empty;
+        isBusy = false;
+        isIndeterminate = false;
+        progressValue = 0;
+        return false;
+    }
+
+    private void ApplyShellStatus(string? message, bool isBusy, bool isIndeterminate, double progressValue)
+    {
+        FooterStatusMessage = string.IsNullOrWhiteSpace(message) ? Strings.Ready : message;
+        IsFooterBusy = isBusy;
+        IsFooterProgressIndeterminate = isIndeterminate;
+        FooterProgressValue = isBusy && !isIndeterminate ? progressValue : 0;
+        FooterProgressText = isBusy && !isIndeterminate ? $"{progressValue:F1}%" : string.Empty;
     }
 
     partial void OnIsGameRunningChanged(bool value)

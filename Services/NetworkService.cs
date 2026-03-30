@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GHPC_Mod_Manager.Resources;
 using System.Windows;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -1428,14 +1429,11 @@ public class NetworkService : INetworkService
         _lastRateLimitWarning = DateTime.Now;
 
         // Show the warning popup
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
         {
-            MessageBox.Show(
+            await MessageDialogHelper.ShowWarningAsync(
                 Strings.GitHubRateLimitMessage,
-                Strings.GitHubRateLimitTitle,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning
-            );
+                Strings.GitHubRateLimitTitle);
         });
     }
 

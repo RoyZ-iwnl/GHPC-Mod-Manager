@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -380,7 +381,7 @@ public partial class ModManagerService : IModManagerService
                     var currentModName = GetModDisplayName(modConfig.Id);
                     var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
 
-                    MessageBox.Show(message, Strings.ModDependencyMissing, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    await MessageDialogHelper.ShowWarningAsync(message, Strings.ModDependencyMissing);
                     return false;
                 }
             }
@@ -395,11 +396,8 @@ public partial class ModManagerService : IModManagerService
                     var currentModName = GetModDisplayName(modConfig.Id);
                     var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
 
-                    var dialogResult = MessageBox.Show(message, Strings.ModConflictDetected, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (dialogResult == MessageBoxResult.No)
-                    {
+                    if (!await MessageDialogHelper.ConfirmAsync(message, Strings.ModConflictDetected))
                         return false;
-                    }
                 }
             }
 

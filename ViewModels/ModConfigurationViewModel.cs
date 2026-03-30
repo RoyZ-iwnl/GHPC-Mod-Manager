@@ -9,6 +9,7 @@ using System.Windows;
 using System.ComponentModel;
 using System.Windows.Data;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -377,11 +378,9 @@ public partial class ModConfigurationViewModel : ObservableObject
         var configExists = await _modManagerService.ConfigSectionExistsAsync(ModId);
         if (!configExists)
         {
-            MessageBox.Show(
+            await MessageDialogHelper.ShowWarningAsync(
                 Strings.PresetCannotApplyNoConfig,
-                Strings.Warning,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+                Strings.Warning);
             StatusMessage = Strings.ConfigSectionNotGenerated;
             return;
         }
@@ -495,14 +494,11 @@ public partial class ModConfigurationViewModel : ObservableObject
     private async Task DeletePresetAsync()
     {
         if (SelectedPreset == null) return;
-        
-        var result = MessageBox.Show(
+
+        if (!await MessageDialogHelper.ConfirmAsync(
             string.Format(Strings.ConfirmDeletePreset, SelectedPreset.Name),
-            Strings.ConfirmDelete,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-            
-        if (result != MessageBoxResult.Yes) return;
+            Strings.ConfirmDelete))
+            return;
         
         try
         {
@@ -552,11 +548,9 @@ public partial class ModConfigurationViewModel : ObservableObject
             var configExists = await _modManagerService.ConfigSectionExistsAsync(ModId);
             if (!configExists)
             {
-                MessageBox.Show(
+                await MessageDialogHelper.ShowWarningAsync(
                     Strings.ConfigSectionNotGenerated,
-                    Strings.Warning,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    Strings.Warning);
                 StatusMessage = Strings.ConfigSectionNotGenerated;
                 return;
             }
@@ -565,13 +559,10 @@ public partial class ModConfigurationViewModel : ObservableObject
             var modConfig = (await _modManagerService.GetModListAsync()).FirstOrDefault(m => m.Id == ModId);
             var sectionName = modConfig?.Config.ConfigSectionName ?? ModId;
 
-            var result = MessageBox.Show(
+            if (!await MessageDialogHelper.ConfirmAsync(
                 string.Format(Strings.ConfirmResetConfiguration, sectionName).Replace("\\n", Environment.NewLine),
-                Strings.ConfirmDelete,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result != MessageBoxResult.Yes) return;
+                Strings.ConfirmDelete))
+                return;
 
             var success = await _modManagerService.ResetModConfigurationAsync(ModId);
             if (success)

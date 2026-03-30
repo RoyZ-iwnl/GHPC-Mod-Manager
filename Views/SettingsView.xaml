@@ -20,7 +20,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Width="1000">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -67,13 +67,10 @@
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.LanguageSettings}"
+                            <TextBlock Text="{x:Static resources:Strings.LanguageSettings}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
-                        <TextBlock Margin="0,4,0,16"
-                                   Text="{x:Static resources:Strings.ProgramLanguage}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
 
-                        <Grid Style="{StaticResource SettingsRowStyle}">
+                            <Grid Style="{StaticResource SettingsRowStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="220"/>
                                 <ColumnDefinition Width="*"/>
@@ -106,22 +103,25 @@
                                        Text="{x:Static resources:Strings.AppTheme}"
                                        Style="{StaticResource FieldLabelTextStyle}"
                                        VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding AvailableThemes}"
-                                      SelectedItem="{Binding SelectedTheme}"
-                                      MaxWidth="260"
-                                      HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <ComboBox ItemsSource="{Binding AvailableThemes}"
+                                              SelectedItem="{Binding SelectedTheme}"
+                                              MaxWidth="260"
+                                              HorizontalAlignment="Left">   
+                                    <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Converter={x:Static converters:ThemeDisplayConverter.Instance}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Grid.Column="2"
-                                    Content="{x:Static resources:Strings.Apply}"
+                            <Button Content="{x:Static resources:Strings.Apply}"
                                     Command="{Binding ChangeThemeCommand}"
                                     Margin="12,0,0,0"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
+                                </StackPanel>
+                             
                         </Grid>
 
                         <Grid>
@@ -151,13 +151,10 @@
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.GamePath}"
+                            <TextBlock Text="{x:Static resources:Strings.GamePath}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
-                        <TextBlock Margin="0,4,0,16"
-                                   Text="{x:Static resources:Strings.GameRootDirectory}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
 
-                        <Grid>
+                            <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="220"/>
                                 <ColumnDefinition Width="*"/>
@@ -290,104 +287,116 @@
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.MelonLoaderManagement}"
+                            
+                            <TextBlock Text="{x:Static resources:Strings.MelonLoaderManagement}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
-                        <TextBlock Margin="0,4,0,16"
-                                   Text="{Binding MelonLoaderInstalledVersion}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
 
-                        <WrapPanel Margin="0,0,0,14">
-                            <Border Style="{StaticResource BadgeBorderStyle}"
+                            <WrapPanel Margin="0,0,0,14">
+                                <TextBlock Margin="0,0,8,0"
+                                           Text="{x:Static resources:Strings.MelonLoaderInstalledVersion}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Margin="0,0,8,0"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding MelonLoaderInstalledVersion}"
+                                           Style="{StaticResource PageSectionHintTextStyle}"/>
+                                <Border Style="{StaticResource BadgeBorderStyle}"
                                     Background="{DynamicResource SuccessContainerBrush}"
                                     BorderBrush="{DynamicResource SuccessBrush}"
                                     Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
                                            Style="{StaticResource BadgeTextStyle}"
                                            Foreground="{DynamicResource OnSuccessBrush}"/>
-                            </Border>
+                                </Border>
 
-                            <Border Style="{StaticResource BadgeBorderStyle}"
+                                <Border Style="{StaticResource BadgeBorderStyle}"
                                     Background="{DynamicResource WarningContainerBrush}"
                                     BorderBrush="{DynamicResource WarningBrush}"
                                     Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabled}"
+                                    <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabled}"
                                            Style="{StaticResource BadgeTextStyle}"
                                            Foreground="{DynamicResource OnWarningContainerBrush}"/>
-                            </Border>
-                        </WrapPanel>
+                                </Border>
+                                <Button Command="{Binding ToggleMelonLoaderCommand}"
+                                        IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
+                                        Margin="0,0,12,8"
+                                        Style="{DynamicResource OutlinedButtonStyle}">
+                                    <Button.Content>
+                                        <TextBlock>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="{x:Static resources:Strings.DisableMelonLoader}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMelonLoaderDisabled}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static resources:Strings.EnableMelonLoader}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </WrapPanel>
 
-                        <WrapPanel Margin="0,0,0,14"
-                                   Visibility="{Binding IsMelonLoaderInstalled, Converter={StaticResource BoolToVis}}">
-                            <Button Command="{Binding ToggleMelonLoaderCommand}"
-                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
-                                    Margin="0,0,12,8"
-                                    Style="{DynamicResource OutlinedButtonStyle}">
-                                <Button.Content>
-                                    <TextBlock>
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{x:Static resources:Strings.DisableMelonLoader}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsMelonLoaderDisabled}" Value="True">
-                                                        <Setter Property="Text" Value="{x:Static resources:Strings.EnableMelonLoader}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Button.Content>
-                            </Button>
-                        </WrapPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- 标签 -->
+                                    <ColumnDefinition Width="220"/>
+                                    <!-- ComboBox 固定宽 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- 安装/重装按钮 -->
+                                </Grid.ColumnDefinitions>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.MelonLoaderInstalledVersion}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding MelonLoaderReleases}"
-                                      SelectedItem="{Binding SelectedMelonLoaderRelease}"
-                                      DisplayMemberPath="TagName"
-                                      MaxWidth="260"
-                                      HorizontalAlignment="Left"/>
-                            <Button Grid.Column="2"
-                                    Command="{Binding ReinstallMelonLoaderCommand}"
-                                    IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
-                                    Margin="12,0,0,0"
-                                    Style="{DynamicResource FilledButtonStyle}">
-                                <Button.Content>
-                                    <TextBlock>
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{x:Static resources:Strings.ReinstallMelonLoader}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsMelonLoaderInstalled}" Value="False">
-                                                        <Setter Property="Text" Value="{x:Static resources:Strings.InstallMelonLoader}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Button.Content>
-                            </Button>
-                        </Grid>
-                    </StackPanel>
+                                <!-- 选择版本标签 -->
+                                <TextBlock Grid.Column="0"
+               Margin="0,0,8,0"
+               Text="{x:Static resources:Strings.SelectVersion}"
+               Style="{StaticResource FieldLabelTextStyle}"
+               VerticalAlignment="Center"/>
+
+                                <!-- 版本下拉框 -->
+                                <ComboBox Grid.Column="1"
+              ItemsSource="{Binding MelonLoaderReleases}"
+              SelectedItem="{Binding SelectedMelonLoaderRelease}"
+              DisplayMemberPath="TagName"
+              HorizontalAlignment="Stretch"/>
+
+                                <!-- 安装/重装按钮 -->
+                                <Button Grid.Column="2"
+            Command="{Binding ReinstallMelonLoaderCommand}"
+            IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
+            Margin="12,0,0,0"
+            Style="{DynamicResource FilledButtonStyle}">
+                                    <Button.Content>
+                                        <TextBlock>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="{x:Static resources:Strings.ReinstallMelonLoader}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMelonLoaderInstalled}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static resources:Strings.InstallMelonLoader}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
                 </Border>
 
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.MaintenanceTools}"
-                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
-                        <TextBlock Margin="0,4,0,16"
-                                   Text="{x:Static resources:Strings.ViewLogs}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>                       
                         <WrapPanel>
+                            <Button Content="{x:Static resources:Strings.ModInfoDumper}"
+                                    Command="{Binding ShowModInfoDumperCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                             <Button Content="{x:Static resources:Strings.CleanTempFiles}"
                                     Command="{Binding CleanTempFilesCommand}"
                                     Margin="0,0,12,8"
@@ -408,9 +417,6 @@
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.About}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
-                        <TextBlock Margin="0,4,0,16"
-                                   Text="{Binding ApplicationVersion}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
 
                         <Grid Margin="0,0,0,14">
                             <Grid.ColumnDefinitions>

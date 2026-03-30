@@ -1,0 +1,94 @@
+<Window x:Class="GHPC_Mod_Manager.Views.ModInfoDumperWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
+        xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
+        Title="{x:Static resources:Strings.ModInfoDumperTitle}"
+        Height="352" Width="480"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <!-- WindowChrome保留系统边框和阴影效果 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <converters:InverseBooleanConverter x:Key="InvBool"/>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
+
+        <!-- 主内容 -->
+        <Grid Grid.Row="1" Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 标题区域 -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="{x:Static resources:Strings.ModInfoDumper}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource OnSurfaceBrush}"/>
+                <TextBlock Margin="0,4,0,0"
+                           Text="{x:Static resources:Strings.ModInfoDumperDescription}"
+                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                           FontSize="13"/>
+            </StackPanel>
+
+            <!-- 按钮区域 -->
+            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                <Button Content="{x:Static resources:Strings.ModInfoCopyToClipboard}"
+                        Command="{Binding CopyModInfoCommand}"
+                        IsEnabled="{Binding IsOperating, Converter={StaticResource InvBool}}"
+                        Margin="0,0,0,16"
+                        Padding="24,14"
+                        HorizontalAlignment="Stretch"
+                        Style="{DynamicResource FilledButtonStyle}"/>
+
+                <Button Content="{x:Static resources:Strings.PackAllInfo}"
+                        Command="{Binding PackAllInfoCommand}"
+                        IsEnabled="{Binding IsOperating, Converter={StaticResource InvBool}}"
+                        Padding="24,14"
+                        HorizontalAlignment="Stretch"
+                        Style="{DynamicResource OutlinedButtonStyle}"/>
+
+                <!-- 状态文本 -->
+                <TextBlock Text="{Binding StatusMessage}"
+                           Margin="0,16,0,0"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                           Visibility="{Binding IsOperating, Converter={StaticResource BoolToVis}}"/>
+            </StackPanel>
+
+            <!-- 底部按钮 -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,20,0,0">
+                <Button Content="{x:Static resources:Strings.Close}"
+                        IsCancel="True"
+                        Padding="20,10"
+                        Style="{DynamicResource TextButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
