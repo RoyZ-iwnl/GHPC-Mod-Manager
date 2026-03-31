@@ -367,6 +367,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cleaned {0} backups due to missing manifest.
+        /// </summary>
+        public static string BackupsCleanedDueToMissingManifest {
+            get {
+                return ResourceManager.GetString("BackupsCleanedDueToMissingManifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cleaning up....
         /// </summary>
         public static string BatchCleaningUp {
@@ -786,6 +795,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ChunkVirtualValidation {
             get {
                 return ResourceManager.GetString("ChunkVirtualValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cleaning orphaned disabled backup: {0}.
+        /// </summary>
+        public static string CleaningOrphanedDisabledBackup {
+            get {
+                return ResourceManager.GetString("CleaningOrphanedDisabledBackup", resourceCulture);
             }
         }
         
@@ -1576,15 +1594,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} still uses the deprecated Scripted configuration and can no longer be installed or updated..
-        /// </summary>
-        public static string DeprecatedScriptedConfigMessage {
-            get {
-                return ResourceManager.GetString("DeprecatedScriptedConfigMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Warning: Could not access subdirectories in {0}: {1}.
         /// </summary>
         public static string DirectoryAccessWarning {
@@ -2031,24 +2040,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable script completed with exit code: {0}.
-        /// </summary>
-        public static string EnableScriptCompleted {
-            get {
-                return ResourceManager.GetString("EnableScriptCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable script error: {0}.
-        /// </summary>
-        public static string EnableScriptError {
-            get {
-                return ResourceManager.GetString("EnableScriptError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable Translation Plugin.
         /// </summary>
         public static string EnableTranslationPlugin {
@@ -2108,33 +2099,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ErrorRecordingDirectoryState {
             get {
                 return ResourceManager.GetString("ErrorRecordingDirectoryState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Executing enable script before restoring mod: {0}.
-        /// </summary>
-        public static string ExecutingEnableScript {
-            get {
-                return ResourceManager.GetString("ExecutingEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Executing uninstall script for mod: {0}.
-        /// </summary>
-        public static string ExecutingUninstallScript {
-            get {
-                return ResourceManager.GetString("ExecutingUninstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Executing uninstall script after disabling mod: {0}.
-        /// </summary>
-        public static string ExecutingUninstallScriptForDisable {
-            get {
-                return ResourceManager.GetString("ExecutingUninstallScriptForDisable", resourceCulture);
             }
         }
         
@@ -2265,6 +2229,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to move orphaned disabled backup: {0}.
+        /// </summary>
+        public static string FailedToMoveOrphanedBackup {
+            get {
+                return ResourceManager.GetString("FailedToMoveOrphanedBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open Bilibili.
         /// </summary>
         public static string FailedToOpenBilibili {
@@ -2378,33 +2351,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToSaveProxySettingChange {
             get {
                 return ResourceManager.GetString("FailedToSaveProxySettingChange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to start enable script process.
-        /// </summary>
-        public static string FailedToStartEnableScript {
-            get {
-                return ResourceManager.GetString("FailedToStartEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to start script process.
-        /// </summary>
-        public static string FailedToStartScriptProcess {
-            get {
-                return ResourceManager.GetString("FailedToStartScriptProcess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to start uninstall script process.
-        /// </summary>
-        public static string FailedToStartUninstallScript {
-            get {
-                return ResourceManager.GetString("FailedToStartUninstallScript", resourceCulture);
             }
         }
         
@@ -2648,24 +2594,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FileSizeMismatch {
             get {
                 return ResourceManager.GetString("FileSizeMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scanned {0} files after script execution.
-        /// </summary>
-        public static string FilesScannedAfterScript {
-            get {
-                return ResourceManager.GetString("FilesScannedAfterScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scanned {0} files before script execution.
-        /// </summary>
-        public static string FilesScannedBeforeScript {
-            get {
-                return ResourceManager.GetString("FilesScannedBeforeScript", resourceCulture);
             }
         }
         
@@ -4815,6 +4743,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overwritten existing file during mod enable: {0}.
+        /// </summary>
+        public static string ModFileOverwrittenDuringEnable {
+            get {
+                return ResourceManager.GetString("ModFileOverwrittenDuringEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error loading mod I18n configuration from cache.
         /// </summary>
         public static string ModI18nConfigCacheLoadError {
@@ -5697,33 +5634,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Non-scripted mod has enable script configured (InstallMethod should be &apos;Scripted&apos;): {0}.
-        /// </summary>
-        public static string NonScriptedModHasEnableScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Non-scripted mod has install script configured (InstallMethod should be &apos;Scripted&apos;): {0}.
-        /// </summary>
-        public static string NonScriptedModHasInstallScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasInstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Non-scripted mod has uninstall script configured (InstallMethod should be &apos;Scripted&apos;): {0}.
-        /// </summary>
-        public static string NonScriptedModHasUninstallScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasUninstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Non-Steam version detected - please verify Steam version is installed.
         /// </summary>
         public static string NonSteamVersionDetected {
@@ -6079,6 +5989,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preserving manual mod backup: {0}.
+        /// </summary>
+        public static string PreservingManualModBackup {
+            get {
+                return ResourceManager.GetString("PreservingManualModBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot apply preset: Configuration section has not been generated. Please run the game once and exit first..
         /// </summary>
         public static string PresetCannotApplyNoConfig {
@@ -6210,6 +6129,42 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Previous {
             get {
                 return ResourceManager.GetString("Previous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A previous installation of GHPC Mod Manager was detected in another directory. If you want to upgrade, please use the in-app update feature in Settings. Click &quot;Open Folder&quot; to view the previous installation location..
+        /// </summary>
+        public static string PreviousInstallationDetectedMessage {
+            get {
+                return ResourceManager.GetString("PreviousInstallationDetectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Installation Detected.
+        /// </summary>
+        public static string PreviousInstallationDetectedTitle {
+            get {
+                return ResourceManager.GetString("PreviousInstallationDetectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore.
+        /// </summary>
+        public static string PreviousInstallationIgnore {
+            get {
+                return ResourceManager.GetString("PreviousInstallationIgnore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Folder.
+        /// </summary>
+        public static string PreviousInstallationOpenFolder {
+            get {
+                return ResourceManager.GetString("PreviousInstallationOpenFolder", resourceCulture);
             }
         }
         
@@ -6700,69 +6655,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveSettings {
             get {
                 return ResourceManager.GetString("SaveSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scripted mod is missing install script: {0}.
-        /// </summary>
-        public static string ScriptedModMissingInstallScript {
-            get {
-                return ResourceManager.GetString("ScriptedModMissingInstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Script execution completed with exit code: {0}.
-        /// </summary>
-        public static string ScriptExecutionCompleted {
-            get {
-                return ResourceManager.GetString("ScriptExecutionCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Script execution failed with exit code: {0}.
-        /// </summary>
-        public static string ScriptExecutionFailed {
-            get {
-                return ResourceManager.GetString("ScriptExecutionFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Script execution started: {0}.
-        /// </summary>
-        public static string ScriptExecutionStarted {
-            get {
-                return ResourceManager.GetString("ScriptExecutionStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Script modified {0} existing files.
-        /// </summary>
-        public static string ScriptModifiedFilesDetected {
-            get {
-                return ResourceManager.GetString("ScriptModifiedFilesDetected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to WARNING: This mod uses scripts for installation, which may pose unknown risks to your system. Please ensure you trust the source of this mod. Do you want to continue?.
-        /// </summary>
-        public static string ScriptModSecurityWarning {
-            get {
-                return ResourceManager.GetString("ScriptModSecurityWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Script created {0} new files.
-        /// </summary>
-        public static string ScriptNewFilesDetected {
-            get {
-                return ResourceManager.GetString("ScriptNewFilesDetected", resourceCulture);
             }
         }
         
@@ -8095,24 +7987,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UninstallingTranslationSystem {
             get {
                 return ResourceManager.GetString("UninstallingTranslationSystem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall script completed with exit code: {0}.
-        /// </summary>
-        public static string UninstallScriptCompleted {
-            get {
-                return ResourceManager.GetString("UninstallScriptCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall script error: {0}.
-        /// </summary>
-        public static string UninstallScriptError {
-            get {
-                return ResourceManager.GetString("UninstallScriptError", resourceCulture);
             }
         }
         

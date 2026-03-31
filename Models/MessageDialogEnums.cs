@@ -12,7 +12,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>显示是和否按钮</summary>
         YesNo,
         /// <summary>显示是、否和取消按钮</summary>
-        YesNoCancel
+        YesNoCancel,
+        /// <summary>显示"打开目录"和"忽略"按钮</summary>
+        OpenFolderIgnore
     }
 
     /// <summary>
@@ -29,7 +31,11 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>用户点击了否按钮</summary>
         No,
         /// <summary>对话框被关闭但没有点击任何按钮</summary>
-        None
+        None,
+        /// <summary>用户点击了"打开目录"按钮</summary>
+        OpenFolder,
+        /// <summary>用户点击了"忽略"按钮</summary>
+        Ignore
     }
 
     /// <summary>

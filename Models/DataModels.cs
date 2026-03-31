@@ -142,10 +142,6 @@ public class ModConfig
     public string MainBinaryFileName { get; set; } = string.Empty;
     public string ConfigSectionName { get; set; } = string.Empty;
     public InstallMethod InstallMethod { get; set; } = InstallMethod.DirectRelease;
-    // Legacy scripted fields are kept for compatibility detection only.
-    public string? InstallScript_Base64 { get; set; }
-    public string? UninstallScript_Base64 { get; set; }
-    public string? EnableScript_Base64 { get; set; }
     /// <summary>
     /// Replace 模式的目标目录（相对于 GameRoot）。
     /// </summary>
@@ -178,20 +174,12 @@ public class ModConfig
     // 是否含有未知字段
     [JsonIgnore]
     public bool HasUnknownFields => UnknownFields != null && UnknownFields.Count > 0;
-
-    [JsonIgnore]
-    public bool HasLegacyScriptConfig =>
-        InstallMethod == InstallMethod.Scripted ||
-        !string.IsNullOrWhiteSpace(InstallScript_Base64) ||
-        !string.IsNullOrWhiteSpace(UninstallScript_Base64) ||
-        !string.IsNullOrWhiteSpace(EnableScript_Base64);
 }
 
 public enum InstallMethod
 {
     DirectRelease,
-    Replace,
-    Scripted
+    Replace
 }
 
 public class ModInstallManifest

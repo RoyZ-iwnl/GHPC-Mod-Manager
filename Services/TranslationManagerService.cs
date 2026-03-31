@@ -368,18 +368,16 @@ public class TranslationManagerService : ITranslationManagerService
             if (targetRelease == null)
             {
                 _loggingService.LogError(Strings.XUnityVersionNotFound, version);
-                _loggingService.LogError(Strings.XUnityVersionNotFound, version);
                 return false;
             }
 
-            var asset = targetRelease.Assets.FirstOrDefault(a => 
-                a.Name.Contains("MelonMod") && 
-                !a.Name.Contains("IL2CPP") && 
+            var asset = targetRelease.Assets.FirstOrDefault(a =>
+                a.Name.Contains("MelonMod") &&
+                !a.Name.Contains("IL2CPP") &&
                 a.Name.EndsWith(".zip"));
 
             if (asset == null)
             {
-                _loggingService.LogError(Strings.XUnityAssetNotFound);
                 _loggingService.LogError(Strings.XUnityAssetNotFound);
                 return false;
             }
@@ -396,7 +394,6 @@ public class TranslationManagerService : ITranslationManagerService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.XUnityInstallError);
             _loggingService.LogError(ex, Strings.XUnityInstallError);
             return false;
         }
@@ -421,20 +418,18 @@ public class TranslationManagerService : ITranslationManagerService
             if (!releases.Any())
             {
                 _loggingService.LogError(Strings.TranslationReleasesFetchError);
-                _loggingService.LogError(Strings.TranslationReleasesFetchError);
                 return false;
             }
 
             // 筛选符合命名规范的release
-            var validReleases = releases.Where(r => r.TagName.StartsWith("release-") && 
-                                                   r.TagName.Length == 23 && 
-                                                   r.Assets.Any(a => a.Name.Contains("ghpc-translation-") && 
+            var validReleases = releases.Where(r => r.TagName.StartsWith("release-") &&
+                                                   r.TagName.Length == 23 &&
+                                                   r.Assets.Any(a => a.Name.Contains("ghpc-translation-") &&
                                                                     (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz"))))
                                        .ToList();
 
             if (!validReleases.Any())
             {
-                _loggingService.LogError(Strings.TranslationReleasesFetchError);
                 _loggingService.LogError(Strings.TranslationReleasesFetchError);
                 return false;
             }
@@ -445,7 +440,6 @@ public class TranslationManagerService : ITranslationManagerService
 
             if (targetAsset == null)
             {
-                _loggingService.LogError(Strings.TranslationAssetNotFound);
                 _loggingService.LogError(Strings.TranslationAssetNotFound);
                 return false;
             }
@@ -473,7 +467,6 @@ public class TranslationManagerService : ITranslationManagerService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.TranslationFilesCloneError);
             _loggingService.LogError(ex, Strings.TranslationFilesCloneError);
             return false;
         }
@@ -542,7 +535,6 @@ public class TranslationManagerService : ITranslationManagerService
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.TranslationUpdateError);
             _loggingService.LogError(ex, Strings.TranslationUpdateError);
             return false;
         }

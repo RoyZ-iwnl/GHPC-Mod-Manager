@@ -1,4 +1,5 @@
 using GHPC_Mod_Manager.ViewModels;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -10,6 +11,13 @@ namespace GHPC_Mod_Manager
         {
             InitializeComponent();
             DataContext = viewModel;
+
+            // 设置窗口标题，包含版本号
+            var informationalVersion = Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            Title = informationalVersion != null
+                ? $"GHPC Mod Manager v{informationalVersion}"
+                : "GHPC Mod Manager";
 
             // Smart window sizing based on screen working area
             SetSmartWindowSize();

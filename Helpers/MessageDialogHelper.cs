@@ -167,6 +167,17 @@ namespace GHPC_Mod_Manager.Helpers
         }
 
         /// <summary>
+        /// 显示打开目录/忽略对话框
+        /// </summary>
+        /// <param name="message">消息内容</param>
+        /// <param name="title">标题</param>
+        /// <returns>对话框返回结果</returns>
+        public static MessageDialogResult ShowOpenFolderIgnore(string message, string? title = null)
+        {
+            return Show(message, title ?? string.Empty, MessageDialogButton.OpenFolderIgnore, MessageDialogImage.Warning);
+        }
+
+        /// <summary>
         /// 异步显示完整参数的对话框
         /// </summary>
         /// <returns>对话框返回结果</returns>

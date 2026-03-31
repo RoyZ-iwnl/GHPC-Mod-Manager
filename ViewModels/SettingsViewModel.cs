@@ -161,7 +161,7 @@ public partial class SettingsViewModel : ObservableObject
     public bool IsGitHubProxyEnabled => string.IsNullOrWhiteSpace(GitHubApiToken);
 
     // 开发模式：仅通过 -dev 启动参数解锁
-    public bool IsDevMode => DevMode.IsEnabled;
+    public bool IsDevMode => CommandLineArgs.DevModeEnabled;
 
     public SettingsViewModel(
         ISettingsService settingsService,
@@ -203,8 +203,8 @@ public partial class SettingsViewModel : ObservableObject
         SelectedLanguage = settings.Language;
         _originalLanguage = settings.Language; // 记录原始语言
         GameRootPath = settings.GameRootPath;
-        // dev模式下从 DevMode override 读取，显示当前生效的 URL
-        MainConfigUrl = DevMode.MainConfigUrlOverride ?? string.Empty;
+        // dev模式下从 CommandLineArgs 读取，显示当前生效的 URL
+        MainConfigUrl = CommandLineArgs.DevConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
         UseDnsOverHttps = settings.UseDnsOverHttps;
         // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
@@ -224,8 +224,8 @@ public partial class SettingsViewModel : ObservableObject
             var settings = _settingsService.Settings;
             settings.Language = SelectedLanguage;
             settings.GameRootPath = GameRootPath;
-            // dev模式下写入 DevMode override（不持久化到 settings.json）
-            DevMode.MainConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
+            // dev模式下写入 CommandLineArgs override（不持久化到 settings.json）
+            CommandLineArgs.DevConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
             settings.UseDnsOverHttps = UseDnsOverHttps && SelectedLanguage == "zh-CN";

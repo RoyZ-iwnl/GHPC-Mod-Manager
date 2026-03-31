@@ -3,6 +3,7 @@ using GHPC_Mod_Manager.ViewModels;
 using GHPC_Mod_Manager.Views;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,47 +22,7 @@ namespace GHPC_Mod_Manager
         protected override async void OnStartup(StartupEventArgs e)
         {
             // 解析命令行参数
-            bool showLogWindow = e.Args.Contains("-log") || e.Args.Contains("--log");
-            bool isDevMode = false;
-            string? devConfigPath = null;
-
-            // 解析 -dev 参数，支持三种格式：
-            // 1. -dev 或 --dev（单独使用，仅启用 dev 模式）
-            // 2. -dev:"path" 或 --dev:"path"（冒号分隔）
-            // 3. -dev="path" 或 --dev="path"（等号分隔）
-            // 注：快捷方式启动不支持双引号参数，推荐使用冒号或等号格式
-            for (int i = 0; i < e.Args.Length; i++)
-            {
-                var arg = e.Args[i];
-                // 检查是否是 -dev 或 --dev 参数（可能带路径）
-                if (arg.StartsWith("-dev") || arg.StartsWith("--dev"))
-                {
-                    isDevMode = true;
-
-                    // 检查冒号或等号分隔的路径
-                    int separatorIndex = -1;
-                    if (arg.Contains(':'))
-                        separatorIndex = arg.IndexOf(':');
-                    else if (arg.Contains('='))
-                        separatorIndex = arg.IndexOf('=');
-
-                    if (separatorIndex > 0 && separatorIndex < arg.Length - 1)
-                    {
-                        // 提取冒号/等号后的路径
-                        devConfigPath = arg.Substring(separatorIndex + 1);
-                    }
-                    else if (arg == "-dev" || arg == "--dev")
-                    {
-                        // 单独的 -dev 参数，检查下一个参数是否是路径（不以 - 开头）
-                        if (i + 1 < e.Args.Length && !e.Args[i + 1].StartsWith("-"))
-                        {
-                            devConfigPath = e.Args[i + 1];
-                            i++; // 跳过路径参数
-                        }
-                    }
-                    break;
-                }
-            }
+            CommandLineArgs.Parse(e.Args);
             
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -85,6 +46,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
                     services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
                     services.AddSingleton<IDialogService, DialogService>();
+                    services.AddSingleton<IPreviousInstallationService, PreviousInstallationService>();
 
                     services.ConfigureHttpClientDefaults(builder =>
                     {
@@ -173,14 +135,12 @@ namespace GHPC_Mod_Manager
                 settingsService.Settings.Language);
 
             // 设置 -dev 参数，必须在 mainConfigService.LoadAsync() 之前
-            if (isDevMode)
+            if (CommandLineArgs.DevModeEnabled)
             {
                 startupLoggingService.LogInfo("Dev mode enabled via -dev argument");
-                DevMode.IsEnabled = true;
-                if (!string.IsNullOrWhiteSpace(devConfigPath))
+                if (!string.IsNullOrWhiteSpace(CommandLineArgs.DevConfigUrlOverride))
                 {
-                    DevMode.MainConfigUrlOverride = devConfigPath;
-                    startupLoggingService.LogInfo($"Dev config path: {devConfigPath}");
+                    startupLoggingService.LogInfo($"Dev config path: {CommandLineArgs.DevConfigUrlOverride}");
                 }
             }
 
@@ -226,7 +186,7 @@ namespace GHPC_Mod_Manager
             }
 
             // Show log window if -log parameter is provided
-            if (showLogWindow)
+            if (CommandLineArgs.ShowLogWindow)
             {
                 var logWindow = new LogWindow();
                 logWindow.Show();
@@ -235,6 +195,13 @@ namespace GHPC_Mod_Manager
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
             MainWindow = mainWindow;
             mainWindow.Show();
+
+            // 非首次运行时保存当前程序路径到注册表
+            if (!settingsService.Settings.IsFirstRun)
+            {
+                var prevService = _host.Services.GetRequiredService<IPreviousInstallationService>();
+                prevService.SaveCurrentAppPath();
+            }
 
             base.OnStartup(e);
         }

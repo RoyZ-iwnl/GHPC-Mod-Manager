@@ -76,16 +76,18 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.ProgramLanguage}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding AvailableLanguages}"
-                                      SelectedItem="{Binding SelectedLanguage}"
-                                      MaxWidth="260"
-                                      HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
+                                <TextBlock Margin="0,16,0,0"
+                                           Grid.Column="0"
+                                           Text="{x:Static resources:Strings.ProgramLanguage}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           VerticalAlignment="Center"/>
+                                <ComboBox Margin="0,16,0,0"
+                                          Grid.Column="1"
+                                          ItemsSource="{Binding AvailableLanguages}"
+                                          SelectedItem="{Binding SelectedLanguage}"
+                                          MaxWidth="260"
+                                          HorizontalAlignment="Left">
+                                    <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Converter={x:Static converters:LanguageDisplayConverter.Instance}}"/>
                                     </DataTemplate>
@@ -391,8 +393,8 @@
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
                         <TextBlock Text="{x:Static resources:Strings.MaintenanceTools}"
-                                   Style="{StaticResource PageSectionTitleTextStyle}"/>                       
-                        <WrapPanel>
+                                   Style="{StaticResource PageSectionTitleTextStyle}"/>
+                        <WrapPanel Margin="0,16,0,0">
                             <Button Content="{x:Static resources:Strings.ModInfoDumper}"
                                     Command="{Binding ShowModInfoDumperCommand}"
                                     Margin="0,0,12,8"
@@ -418,7 +420,7 @@
                         <TextBlock Text="{x:Static resources:Strings.About}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
 
-                        <Grid Margin="0,0,0,14">
+                        <Grid Margin="0,16,0,14">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="220"/>
                                 <ColumnDefinition Width="*"/>

@@ -15,12 +15,13 @@ public interface IProcessService
     Task WaitForGameExitAsync();
 }
 
-public class ProcessService : IProcessService
+public class ProcessService : IProcessService, IDisposable
 {
     private readonly ILoggingService _loggingService;
     private readonly Timer _monitorTimer;
     private bool _isGameRunning;
     private bool _isMonitoring;
+    private bool _disposed;
 
     public bool IsGameRunning
     {
@@ -186,5 +187,15 @@ public class ProcessService : IProcessService
         }
 
         await Task.Delay(10000);
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            StopMonitoring();
+            _monitorTimer.Dispose();
+        }
     }
 }

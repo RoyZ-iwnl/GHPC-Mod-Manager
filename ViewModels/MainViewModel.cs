@@ -73,22 +73,6 @@ internal static class ModInstallCompatibilityHelper
         => version?.Trim().TrimStart('v', 'V') ?? string.Empty;
 }
 
-// 配置项视图模型
-public partial class ConfigurationItem : ObservableObject
-{
-    [ObservableProperty]
-    private string _key = string.Empty;
-    
-    [ObservableProperty] 
-    private object _value = string.Empty;
-    
-    public ConfigurationItem(string key, object value)
-    {
-        Key = key;
-        Value = value;
-    }
-}
-
 public partial class MainViewModel : ObservableObject
 {
     // Static flag to ensure startup update check runs only once per application session

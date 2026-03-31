@@ -179,7 +179,7 @@ public class ModBackupService : IModBackupService
             {
                 var backupFileName = Path.GetFileName(backupFile);
                 string targetPath;
-                
+
                 // Try to get original path from manifest
                 if (backupManifest.TryGetValue(backupFileName, out var originalPath))
                 {
@@ -191,7 +191,7 @@ public class ModBackupService : IModBackupService
                     var decodedPath = backupFileName.Replace('_', Path.DirectorySeparatorChar);
                     targetPath = Path.Combine(gameRootPath, decodedPath);
                 }
-                
+
                 // Ensure target directory exists
                 var targetDir = Path.GetDirectoryName(targetPath);
                 if (!string.IsNullOrEmpty(targetDir))
@@ -199,7 +199,13 @@ public class ModBackupService : IModBackupService
                     Directory.CreateDirectory(targetDir);
                 }
 
-                File.Move(backupFile, targetPath);
+                // 使用 Copy + Delete 替代 Move，避免目标文件存在时抛出异常
+                if (File.Exists(targetPath))
+                {
+                    _loggingService.LogWarning(Strings.ModFileOverwrittenDuringEnable, targetPath);
+                }
+                File.Copy(backupFile, targetPath, true);
+                File.Delete(backupFile);
                 _loggingService.LogInfo(Strings.RestoredModFile, backupFile, targetPath);
             }
 

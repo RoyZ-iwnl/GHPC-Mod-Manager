@@ -123,13 +123,21 @@ public class LoggingService : ILoggingService
     {
         try
         {
-            // Check if we need to switch to a new daily log file
+            // 从文件名解析日期，避免 GetCreationTime 因文件复制等操作返回错误值
             var today = DateTime.Now.Date;
-            var currentFileDate = File.Exists(_currentLogFile) ? 
-                File.GetCreationTime(_currentLogFile).Date : 
-                DateTime.MinValue.Date;
-                
-            if (today != currentFileDate)
+            var currentFileDateParsed = DateTime.MinValue.Date;
+            if (!string.IsNullOrEmpty(_currentLogFile))
+            {
+                var fileNameOnly = Path.GetFileNameWithoutExtension(_currentLogFile);
+                // 文件名格式: GHPC_Mod_Manager_yyyy-MM-dd
+                var datePart = fileNameOnly.Replace("GHPC_Mod_Manager_", "");
+                DateTime.TryParseExact(datePart, "yyyy-MM-dd",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out currentFileDateParsed);
+            }
+
+            if (today != currentFileDateParsed)
             {
                 InitializeDailyLogFile();
             }
@@ -139,7 +147,7 @@ public class LoggingService : ILoggingService
         }
         catch
         {
-            // Ignore file write errors to prevent recursion
+            // 忽略文件写入错误以防止递归
         }
     }
 
@@ -162,21 +170,29 @@ public class LoggingService : ILoggingService
     {
         try
         {
-            var cutoffDate = DateTime.Now.AddDays(-30);
+            var cutoffDate = DateTime.Now.AddDays(-30).Date;
             var logFiles = Directory.GetFiles(_logsDirectory, "GHPC_Mod_Manager_*.log");
-            
+
             foreach (var logFile in logFiles)
             {
-                var fileDate = File.GetCreationTime(logFile);
-                if (fileDate < cutoffDate)
+                // 从文件名解析日期，避免依赖不可靠的 GetCreationTime
+                var fileNameOnly = Path.GetFileNameWithoutExtension(logFile);
+                var datePart = fileNameOnly.Replace("GHPC_Mod_Manager_", "");
+                if (DateTime.TryParseExact(datePart, "yyyy-MM-dd",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.None,
+                        out var fileDate))
                 {
-                    File.Delete(logFile);
+                    if (fileDate.Date < cutoffDate)
+                    {
+                        File.Delete(logFile);
+                    }
                 }
             }
         }
         catch
         {
-            // Ignore cleanup errors
+            // 忽略清理错误
         }
     }
 

@@ -1114,69 +1114,6 @@ public class NetworkService : INetworkService
         }
     }
 
-    private async Task DownloadChunkAsync(string url, long startByte, long endByte, int chunkIndex, 
-        byte[][] chunks, Action<long> onProgress, CancellationToken cancellationToken)
-    {
-        const int maxRetries = 3;
-        const int baseDelayMs = 1000;
-
-        for (int attempt = 0; attempt < maxRetries; attempt++)
-        {
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(startByte, endByte);
-                
-                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                
-                // GitHub should return 206 (Partial Content) for range requests
-                if (response.StatusCode != System.Net.HttpStatusCode.PartialContent)
-                {
-                    response.EnsureSuccessStatusCode();
-                }
-
-                using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                using var chunkStream = new MemoryStream();
-                
-                var buffer = new byte[8192];
-                var lastProgressReport = 0L;
-                
-                while (true)
-                {
-                    var bytesRead = await ReadWithInactivityTimeoutAsync(contentStream, buffer, cancellationToken, $"chunk {chunkIndex} of {GetDownloadTargetName(url)}");
-                    if (bytesRead == 0) break;
-
-                    await chunkStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
-                    
-                    // Report progress every 64KB to avoid too frequent updates
-                    if (chunkStream.Length - lastProgressReport >= 65536)
-                    {
-                        onProgress(chunkStream.Length - lastProgressReport);
-                        lastProgressReport = chunkStream.Length;
-                    }
-                }
-                
-                // Report remaining progress
-                if (chunkStream.Length > lastProgressReport)
-                {
-                    onProgress(chunkStream.Length - lastProgressReport);
-                }
-
-                chunks[chunkIndex] = chunkStream.ToArray();
-                _loggingService.LogInfo(Strings.ChunkCompleted, chunkIndex, $"{chunks[chunkIndex].Length:N0}");
-                return; // Success
-            }
-            catch (Exception ex) when (attempt < maxRetries - 1)
-            {
-                var delay = baseDelayMs * (int)Math.Pow(2, attempt); // Exponential backoff
-                _loggingService.LogWarning(Strings.ChunkFailedRetrying, chunkIndex, attempt + 1, maxRetries, delay, ex.Message);
-                await Task.Delay(delay, cancellationToken);
-            }
-        }
-        
-        throw new Exception(string.Format(GHPC_Mod_Manager.Resources.Strings.ChunkDownloadMaxRetriesExceeded, chunkIndex, maxRetries));
-    }
-
     public void ClearCache()
     {
         // Clear rate limit blocks
@@ -1220,62 +1157,6 @@ public class NetworkService : INetworkService
         _loggingService.LogInfo(Strings.RateLimitBlocksCleared);
     }
 
-    private async Task<T?> GetFromPersistentCacheAsync<T>(string cacheKey, TimeSpan cacheExpiry, bool ignoreExpiry = false) where T : class
-    {
-        try
-        {
-            var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache");
-            var cacheFile = Path.Combine(cacheDir, $"{SanitizeFileName(cacheKey)}.json");
-            
-            if (!File.Exists(cacheFile))
-                return null;
-                
-            var cacheData = await File.ReadAllTextAsync(cacheFile);
-            var cacheItem = JsonConvert.DeserializeObject<CacheItem<T>>(cacheData);
-            
-            if (cacheItem == null)
-                return null;
-            
-            // Check expiry unless explicitly ignoring it
-            if (!ignoreExpiry && DateTime.Now - cacheItem.Timestamp > cacheExpiry)
-            {
-                // Cache expired, delete file
-                File.Delete(cacheFile);
-                return null;
-            }
-            
-            return cacheItem.Data;
-        }
-        catch (Exception ex)
-        {
-            _loggingService.LogWarning(Strings.FailedToReadCache, cacheKey, ex.Message);
-            return null;
-        }
-    }
-
-    private async Task SaveToPersistentCacheAsync<T>(string cacheKey, T data)
-    {
-        try
-        {
-            var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache");
-            Directory.CreateDirectory(cacheDir);
-            
-            var cacheFile = Path.Combine(cacheDir, $"{SanitizeFileName(cacheKey)}.json");
-            var cacheItem = new CacheItem<T>
-            {
-                Data = data,
-                Timestamp = DateTime.Now
-            };
-            
-            var json = JsonConvert.SerializeObject(cacheItem, Formatting.Indented);
-            await File.WriteAllTextAsync(cacheFile, json);
-        }
-        catch (Exception ex)
-        {
-            _loggingService.LogWarning(Strings.FailedToSaveCache, cacheKey, ex.Message);
-        }
-    }
-
     private string SanitizeFileName(string fileName)
     {
         var invalid = Path.GetInvalidFileNameChars();
@@ -1306,8 +1187,6 @@ public class NetworkService : INetworkService
             return true;
         }
     }
-    
-    private TimeSpan GetCacheExpiryForUrl(string url) => _githubApiCacheExpiry;
 
     /// <summary>
     /// Check if a path is a local file system path (not a URL)
@@ -1668,14 +1547,6 @@ public class CacheItem<T>
 {
     public T Data { get; set; } = default!;
     public DateTime Timestamp { get; set; }
-}
-
-// Helper class for chunk download work queue
-internal class ChunkDownloadTask
-{
-    public int ChunkIndex { get; set; }
-    public long StartByte { get; set; }
-    public long EndByte { get; set; }
 }
 
 // Chunk status enum for Work Stealing algorithm

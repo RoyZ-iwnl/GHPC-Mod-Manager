@@ -80,32 +80,9 @@ public partial class ModManagerService
                    .Any(file => Path.GetFileName(file) != BackupPathsFileName);
     }
 
-    private bool IsManagedConfigSupported(ModConfig modConfig)
-    {
-        return !modConfig.HasLegacyScriptConfig;
-    }
-
     private string GetLocalizedResourceText(string resourceKey, string fallback)
     {
         return Strings.ResourceManager.GetString(resourceKey, Strings.Culture) ?? fallback;
-    }
-
-    private bool EnsureManagedConfigSupported(ModConfig modConfig)
-    {
-        if (IsManagedConfigSupported(modConfig))
-            return true;
-
-        var message = string.Format(
-            GetLocalizedResourceText(
-                "DeprecatedScriptedConfigMessage",
-                _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
-                    ? "Mod {0} 仍在使用已废弃的 Scripted 配置，当前版本不再支持安装或更新。"
-                    : "Mod {0} still uses the deprecated Scripted configuration and can no longer be installed or updated."),
-            GetLocalizedName(modConfig));
-
-        MessageDialogHelper.ShowWarningAsync(message, Strings.Warning).Wait();
-        _loggingService.LogWarning("Blocked deprecated scripted mod config: {0}", modConfig.Id);
-        return false;
     }
 
     private async Task<(byte[] Data, string FileName)?> DownloadModPackageAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress)
@@ -267,68 +244,114 @@ public partial class ModManagerService
     {
         bool changed = _installManifest.SchemaVersion < ModInstallManifest.CurrentSchemaVersion;
 
-        foreach (var installInfo in _installManifest.InstalledMods.Values)
+        var manifestPath = Path.Combine(_settingsService.AppDataPath, "mod_install_manifest.json");
+        var backupPath = manifestPath + ".migration_backup";
+
+        // 迁移前备份原始文件
+        if (changed && File.Exists(manifestPath))
         {
-            installInfo.BackupFiles ??= new List<string>();
-
-            foreach (var backupFile in installInfo.BackupFiles.ToList())
+            try
             {
-                var normalizedBackup = NormalizeRelativePath(backupFile);
-                if (!string.Equals(backupFile, normalizedBackup, StringComparison.Ordinal))
-                {
-                    changed = true;
-                    installInfo.BackupFiles.Remove(backupFile);
-                    installInfo.BackupFiles.Add(normalizedBackup);
-                }
+                File.Copy(manifestPath, backupPath, overwrite: true);
             }
-
-            if (!installInfo.InstalledFiles.Any())
-                continue;
-
-            var disabledPlan = HasDisabledBackup(installInfo)
-                ? await ReadDisabledBackupPlanAsync(installInfo.ModId)
-                : null;
-
-            foreach (var file in installInfo.InstalledFiles)
+            catch (Exception ex)
             {
-                var normalizedPath = NormalizeRelativePath(file.RelativePath);
-                if (!string.Equals(file.RelativePath, normalizedPath, StringComparison.Ordinal))
-                {
-                    file.RelativePath = normalizedPath;
-                    changed = true;
-                }
-
-                if (!string.IsNullOrWhiteSpace(file.Sha256) && file.FileSize > 0)
-                    continue;
-
-                var gameRootPath = _settingsService.Settings.GameRootPath;
-                var fullPath = Path.Combine(gameRootPath, file.RelativePath);
-                if (File.Exists(fullPath))
-                {
-                    file.Sha256 = await CalculateFileSha256Async(fullPath);
-                    file.FileSize = new FileInfo(fullPath).Length;
-                    changed = true;
-                    continue;
-                }
-
-                var disabledEntry = disabledPlan?.Files.FirstOrDefault(entry =>
-                    string.Equals(entry.RelativePath, file.RelativePath, StringComparison.OrdinalIgnoreCase));
-                if (disabledEntry != null && File.Exists(disabledEntry.BackupFilePath))
-                {
-                    file.Sha256 = await CalculateFileSha256Async(disabledEntry.BackupFilePath);
-                    file.FileSize = new FileInfo(disabledEntry.BackupFilePath).Length;
-                    changed = true;
-                }
+                _loggingService.LogWarning("清单迁移备份失败: {0}", ex.Message);
             }
         }
 
-        if (changed)
+        try
         {
-            _installManifest.SchemaVersion = ModInstallManifest.CurrentSchemaVersion;
-            await SaveManifestAsync();
-        }
+            foreach (var installInfo in _installManifest.InstalledMods.Values)
+            {
+                installInfo.BackupFiles ??= new List<string>();
 
-        return changed;
+                foreach (var backupFile in installInfo.BackupFiles.ToList())
+                {
+                    var normalizedBackup = NormalizeRelativePath(backupFile);
+                    if (!string.Equals(backupFile, normalizedBackup, StringComparison.Ordinal))
+                    {
+                        changed = true;
+                        installInfo.BackupFiles.Remove(backupFile);
+                        installInfo.BackupFiles.Add(normalizedBackup);
+                    }
+                }
+
+                if (!installInfo.InstalledFiles.Any())
+                    continue;
+
+                var disabledPlan = HasDisabledBackup(installInfo)
+                    ? await ReadDisabledBackupPlanAsync(installInfo.ModId)
+                    : null;
+
+                foreach (var file in installInfo.InstalledFiles)
+                {
+                    var normalizedPath = NormalizeRelativePath(file.RelativePath);
+                    if (!string.Equals(file.RelativePath, normalizedPath, StringComparison.Ordinal))
+                    {
+                        file.RelativePath = normalizedPath;
+                        changed = true;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(file.Sha256) && file.FileSize > 0)
+                        continue;
+
+                    var gameRootPath = _settingsService.Settings.GameRootPath;
+                    var fullPath = Path.Combine(gameRootPath, file.RelativePath);
+                    if (File.Exists(fullPath))
+                    {
+                        file.Sha256 = await CalculateFileSha256Async(fullPath);
+                        file.FileSize = new FileInfo(fullPath).Length;
+                        changed = true;
+                        continue;
+                    }
+
+                    var disabledEntry = disabledPlan?.Files.FirstOrDefault(entry =>
+                        string.Equals(entry.RelativePath, file.RelativePath, StringComparison.OrdinalIgnoreCase));
+                    if (disabledEntry != null && File.Exists(disabledEntry.BackupFilePath))
+                    {
+                        file.Sha256 = await CalculateFileSha256Async(disabledEntry.BackupFilePath);
+                        file.FileSize = new FileInfo(disabledEntry.BackupFilePath).Length;
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                _installManifest.SchemaVersion = ModInstallManifest.CurrentSchemaVersion;
+                await SaveManifestAsync();
+
+                // 迁移成功后删除备份
+                if (File.Exists(backupPath))
+                {
+                    try { File.Delete(backupPath); } catch { }
+                }
+            }
+
+            return changed;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "清单迁移失败");
+
+            // 迁移失败时尝试从备份恢复
+            if (File.Exists(backupPath))
+            {
+                try
+                {
+                    File.Copy(backupPath, manifestPath, overwrite: true);
+                    File.Delete(backupPath);
+                    _loggingService.LogInfo("已从备份恢复清单文件");
+                }
+                catch (Exception restoreEx)
+                {
+                    _loggingService.LogError(restoreEx, "清单备份恢复失败");
+                }
+            }
+
+            return false;
+        }
     }
 
     private void NormalizeModConfigs(List<ModConfig> configs)

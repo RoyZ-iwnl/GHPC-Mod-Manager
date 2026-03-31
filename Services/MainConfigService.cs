@@ -1,5 +1,6 @@
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
@@ -79,7 +80,7 @@ public class MainConfigService : IMainConfigService
     public async Task ForceReloadAsync()
     {
         // dev模式：重新读本地路径
-        if (DevMode.IsEnabled)
+        if (CommandLineArgs.DevModeEnabled)
         {
             await LoadAsync();
             return;
@@ -132,20 +133,20 @@ public class MainConfigService : IMainConfigService
     public async Task LoadAsync()
     {
         // dev模式：尝试加载 MainConfigUrlOverride（支持本地路径），打印下发内容
-        if (DevMode.IsEnabled)
+        if (CommandLineArgs.DevModeEnabled)
         {
-            if (!string.IsNullOrWhiteSpace(DevMode.MainConfigUrlOverride))
+            if (!string.IsNullOrWhiteSpace(CommandLineArgs.DevConfigUrlOverride))
             {
-                var devConfig = await TryLoadFromPathOrUrlAsync(DevMode.MainConfigUrlOverride);
+                var devConfig = await TryLoadFromPathOrUrlAsync(CommandLineArgs.DevConfigUrlOverride);
                 if (devConfig != null)
                 {
                     Config = devConfig;
-                    _loggingService.LogInfo(string.Format(Strings.MainConfigLoadedFromManualUrl, DevMode.MainConfigUrlOverride));
+                    _loggingService.LogInfo(string.Format(Strings.MainConfigLoadedFromManualUrl, CommandLineArgs.DevConfigUrlOverride));
                     LogConfigValues("Dev手动", devConfig);
                 }
                 else
                 {
-                    _loggingService.LogInfo(string.Format(Strings.MainConfigManualUrlLoadFailed, DevMode.MainConfigUrlOverride));
+                    _loggingService.LogInfo(string.Format(Strings.MainConfigManualUrlLoadFailed, CommandLineArgs.DevConfigUrlOverride));
                     LogDevOverrides();
                 }
             }
@@ -224,7 +225,7 @@ public class MainConfigService : IMainConfigService
 
     public void LogCurrentConfig()
     {
-        if (DevMode.IsEnabled)
+        if (CommandLineArgs.DevModeEnabled)
         {
             if (Config != null)
                 LogConfigValues("Dev手动", Config);
@@ -381,7 +382,7 @@ public class MainConfigService : IMainConfigService
     {
         var rawLastResort = BuildRawLastResortCandidates(BuiltinDefaults.MainConfigRaw);
         return BuildUniqueUrlList(
-            DevMode.MainConfigUrlOverride ?? BuiltinDefaults.MainConfigPrimary,
+            CommandLineArgs.DevConfigUrlOverride ?? BuiltinDefaults.MainConfigPrimary,
             BuiltinDefaults.MainConfigFallback,
             CandidateAt(rawLastResort, 0),
             CandidateAt(rawLastResort, 1)

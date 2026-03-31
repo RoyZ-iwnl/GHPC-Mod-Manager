@@ -20,27 +20,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0"
-                Style="{StaticResource PageToolbarCardStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Margin="0,0,18,0">
-                    <TextBlock Text="{Binding StatusMessage}"
-                               Style="{StaticResource PageSectionHintTextStyle}"/>
-                </StackPanel>
-
-                <Button Grid.Column="1"
-                        Content="{x:Static resources:Strings.CheckForUpdates}"
-                        Command="{Binding CheckForTranslationUpdatesCommand}"
-                        Style="{DynamicResource OutlinedButtonStyle}"/>
-            </Grid>
-        </Border>
+        </Grid.RowDefinitions>        
 
         <ScrollViewer Grid.Row="1"
                       Style="{StaticResource AppScrollViewerStyle}"
@@ -74,6 +54,10 @@
                                                Style="{StaticResource BadgeTextStyle}"
                                                Foreground="{DynamicResource OnWarningContainerBrush}"/>
                                 </Border>
+
+                                <Button Content="{x:Static resources:Strings.CheckForUpdates}"
+                                            Command="{Binding CheckForTranslationUpdatesCommand}"
+                                            Style="{DynamicResource OutlinedButtonStyle}"/>
                             </WrapPanel>
 
                             <WrapPanel>

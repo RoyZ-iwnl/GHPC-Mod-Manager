@@ -179,6 +179,18 @@
                             Style="{StaticResource DialogSecondaryButtonStyle}"
                             Click="No_Click"
                             Visibility="Collapsed"/>
+                    <!-- 打开目录按钮 -->
+                    <Button x:Name="OpenFolderButton"
+                            Content="打开目录"
+                            Style="{StaticResource DialogPrimaryButtonStyle}"
+                            Click="OpenFolder_Click"
+                            Visibility="Collapsed"/>
+                    <!-- 忽略按钮 -->
+                    <Button x:Name="IgnoreButton"
+                            Content="忽略"
+                            Style="{StaticResource DialogSecondaryButtonStyle}"
+                            Click="Ignore_Click"
+                            Visibility="Collapsed"/>
                 </StackPanel>
             </Border>
         </Grid>

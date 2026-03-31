@@ -76,6 +76,9 @@ public partial class ModManagerService : IModManagerService
         var gameRootPath = _settingsService.Settings.GameRootPath;
         var modsPath = Path.Combine(gameRootPath, "Mods");
 
+        // 清理残留的 disabled 目录（无清单记录）
+        await CleanupOrphanedDisabledDirectoriesAsync(gameRootPath);
+
         // 先创建所有ModViewModel（不包含GitHub版本信息）
         foreach (var modConfig in _availableMods)
         {
@@ -210,6 +213,17 @@ public partial class ModManagerService : IModManagerService
                 var disabledModDirs = Directory.GetDirectories(disabledPath);
                 foreach (var disabledModDir in disabledModDirs)
                 {
+                    // 获取 disabled 目录对应的 modId
+                    var modId = Path.GetFileName(disabledModDir);
+
+                    // 检查是否是 Replace 模式的 mod
+                    // Replace 模式禁用后，目标路径是恢复的游戏原文件，不应扫描
+                    var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+                    if (modConfig != null && IsReplaceMode(modConfig))
+                    {
+                        continue;  // 跳过 Replace 模式的 disabled 备份
+                    }
+
                     var manifestPath = Path.Combine(disabledModDir, "backup_paths.json");
                     if (File.Exists(manifestPath))
                     {
@@ -220,14 +234,13 @@ public partial class ModManagerService : IModManagerService
                             if (backupManifest != null)
                             {
                                 // Add the original paths of disabled mods
-                                disabledModFiles.AddRange(backupManifest.Values.Select(relativePath => 
+                                disabledModFiles.AddRange(backupManifest.Values.Select(relativePath =>
                                     Path.Combine(gameRootPath, relativePath)));
                             }
                         }
                         catch
                         {
                             // Fallback: decode from directory name
-                            var modId = Path.GetFileName(disabledModDir);
                             var backupFiles = Directory.GetFiles(disabledModDir, "*.dll", SearchOption.TopDirectoryOnly);
                             foreach (var backupFile in backupFiles)
                             {
@@ -332,14 +345,190 @@ public partial class ModManagerService : IModManagerService
         }
     }
 
+    /// <summary>
+    /// 清理残留的 disabled 目录（无清单记录的目录）
+    /// 将它们移动到 uninstalled 目录以避免误判
+    /// </summary>
+    private async Task CleanupOrphanedDisabledDirectoriesAsync(string gameRootPath)
+    {
+        var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled");
+        var uninstalledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "uninstalled");
+
+        // 清单为空时，清空所有备份（保留手动 Mod）
+        if (_installManifest.InstalledMods.Count == 0)
+        {
+            await CleanAllBackupsPreservingManualModsAsync(disabledPath, uninstalledPath);
+            return;
+        }
+
+        // 清单正常，清理无记录的残留目录
+        if (!Directory.Exists(disabledPath))
+            return;
+
+        Directory.CreateDirectory(uninstalledPath);
+
+        var disabledDirs = Directory.GetDirectories(disabledPath);
+        foreach (var disabledDir in disabledDirs)
+        {
+            var modId = Path.GetFileName(disabledDir);
+
+            // 如果有清单记录，跳过
+            if (_installManifest.InstalledMods.ContainsKey(modId))
+                continue;
+
+            // 跳过手动 Mod 备份（包括受支持的和不受支持的）
+            if (IsManualModBackup(disabledDir) || IsSupportedManualModBackup(modId))
+            {
+                _loggingService.LogInfo(Strings.PreservingManualModBackup, modId);
+                continue;
+            }
+
+            // 无清单记录，是残留目录，删除
+            _loggingService.LogInfo(Strings.CleaningOrphanedDisabledBackup, modId);
+
+            try
+            {
+                Directory.Delete(disabledDir, true);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.FailedToMoveOrphanedBackup, modId);
+            }
+        }
+
+        // 清理 uninstalled 中无清单记录的目录（保留手动 Mod）
+        if (Directory.Exists(uninstalledPath))
+        {
+            var uninstalledDirs = Directory.GetDirectories(uninstalledPath);
+            foreach (var dir in uninstalledDirs)
+            {
+                // 从目录名提取 modId（格式：{modId}_v{version} 或 {modId}_orphaned_xxx）
+                var dirName = Path.GetFileName(dir);
+                var underscoreIndex = dirName.IndexOf('_');
+                var modId = underscoreIndex > 0 ? dirName.Substring(0, underscoreIndex) : dirName;
+
+                if (_installManifest.InstalledMods.ContainsKey(modId))
+                    continue;
+
+                if (IsManualModBackup(dir) || IsSupportedManualModBackup(modId))
+                {
+                    _loggingService.LogInfo(Strings.PreservingManualModBackup, dirName);
+                    continue;
+                }
+
+                try
+                {
+                    Directory.Delete(dir, true);
+                    _loggingService.LogInfo(Strings.CleaningOrphanedDisabledBackup, dirName);
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError(ex, Strings.FailedToMoveOrphanedBackup, dirName);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 清单丢失时清空所有备份目录（保留手动 Mod 备份）
+    /// </summary>
+    private Task CleanAllBackupsPreservingManualModsAsync(string disabledPath, string uninstalledPath)
+    {
+        // 清空 disabled 目录，但保留手动 Mod 备份
+        if (Directory.Exists(disabledPath))
+        {
+            var disabledDirs = Directory.GetDirectories(disabledPath);
+            foreach (var dir in disabledDirs)
+            {
+                var modId = Path.GetFileName(dir);
+                if (IsManualModBackup(dir) || IsSupportedManualModBackup(modId))
+                {
+                    _loggingService.LogInfo(Strings.PreservingManualModBackup, modId);
+                    continue;
+                }
+                Directory.Delete(dir, true);
+            }
+            _loggingService.LogInfo(Strings.BackupsCleanedDueToMissingManifest, "disabled");
+        }
+
+        // 清空 uninstalled 目录，但保留手动 Mod 备份
+        if (Directory.Exists(uninstalledPath))
+        {
+            var dirs = Directory.GetDirectories(uninstalledPath);
+            foreach (var dir in dirs)
+            {
+                if (IsManualModBackup(dir))
+                {
+                    _loggingService.LogInfo(Strings.PreservingManualModBackup, Path.GetFileName(dir));
+                    continue;
+                }
+
+                // 检查是否是受支持的手动 Mod
+                var dirName = Path.GetFileName(dir);
+                var underscoreIndex = dirName.IndexOf('_');
+                var modId = underscoreIndex > 0 ? dirName.Substring(0, underscoreIndex) : dirName;
+                if (IsSupportedManualModBackup(modId))
+                {
+                    _loggingService.LogInfo(Strings.PreservingManualModBackup, dirName);
+                    continue;
+                }
+                Directory.Delete(dir, true);
+            }
+            _loggingService.LogInfo(Strings.BackupsCleanedDueToMissingManifest, "uninstalled");
+        }
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 判断备份目录是否属于手动 Mod（通过目录名判断）
+    /// </summary>
+    private bool IsManualModBackup(string directoryPath)
+    {
+        var dirName = Path.GetFileName(directoryPath);
+
+        // 检查目录名是否以 manual_ 开头（不受支持的手动 Mod）
+        if (dirName.StartsWith("manual_", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // 检查 backup_manifest.json 中的 IsManualMod 字段
+        var manifestPath = Path.Combine(directoryPath, "backup_manifest.json");
+        if (File.Exists(manifestPath))
+        {
+            try
+            {
+                var json = File.ReadAllText(manifestPath);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("IsManualMod", out var prop))
+                {
+                    return prop.ValueKind == System.Text.Json.JsonValueKind.True;
+                }
+            }
+            catch { }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 判断 modId 是否对应受支持的手动 Mod（在 _availableMods 中但不在清单中）
+    /// </summary>
+    private bool IsSupportedManualModBackup(string modId)
+    {
+        // 检查是否在 _availableMods 中
+        var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+        if (modConfig == null)
+            return false;
+
+        // 检查是否不在清单中（手动安装）
+        return !_installManifest.InstalledMods.ContainsKey(modId);
+    }
+
     public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true)
     {
         try
         {
             _loggingService.LogInfo(Strings.Installing, modConfig.Id, version);
-
-            if (!EnsureManagedConfigSupported(modConfig))
-                return false;
 
             if (!ShowReplaceInstallWarningIfNeeded(modConfig))
                 return false;
@@ -454,9 +643,6 @@ public partial class ModManagerService : IModManagerService
                 _loggingService.LogError(Strings.ModConfigNotFoundForUpdate, modId);
                 return false;
             }
-
-            if (!EnsureManagedConfigSupported(modConfig))
-                return false;
 
             // Check if mod is currently installed
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var currentInstallInfo))
@@ -791,10 +977,13 @@ public partial class ModManagerService : IModManagerService
             List<string> modFiles = new();
 
             // Check if this is a manual mod (either unsupported "manual_" or supported but manually installed)
-            bool isManualMod = modId.StartsWith("manual_") || 
-                              (!_installManifest.InstalledMods.ContainsKey(modId) && 
+            bool isManualMod = modId.StartsWith("manual_") ||
+                              (!_installManifest.InstalledMods.ContainsKey(modId) &&
                                _availableMods.Any(m => m.Id == modId));
-            
+
+            // 获取 mod 配置，用于判断 Replace 模式
+            var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+
             // For managed mods, get files from install manifest
             if (_installManifest.InstalledMods.TryGetValue(modId, out var installInfo))
             {
@@ -804,16 +993,16 @@ public partial class ModManagerService : IModManagerService
             else if (isManualMod)
             {
                 _loggingService.LogInfo(Strings.ProcessingManualModToggle, modId);
-                
+
                 var gameRootPath = _settingsService.Settings.GameRootPath;
                 var modsPath = Path.Combine(gameRootPath, "Mods");
-                
+
                 if (modId.StartsWith("manual_"))
                 {
                     // Unsupported manual mod: manual_231 -> 231.dll
                     var fileName = modId.Substring("manual_".Length) + ".dll";
                     var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
-                    
+
                     foreach (var file in foundFiles)
                     {
                         var relativePath = Path.GetRelativePath(gameRootPath, file);
@@ -823,12 +1012,11 @@ public partial class ModManagerService : IModManagerService
                 else
                 {
                     // Supported manual mod - use MainBinaryFileName from config
-                    var matchingConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-                    if (matchingConfig != null)
+                    if (modConfig != null)
                     {
-                        var fileName = matchingConfig.MainBinaryFileName;
+                        var fileName = modConfig.MainBinaryFileName;
                         var foundFiles = Directory.GetFiles(modsPath, fileName, SearchOption.AllDirectories);
-                        
+
                         foreach (var file in foundFiles)
                         {
                             var relativePath = Path.GetRelativePath(gameRootPath, file);
@@ -836,6 +1024,15 @@ public partial class ModManagerService : IModManagerService
                         }
                     }
                 }
+            }
+
+            // 特殊处理：Replace 模式但无清单记录
+            // 由于清单丢失时 disabled 目录已被清理，这种情况不应该发生
+            // 如果发生，说明 disabled 目录是手动创建的或清理失败，直接返回失败
+            if (modConfig != null && IsReplaceMode(modConfig) && installInfo == null)
+            {
+                _loggingService.LogError(Strings.ModNotFound, modId);
+                return false;
             }
 
             if (!modFiles.Any())
@@ -852,7 +1049,6 @@ public partial class ModManagerService : IModManagerService
             // Use backup service for enable/disable operations
             if (enable)
             {
-                var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
                 if (modConfig != null && installInfo != null && IsReplaceMode(modConfig))
                 {
                     var enabledInstallInfo = await EnableReplaceModAsync(modConfig, installInfo);
@@ -870,7 +1066,6 @@ public partial class ModManagerService : IModManagerService
             {
                 if (installInfo != null)
                 {
-                    var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
                     if (modConfig != null && IsReplaceMode(modConfig))
                     {
                         var replaceDisabled = await DisableReplaceModAsync(installInfo);
@@ -1801,17 +1996,16 @@ public partial class ModManagerService : IModManagerService
     /// </summary>
     private string GetModDisplayName(string modId)
     {
-        // Try to get the display name from available mod configs
-        var availableMods = Task.Run(async () => await GetModConfigsWithFallbackAsync()).Result;
-        var modConfig = availableMods.FirstOrDefault(m => m.Id == modId);
-        
+        // 直接使用已缓存的 _availableMods，避免同步阻塞
+        var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+
         if (modConfig?.Name != null)
         {
             var currentLanguage = _settingsService.Settings.Language;
-            return modConfig.Name.TryGetValue(currentLanguage, out var name) ? name : 
+            return modConfig.Name.TryGetValue(currentLanguage, out var name) ? name :
                    modConfig.Name.TryGetValue("en-US", out var enName) ? enName : modId;
         }
-        
+
         return modId;
     }
 

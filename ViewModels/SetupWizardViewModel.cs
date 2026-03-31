@@ -4,6 +4,7 @@ using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Services;
 using GHPC_Mod_Manager.Helpers;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
@@ -21,6 +22,7 @@ public partial class SetupWizardViewModel : ObservableObject
     private readonly ISteamGameFinderService _steamGameFinder;
     private readonly IMainConfigService _mainConfigService;
     private readonly IUpdateService _updateService;
+    private readonly IPreviousInstallationService _previousInstallationService;
     private bool _isInitializing = true;
     private bool _hasShownBepInExWarning;
     private bool _hasShownSteamWarning;
@@ -251,7 +253,8 @@ public partial class SetupWizardViewModel : ObservableObject
         ILoggingService loggingService,
         ISteamGameFinderService steamGameFinder,
         IMainConfigService mainConfigService,
-        IUpdateService updateService)
+        IUpdateService updateService,
+        IPreviousInstallationService previousInstallationService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -262,6 +265,7 @@ public partial class SetupWizardViewModel : ObservableObject
         _steamGameFinder = steamGameFinder;
         _mainConfigService = mainConfigService;
         _updateService = updateService;
+        _previousInstallationService = previousInstallationService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         
@@ -350,6 +354,31 @@ public partial class SetupWizardViewModel : ObservableObject
         switch (CurrentStep)
         {
             case 0: // Language Selection
+                // 语言选择完成后，进入步骤1前检测旧安装
+                if (_settingsService.Settings.IsFirstRun
+                    && !CommandLineArgs.ShowLogWindow
+                    && _previousInstallationService.HasPreviousInstallation())
+                {
+                    var previousPath = _previousInstallationService.GetPreviousAppPath()!;
+                    var result = MessageDialogHelper.Show(
+                        Strings.PreviousInstallationDetectedMessage,
+                        Strings.PreviousInstallationDetectedTitle,
+                        MessageDialogButton.OpenFolderIgnore,
+                        MessageDialogImage.Warning);
+
+                    if (result == MessageDialogResult.OpenFolder)
+                    {
+                        // 打开旧目录，不退出程序（让用户自己决定）
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = previousPath,
+                            UseShellExecute = true,
+                            Verb = "open"
+                        });
+                        return; // 不继续跳转
+                    }
+                    // Ignore → 继续正常进入步骤1
+                }
                 // 语言已经通过Apply按钮设置，这里只需要决定下一步
                 CurrentStep = 1; // Go to Welcome Page
                 break;
@@ -775,7 +804,10 @@ public partial class SetupWizardViewModel : ObservableObject
         // 初次安装无需清理旧版本文件，跳过清理
         _settingsService.Settings.CleanupDoneForVersion = _updateService.GetCurrentVersion().TrimStart('v');
         await _settingsService.SaveSettingsAsync();
-        
+
+        // 保存当前程序路径到注册表
+        _previousInstallationService.SaveCurrentAppPath();
+
         StatusMessage = Strings.SetupComplete;
         
         await Task.Delay(2000);

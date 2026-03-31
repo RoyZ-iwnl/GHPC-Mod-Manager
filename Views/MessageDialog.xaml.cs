@@ -69,6 +69,8 @@ namespace GHPC_Mod_Manager.Views
             CancelButton.Visibility = Visibility.Collapsed;
             YesButton.Visibility = Visibility.Collapsed;
             NoButton.Visibility = Visibility.Collapsed;
+            OpenFolderButton.Visibility = Visibility.Collapsed;
+            IgnoreButton.Visibility = Visibility.Collapsed;
 
             // 根据类型显示按钮
             switch (button)
@@ -100,6 +102,13 @@ namespace GHPC_Mod_Manager.Views
                     YesButton.Visibility = Visibility.Visible;
                     YesButton.Content = Strings.Yes;
                     YesButton.Margin = new Thickness(8, 0, 0, 0);
+                    break;
+                case MessageDialogButton.OpenFolderIgnore:
+                    IgnoreButton.Visibility = Visibility.Visible;
+                    IgnoreButton.Content = Strings.PreviousInstallationIgnore;
+                    OpenFolderButton.Visibility = Visibility.Visible;
+                    OpenFolderButton.Content = Strings.PreviousInstallationOpenFolder;
+                    OpenFolderButton.Margin = new Thickness(8, 0, 0, 0);
                     break;
             }
         }
@@ -154,6 +163,7 @@ namespace GHPC_Mod_Manager.Views
                 MessageDialogButton.OKCancel => OKButton,
                 MessageDialogButton.YesNo => YesButton,
                 MessageDialogButton.YesNoCancel => YesButton,
+                MessageDialogButton.OpenFolderIgnore => OpenFolderButton,
                 _ => null
             };
         }
@@ -195,6 +205,24 @@ namespace GHPC_Mod_Manager.Views
         }
 
         /// <summary>
+        /// 打开目录按钮点击
+        /// </summary>
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            _result = MessageDialogResult.OpenFolder;
+            Close();
+        }
+
+        /// <summary>
+        /// 忽略按钮点击
+        /// </summary>
+        private void Ignore_Click(object sender, RoutedEventArgs e)
+        {
+            _result = MessageDialogResult.Ignore;
+            Close();
+        }
+
+        /// <summary>
         /// 键盘快捷键处理
         /// </summary>
         protected override void OnKeyDown(KeyEventArgs e)
@@ -225,6 +253,10 @@ namespace GHPC_Mod_Manager.Views
                 else if (_buttons == MessageDialogButton.YesNo || _buttons == MessageDialogButton.YesNoCancel)
                 {
                     _result = MessageDialogResult.Yes;
+                }
+                else if (_buttons == MessageDialogButton.OpenFolderIgnore)
+                {
+                    _result = MessageDialogResult.OpenFolder;
                 }
                 Close();
             }

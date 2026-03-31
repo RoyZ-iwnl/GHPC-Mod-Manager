@@ -321,6 +321,21 @@
   <data name="ManualModScanError" xml:space="preserve">
     <value>扫描手动安装的Mod时出错</value>
   </data>
+  <data name="CleaningOrphanedDisabledBackup" xml:space="preserve">
+    <value>清理残留的禁用备份: {0}</value>
+  </data>
+  <data name="FailedToMoveOrphanedBackup" xml:space="preserve">
+    <value>移动残留禁用备份失败: {0}</value>
+  </data>
+  <data name="BackupsCleanedDueToMissingManifest" xml:space="preserve">
+    <value>因清单丢失已清理 {0} 备份</value>
+  </data>
+  <data name="PreservingManualModBackup" xml:space="preserve">
+    <value>保留手动 Mod 备份: {0}</value>
+  </data>
+  <data name="ModFileOverwrittenDuringEnable" xml:space="preserve">
+    <value>启用 Mod 时覆盖了已存在的文件: {0}</value>
+  </data>
   <data name="XUnityReleasesFetchError" xml:space="preserve">
     <value>获取XUnity AutoTranslator版本信息时出错</value>
   </data>
@@ -1401,9 +1416,6 @@
   <data name="TranslationPlugin" xml:space="preserve">
     <value>翻译插件</value>
   </data>
-  <data name="ScriptModSecurityWarning" xml:space="preserve">
-    <value>警告：此Mod使用脚本进行安装，可能对您的系统造成未知风险。请确保您信任此Mod的来源。是否继续？</value>
-  </data>
   <data name="SecurityWarningTitle" xml:space="preserve">
     <value>安全警告</value>
   </data>
@@ -1562,45 +1574,6 @@
   </data>
   <data name="CannotUninstallManualModWithoutBinaryName" xml:space="preserve">
     <value>无法卸载无 MainBinaryFileName 的手动安装模组: {0}。管理器无法确定该模组对应的文件。</value>
-  </data>
-  <data name="ExecutingUninstallScript" xml:space="preserve">
-    <value>正在执行模组卸载脚本: {0}</value>
-  </data>
-  <data name="ExecutingUninstallScriptForDisable" xml:space="preserve">
-    <value>禁用后执行卸载脚本: {0}</value>
-  </data>
-  <data name="ExecutingEnableScript" xml:space="preserve">
-    <value>恢复前执行启用脚本: {0}</value>
-  </data>
-  <data name="ScriptedModMissingInstallScript" xml:space="preserve">
-    <value>脚本安装模式的 Mod 缺少安装脚本: {0}</value>
-  </data>
-  <data name="NonScriptedModHasInstallScript" xml:space="preserve">
-    <value>非脚本模式的 Mod 配置了安装脚本（InstallMethod 应为 'Scripted'）: {0}</value>
-  </data>
-  <data name="NonScriptedModHasUninstallScript" xml:space="preserve">
-    <value>非脚本模式的 Mod 配置了卸载脚本（InstallMethod 应为 'Scripted'）: {0}</value>
-  </data>
-  <data name="NonScriptedModHasEnableScript" xml:space="preserve">
-    <value>非脚本模式的 Mod 配置了启用脚本（InstallMethod 应为 'Scripted'）: {0}</value>
-  </data>
-  <data name="EnableScriptCompleted" xml:space="preserve">
-    <value>启用脚本执行完成，退出码: {0}</value>
-  </data>
-  <data name="FailedToStartEnableScript" xml:space="preserve">
-    <value>无法启动启用脚本进程</value>
-  </data>
-  <data name="EnableScriptError" xml:space="preserve">
-    <value>启用脚本错误: {0}</value>
-  </data>
-  <data name="UninstallScriptCompleted" xml:space="preserve">
-    <value>卸载脚本执行完成，退出码: {0}</value>
-  </data>
-  <data name="FailedToStartUninstallScript" xml:space="preserve">
-    <value>无法启动卸载脚本进程</value>
-  </data>
-  <data name="UninstallScriptError" xml:space="preserve">
-    <value>卸载脚本错误: {0}</value>
   </data>
   <data name="ModToggleFileError" xml:space="preserve">
     <value>模组切换文件错误</value>
@@ -2370,35 +2343,11 @@
   <data name="ProcessingManualModToggle" xml:space="preserve">
     <value>正在处理手动模组切换：{0}</value>
   </data>
-  <data name="FailedToStartScriptProcess" xml:space="preserve">
-    <value>启动脚本进程失败</value>
-  </data>
   <data name="ErrorRecordingDirectoryState" xml:space="preserve">
     <value>记录目录状态时出错 {0}：{1}</value>
   </data>
   <data name="SkippingDirectoryNoAccess" xml:space="preserve">
     <value>跳过无权限访问的目录：{0}</value>
-  </data>
-  <data name="FilesScannedBeforeScript" xml:space="preserve">
-    <value>脚本执行前扫描了 {0} 个文件</value>
-  </data>
-  <data name="FilesScannedAfterScript" xml:space="preserve">
-    <value>脚本执行后扫描了 {0} 个文件</value>
-  </data>
-  <data name="ScriptNewFilesDetected" xml:space="preserve">
-    <value>脚本创建了 {0} 个新文件</value>
-  </data>
-  <data name="ScriptModifiedFilesDetected" xml:space="preserve">
-    <value>脚本修改了 {0} 个现有文件</value>
-  </data>
-  <data name="ScriptExecutionStarted" xml:space="preserve">
-    <value>脚本开始执行：{0}</value>
-  </data>
-  <data name="ScriptExecutionCompleted" xml:space="preserve">
-    <value>脚本执行完成，退出代码：{0}</value>
-  </data>
-  <data name="ScriptExecutionFailed" xml:space="preserve">
-    <value>脚本执行失败，退出代码：{0}</value>
   </data>
   <data name="DirectoryScanned" xml:space="preserve">
     <value>扫描目录：{0}（{1} 个文件）</value>
@@ -2558,9 +2507,6 @@
 
 这些MOD可能存在问题或不再维护。是否仍要启动游戏?</value>
   </data>
-  <data name="DeprecatedScriptedConfigMessage" xml:space="preserve">
-    <value>Mod {0} 仍在使用已废弃的 Scripted 配置，当前版本不再支持安装或更新。</value>
-  </data>
   <data name="InvalidReplaceTargetPathMessage" xml:space="preserve">
     <value>Mod {0} 的 ReplaceTargetPath 无效。</value>
   </data>
@@ -2608,14 +2554,14 @@
 
 {0}
 
-建议修复或重装这些 Mod。</value>
+建议修复或卸载重装这些 Mod。</value>
   </data>
   <data name="ManagedModIntegrityLaunchMessage" xml:space="preserve">
     <value>检测到已安装受管 Mod 的文件完整性异常：
 
 {0}
 
-建议先修复或重装这些 Mod。仍要继续启动游戏吗？</value>
+建议先修复或卸载重装这些 Mod。仍要继续启动游戏吗？</value>
   </data>
   <data name="DelistedModBannerTitle" xml:space="preserve">
     <value>已安装下架MOD</value>
@@ -3083,16 +3029,22 @@
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>正在计算文件哈希：{0}</value>
   </data>
-  <data name="OK" xml:space="preserve">
-    <value>确定</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>取消</value>
-  </data>
   <data name="Yes" xml:space="preserve">
     <value>是</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>否</value>
+  </data>
+  <data name="PreviousInstallationDetectedTitle" xml:space="preserve">
+    <value>检测到旧安装</value>
+  </data>
+  <data name="PreviousInstallationDetectedMessage" xml:space="preserve">
+    <value>检测到您曾经在别的目录使用过模组管理器，如果要升级请在设置底部程序内升级。点击"打开目录"查看旧安装位置。</value>
+  </data>
+  <data name="PreviousInstallationOpenFolder" xml:space="preserve">
+    <value>打开目录</value>
+  </data>
+  <data name="PreviousInstallationIgnore" xml:space="preserve">
+    <value>忽略</value>
   </data>
 </root>

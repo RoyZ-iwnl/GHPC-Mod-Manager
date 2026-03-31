@@ -367,6 +367,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 因清单丢失已清理 {0} 备份.
+        /// </summary>
+        public static string BackupsCleanedDueToMissingManifest {
+            get {
+                return ResourceManager.GetString("BackupsCleanedDueToMissingManifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 正在清理....
         /// </summary>
         public static string BatchCleaningUp {
@@ -786,6 +795,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ChunkVirtualValidation {
             get {
                 return ResourceManager.GetString("ChunkVirtualValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 清理残留的禁用备份: {0}.
+        /// </summary>
+        public static string CleaningOrphanedDisabledBackup {
+            get {
+                return ResourceManager.GetString("CleaningOrphanedDisabledBackup", resourceCulture);
             }
         }
         
@@ -1576,15 +1594,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod {0} 仍在使用已废弃的 Scripted 配置，当前版本不再支持安装或更新。.
-        /// </summary>
-        public static string DeprecatedScriptedConfigMessage {
-            get {
-                return ResourceManager.GetString("DeprecatedScriptedConfigMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 警告: 未能访问子目录 {0}: {1}.
         /// </summary>
         public static string DirectoryAccessWarning {
@@ -2031,24 +2040,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 启用脚本执行完成，退出码: {0}.
-        /// </summary>
-        public static string EnableScriptCompleted {
-            get {
-                return ResourceManager.GetString("EnableScriptCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 启用脚本错误: {0}.
-        /// </summary>
-        public static string EnableScriptError {
-            get {
-                return ResourceManager.GetString("EnableScriptError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 启用翻译插件.
         /// </summary>
         public static string EnableTranslationPlugin {
@@ -2108,33 +2099,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ErrorRecordingDirectoryState {
             get {
                 return ResourceManager.GetString("ErrorRecordingDirectoryState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 恢复前执行启用脚本: {0}.
-        /// </summary>
-        public static string ExecutingEnableScript {
-            get {
-                return ResourceManager.GetString("ExecutingEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 正在执行模组卸载脚本: {0}.
-        /// </summary>
-        public static string ExecutingUninstallScript {
-            get {
-                return ResourceManager.GetString("ExecutingUninstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 禁用后执行卸载脚本: {0}.
-        /// </summary>
-        public static string ExecutingUninstallScriptForDisable {
-            get {
-                return ResourceManager.GetString("ExecutingUninstallScriptForDisable", resourceCulture);
             }
         }
         
@@ -2265,6 +2229,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 移动残留禁用备份失败: {0}.
+        /// </summary>
+        public static string FailedToMoveOrphanedBackup {
+            get {
+                return ResourceManager.GetString("FailedToMoveOrphanedBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 打开B站失败.
         /// </summary>
         public static string FailedToOpenBilibili {
@@ -2378,33 +2351,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToSaveProxySettingChange {
             get {
                 return ResourceManager.GetString("FailedToSaveProxySettingChange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 无法启动启用脚本进程.
-        /// </summary>
-        public static string FailedToStartEnableScript {
-            get {
-                return ResourceManager.GetString("FailedToStartEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 启动脚本进程失败.
-        /// </summary>
-        public static string FailedToStartScriptProcess {
-            get {
-                return ResourceManager.GetString("FailedToStartScriptProcess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 无法启动卸载脚本进程.
-        /// </summary>
-        public static string FailedToStartUninstallScript {
-            get {
-                return ResourceManager.GetString("FailedToStartUninstallScript", resourceCulture);
             }
         }
         
@@ -2648,24 +2594,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FileSizeMismatch {
             get {
                 return ResourceManager.GetString("FileSizeMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本执行后扫描了 {0} 个文件.
-        /// </summary>
-        public static string FilesScannedAfterScript {
-            get {
-                return ResourceManager.GetString("FilesScannedAfterScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本执行前扫描了 {0} 个文件.
-        /// </summary>
-        public static string FilesScannedBeforeScript {
-            get {
-                return ResourceManager.GetString("FilesScannedBeforeScript", resourceCulture);
             }
         }
         
@@ -4002,7 +3930,7 @@ namespace GHPC_Mod_Manager.Resources {
         ///
         ///{0}
         ///
-        ///建议先修复或重装这些 Mod。仍要继续启动游戏吗？.
+        ///建议先修复或卸载重装这些 Mod。仍要继续启动游戏吗？.
         /// </summary>
         public static string ManagedModIntegrityLaunchMessage {
             get {
@@ -4015,7 +3943,7 @@ namespace GHPC_Mod_Manager.Resources {
         ///
         ///{0}
         ///
-        ///建议修复或重装这些 Mod。.
+        ///建议修复或卸载重装这些 Mod。.
         /// </summary>
         public static string ManagedModIntegrityStartupMessage {
             get {
@@ -4794,6 +4722,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModEnableFailed {
             get {
                 return ResourceManager.GetString("ModEnableFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启用 Mod 时覆盖了已存在的文件: {0}.
+        /// </summary>
+        public static string ModFileOverwrittenDuringEnable {
+            get {
+                return ResourceManager.GetString("ModFileOverwrittenDuringEnable", resourceCulture);
             }
         }
         
@@ -5671,33 +5608,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 非脚本模式的 Mod 配置了启用脚本（InstallMethod 应为 &apos;Scripted&apos;）: {0}.
-        /// </summary>
-        public static string NonScriptedModHasEnableScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasEnableScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 非脚本模式的 Mod 配置了安装脚本（InstallMethod 应为 &apos;Scripted&apos;）: {0}.
-        /// </summary>
-        public static string NonScriptedModHasInstallScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasInstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 非脚本模式的 Mod 配置了卸载脚本（InstallMethod 应为 &apos;Scripted&apos;）: {0}.
-        /// </summary>
-        public static string NonScriptedModHasUninstallScript {
-            get {
-                return ResourceManager.GetString("NonScriptedModHasUninstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 请确保您使用的是最新版本的 Steam。我们仅为 Steam 版本的 GHPC 提供官方支持。手动安装或破解版可能会导致兼容性问题。.
         /// </summary>
         public static string NonSteamVersionWarning {
@@ -6017,6 +5927,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 保留手动 Mod 备份: {0}.
+        /// </summary>
+        public static string PreservingManualModBackup {
+            get {
+                return ResourceManager.GetString("PreservingManualModBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 无法应用预设：配置段尚未生成。请先运行一次游戏并退出。.
         /// </summary>
         public static string PresetCannotApplyNoConfig {
@@ -6148,6 +6067,42 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Previous {
             get {
                 return ResourceManager.GetString("Previous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到您曾经在别的目录使用过模组管理器，如果要升级请在设置底部程序内升级。点击&quot;打开目录&quot;查看旧安装位置。.
+        /// </summary>
+        public static string PreviousInstallationDetectedMessage {
+            get {
+                return ResourceManager.GetString("PreviousInstallationDetectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检测到旧安装.
+        /// </summary>
+        public static string PreviousInstallationDetectedTitle {
+            get {
+                return ResourceManager.GetString("PreviousInstallationDetectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 忽略.
+        /// </summary>
+        public static string PreviousInstallationIgnore {
+            get {
+                return ResourceManager.GetString("PreviousInstallationIgnore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 打开目录.
+        /// </summary>
+        public static string PreviousInstallationOpenFolder {
+            get {
+                return ResourceManager.GetString("PreviousInstallationOpenFolder", resourceCulture);
             }
         }
         
@@ -6629,69 +6584,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveSettings {
             get {
                 return ResourceManager.GetString("SaveSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本安装模式的 Mod 缺少安装脚本: {0}.
-        /// </summary>
-        public static string ScriptedModMissingInstallScript {
-            get {
-                return ResourceManager.GetString("ScriptedModMissingInstallScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本执行完成，退出代码：{0}.
-        /// </summary>
-        public static string ScriptExecutionCompleted {
-            get {
-                return ResourceManager.GetString("ScriptExecutionCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本执行失败，退出代码：{0}.
-        /// </summary>
-        public static string ScriptExecutionFailed {
-            get {
-                return ResourceManager.GetString("ScriptExecutionFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本开始执行：{0}.
-        /// </summary>
-        public static string ScriptExecutionStarted {
-            get {
-                return ResourceManager.GetString("ScriptExecutionStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本修改了 {0} 个现有文件.
-        /// </summary>
-        public static string ScriptModifiedFilesDetected {
-            get {
-                return ResourceManager.GetString("ScriptModifiedFilesDetected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 警告：此Mod使用脚本进行安装，可能对您的系统造成未知风险。请确保您信任此Mod的来源。是否继续？.
-        /// </summary>
-        public static string ScriptModSecurityWarning {
-            get {
-                return ResourceManager.GetString("ScriptModSecurityWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 脚本创建了 {0} 个新文件.
-        /// </summary>
-        public static string ScriptNewFilesDetected {
-            get {
-                return ResourceManager.GetString("ScriptNewFilesDetected", resourceCulture);
             }
         }
         
@@ -7988,24 +7880,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UninstallingTranslationSystem {
             get {
                 return ResourceManager.GetString("UninstallingTranslationSystem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 卸载脚本执行完成，退出码: {0}.
-        /// </summary>
-        public static string UninstallScriptCompleted {
-            get {
-                return ResourceManager.GetString("UninstallScriptCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 卸载脚本错误: {0}.
-        /// </summary>
-        public static string UninstallScriptError {
-            get {
-                return ResourceManager.GetString("UninstallScriptError", resourceCulture);
             }
         }
         

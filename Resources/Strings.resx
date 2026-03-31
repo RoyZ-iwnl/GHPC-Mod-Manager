@@ -321,6 +321,21 @@
   <data name="ManualModScanError" xml:space="preserve">
     <value>Error scanning for manual mods</value>
   </data>
+  <data name="CleaningOrphanedDisabledBackup" xml:space="preserve">
+    <value>Cleaning orphaned disabled backup: {0}</value>
+  </data>
+  <data name="FailedToMoveOrphanedBackup" xml:space="preserve">
+    <value>Failed to move orphaned disabled backup: {0}</value>
+  </data>
+  <data name="BackupsCleanedDueToMissingManifest" xml:space="preserve">
+    <value>Cleaned {0} backups due to missing manifest</value>
+  </data>
+  <data name="PreservingManualModBackup" xml:space="preserve">
+    <value>Preserving manual mod backup: {0}</value>
+  </data>
+  <data name="ModFileOverwrittenDuringEnable" xml:space="preserve">
+    <value>Overwritten existing file during mod enable: {0}</value>
+  </data>
   <data name="XUnityReleasesFetchError" xml:space="preserve">
     <value>Error fetching XUnity AutoTranslator releases</value>
   </data>
@@ -1401,9 +1416,6 @@
   <data name="TranslationPlugin" xml:space="preserve">
     <value>Translation Plugin</value>
   </data>
-  <data name="ScriptModSecurityWarning" xml:space="preserve">
-    <value>WARNING: This mod uses scripts for installation, which may pose unknown risks to your system. Please ensure you trust the source of this mod. Do you want to continue?</value>
-  </data>
   <data name="SecurityWarningTitle" xml:space="preserve">
     <value>Security Warning</value>
   </data>
@@ -1562,45 +1574,6 @@
   </data>
   <data name="CannotUninstallManualModWithoutBinaryName" xml:space="preserve">
     <value>Cannot uninstall manual mod without MainBinaryFileName: {0}. The manager cannot determine which file belongs to this mod.</value>
-  </data>
-  <data name="ExecutingUninstallScript" xml:space="preserve">
-    <value>Executing uninstall script for mod: {0}</value>
-  </data>
-  <data name="ExecutingUninstallScriptForDisable" xml:space="preserve">
-    <value>Executing uninstall script after disabling mod: {0}</value>
-  </data>
-  <data name="ExecutingEnableScript" xml:space="preserve">
-    <value>Executing enable script before restoring mod: {0}</value>
-  </data>
-  <data name="ScriptedModMissingInstallScript" xml:space="preserve">
-    <value>Scripted mod is missing install script: {0}</value>
-  </data>
-  <data name="NonScriptedModHasInstallScript" xml:space="preserve">
-    <value>Non-scripted mod has install script configured (InstallMethod should be 'Scripted'): {0}</value>
-  </data>
-  <data name="NonScriptedModHasUninstallScript" xml:space="preserve">
-    <value>Non-scripted mod has uninstall script configured (InstallMethod should be 'Scripted'): {0}</value>
-  </data>
-  <data name="NonScriptedModHasEnableScript" xml:space="preserve">
-    <value>Non-scripted mod has enable script configured (InstallMethod should be 'Scripted'): {0}</value>
-  </data>
-  <data name="EnableScriptCompleted" xml:space="preserve">
-    <value>Enable script completed with exit code: {0}</value>
-  </data>
-  <data name="FailedToStartEnableScript" xml:space="preserve">
-    <value>Failed to start enable script process</value>
-  </data>
-  <data name="EnableScriptError" xml:space="preserve">
-    <value>Enable script error: {0}</value>
-  </data>
-  <data name="UninstallScriptCompleted" xml:space="preserve">
-    <value>Uninstall script completed with exit code: {0}</value>
-  </data>
-  <data name="FailedToStartUninstallScript" xml:space="preserve">
-    <value>Failed to start uninstall script process</value>
-  </data>
-  <data name="UninstallScriptError" xml:space="preserve">
-    <value>Uninstall script error: {0}</value>
   </data>
   <data name="ModToggleFileError" xml:space="preserve">
     <value>Mod toggle file error</value>
@@ -2370,35 +2343,11 @@
   <data name="ProcessingManualModToggle" xml:space="preserve">
     <value>Processing manual mod toggle for: {0}</value>
   </data>
-  <data name="FailedToStartScriptProcess" xml:space="preserve">
-    <value>Failed to start script process</value>
-  </data>
   <data name="ErrorRecordingDirectoryState" xml:space="preserve">
     <value>Error recording directory state for {0}: {1}</value>
   </data>
   <data name="SkippingDirectoryNoAccess" xml:space="preserve">
     <value>Skipping directory due to access restriction: {0}</value>
-  </data>
-  <data name="FilesScannedBeforeScript" xml:space="preserve">
-    <value>Scanned {0} files before script execution</value>
-  </data>
-  <data name="FilesScannedAfterScript" xml:space="preserve">
-    <value>Scanned {0} files after script execution</value>
-  </data>
-  <data name="ScriptNewFilesDetected" xml:space="preserve">
-    <value>Script created {0} new files</value>
-  </data>
-  <data name="ScriptModifiedFilesDetected" xml:space="preserve">
-    <value>Script modified {0} existing files</value>
-  </data>
-  <data name="ScriptExecutionStarted" xml:space="preserve">
-    <value>Script execution started: {0}</value>
-  </data>
-  <data name="ScriptExecutionCompleted" xml:space="preserve">
-    <value>Script execution completed with exit code: {0}</value>
-  </data>
-  <data name="ScriptExecutionFailed" xml:space="preserve">
-    <value>Script execution failed with exit code: {0}</value>
   </data>
   <data name="DirectoryScanned" xml:space="preserve">
     <value>Scanned directory: {0} ({1} files)</value>
@@ -2592,9 +2541,6 @@ These mods may not work properly. Do you still want to launch the game?</value>
 {0}
 
 These mods may have issues or are no longer maintained. Do you still want to launch the game?</value>
-  </data>
-  <data name="DeprecatedScriptedConfigMessage" xml:space="preserve">
-    <value>Mod {0} still uses the deprecated Scripted configuration and can no longer be installed or updated.</value>
   </data>
   <data name="InvalidReplaceTargetPathMessage" xml:space="preserve">
     <value>Mod {0} has an invalid ReplaceTargetPath.</value>
@@ -3118,16 +3064,22 @@ Do you want to continue installing?</value>
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>Calculating hash for: {0}</value>
   </data>
-  <data name="OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="PreviousInstallationDetectedTitle" xml:space="preserve">
+    <value>Previous Installation Detected</value>
+  </data>
+  <data name="PreviousInstallationDetectedMessage" xml:space="preserve">
+    <value>A previous installation of GHPC Mod Manager was detected in another directory. If you want to upgrade, please use the in-app update feature in Settings. Click "Open Folder" to view the previous installation location.</value>
+  </data>
+  <data name="PreviousInstallationOpenFolder" xml:space="preserve">
+    <value>Open Folder</value>
+  </data>
+  <data name="PreviousInstallationIgnore" xml:space="preserve">
+    <value>Ignore</value>
   </data>
 </root>
