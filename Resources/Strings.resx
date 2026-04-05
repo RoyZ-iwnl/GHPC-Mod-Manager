@@ -591,9 +591,6 @@
   <data name="TranslationSystem" xml:space="preserve">
     <value>Translation System</value>
   </data>
-  <data name="InstallationStatus" xml:space="preserve">
-    <value>Status</value>
-  </data>
   <data name="Installed" xml:space="preserve">
     <value>Installed</value>
   </data>
@@ -771,9 +768,6 @@
   <data name="PresetSaved_" xml:space="preserve">
     <value>Preset saved: {0}</value>
   </data>
-  <data name="SettingsSavedSuccessfully" xml:space="preserve">
-    <value>Settings saved successfully</value>
-  </data>
   <data name="SettingsSaveFailed" xml:space="preserve">
     <value>Settings save failed</value>
   </data>
@@ -915,9 +909,6 @@
   <data name="ManualModUninstallWarning" xml:space="preserve">
     <value>{0} is a manually installed mod. Are you sure you want to permanently delete all dll files? This action cannot be undone.</value>
   </data>
-  <data name="UninstallingMod_" xml:space="preserve">
-    <value>Uninstalling {0}...</value>
-  </data>
   <data name="ModUninstalledSuccessfully" xml:space="preserve">
     <value>{0} uninstalled successfully</value>
   </data>
@@ -926,9 +917,6 @@
   </data>
   <data name="UninstallingTranslationSystem" xml:space="preserve">
     <value>Uninstalling translation system...</value>
-  </data>
-  <data name="TranslationSystemUninstalledSuccessfully" xml:space="preserve">
-    <value>Translation system uninstalled successfully</value>
   </data>
   <data name="NetworkCheckLog" xml:space="preserve">
     <value>Network Log</value>
@@ -996,12 +984,6 @@
   <data name="NetworkCheckComplete" xml:space="preserve">
     <value>Network check complete - Result: {0}</value>
   </data>
-  <data name="ConnectionNormalResult" xml:space="preserve">
-    <value>Connection Normal</value>
-  </data>
-  <data name="ConnectionAbnormalResult" xml:space="preserve">
-    <value>Connection Abnormal</value>
-  </data>
   <data name="MelonLoaderInstallSuccessNeedGameRun" xml:space="preserve">
     <value>MelonLoader installation successful! Now need to run the game to complete setup.</value>
   </data>
@@ -1025,6 +1007,9 @@
   </data>
   <data name="DataRefreshComplete" xml:space="preserve">
     <value>Data refresh complete</value>
+  </data>
+  <data name="NewModsBannerText" xml:space="preserve">
+    <value>NEW MOD(s):</value>
   </data>
   <data name="DataRefreshFailed" xml:space="preserve">
     <value>Data refresh failed</value>
@@ -1062,14 +1047,8 @@
   <data name="InstallingTranslationSystem" xml:space="preserve">
     <value>Installing translation system...</value>
   </data>
-  <data name="TranslationSystemInstallSuccessful" xml:space="preserve">
-    <value>Translation system installed successfully</value>
-  </data>
   <data name="TranslationSystemInstallFailed" xml:space="preserve">
     <value>Translation system installation failed</value>
-  </data>
-  <data name="TranslationFilesUpdateSuccessful" xml:space="preserve">
-    <value>Translation files updated successfully</value>
   </data>
   <data name="TranslationFilesUpdateFailed" xml:space="preserve">
     <value>Translation files update failed</value>
@@ -1379,9 +1358,6 @@
   </data>
   <data name="MelonLoaderNotDetected" xml:space="preserve">
     <value>Not detected</value>
-  </data>
-  <data name="MelonLoaderDisabled" xml:space="preserve">
-    <value>Disabled</value>
   </data>
   <data name="DisableMelonLoader" xml:space="preserve">
     <value>Temporarily Disable</value>
@@ -2199,20 +2175,11 @@
   <data name="ZipSkippingDirectory" xml:space="preserve">
     <value>Skipping directory entry: {0}</value>
   </data>
-  <data name="ZipExcludingByPattern" xml:space="preserve">
-    <value>Excluding file due to pattern: {0}</value>
-  </data>
   <data name="ZipProcessingEntry" xml:space="preserve">
     <value>Processing ZIP entry: {0} -&gt; {1}</value>
   </data>
   <data name="ZipCreatedDirectory" xml:space="preserve">
     <value>Created directory: {0}</value>
-  </data>
-  <data name="ZipOverwritingFile" xml:space="preserve">
-    <value>Will overwrite existing file: {0} (original hash: {1})</value>
-  </data>
-  <data name="ZipCreatingNewFile" xml:space="preserve">
-    <value>Creating new file: {0}</value>
   </data>
   <data name="ZipExtractedSuccessfully" xml:space="preserve">
     <value>Successfully extracted: {0} ({1} bytes)</value>
@@ -2729,14 +2696,8 @@ Do you want to restart now?</value>
   <data name="ConflictsSection" xml:space="preserve">
     <value>Conflicts</value>
   </data>
-  <data name="DependencyMissing" xml:space="preserve">
-    <value>Not Installed</value>
-  </data>
   <data name="LoadingReleases" xml:space="preserve">
     <value>Loading versions...</value>
-  </data>
-  <data name="InstallLatestVersion" xml:space="preserve">
-    <value>Install</value>
   </data>
   <data name="QuickReinstall" xml:space="preserve">
     <value>Quick Reinstall</value>
@@ -3031,12 +2992,6 @@ Do you want to continue installing?</value>
   <data name="ModInfoVersion" xml:space="preserve">
     <value>Version:</value>
   </data>
-  <data name="ModInfoEnabled" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
-  <data name="ModInfoDisabled" xml:space="preserve">
-    <value>Disabled</value>
-  </data>
   <data name="ModInfoManual" xml:space="preserve">
     <value>Manual Install</value>
   </data>
@@ -3081,5 +3036,19 @@ Do you want to continue installing?</value>
   </data>
   <data name="PreviousInstallationIgnore" xml:space="preserve">
     <value>Ignore</value>
+  </data>
+  <data name="ManagerVersionRequirementTitle" xml:space="preserve">
+    <value>Manager Version Requirement</value>
+  </data>
+  <data name="ManagerVersionRequirementMessage" xml:space="preserve">
+    <value>This mod requires Mod Manager version {0} or higher. Your current version is {1}.
+
+Please update the Mod Manager first to install this mod.</value>
+  </data>
+  <data name="RequiredManagerVersion" xml:space="preserve">
+    <value>Required Manager Version</value>
+  </data>
+  <data name="RequiredManagerVersionHint" xml:space="preserve">
+    <value>Minimum Mod Manager version required (optional, e.g., 1.2.0)</value>
   </data>
 </root>

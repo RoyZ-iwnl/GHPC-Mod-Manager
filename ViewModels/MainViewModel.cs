@@ -95,6 +95,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IUpdateService _updateService;
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IAnnouncementService _announcementService;
+    private readonly IModCatalogStateService _modCatalogStateService;
 
     // 子ViewModel（导航页面）
     private InstalledModsViewModel? _installedModsViewModel;
@@ -285,7 +286,8 @@ public partial class MainViewModel : ObservableObject
         INetworkService networkService,
         IUpdateService updateService,
         IMelonLoaderService melonLoaderService,
-        IAnnouncementService announcementService)
+        IAnnouncementService announcementService,
+        IModCatalogStateService modCatalogStateService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -299,6 +301,7 @@ public partial class MainViewModel : ObservableObject
         _updateService = updateService;
         _melonLoaderService = melonLoaderService;
         _announcementService = announcementService;
+        _modCatalogStateService = modCatalogStateService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         IsGameRunning = _processService.IsGameRunning;
@@ -319,6 +322,7 @@ public partial class MainViewModel : ObservableObject
         _modBrowserViewModel.NavigateToDetailRequested += OnNavigateToDetail;
         _modBrowserViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
         _modBrowserViewModel.CheckForUpdatesRequested += async (s, onlyInstalled) => await CheckForModUpdatesWithScopeAsync(onlyInstalled);
+        _modBrowserViewModel.NavigateToSettingsRequested += (s, e) => _navigationService.NavigateToSettings();
         _modDetailViewModel.GoBackRequested += OnDetailGoBack;
         _modDetailViewModel.NavigateToModRequested += OnNavigateToMod;
         _modDetailViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
@@ -365,6 +369,7 @@ public partial class MainViewModel : ObservableObject
                 _modBrowserView ??= (UserControl)_serviceProvider.GetRequiredService<ModBrowserView>();
                 _modBrowserView.DataContext = _modBrowserViewModel;
                 CurrentPageView = _modBrowserView;
+                _modBrowserViewModel?.OnNavigatedToBrowser();
                 break;
             case NavigationPage.Translation:
                 _translationView ??= (UserControl)_serviceProvider.GetRequiredService<TranslationView>();
@@ -715,6 +720,9 @@ public partial class MainViewModel : ObservableObject
             _installedModsViewModel?.SetModsSource(Mods);
             _modBrowserViewModel?.SetModsSource(Mods);
 
+            // 检测新增MOD并推送到浏览页
+            await DetectAndPushNewModsAsync();
+
             // 计算下架Mod和未知字段Mod数量（用于横幅显示）
             DelistedModCount = Mods.Count(m => m.IsInstalled && m.IsDelisted);
             UnknownFieldsModCount = Mods.Count(m => m.HasUnknownConfigFields);
@@ -763,6 +771,47 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    // ModBrowserView.xaml
+    /// <summary>
+    /// 计算当前有效的MOD ID集合，与上次快照对比检测新增MOD
+    /// </summary>
+    private async Task DetectAndPushNewModsAsync()
+    {
+        if (_modBrowserViewModel == null) return;
+
+        // 加载上一次的状态快照
+        var previousState = await _modCatalogStateService.LoadAsync();
+
+        // 计算当前目录的有效MOD ID（排除已下架Mod和不受支持的手动Mod）
+        var validMods = Mods.Where(m => !m.IsDelisted && !(m.IsManuallyInstalled && m.IsUnsupportedManualMod)).ToList();
+        var currentIds = validMods.Select(m => m.Id).ToHashSet();
+
+        if (previousState == null || previousState.ModIds.Count == 0)
+        {
+            // 首次基线或快照不可用，直接保存当前状态，不弹横幅
+            await _modCatalogStateService.SaveAsync(currentIds);
+            _modBrowserViewModel.ClearNewMods();
+            return;
+        }
+
+        // 计算差集：当前有但基线没有的 = 新增MOD
+        var baselineIds = previousState.ModIds.ToHashSet();
+        var newIds = currentIds.Where(id => !baselineIds.Contains(id)).ToList();
+
+        if (newIds.Count > 0)
+        {
+            var newMods = validMods.Where(m => newIds.Contains(m.Id)).ToList();
+            _modBrowserViewModel.SetNewMods(newMods);
+        }
+        else
+        {
+            _modBrowserViewModel.ClearNewMods();
+        }
+
+        // 用当前目录覆盖快照，供下次启动使用
+        await _modCatalogStateService.SaveAsync(currentIds);
+    }
+
     [RelayCommand]
     private async Task InstallModAsync(ModViewModel mod)
     {
@@ -770,6 +819,23 @@ public partial class MainViewModel : ObservableObject
         {
             MessageDialogHelper.ShowError(Strings.CannotGetModVersionInfo, Strings.Error);
             return;
+        }
+
+        // 检查管理器版本要求
+        if (!string.IsNullOrEmpty(mod.Config.RequiredManagerVersion))
+        {
+            if (!_updateService.MeetsRequiredVersion(mod.Config.RequiredManagerVersion))
+            {
+                var currentVersion = _updateService.GetCurrentVersion();
+                var goToUpdate = MessageDialogHelper.ShowGoToSettingsCancel(
+                    string.Format(Strings.ManagerVersionRequirementMessage, mod.Config.RequiredManagerVersion, currentVersion),
+                    Strings.ManagerVersionRequirementTitle);
+                if (goToUpdate)
+                {
+                    _navigationService.NavigateToSettings();
+                }
+                return;
+            }
         }
 
         if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, null, _settingsService, _melonLoaderService))
@@ -828,7 +894,7 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
-            StatusMessage = string.Format(Strings.UninstallingMod_, mod.DisplayName);
+            StatusMessage = string.Format(Strings.Uninstalling, mod.DisplayName);
 
             if (mod.IsManuallyInstalled)
             {
@@ -992,6 +1058,23 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        // 检查管理器版本要求
+        if (!string.IsNullOrEmpty(mod.Config.RequiredManagerVersion))
+        {
+            if (!_updateService.MeetsRequiredVersion(mod.Config.RequiredManagerVersion))
+            {
+                var currentVersion = _updateService.GetCurrentVersion();
+                var goToUpdate = MessageDialogHelper.ShowGoToSettingsCancel(
+                    string.Format(Strings.ManagerVersionRequirementMessage, mod.Config.RequiredManagerVersion, currentVersion),
+                    Strings.ManagerVersionRequirementTitle);
+                if (goToUpdate)
+                {
+                    _navigationService.NavigateToSettings();
+                }
+                return;
+            }
+        }
+
         if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, null, _settingsService, _melonLoaderService))
             return;
 
@@ -1001,7 +1084,7 @@ public partial class MainViewModel : ObservableObject
             HasDeterminateOperationProgress = false;
             OperationProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
-            
+
             var progress = new Progress<DownloadProgress>(downloadProgress =>
             {
                 var speedText = downloadProgress.GetFormattedSpeed();
@@ -1011,7 +1094,7 @@ public partial class MainViewModel : ObservableObject
                 OperationProgressValue = percentage;
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {percentage:F1}% ({progressText}) - {speedText}";
             });
-            
+
             // Reinstall the mod using the regular installation method
             // This will convert it from manually installed to managed
             var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true);
@@ -1073,7 +1156,7 @@ public partial class MainViewModel : ObservableObject
 
             if (success)
             {
-                StatusMessage = Strings.TranslationSystemInstallSuccessful;
+                StatusMessage = Strings.TranslationInstalled;
                 await RefreshDataAsync();
             }
             else
@@ -1127,7 +1210,7 @@ public partial class MainViewModel : ObservableObject
 
             if (success)
             {
-                StatusMessage = Strings.TranslationFilesUpdateSuccessful;
+                StatusMessage = Strings.TranslationFilesUpdated;
                 await RefreshDataAsync();
 
                 // 更新完成后重新检查更新状态
@@ -1235,7 +1318,7 @@ public partial class MainViewModel : ObservableObject
 
             if (success)
             {
-                StatusMessage = Strings.TranslationSystemUninstalledSuccessfully;
+                StatusMessage = Strings.TranslationUninstalled;
                 await RefreshDataAsync();
             }
             else

@@ -328,35 +328,6 @@
                   Grid.RowSpan="3"
                   Background="{DynamicResource ScrimBrush}"
                   Opacity="0.92"
-                  Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
-                <Border Background="{DynamicResource SurfaceBrush}"
-                        BorderBrush="{DynamicResource OutlineVariantBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{DynamicResource RadiusLarge}"
-                        Padding="30"
-                        Width="440"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.GameRunning}"
-                                   Style="{StaticResource PageTitleTextStyle}"
-                                   TextAlignment="Center"/>
-                        <TextBlock Margin="0,12,0,20"
-                                   Text="{x:Static resources:Strings.GameRunningCannotOperate}"
-                                   Style="{StaticResource PageSubtitleTextStyle}"
-                                   TextAlignment="Center"/>
-                        <Button Content="{x:Static resources:Strings.StopGame}"
-                                Command="{Binding StopGameCommand}"
-                                HorizontalAlignment="Center"
-                                Style="{DynamicResource FilledButtonStyle}"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <Grid Grid.Row="1"
-                  Grid.RowSpan="3"
-                  Background="{DynamicResource ScrimBrush}"
-                  Opacity="0.92"
                   Visibility="{Binding IsMelonLoaderNotInstalled, Converter={StaticResource BoolToVis}}">
                 <Border Background="{DynamicResource SurfaceBrush}"
                         BorderBrush="{DynamicResource OutlineVariantBrush}"
@@ -399,13 +370,36 @@
                     <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabledOverlayHint}"
                                Style="{StaticResource PageTitleTextStyle}"
                                TextAlignment="Center"/>
-                    <TextBlock Margin="0,12,0,20"
-                               Text="{Binding StatusMessage}"
-                               Style="{StaticResource PageSubtitleTextStyle}"
-                               TextAlignment="Center"
-                               Visibility="{Binding StatusMessage, Converter={StaticResource StrToVis}}"/>
                     <Button Content="{x:Static resources:Strings.Settings}"
                             Command="{Binding OpenSettingsCommand}"
+                            HorizontalAlignment="Center"
+                            Style="{DynamicResource FilledButtonStyle}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.ColumnSpan="2"
+              Background="{DynamicResource ScrimBrush}"
+              Opacity="0.92"
+              Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
+            <Border Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource RadiusLarge}"
+                    Padding="30"
+                    Width="440"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="{x:Static resources:Strings.GameRunning}"
+                               Style="{StaticResource PageTitleTextStyle}"
+                               TextAlignment="Center"/>
+                    <TextBlock Margin="0,12,0,20"
+                               Text="{x:Static resources:Strings.GameRunningCannotOperate}"
+                               Style="{StaticResource PageSubtitleTextStyle}"
+                               TextAlignment="Center"/>
+                    <Button Content="{x:Static resources:Strings.StopGame}"
+                            Command="{Binding StopGameCommand}"
                             HorizontalAlignment="Center"
                             Style="{DynamicResource FilledButtonStyle}"/>
                 </StackPanel>

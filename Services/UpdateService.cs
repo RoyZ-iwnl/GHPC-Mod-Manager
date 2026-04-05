@@ -13,6 +13,7 @@ public interface IUpdateService
     Task<(bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest)> CheckForUpdatesAsync(bool includePrerelease = false);
     Task<bool> DownloadAndInstallUpdateAsync(string downloadUrl, string version, IProgress<DownloadProgress>? progress = null, long? expectedSize = null, string? expectedDigest = null);
     string GetCurrentVersion();
+    bool MeetsRequiredVersion(string requiredVersion);
 }
 
 public class UpdateService : IUpdateService
@@ -53,6 +54,118 @@ public class UpdateService : IUpdateService
         {
             return "Unknown";
         }
+    }
+
+    /// <summary>
+    /// 检查当前管理器版本是否满足最低要求版本
+    /// </summary>
+    /// <param name="requiredVersion">所需的最低版本号</param>
+    /// <returns>true 表示当前版本 >= 所需版本；false 表示版本不足</returns>
+    public bool MeetsRequiredVersion(string requiredVersion)
+    {
+        if (string.IsNullOrWhiteSpace(requiredVersion))
+            return true; // 无版本要求，默认满足
+
+        var currentVersion = GetCurrentVersion();
+        if (currentVersion == "Unknown")
+            return true; // 无法获取当前版本时，允许继续（避免阻止用户）
+
+        try
+        {
+            // 去除 'v' 前缀
+            currentVersion = currentVersion.TrimStart('v');
+            requiredVersion = requiredVersion.TrimStart('v');
+
+            var current = ParseSemanticVersion(currentVersion);
+            var required = ParseSemanticVersion(requiredVersion);
+
+            // 检查当前版本是否 >= 所需版本（CompareSemanticVersions 返回负值表示 current 更低）
+            var comparison = CompareSemanticVersionsForRequirement(current, required);
+            return comparison >= 0; // >= 0 表示当前版本满足或高于要求
+        }
+        catch
+        {
+            return true; // 解析失败时允许继续
+        }
+    }
+
+    /// <summary>
+    /// 用于版本要求检查的比较方法（current vs required）
+    /// 返回值：> 0 表示 current > required；= 0 表示相等；< 0 表示 current < required
+    /// </summary>
+    private int CompareSemanticVersionsForRequirement((int[] version, string? prerelease) current, (int[] version, string? prerelease) required)
+    {
+        // 首先比较版本号
+        for (int i = 0; i < Math.Max(current.version.Length, required.version.Length); i++)
+        {
+            var currentPart = i < current.version.Length ? current.version[i] : 0;
+            var requiredPart = i < required.version.Length ? required.version[i] : 0;
+
+            if (currentPart > requiredPart)
+                return 1;  // current 更高
+            if (currentPart < requiredPart)
+                return -1; // current 更低，不满足要求
+        }
+
+        // 版本号相等，比较 prerelease
+        // 稳定版（无 prerelease） > prerelease 版
+        if (current.prerelease == null && required.prerelease == null)
+            return 0; // 都是稳定版，相等
+        if (current.prerelease == null)
+            return 1; // current 是稳定版，required 是 prerelease → current 满足要求
+        if (required.prerelease == null)
+            return -1; // current 是 prerelease，required 是稳定版 → current 不满足要求
+
+        // 都是 prerelease，比较优先级
+        return ComparePrereleaseVersionsForRequirement(current.prerelease, required.prerelease);
+    }
+
+    /// <summary>
+    /// prerelease 版本比较（用于版本要求检查）
+    /// 返回值：> 0 表示 current > required；= 0 表示相等；< 0 表示 current < required
+    /// </summary>
+    private int ComparePrereleaseVersionsForRequirement(string current, string required)
+    {
+        // prerelease 优先级：alpha < beta < rc
+        var priorityMap = new Dictionary<string, int>
+        {
+            { "alpha", 1 },
+            { "beta", 2 },
+            { "rc", 3 }
+        };
+
+        // 提取类型和编号（如 "beta.1" -> type="beta", number=1）
+        var (currentType, currentNum) = ParsePrereleaseParts(current);
+        var (requiredType, requiredNum) = ParsePrereleaseParts(required);
+
+        var currentPriority = priorityMap.TryGetValue(currentType, out var cp) ? cp : 0;
+        var requiredPriority = priorityMap.TryGetValue(requiredType, out var rp) ? rp : 0;
+
+        if (currentPriority > requiredPriority)
+            return 1;
+        if (currentPriority < requiredPriority)
+            return -1;
+
+        // 类型相同，比较编号
+        if (currentNum > requiredNum)
+            return 1;
+        if (currentNum < requiredNum)
+            return -1;
+
+        return 0;
+    }
+
+    private (string type, int number) ParsePrereleaseParts(string prerelease)
+    {
+        var dotIndex = prerelease.IndexOf('.');
+        if (dotIndex > 0)
+        {
+            var type = prerelease.Substring(0, dotIndex);
+            var numPart = prerelease.Substring(dotIndex + 1);
+            var number = int.TryParse(numPart, out var n) ? n : 0;
+            return (type, number);
+        }
+        return (prerelease, 0);
     }
 
     public async Task<(bool hasUpdate, string? latestVersion, string? downloadUrl, long? expectedSize, string? expectedDigest)> CheckForUpdatesAsync(bool includePrerelease = false)

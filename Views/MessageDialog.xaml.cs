@@ -71,6 +71,7 @@ namespace GHPC_Mod_Manager.Views
             NoButton.Visibility = Visibility.Collapsed;
             OpenFolderButton.Visibility = Visibility.Collapsed;
             IgnoreButton.Visibility = Visibility.Collapsed;
+            GoToSettingsButton.Visibility = Visibility.Collapsed;
 
             // 根据类型显示按钮
             switch (button)
@@ -109,6 +110,13 @@ namespace GHPC_Mod_Manager.Views
                     OpenFolderButton.Visibility = Visibility.Visible;
                     OpenFolderButton.Content = Strings.PreviousInstallationOpenFolder;
                     OpenFolderButton.Margin = new Thickness(8, 0, 0, 0);
+                    break;
+                case MessageDialogButton.GoToSettingsCancel:
+                    CancelButton.Visibility = Visibility.Visible;
+                    CancelButton.Content = Strings.Cancel;
+                    GoToSettingsButton.Visibility = Visibility.Visible;
+                    GoToSettingsButton.Content = Strings.CheckForUpdates;
+                    GoToSettingsButton.Margin = new Thickness(8, 0, 0, 0);
                     break;
             }
         }
@@ -164,6 +172,7 @@ namespace GHPC_Mod_Manager.Views
                 MessageDialogButton.YesNo => YesButton,
                 MessageDialogButton.YesNoCancel => YesButton,
                 MessageDialogButton.OpenFolderIgnore => OpenFolderButton,
+                MessageDialogButton.GoToSettingsCancel => GoToSettingsButton,
                 _ => null
             };
         }
@@ -223,6 +232,15 @@ namespace GHPC_Mod_Manager.Views
         }
 
         /// <summary>
+        /// 去设置更新按钮点击
+        /// </summary>
+        private void GoToSettings_Click(object sender, RoutedEventArgs e)
+        {
+            _result = MessageDialogResult.GoToSettings;
+            Close();
+        }
+
+        /// <summary>
         /// 键盘快捷键处理
         /// </summary>
         protected override void OnKeyDown(KeyEventArgs e)
@@ -257,6 +275,10 @@ namespace GHPC_Mod_Manager.Views
                 else if (_buttons == MessageDialogButton.OpenFolderIgnore)
                 {
                     _result = MessageDialogResult.OpenFolder;
+                }
+                else if (_buttons == MessageDialogButton.GoToSettingsCancel)
+                {
+                    _result = MessageDialogResult.GoToSettings;
                 }
                 Close();
             }

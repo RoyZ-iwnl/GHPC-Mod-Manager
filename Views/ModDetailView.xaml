@@ -328,7 +328,7 @@
                                                         Background="{DynamicResource WarningContainerBrush}"
                                                         BorderBrush="{DynamicResource WarningBrush}"
                                                         Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.DependencyMissing}"
+                                                    <TextBlock Text="{x:Static resources:Strings.NotInstalled}"
                                                                Style="{StaticResource BadgeTextStyle}"
                                                                Foreground="{DynamicResource OnWarningContainerBrush}"/>
                                                 </Border>

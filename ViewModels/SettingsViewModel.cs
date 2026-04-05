@@ -259,7 +259,7 @@ public partial class SettingsViewModel : ObservableObject
             }
             else
             {
-                MessageDialogHelper.ShowSuccess(Strings.SettingsSavedSuccessfully, Strings.Success);
+                MessageDialogHelper.ShowSuccess(Strings.SettingsSaved, Strings.Success);
             }
 
             _loggingService.LogInfo(Strings.SettingsSaved);

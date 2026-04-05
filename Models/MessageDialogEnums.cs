@@ -14,7 +14,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>显示是、否和取消按钮</summary>
         YesNoCancel,
         /// <summary>显示"打开目录"和"忽略"按钮</summary>
-        OpenFolderIgnore
+        OpenFolderIgnore,
+        /// <summary>显示"去设置更新"和"取消"按钮</summary>
+        GoToSettingsCancel
     }
 
     /// <summary>
@@ -35,7 +37,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>用户点击了"打开目录"按钮</summary>
         OpenFolder,
         /// <summary>用户点击了"忽略"按钮</summary>
-        Ignore
+        Ignore,
+        /// <summary>用户点击了"去设置更新"按钮</summary>
+        GoToSettings
     }
 
     /// <summary>

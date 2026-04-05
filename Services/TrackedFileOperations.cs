@@ -2,6 +2,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using GHPC_Mod_Manager.Resources;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using SharpCompress.Readers;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -16,6 +19,94 @@ public class TrackedFileOperations
         _loggingService = loggingService;
 
         _loggingService.LogInfo(Strings.TrackedFileOperationsInit);
+    }
+
+    /// <summary>
+    /// 通用解压方法，支持 ZIP、RAR、7z、TAR 等格式
+    /// </summary>
+    public async Task ExtractArchiveAsync(byte[] archiveData, string targetDirectory, string[]? excludePatterns = null)
+    {
+        _loggingService.LogInfo(Strings.ZipExtractionStarting,
+            targetDirectory, archiveData.Length, excludePatterns != null ? string.Join(", ", excludePatterns) : "none");
+
+        // 使用 SharpCompress 自动识别格式
+        using var archiveStream = new MemoryStream(archiveData);
+        using var archive = ArchiveFactory.OpenArchive(archiveStream, new ReaderOptions());
+
+        _loggingService.LogInfo(Strings.ZipArchiveOpened, archive.Entries.Count());
+
+        int processedCount = 0;
+        int skippedCount = 0;
+
+        foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+        {
+            var entryKey = entry.Key;
+            if (string.IsNullOrEmpty(entryKey))
+                continue;
+
+            // 检查排除模式
+            bool shouldExclude = excludePatterns?.Any(pattern => entryKey.Contains(pattern)) == true;
+            if (shouldExclude)
+            {
+                _loggingService.LogInfo(Strings.DirectoryCopyExcludingFile, entryKey);
+                skippedCount++;
+                continue;
+            }
+
+            var destinationPath = Path.Combine(targetDirectory, entryKey);
+            var destinationDir = Path.GetDirectoryName(destinationPath);
+
+            _loggingService.LogInfo(Strings.ZipProcessingEntry, entryKey, destinationPath);
+
+            if (!string.IsNullOrEmpty(destinationDir))
+            {
+                Directory.CreateDirectory(destinationDir);
+                _loggingService.LogInfo(Strings.ZipCreatedDirectory, destinationDir);
+            }
+
+            // 检查是否覆盖现有文件
+            bool isOverwrite = File.Exists(destinationPath);
+            string? originalHash = null;
+
+            if (isOverwrite)
+            {
+                originalHash = await CalculateFileHashAsync(destinationPath);
+                _loggingService.LogInfo(Strings.FileCopyOverwriting,
+                    destinationPath, originalHash);
+            }
+            else
+            {
+                _loggingService.LogInfo(Strings.FileCopyCreatingNew, destinationPath);
+            }
+
+            // 解压文件
+            try
+            {
+                entry.WriteToFile(destinationPath);
+                _loggingService.LogInfo(Strings.ZipExtractedSuccessfully,
+                    destinationPath, entry.Size);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(Strings.ZipExtractFailed, entryKey, ex.Message);
+                throw;
+            }
+
+            // 记录操作
+            _tracker.RecordFileOperation(new FileOperation
+            {
+                Type = isOverwrite ? FileOperationType.Overwrite : FileOperationType.Create,
+                SourcePath = entryKey,
+                TargetPath = destinationPath,
+                FileSize = entry.Size,
+                OriginalHash = originalHash
+            });
+
+            processedCount++;
+        }
+
+        _loggingService.LogInfo(Strings.ZipExtractionCompleted,
+            processedCount, skippedCount, archive.Entries.Count());
     }
 
     // ZIP解压操作（适用于Mod和XUnity安装）
@@ -44,7 +135,7 @@ public class TrackedFileOperations
             bool shouldExclude = excludePatterns?.Any(pattern => entry.FullName.Contains(pattern)) == true;
             if (shouldExclude)
             {
-                _loggingService.LogInfo(Strings.ZipExcludingByPattern, entry.FullName);
+                _loggingService.LogInfo(Strings.DirectoryCopyExcludingFile, entry.FullName);
                 skippedCount++;
                 continue;
             }
@@ -67,12 +158,12 @@ public class TrackedFileOperations
             if (isOverwrite)
             {
                 originalHash = await CalculateFileHashAsync(destinationPath);
-                _loggingService.LogInfo(Strings.ZipOverwritingFile,
+                _loggingService.LogInfo(Strings.FileCopyOverwriting,
                     destinationPath, originalHash);
             }
             else
             {
-                _loggingService.LogInfo(Strings.ZipCreatingNewFile, destinationPath);
+                _loggingService.LogInfo(Strings.FileCopyCreatingNew, destinationPath);
             }
 
             // 解压文件

@@ -12,12 +12,25 @@ namespace GHPC_Mod_Manager
             InitializeComponent();
             DataContext = viewModel;
 
-            // 设置窗口标题，包含版本号
+            // 设置窗口标题，包含版本号（显示短 hash）
             var informationalVersion = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            Title = informationalVersion != null
-                ? $"GHPC Mod Manager v{informationalVersion}"
-                : "GHPC Mod Manager";
+
+            string title;
+            if (informationalVersion != null)
+            {
+                var parts = informationalVersion.Split('+');
+                var version = parts[0];
+                var hash = parts.Length > 1 ? parts[1][..Math.Min(7, parts[1].Length)] : null;
+                title = hash != null
+                    ? $"GHPC Mod Manager v{version} ({hash})"
+                    : $"GHPC Mod Manager v{version}";
+            }
+            else
+            {
+                title = "GHPC Mod Manager";
+            }
+            Title = title;
 
             // Smart window sizing based on screen working area
             SetSmartWindowSize();

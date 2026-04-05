@@ -41,6 +41,7 @@ public partial class ModBrowserViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     private readonly IMelonLoaderService _melonLoaderService;
+    private readonly IUpdateService _updateService;
 
     // 全量MOD列表（由MainViewModel注入）
     private List<ModViewModel> _allMods = new();
@@ -76,6 +77,22 @@ public partial class ModBrowserViewModel : ObservableObject
     [ObservableProperty]
     private bool _showUninstalledOnly;
 
+    // 新增MOD横幅状态（会话级，不持久化）
+    [ObservableProperty]
+    private bool _hasNewMods;
+    [ObservableProperty]
+    private int _newModsCount;
+    [ObservableProperty]
+    private List<string> _newModsPreview = new();
+    [ObservableProperty]
+    private bool _isNewModsBannerDismissed;
+
+    // 横幅可见性：有新增且未被关闭时显示
+    public bool CanShowNewModsBanner => HasNewMods && !IsNewModsBannerDismissed;
+
+    // 内部存储检测到的新增MOD
+    private List<ModViewModel> _detectedNewMods = new();
+
     // 通知MainViewModel导航到详情页
     public event EventHandler<ModViewModel>? NavigateToDetailRequested;
 
@@ -85,14 +102,18 @@ public partial class ModBrowserViewModel : ObservableObject
     // 通知MainViewModel执行检查更新（true=只检查已安装）
     public event EventHandler<bool>? CheckForUpdatesRequested;
 
+    // 通知MainViewModel导航到设置页面
+    public event EventHandler? NavigateToSettingsRequested;
+
     public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
-    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
+    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IUpdateService updateService)
     {
         _modManagerService = modManagerService;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _melonLoaderService = melonLoaderService;
+        _updateService = updateService;
 
         // 异步读取游戏版本，不阻塞构造
         _ = LoadCurrentGameVersionAsync();
@@ -247,6 +268,23 @@ public partial class ModBrowserViewModel : ObservableObject
             return;
         }
 
+        // 检查管理器版本要求
+        if (!string.IsNullOrEmpty(mod.Config?.RequiredManagerVersion))
+        {
+            if (!_updateService.MeetsRequiredVersion(mod.Config.RequiredManagerVersion))
+            {
+                var currentVersion = _updateService.GetCurrentVersion();
+                var goToUpdate = MessageDialogHelper.ShowGoToSettingsCancel(
+                    string.Format(Strings.ManagerVersionRequirementMessage, mod.Config.RequiredManagerVersion, currentVersion),
+                    Strings.ManagerVersionRequirementTitle);
+                if (goToUpdate)
+                {
+                    NavigateToSettingsRequested?.Invoke(this, EventArgs.Empty);
+                }
+                return;
+            }
+        }
+
         if (!await ModInstallCompatibilityHelper.ConfirmInstallAsync(mod, CurrentGameVersion, _settingsService, _melonLoaderService))
             return;
 
@@ -336,9 +374,49 @@ public partial class ModBrowserViewModel : ObservableObject
 
     private bool CanExecuteModOps() => !IsDownloading;
 
+    /// <summary>
+    /// 由MainViewModel调用，推送检测到的新增MOD
+    /// </summary>
+    internal void SetNewMods(IEnumerable<ModViewModel> newMods)
+    {
+        _detectedNewMods = newMods.ToList();
+        _isNewModsBannerDismissed = false;
+        HasNewMods = _detectedNewMods.Count > 0;
+        NewModsCount = _detectedNewMods.Count;
+        NewModsPreview = _detectedNewMods.Take(3).Select(m => m.DisplayName).ToList();
+    }
+
+    /// <summary>
+    /// 由MainViewModel调用，清除新增MOD状态
+    /// </summary>
+    internal void ClearNewMods()
+    {
+        _detectedNewMods.Clear();
+        HasNewMods = false;
+        NewModsCount = 0;
+        NewModsPreview.Clear();
+    }
+
+    /// <summary>
+    /// 导航到浏览页时调用，决定是否展示横幅
+    /// </summary>
+    internal void OnNavigatedToBrowser()
+    {
+        // 横幅可见性由 HasNewMods && !IsNewModsBannerDismissed 数据绑定控制
+    }
+
+    [RelayCommand]
+    private void DismissNewModsBanner()
+    {
+        IsNewModsBannerDismissed = true;
+    }
+
     partial void OnIsDownloadingChanged(bool value)
     {
         InstallModCommand.NotifyCanExecuteChanged();
         RedownloadInstallCommand.NotifyCanExecuteChanged();
     }
+
+    partial void OnHasNewModsChanged(bool value) => OnPropertyChanged(nameof(CanShowNewModsBanner));
+    partial void OnIsNewModsBannerDismissedChanged(bool value) => OnPropertyChanged(nameof(CanShowNewModsBanner));
 }

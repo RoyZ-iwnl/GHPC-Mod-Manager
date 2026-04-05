@@ -167,6 +167,10 @@ public class ModConfig
     [JsonProperty("Delisted")]
     public bool Delisted { get; set; } = false;
 
+    // 所需最低管理器版本：可选字段，指定时会在安装前检查版本是否满足要求
+    [JsonProperty("RequiredManagerVersion")]
+    public string? RequiredManagerVersion { get; set; }
+
     // 未知字段存储（用于检测新版本添加的字段）
     [JsonExtensionData]
     public Dictionary<string, object>? UnknownFields { get; set; }

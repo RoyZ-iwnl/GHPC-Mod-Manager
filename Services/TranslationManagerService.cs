@@ -386,8 +386,8 @@ public class TranslationManagerService : ITranslationManagerService
             
             var gameRootPath = _settingsService.Settings.GameRootPath;
 
-            // 使用追踪的ZIP解压操作
-            await trackedOps.ExtractZipAsync(downloadData, gameRootPath);
+            // 使用追踪的解压操作（支持多种压缩格式）
+            await trackedOps.ExtractArchiveAsync(downloadData, gameRootPath);
             
 
             return true;
@@ -457,8 +457,8 @@ public class TranslationManagerService : ITranslationManagerService
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
 
-            // 使用追踪的ZIP解压操作，排除不需要的文件
-            await trackedOps.ExtractZipAsync(zipData, gameRootPath, new[] { ".git", ".gitignore", "README.md", "LICENSE" });
+            // 使用追踪的解压操作，排除不需要的文件
+            await trackedOps.ExtractArchiveAsync(zipData, gameRootPath, new[] { ".git", ".gitignore", "README.md", "LICENSE" });
             
 
             // 更新翻译配置（translationconfig.json 已废弃，不再写入）

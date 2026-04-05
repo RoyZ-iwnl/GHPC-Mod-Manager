@@ -47,7 +47,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
                     services.AddSingleton<IDialogService, DialogService>();
                     services.AddSingleton<IPreviousInstallationService, PreviousInstallationService>();
-
+                    services.AddSingleton<IModCatalogStateService, ModCatalogStateService>();
                     services.ConfigureHttpClientDefaults(builder =>
                     {
                         builder.ConfigureHttpClient(client =>

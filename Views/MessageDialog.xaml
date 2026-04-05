@@ -191,6 +191,12 @@
                             Style="{StaticResource DialogSecondaryButtonStyle}"
                             Click="Ignore_Click"
                             Visibility="Collapsed"/>
+                    <!-- 去设置更新按钮 -->
+                    <Button x:Name="GoToSettingsButton"
+                            Content="去设置更新"
+                            Style="{StaticResource DialogPrimaryButtonStyle}"
+                            Click="GoToSettings_Click"
+                            Visibility="Collapsed"/>
                 </StackPanel>
             </Border>
         </Grid>

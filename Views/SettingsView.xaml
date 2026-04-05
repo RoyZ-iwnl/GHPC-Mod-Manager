@@ -315,7 +315,7 @@
                                     Background="{DynamicResource WarningContainerBrush}"
                                     BorderBrush="{DynamicResource WarningBrush}"
                                     Visibility="{Binding IsMelonLoaderDisabled, Converter={StaticResource BoolToVis}}">
-                                    <TextBlock Text="{x:Static resources:Strings.MelonLoaderDisabled}"
+                                    <TextBlock Text="{x:Static resources:Strings.Disabled}"
                                            Style="{StaticResource BadgeTextStyle}"
                                            Foreground="{DynamicResource OnWarningContainerBrush}"/>
                                 </Border>

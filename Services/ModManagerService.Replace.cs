@@ -7,6 +7,9 @@ using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
 using GHPC_Mod_Manager.Helpers;
 using Newtonsoft.Json;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using SharpCompress.Readers;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -42,6 +45,16 @@ public partial class ModManagerService
     }
 
     private bool IsReplaceMode(ModConfig modConfig) => modConfig.InstallMethod == InstallMethod.Replace;
+
+    /// <summary>
+    /// 判断文件名是否为压缩文件格式
+    /// </summary>
+    private static bool IsArchiveFile(string fileName)
+    {
+        var ext = Path.GetExtension(fileName).ToLowerInvariant();
+        return ext == ".zip" || ext == ".rar" || ext == ".7z" || ext == ".tar" ||
+               ext == ".gz" || ext == ".bz2" || ext == ".xz";
+    }
 
     private List<string> GetInstalledRelativePaths(ModInstallInfo installInfo)
     {
@@ -155,9 +168,9 @@ public partial class ModManagerService
                 await trackedOps.CopyFileAsync(tempDownloadPath, targetPath);
                 File.Delete(tempDownloadPath);
             }
-            else
+            else if (IsArchiveFile(downloadedFileName))
             {
-                await trackedOps.ExtractZipAsync(downloadData, modsPath);
+                await trackedOps.ExtractArchiveAsync(downloadData, modsPath);
             }
         }
         finally
@@ -645,6 +658,37 @@ public partial class ModManagerService
         return NormalizeRelativePath(Path.Combine(baseRelativePath, normalizedChild));
     }
 
+    private async Task ExtractReplaceArchiveAsync(string modId, string baseRelativePath, byte[] archiveData, List<string> installedPaths, List<string> backupFiles)
+    {
+        using var archiveStream = new MemoryStream(archiveData);
+        using var archive = ArchiveFactory.OpenArchive(archiveStream, new ReaderOptions());
+
+        foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+        {
+            var entryKey = entry.Key;
+            if (string.IsNullOrWhiteSpace(entryKey))
+                continue;
+
+            var targetRelativePath = CombineReplaceRelativePath(baseRelativePath, entryKey);
+            var backupRelativePath = await BackupExistingFileAsync(modId, targetRelativePath);
+            if (!string.IsNullOrWhiteSpace(backupRelativePath))
+                backupFiles.Add(backupRelativePath);
+
+            var targetPath = Path.Combine(_settingsService.Settings.GameRootPath, targetRelativePath);
+            var targetDir = Path.GetDirectoryName(targetPath);
+            if (!string.IsNullOrEmpty(targetDir))
+                Directory.CreateDirectory(targetDir);
+
+            entry.WriteToFile(targetPath, new ExtractionOptions
+            {
+                Overwrite = true,
+                ExtractFullPath = false
+            });
+
+            installedPaths.Add(targetRelativePath);
+        }
+    }
+
     private Task<bool> EnsureReplaceBackupStateIsCleanAsync(ModConfig modConfig)
     {
         if (!IsReplaceMode(modConfig))
@@ -744,31 +788,9 @@ public partial class ModManagerService
         var installedPaths = new List<string>();
         var backupFiles = new List<string>();
 
-        if (downloadedFileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+        if (IsArchiveFile(downloadedFileName))
         {
-            using var zipStream = new MemoryStream(downloadData);
-            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
-
-            foreach (var entry in archive.Entries)
-            {
-                if (string.IsNullOrEmpty(entry.Name))
-                    continue;
-
-                var targetRelativePath = CombineReplaceRelativePath(baseRelativePath, entry.FullName);
-                var backupRelativePath = await BackupExistingFileAsync(modConfig.Id, targetRelativePath);
-                if (!string.IsNullOrWhiteSpace(backupRelativePath))
-                    backupFiles.Add(backupRelativePath);
-
-                var targetPath = Path.Combine(gameRootPath, targetRelativePath);
-                var targetDir = Path.GetDirectoryName(targetPath);
-                if (!string.IsNullOrEmpty(targetDir))
-                    Directory.CreateDirectory(targetDir);
-
-                using var sourceStream = entry.Open();
-                using var targetStream = File.Create(targetPath);
-                await sourceStream.CopyToAsync(targetStream);
-                installedPaths.Add(targetRelativePath);
-            }
+            await ExtractReplaceArchiveAsync(modConfig.Id, baseRelativePath, downloadData, installedPaths, backupFiles);
         }
         else
         {

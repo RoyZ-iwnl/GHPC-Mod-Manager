@@ -125,11 +125,14 @@ public partial class MainWindowViewModel : ObservableObject
             var assembly = Assembly.GetExecutingAssembly();
             var versionAttribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
             var versionString = versionAttribute?.InformationalVersion ?? assembly.GetName().Version?.ToString() ?? "Unknown";
-            
-            // Remove the git hash if present (anything after '+')
-            var cleanVersion = versionString.Split('+')[0];
-            
-            return $"{GHPC_Mod_Manager.Resources.Strings.GHPCModManager} v{cleanVersion}";
+
+            var parts = versionString.Split('+');
+            var version = parts[0];
+            var hash = parts.Length > 1 ? parts[1][..Math.Min(7, parts[1].Length)] : null;
+
+            return hash != null
+                ? $"{GHPC_Mod_Manager.Resources.Strings.GHPCModManager} v{version} ({hash})"
+                : $"{GHPC_Mod_Manager.Resources.Strings.GHPCModManager} v{version}";
         }
         catch
         {

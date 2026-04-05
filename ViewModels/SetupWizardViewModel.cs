@@ -596,7 +596,7 @@ public partial class SetupWizardViewModel : ObservableObject
         {
             IsCheckingNetwork = false;
             AddToNetworkLog(string.Format(Strings.NetworkDetectionComplete,
-                IsNetworkAvailable ? Strings.ConnectionNormalResult : Strings.ConnectionAbnormalResult));
+                IsNetworkAvailable ? Strings.ConnectionNormal : Strings.ConnectionAbnormal));
             UpdateNavigationButtons();
         }
     }

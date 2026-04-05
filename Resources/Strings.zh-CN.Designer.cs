@@ -1253,15 +1253,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 连接异常.
-        /// </summary>
-        public static string ConnectionAbnormalResult {
-            get {
-                return ResourceManager.GetString("ConnectionAbnormalResult", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 连接失败.
         /// </summary>
         public static string ConnectionFailed {
@@ -1276,15 +1267,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ConnectionNormal {
             get {
                 return ResourceManager.GetString("ConnectionNormal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 连接正常.
-        /// </summary>
-        public static string ConnectionNormalResult {
-            get {
-                return ResourceManager.GetString("ConnectionNormalResult", resourceCulture);
             }
         }
         
@@ -1550,15 +1532,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DependencyDialogTitle {
             get {
                 return ResourceManager.GetString("DependencyDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 未安装.
-        /// </summary>
-        public static string DependencyMissing {
-            get {
-                return ResourceManager.GetString("DependencyMissing", resourceCulture);
             }
         }
         
@@ -3258,15 +3231,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 状态.
-        /// </summary>
-        public static string InstallationStatus {
-            get {
-                return ResourceManager.GetString("InstallationStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 已安装.
         /// </summary>
         public static string Installed {
@@ -3344,15 +3308,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string InstallingTranslationSystem {
             get {
                 return ResourceManager.GetString("InstallingTranslationSystem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 安装.
-        /// </summary>
-        public static string InstallLatestVersion {
-            get {
-                return ResourceManager.GetString("InstallLatestVersion", resourceCulture);
             }
         }
         
@@ -3952,6 +3907,26 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 此 Mod 需要模组管理器版本 {0} 或更高版本。您的当前版本是 {1}。
+        ///
+        ///请先更新模组管理器以安装此 Mod。.
+        /// </summary>
+        public static string ManagerVersionRequirementMessage {
+            get {
+                return ResourceManager.GetString("ManagerVersionRequirementMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 管理器版本要求.
+        /// </summary>
+        public static string ManagerVersionRequirementTitle {
+            get {
+                return ResourceManager.GetString("ManagerVersionRequirementTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 加载Mod安装清单时出错.
         /// </summary>
         public static string ManifestLoadError {
@@ -4083,15 +4058,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string MelonLoaderDirectoryExists {
             get {
                 return ResourceManager.GetString("MelonLoaderDirectoryExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 已禁用.
-        /// </summary>
-        public static string MelonLoaderDisabled {
-            get {
-                return ResourceManager.GetString("MelonLoaderDisabled", resourceCulture);
             }
         }
         
@@ -4825,15 +4791,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 已禁用.
-        /// </summary>
-        public static string ModInfoDisabled {
-            get {
-                return ResourceManager.GetString("ModInfoDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 模组信息导出.
         /// </summary>
         public static string ModInfoDumper {
@@ -4857,15 +4814,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModInfoDumperTitle {
             get {
                 return ResourceManager.GetString("ModInfoDumperTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 已启用.
-        /// </summary>
-        public static string ModInfoEnabled {
-            get {
-                return ResourceManager.GetString("ModInfoEnabled", resourceCulture);
             }
         }
         
@@ -5442,6 +5390,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NetworkTestSuccessfulViaProxy {
             get {
                 return ResourceManager.GetString("NetworkTestSuccessfulViaProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 个新上架MOD.
+        /// </summary>
+        public static string NewModsBannerText {
+            get {
+                return ResourceManager.GetString("NewModsBannerText", resourceCulture);
             }
         }
         
@@ -6471,6 +6428,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 所需管理器版本.
+        /// </summary>
+        public static string RequiredManagerVersion {
+            get {
+                return ResourceManager.GetString("RequiredManagerVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 所需的最低模组管理器版本（可选，如 1.2.0）.
+        /// </summary>
+        public static string RequiredManagerVersionHint {
+            get {
+                return ResourceManager.GetString("RequiredManagerVersionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 重置配置.
         /// </summary>
         public static string ResetConfiguration {
@@ -6737,15 +6712,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SettingsSaved {
             get {
                 return ResourceManager.GetString("SettingsSaved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 设置保存成功.
-        /// </summary>
-        public static string SettingsSavedSuccessfully {
-            get {
-                return ResourceManager.GetString("SettingsSavedSuccessfully", resourceCulture);
             }
         }
         
@@ -7380,15 +7346,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 翻译文件更新成功.
-        /// </summary>
-        public static string TranslationFilesUpdateSuccessful {
-            get {
-                return ResourceManager.GetString("TranslationFilesUpdateSuccessful", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 开始安装翻译系统: XUnity版本 {0}.
         /// </summary>
         public static string TranslationInstallationStarted {
@@ -7659,29 +7616,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 翻译系统安装成功.
-        /// </summary>
-        public static string TranslationSystemInstallSuccessful {
-            get {
-                return ResourceManager.GetString("TranslationSystemInstallSuccessful", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 翻译系统尚未安装.
         /// </summary>
         public static string TranslationSystemNotInstalled {
             get {
                 return ResourceManager.GetString("TranslationSystemNotInstalled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 翻译系统卸载成功.
-        /// </summary>
-        public static string TranslationSystemUninstalledSuccessfully {
-            get {
-                return ResourceManager.GetString("TranslationSystemUninstalledSuccessfully", resourceCulture);
             }
         }
         
@@ -7853,15 +7792,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UninstallingMod {
             get {
                 return ResourceManager.GetString("UninstallingMod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 正在卸载 {0}....
-        /// </summary>
-        public static string UninstallingMod_ {
-            get {
-                return ResourceManager.GetString("UninstallingMod_", resourceCulture);
             }
         }
         
@@ -8649,24 +8579,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 创建新文件：{0}.
-        /// </summary>
-        public static string ZipCreatingNewFile {
-            get {
-                return ResourceManager.GetString("ZipCreatingNewFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 根据模式排除文件：{0}.
-        /// </summary>
-        public static string ZipExcludingByPattern {
-            get {
-                return ResourceManager.GetString("ZipExcludingByPattern", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 成功解压：{0} ({1} 字节).
         /// </summary>
         public static string ZipExtractedSuccessfully {
@@ -8717,15 +8629,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ZipFileOpenSuccess {
             get {
                 return ResourceManager.GetString("ZipFileOpenSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 将覆盖现有文件：{0}（原始哈希：{1}）.
-        /// </summary>
-        public static string ZipOverwritingFile {
-            get {
-                return ResourceManager.GetString("ZipOverwritingFile", resourceCulture);
             }
         }
         

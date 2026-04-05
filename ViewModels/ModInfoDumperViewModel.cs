@@ -244,7 +244,7 @@ public partial class ModInfoDumperViewModel : ObservableObject
             sb.AppendLine($"[{modIndex}] {mod.DisplayName}");
 
             // 状态
-            var status = mod.IsEnabled ? Strings.ModInfoEnabled : Strings.ModInfoDisabled;
+            var status = mod.IsEnabled ? Strings.Enabled : Strings.Disabled;
             if (mod.IsManuallyInstalled)
             {
                 status += $" ({Strings.ModInfoManual})";

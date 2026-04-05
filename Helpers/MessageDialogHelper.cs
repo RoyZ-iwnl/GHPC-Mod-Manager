@@ -178,6 +178,18 @@ namespace GHPC_Mod_Manager.Helpers
         }
 
         /// <summary>
+        /// 显示去设置更新/取消对话框
+        /// </summary>
+        /// <param name="message">消息内容</param>
+        /// <param name="title">标题</param>
+        /// <returns>用户是否点击了"去设置更新"</returns>
+        public static bool ShowGoToSettingsCancel(string message, string? title = null)
+        {
+            var result = Show(message, title ?? string.Empty, MessageDialogButton.GoToSettingsCancel, MessageDialogImage.Warning);
+            return result == MessageDialogResult.GoToSettings;
+        }
+
+        /// <summary>
         /// 异步显示完整参数的对话框
         /// </summary>
         /// <returns>对话框返回结果</returns>

@@ -591,9 +591,6 @@
   <data name="TranslationSystem" xml:space="preserve">
     <value>翻译系统</value>
   </data>
-  <data name="InstallationStatus" xml:space="preserve">
-    <value>状态</value>
-  </data>
   <data name="Installed" xml:space="preserve">
     <value>已安装</value>
   </data>
@@ -771,9 +768,6 @@
   <data name="PresetSaved_" xml:space="preserve">
     <value>已保存预设: {0}</value>
   </data>
-  <data name="SettingsSavedSuccessfully" xml:space="preserve">
-    <value>设置保存成功</value>
-  </data>
   <data name="SettingsSaveFailed" xml:space="preserve">
     <value>设置保存失败</value>
   </data>
@@ -915,9 +909,6 @@
   <data name="ManualModUninstallWarning" xml:space="preserve">
     <value>{0} 是一个手动安装的Mod。您确定要永久删除dll文件吗？此操作无法撤销。</value>
   </data>
-  <data name="UninstallingMod_" xml:space="preserve">
-    <value>正在卸载 {0}...</value>
-  </data>
   <data name="ModUninstalledSuccessfully" xml:space="preserve">
     <value>{0} 卸载成功</value>
   </data>
@@ -926,9 +917,6 @@
   </data>
   <data name="UninstallingTranslationSystem" xml:space="preserve">
     <value>正在卸载翻译系统...</value>
-  </data>
-  <data name="TranslationSystemUninstalledSuccessfully" xml:space="preserve">
-    <value>翻译系统卸载成功</value>
   </data>
   <data name="NetworkCheckLog" xml:space="preserve">
     <value>网络检测日志</value>
@@ -996,12 +984,6 @@
   <data name="NetworkCheckComplete" xml:space="preserve">
     <value>网络检测完成 - 结果: {0}</value>
   </data>
-  <data name="ConnectionNormalResult" xml:space="preserve">
-    <value>连接正常</value>
-  </data>
-  <data name="ConnectionAbnormalResult" xml:space="preserve">
-    <value>连接异常</value>
-  </data>
   <data name="MelonLoaderInstallSuccessNeedGameRun" xml:space="preserve">
     <value>MelonLoader安装成功！现在需要运行游戏来完成设置。</value>
   </data>
@@ -1025,6 +1007,9 @@
   </data>
   <data name="DataRefreshComplete" xml:space="preserve">
     <value>数据刷新完成</value>
+  </data>
+  <data name="NewModsBannerText" xml:space="preserve">
+    <value>个新上架MOD</value>
   </data>
   <data name="DataRefreshFailed" xml:space="preserve">
     <value>数据刷新失败</value>
@@ -1062,14 +1047,8 @@
   <data name="InstallingTranslationSystem" xml:space="preserve">
     <value>正在安装翻译系统...</value>
   </data>
-  <data name="TranslationSystemInstallSuccessful" xml:space="preserve">
-    <value>翻译系统安装成功</value>
-  </data>
   <data name="TranslationSystemInstallFailed" xml:space="preserve">
     <value>翻译系统安装失败</value>
-  </data>
-  <data name="TranslationFilesUpdateSuccessful" xml:space="preserve">
-    <value>翻译文件更新成功</value>
   </data>
   <data name="TranslationFilesUpdateFailed" xml:space="preserve">
     <value>翻译文件更新失败</value>
@@ -1379,9 +1358,6 @@
   </data>
   <data name="MelonLoaderNotDetected" xml:space="preserve">
     <value>未检测到</value>
-  </data>
-  <data name="MelonLoaderDisabled" xml:space="preserve">
-    <value>已禁用</value>
   </data>
   <data name="DisableMelonLoader" xml:space="preserve">
     <value>临时禁用</value>
@@ -2199,20 +2175,11 @@
   <data name="ZipSkippingDirectory" xml:space="preserve">
     <value>跳过目录条目：{0}</value>
   </data>
-  <data name="ZipExcludingByPattern" xml:space="preserve">
-    <value>根据模式排除文件：{0}</value>
-  </data>
   <data name="ZipProcessingEntry" xml:space="preserve">
     <value>处理 ZIP 条目：{0} -&gt; {1}</value>
   </data>
   <data name="ZipCreatedDirectory" xml:space="preserve">
     <value>已创建目录：{0}</value>
-  </data>
-  <data name="ZipOverwritingFile" xml:space="preserve">
-    <value>将覆盖现有文件：{0}（原始哈希：{1}）</value>
-  </data>
-  <data name="ZipCreatingNewFile" xml:space="preserve">
-    <value>创建新文件：{0}</value>
   </data>
   <data name="ZipExtractedSuccessfully" xml:space="preserve">
     <value>成功解压：{0} ({1} 字节)</value>
@@ -2694,14 +2661,8 @@
   <data name="ConflictsSection" xml:space="preserve">
     <value>冲突MOD</value>
   </data>
-  <data name="DependencyMissing" xml:space="preserve">
-    <value>未安装</value>
-  </data>
   <data name="LoadingReleases" xml:space="preserve">
     <value>加载版本中...</value>
-  </data>
-  <data name="InstallLatestVersion" xml:space="preserve">
-    <value>安装</value>
   </data>
   <data name="QuickReinstall" xml:space="preserve">
     <value>快速重装</value>
@@ -2996,12 +2957,6 @@
   <data name="ModInfoVersion" xml:space="preserve">
     <value>版本：</value>
   </data>
-  <data name="ModInfoEnabled" xml:space="preserve">
-    <value>已启用</value>
-  </data>
-  <data name="ModInfoDisabled" xml:space="preserve">
-    <value>已禁用</value>
-  </data>
   <data name="ModInfoManual" xml:space="preserve">
     <value>手动安装</value>
   </data>
@@ -3046,5 +3001,19 @@
   </data>
   <data name="PreviousInstallationIgnore" xml:space="preserve">
     <value>忽略</value>
+  </data>
+  <data name="ManagerVersionRequirementTitle" xml:space="preserve">
+    <value>管理器版本要求</value>
+  </data>
+  <data name="ManagerVersionRequirementMessage" xml:space="preserve">
+    <value>此 Mod 需要模组管理器版本 {0} 或更高版本。您的当前版本是 {1}。
+
+请先更新模组管理器以安装此 Mod。</value>
+  </data>
+  <data name="RequiredManagerVersion" xml:space="preserve">
+    <value>所需管理器版本</value>
+  </data>
+  <data name="RequiredManagerVersionHint" xml:space="preserve">
+    <value>所需的最低模组管理器版本（可选，如 1.2.0）</value>
   </data>
 </root>

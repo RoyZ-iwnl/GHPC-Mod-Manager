@@ -341,7 +341,7 @@ public partial class ModDetailViewModel : ObservableObject
         try
         {
             IsInstalling = true;
-            StatusMessage = string.Format(Strings.UninstallingMod_, Mod.DisplayName);
+            StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallModAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
@@ -369,7 +369,7 @@ public partial class ModDetailViewModel : ObservableObject
         try
         {
             IsInstalling = true;
-            StatusMessage = string.Format(Strings.UninstallingMod_, Mod.DisplayName);
+            StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallManualModAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
