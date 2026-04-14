@@ -1011,6 +1011,9 @@
   <data name="NewModsBannerText" xml:space="preserve">
     <value>NEW MOD(s):</value>
   </data>
+  <data name="GoToModBrowser" xml:space="preserve">
+    <value>Go to Mod Browser</value>
+  </data>
   <data name="DataRefreshFailed" xml:space="preserve">
     <value>Data refresh failed</value>
   </data>

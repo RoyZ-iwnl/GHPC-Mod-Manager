@@ -271,8 +271,10 @@ public partial class ModManagerService : IModManagerService
                     m.InstalledFiles.Any(f => f.RelativePath.Replace('\\', '/') == relativeModPath)))
                     continue;
 
-                // Skip XUnity AutoTranslator (translation plugin) and its backup
-                if (fileName == "XUnity.AutoTranslator.Plugin.MelonMod.dll" || fileName == "XUnity.AutoTranslator.Plugin.MelonMod.dllbak")
+                // Skip XUnity AutoTranslator (translation plugin) and its backup (新旧后缀都跳过)
+                if (fileName == "XUnity.AutoTranslator.Plugin.MelonMod.dll" ||
+                    fileName == "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK" ||
+                    fileName == "XUnity.AutoTranslator.Plugin.MelonMod.dllbak")
                     continue;
 
                 // Check if this manual mod matches any supported mod configuration
@@ -1271,10 +1273,10 @@ public partial class ModManagerService : IModManagerService
 
                 if (inTargetSection)
                 {
-                    // 处理单独的注释行
-                    if (trimmed.StartsWith("#") && !trimmed.Contains("="))
+                    // 处理单独的注释行（以#开头，即使包含=也是注释）
+                    if (trimmed.StartsWith("#"))
                     {
-                        var standaloneComment = trimmed.Substring(1).Trim(); // 移除#号
+                        var standaloneComment = trimmed.Substring(1).Trim();
                         if (!string.IsNullOrEmpty(standaloneComment))
                         {
                             var localizedComment = GetLocalizedConfigComment(modId, standaloneComment);
@@ -1284,8 +1286,8 @@ public partial class ModManagerService : IModManagerService
                         }
                         continue;
                     }
-                    
-                    // 处理配置项
+
+                    // 处理配置项（必须包含=且不以#开头）
                     if (trimmed.Contains("="))
                     {
                         var parts = trimmed.Split('=', 2);

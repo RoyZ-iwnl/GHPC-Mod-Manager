@@ -59,6 +59,20 @@ public partial class InstalledModsViewModel : ObservableObject
     // 通知MainViewModel执行检查更新（true=只检查已安装）
     public event EventHandler<bool>? CheckForUpdatesRequested;
 
+    // 通知MainViewModel导航到MOD浏览页
+    public event EventHandler? NavigateToModBrowserRequested;
+
+    // 新上架MOD横幅状态（从ModBrowserViewModel同步）
+    [ObservableProperty]
+    private bool _hasNewMods;
+    [ObservableProperty]
+    private int _newModsCount;
+    [ObservableProperty]
+    private List<string> _newModsPreview = new();
+
+    // 横幅可见性：有新增MOD时显示
+    public bool CanShowNewModsBanner => HasNewMods && NewModsCount > 0;
+
     public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
     {
         _modManagerService = modManagerService;
@@ -117,6 +131,17 @@ public partial class InstalledModsViewModel : ObservableObject
         }
         // 刷新列表以更新图标显示
         FilterMods();
+    }
+
+    /// <summary>
+    /// 由MainViewModel调用，同步新上架MOD横幅数据
+    /// </summary>
+    public void SetNewModsInfo(bool hasNewMods, int newModsCount, List<string> newModsPreview)
+    {
+        HasNewMods = hasNewMods;
+        NewModsCount = newModsCount;
+        NewModsPreview = newModsPreview;
+        OnPropertyChanged(nameof(CanShowNewModsBanner));
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
@@ -293,6 +318,12 @@ public partial class InstalledModsViewModel : ObservableObject
     private void Refresh()
     {
         RefreshRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    [RelayCommand]
+    private void NavigateToModBrowser()
+    {
+        NavigateToModBrowserRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private bool CanExecuteModOps() => !IsDownloading && !IsCheckingUpdates;

@@ -3159,6 +3159,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 前往MOD浏览.
+        /// </summary>
+        public static string GoToModBrowser {
+            get {
+                return ResourceManager.GetString("GoToModBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 前往翻译管理.
         /// </summary>
         public static string GoToTranslation {

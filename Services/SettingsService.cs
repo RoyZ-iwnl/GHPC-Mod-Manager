@@ -110,7 +110,8 @@ public class SettingsService : ISettingsService
                     : _secureStorage.Protect(_settings.GitHubApiToken),
                 CleanupDoneForVersion = _settings.CleanupDoneForVersion,
                 LastAnnouncementMd5 = _settings.LastAnnouncementMd5,
-                DoNotShowAnnouncementBeforeUpdate = _settings.DoNotShowAnnouncementBeforeUpdate
+                DoNotShowAnnouncementBeforeUpdate = _settings.DoNotShowAnnouncementBeforeUpdate,
+                ShowUninstalledOnly = _settings.ShowUninstalledOnly
             };
 
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);

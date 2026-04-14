@@ -43,6 +43,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -86,7 +87,66 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Margin="0,12,0,0">
+        <!-- 新上架MOD横幅 -->
+        <Border Grid.Row="1"
+                Padding="16,12"
+                Margin="0,12,0,0"
+                Style="{StaticResource PageSectionCardStyle}"
+                Visibility="{Binding CanShowNewModsBanner, Converter={StaticResource BoolToVis}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <TextBlock Text="&#x2728;"
+                                   Margin="0,0,8,0"
+                                   FontSize="18"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                        <TextBlock FontSize="{DynamicResource LabelLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource OnSurfaceBrush}"
+                                   VerticalAlignment="Center">
+                            <Run Text="{Binding NewModsCount, Mode=OneWay}"/>
+                            <Run Text="{x:Static resources:Strings.NewModsBannerText}"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <!-- MOD名称预览 -->
+                    <ItemsControl ItemsSource="{Binding NewModsPreview}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource SecondaryContainerBrush}"
+                                        BorderBrush="{DynamicResource SecondaryBrush}"
+                                        CornerRadius="6"
+                                        Padding="8,4"
+                                        Margin="0,0,8,4">
+                                    <TextBlock Text="{Binding}"
+                                               FontSize="{DynamicResource LabelMedium}"
+                                               Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- 跳转到MOD浏览按钮 -->
+                <Button Grid.Column="1"
+                        Content="{x:Static resources:Strings.GoToModBrowser}"
+                        Command="{Binding NavigateToModBrowserCommand}"
+                        Style="{DynamicResource FilledButtonStyle}"
+                        VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,12,0,0">
             <Border Style="{StaticResource PageSectionCardStyle}"
                     Visibility="{Binding FilteredInstalledMods.Count, Converter={StaticResource InvBoolToVis}}">
                 <StackPanel VerticalAlignment="Center"

@@ -102,6 +102,10 @@ public class AppSettings
     /// 更新前不再显示公告
     /// </summary>
     public bool DoNotShowAnnouncementBeforeUpdate { get; set; } = false;
+    /// <summary>
+    /// MOD浏览页筛选：仅显示未安装
+    /// </summary>
+    public bool ShowUninstalledOnly { get; set; } = false;
 }
 
 /// <summary>

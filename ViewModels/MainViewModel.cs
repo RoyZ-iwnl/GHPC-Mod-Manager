@@ -85,7 +85,6 @@ public partial class MainViewModel : ObservableObject
 
     private readonly IModManagerService _modManagerService;
     private readonly ITranslationManagerService _translationManagerService;
-    private readonly ITranslationBackupService _translationBackupService;
     private readonly IProcessService _processService;
     private readonly INavigationService _navigationService;
     private readonly ILoggingService _loggingService;
@@ -277,7 +276,6 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(
         IModManagerService modManagerService,
         ITranslationManagerService translationManagerService,
-        ITranslationBackupService translationBackupService,
         IProcessService processService,
         INavigationService navigationService,
         ILoggingService loggingService,
@@ -291,7 +289,6 @@ public partial class MainViewModel : ObservableObject
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
-        _translationBackupService = translationBackupService;
         _processService = processService;
         _navigationService = navigationService;
         _loggingService = loggingService;
@@ -319,6 +316,7 @@ public partial class MainViewModel : ObservableObject
         _installedModsViewModel.NavigateToDetailRequested += OnNavigateToDetail;
         _installedModsViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
         _installedModsViewModel.CheckForUpdatesRequested += async (s, onlyInstalled) => await CheckForModUpdatesWithScopeAsync(onlyInstalled);
+        _installedModsViewModel.NavigateToModBrowserRequested += (s, e) => _navigationService.NavigateToModBrowser();
         _modBrowserViewModel.NavigateToDetailRequested += OnNavigateToDetail;
         _modBrowserViewModel.RefreshRequested += async (s, e) => await RefreshDataAsync();
         _modBrowserViewModel.CheckForUpdatesRequested += async (s, onlyInstalled) => await CheckForModUpdatesWithScopeAsync(onlyInstalled);
@@ -342,6 +340,9 @@ public partial class MainViewModel : ObservableObject
             new NavigationItem { Label = Strings.NavModBrowser, Page = NavigationPage.ModBrowser },
             new NavigationItem { Label = Strings.NavTranslation, Page = NavigationPage.Translation },
         };
+
+        // 订阅页面导航事件
+        _navigationService.PageNavigationRequested += OnPageNavigationRequested;
 
         InitializeAsync();
 
@@ -377,6 +378,26 @@ public partial class MainViewModel : ObservableObject
                 CurrentPageView = _translationView;
                 break;
         }
+    }
+
+    /// <summary>
+    /// 处理NavigationService发出的页面导航请求
+    /// </summary>
+    private void OnPageNavigationRequested(object? sender, string pageName)
+    {
+        var page = pageName switch
+        {
+            "ModBrowser" => NavigationPage.ModBrowser,
+            "InstalledMods" => NavigationPage.InstalledMods,
+            "Translation" => NavigationPage.Translation,
+            _ => NavigationPage.InstalledMods
+        };
+
+        // 直接导航并同步导航栏选中状态
+        NavigateToPage(page);
+        var navItem = NavigationItems.FirstOrDefault(n => n.Page == page);
+        if (navItem != null && SelectedNavigationItem != navItem)
+            SelectedNavigationItem = navItem;
     }
 
     // 导航到MOD详情页（来自已安装或浏览页）
@@ -722,6 +743,20 @@ public partial class MainViewModel : ObservableObject
 
             // 检测新增MOD并推送到浏览页
             await DetectAndPushNewModsAsync();
+
+            // 同步新增MOD横幅数据到已安装页
+            if (_modBrowserViewModel?.CanShowNewModsBanner == true)
+            {
+                _installedModsViewModel?.SetNewModsInfo(
+                    true,
+                    _modBrowserViewModel.NewModsCount,
+                    _modBrowserViewModel.NewModsPreview.ToList()
+                );
+            }
+            else
+            {
+                _installedModsViewModel?.SetNewModsInfo(false, 0, new List<string>());
+            }
 
             // 计算下架Mod和未知字段Mod数量（用于横幅显示）
             DelistedModCount = Mods.Count(m => m.IsInstalled && m.IsDelisted);
@@ -1666,22 +1701,13 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void GoToInstalledMods()
     {
-        var navItem = NavigationItems.FirstOrDefault(n => n.Page == NavigationPage.InstalledMods);
-        if (navItem != null)
-            SelectedNavigationItem = navItem;
-        else
-            NavigateToPage(NavigationPage.InstalledMods);
+        _navigationService.NavigateToInstalledMods();
     }
 
     [RelayCommand]
     private void GoToTranslationManagement()
     {
-        // 切换到翻译管理页
-        var navItem = NavigationItems.FirstOrDefault(n => n.Page == NavigationPage.Translation);
-        if (navItem != null)
-            SelectedNavigationItem = navItem;
-        else
-            NavigateToPage(NavigationPage.Translation);
+        _navigationService.NavigateToTranslation();
     }
 
     [RelayCommand]

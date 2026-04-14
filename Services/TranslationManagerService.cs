@@ -52,11 +52,12 @@ public class TranslationManagerService : ITranslationManagerService
             return false;
 
         var autoTranslatorPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
-        var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+        var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK");
+        var oldBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
         var configPath = Path.Combine(gameRootPath, "AutoTranslator", "Config.ini");
 
-        // 翻译系统已安装的条件：配置文件存在 且 (主插件文件存在 或 备份插件文件存在)
-        return File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath));
+        // 翻译系统已安装的条件：配置文件存在 且 (主插件文件存在 或 备份插件文件存在[新旧后缀都支持])
+        return File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath) || File.Exists(oldBackupPath));
     }
 
     public async Task<bool> IsTranslationManuallyInstalledAsync()
@@ -67,9 +68,10 @@ public class TranslationManagerService : ITranslationManagerService
 
         // Check if translation files exist
         var autoTranslatorPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
-        var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+        var autoTranslatorBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK");
+        var oldBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
         var configPath = Path.Combine(gameRootPath, "AutoTranslator", "Config.ini");
-        var filesExist = File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath));
+        var filesExist = File.Exists(configPath) && (File.Exists(autoTranslatorPath) || File.Exists(autoTranslatorBackupPath) || File.Exists(oldBackupPath));
 
         if (!filesExist)
             return false; // No translation files, definitely not manually installed
@@ -284,21 +286,22 @@ public class TranslationManagerService : ITranslationManagerService
                 return false;
 
             var mainPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
-            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK");
+            var oldBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
 
             // 如果主文件存在，插件是启用的
             if (File.Exists(mainPluginPath))
             {
-                await LoadManifestAsync();
+                await LoadManifestAsync(); // LoadManifestAsync内部会处理旧后缀迁移
                 _installManifest.IsEnabled = true;
                 await SaveManifestAsync();
                 return true;
             }
 
-            // 如果备份文件存在，插件是禁用的
-            if (File.Exists(backupPluginPath))
+            // 如果备份文件存在（新旧后缀），插件是禁用的
+            if (File.Exists(backupPluginPath) || File.Exists(oldBackupPath))
             {
-                await LoadManifestAsync();
+                await LoadManifestAsync(); // LoadManifestAsync内部会处理旧后缀迁移
                 _installManifest.IsEnabled = false;
                 await SaveManifestAsync();
                 return false;
@@ -323,11 +326,11 @@ public class TranslationManagerService : ITranslationManagerService
                 return false;
 
             var mainPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dll");
-            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+            var backupPluginPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK");
 
             if (enabled)
             {
-                // 启用插件：从.dllbak重命名为.dll
+                // 启用插件：从.GHPCMMBAK重命名为.dll
                 if (File.Exists(backupPluginPath) && !File.Exists(mainPluginPath))
                 {
                     File.Move(backupPluginPath, mainPluginPath);
@@ -336,7 +339,7 @@ public class TranslationManagerService : ITranslationManagerService
             }
             else
             {
-                // 禁用插件：从.dll重命名为.dllbak
+                // 禁用插件：从.dll重命名为.GHPCMMBAK
                 if (File.Exists(mainPluginPath) && !File.Exists(backupPluginPath))
                 {
                     File.Move(mainPluginPath, backupPluginPath);
@@ -741,11 +744,44 @@ public class TranslationManagerService : ITranslationManagerService
                 var json = await File.ReadAllTextAsync(manifestPath);
                 var manifest = JsonConvert.DeserializeObject<TranslationInstallManifest>(json);
                 _installManifest = manifest ?? new TranslationInstallManifest();
+
+                // 兼容旧版本：如果manifest有效且存在旧的.dllbak文件，自动重命名为.GHPCMMBAK
+                if (_installManifest.XUnityAutoTranslatorFiles.Any() || _installManifest.TranslationRepoFiles.Any())
+                {
+                    MigrateOldBackupExtension();
+                }
             }
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.TranslationManifestLoadError);
+        }
+    }
+
+    /// <summary>
+    /// 兼容旧版本：将旧的.dllbak后缀重命名为.GHPCMMBAK
+    /// </summary>
+    private void MigrateOldBackupExtension()
+    {
+        try
+        {
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrEmpty(gameRootPath))
+                return;
+
+            var oldBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.dllbak");
+            var newBackupPath = Path.Combine(gameRootPath, "Mods", "XUnity.AutoTranslator.Plugin.MelonMod.GHPCMMBAK");
+
+            // 如果旧备份文件存在且新备份文件不存在，则重命名
+            if (File.Exists(oldBackupPath) && !File.Exists(newBackupPath))
+            {
+                File.Move(oldBackupPath, newBackupPath);
+                _loggingService.LogInfo("Migrated old translation backup extension from .dllbak to .GHPCMMBAK");
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to migrate old backup extension");
         }
     }
 

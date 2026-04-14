@@ -635,11 +635,12 @@ public class NetworkService : INetworkService
                     }
                 }
 
-                var percentage = (double)totalBytesRead / totalBytes * 100;
+                // 进度百分比上限为 100%，防止服务器 Content-Length 不准确导致超限
+                var percentage = Math.Min(100.0, (double)totalBytesRead / totalBytes * 100);
                 var estimatedTimeRemaining = TimeSpan.Zero;
-                if (speedBytesPerSecond > 0)
+                if (speedBytesPerSecond > 0 && percentage < 100)
                 {
-                    var remainingBytes = totalBytes - totalBytesRead;
+                    var remainingBytes = Math.Max(0, totalBytes - totalBytesRead);
                     estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
                 }
 
@@ -910,11 +911,12 @@ public class NetworkService : INetworkService
                                         }
                                     }
 
-                                    var percentage = (double)completedBytes / totalBytes * 100;
+                                    // 进度百分比上限为 100%，防止竞态条件或 Content-Length 不准确导致超限
+                                    var percentage = Math.Min(100.0, (double)completedBytes / totalBytes * 100);
                                     var estimatedTimeRemaining = TimeSpan.Zero;
-                                    if (speedBytesPerSecond > 0)
+                                    if (speedBytesPerSecond > 0 && percentage < 100)
                                     {
-                                        var remainingBytes = totalBytes - completedBytes;
+                                        var remainingBytes = Math.Max(0, totalBytes - completedBytes);
                                         estimatedTimeRemaining = TimeSpan.FromSeconds(remainingBytes / speedBytesPerSecond);
                                     }
 

@@ -115,6 +115,9 @@ public partial class ModBrowserViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
         _updateService = updateService;
 
+        // 从设置中读取筛选状态
+        _showUninstalledOnly = _settingsService.Settings.ShowUninstalledOnly;
+
         // 异步读取游戏版本，不阻塞构造
         _ = LoadCurrentGameVersionAsync();
     }
@@ -128,7 +131,13 @@ public partial class ModBrowserViewModel : ObservableObject
 
     partial void OnSearchTextChanged(string value) => FilterMods();
 
-    partial void OnShowUninstalledOnlyChanged(bool value) => FilterMods();
+    partial void OnShowUninstalledOnlyChanged(bool value)
+    {
+        // 持久化筛选状态到设置
+        _settingsService.Settings.ShowUninstalledOnly = value;
+        _settingsService.SaveSettingsAsync().ConfigureAwait(false);
+        FilterMods();
+    }
 
     /// <summary>
     /// 由MainViewModel在数据加载完成后调用，注入全量MOD列表
@@ -380,10 +389,10 @@ public partial class ModBrowserViewModel : ObservableObject
     internal void SetNewMods(IEnumerable<ModViewModel> newMods)
     {
         _detectedNewMods = newMods.ToList();
-        _isNewModsBannerDismissed = false;
+        IsNewModsBannerDismissed = false;
         HasNewMods = _detectedNewMods.Count > 0;
         NewModsCount = _detectedNewMods.Count;
-        NewModsPreview = _detectedNewMods.Take(3).Select(m => m.DisplayName).ToList();
+        NewModsPreview = _detectedNewMods.Select(m => m.DisplayName).ToList();
     }
 
     /// <summary>
