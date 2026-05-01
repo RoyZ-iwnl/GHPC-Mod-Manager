@@ -1447,8 +1447,10 @@ public partial class MainViewModel : ObservableObject
             StatusMessage = Strings.CheckingModConflictsAndDependencies;
 
             // 检查MOD冲突
-            var (hasConflicts, conflicts) = await _modManagerService.CheckEnabledModsConflictsAsync();
-            if (hasConflicts)
+            if (!_settingsService.Settings.SkipConflictCheck)
+            {
+                var (hasConflicts, conflicts) = await _modManagerService.CheckEnabledModsConflictsAsync();
+                if (hasConflicts)
             {
                 var conflictMessages = conflicts.Select(c =>
                     string.Format(Strings.ModConflictsWith,
@@ -1466,6 +1468,7 @@ public partial class MainViewModel : ObservableObject
                     StatusMessage = Strings.Ready;
                     return;
                 }
+            }
             }
 
             // 检查MOD依赖
@@ -1507,11 +1510,14 @@ public partial class MainViewModel : ObservableObject
                 }
             }
 
-            var integrityOkay = await CheckManagedModIntegrityAsync(promptOnMismatch: true);
-            if (!integrityOkay)
+            if (!_settingsService.Settings.SkipIntegrityCheck)
             {
-                StatusMessage = Strings.Ready;
-                return;
+                var integrityOkay = await CheckManagedModIntegrityAsync(promptOnMismatch: true);
+                if (!integrityOkay)
+                {
+                    StatusMessage = Strings.Ready;
+                    return;
+                }
             }
 
             StatusMessage = Strings.StartingGame;
@@ -1634,7 +1640,21 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        System.Diagnostics.Process.Start("explorer.exe", gameRootPath);
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = gameRootPath,
+                UseShellExecute = true,
+                Verb = "open"
+            });
+            _loggingService.LogInfo(Strings.OpenedGameRootDirectory, gameRootPath);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenGameDirectory);
+            MessageDialogHelper.ShowError(string.Format(Strings.UnableToOpenGameDirectory, ex.Message), Strings.Error);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]

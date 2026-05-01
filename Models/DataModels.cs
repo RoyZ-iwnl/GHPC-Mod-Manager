@@ -106,6 +106,14 @@ public class AppSettings
     /// MOD浏览页筛选：仅显示未安装
     /// </summary>
     public bool ShowUninstalledOnly { get; set; } = false;
+    /// <summary>
+    /// 启动游戏时跳过冲突检查
+    /// </summary>
+    public bool SkipConflictCheck { get; set; } = false;
+    /// <summary>
+    /// 启动游戏时跳过完整性检查
+    /// </summary>
+    public bool SkipIntegrityCheck { get; set; } = false;
 }
 
 /// <summary>

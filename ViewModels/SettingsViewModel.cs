@@ -131,6 +131,12 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private List<UpdateChannel> _availableUpdateChannels = new() { UpdateChannel.Stable, UpdateChannel.Beta };
 
+    [ObservableProperty]
+    private bool _skipConflictCheck;
+
+    [ObservableProperty]
+    private bool _skipIntegrityCheck;
+
     // MelonLoader 管理
     [ObservableProperty]
     private string _melonLoaderInstalledVersion = string.Empty;
@@ -149,6 +155,11 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isMelonLoaderOperating;
+
+    // 版本号点击彩蛋
+    private int _versionClickCount = 0;
+    private System.Threading.Timer? _versionClickTimer;
+    private const int EasterEggClickThreshold = 7;
 
     public string ApplicationVersion => GetApplicationVersion();
 
@@ -211,6 +222,8 @@ public partial class SettingsViewModel : ObservableObject
         GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
+        SkipConflictCheck = settings.SkipConflictCheck;
+        SkipIntegrityCheck = settings.SkipIntegrityCheck;
     }
 
     [RelayCommand]
@@ -232,6 +245,8 @@ public partial class SettingsViewModel : ObservableObject
             settings.GitHubApiToken = GitHubApiToken;
             settings.Theme = SelectedTheme; // 保存主题设置
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
+            settings.SkipConflictCheck = SkipConflictCheck;
+            settings.SkipIntegrityCheck = SkipIntegrityCheck;
 
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);
@@ -515,6 +530,37 @@ public partial class SettingsViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.OpenProjectUrlError);
         }
+    }
+
+    // 版本号点击彩蛋
+    public void HandleVersionClick()
+    {
+        _versionClickCount++;
+
+        // 达到阈值时打开网页
+        if (_versionClickCount >= EasterEggClickThreshold)
+        {
+            _versionClickCount = 0;
+            _versionClickTimer?.Dispose();
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "https://ghpc.dmr.gg/eg",
+                    UseShellExecute = true
+                });
+            }
+            catch { }
+            return;
+        }
+
+        // 重置计时器
+        _versionClickTimer?.Dispose();
+        _versionClickTimer = new System.Threading.Timer(_ =>
+        {
+            _versionClickCount = 0;
+        }, null, 2000, System.Threading.Timeout.Infinite);
     }
 
     [RelayCommand]

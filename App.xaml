@@ -4,15 +4,15 @@
              xmlns:local="clr-namespace:GHPC_Mod_Manager"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters">
     <Application.Resources>
-        <!-- 默认加载浅色主题 -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/Foundation.xaml"/>
                 <ResourceDictionary Source="/Themes/LightTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/Icons.xaml"/>
                 <ResourceDictionary Source="/Themes/ControlStyles.xaml"/>
                 <ResourceDictionary Source="/Themes/PageStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
+
             <!-- Register converters -->
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>

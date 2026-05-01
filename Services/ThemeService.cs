@@ -49,12 +49,13 @@ public class ThemeService : IThemeService
         try
         {
             _loggingService.LogInfo(Strings.ApplyThemeStarted, theme);
-            
-            // 清除所有现有主题资源字典
+
+            // 只移除主题相关的资源字典（LightTheme/DarkTheme），保留通用资源
             var toRemove = Application.Current.Resources.MergedDictionaries
-                .Where(d => d.Source?.ToString().Contains("/Themes/") == true)
+                .Where(d => d.Source?.ToString().Contains("LightTheme.xaml") == true ||
+                           d.Source?.ToString().Contains("DarkTheme.xaml") == true)
                 .ToList();
-            
+
             _loggingService.LogInfo(Strings.PreparingToRemoveResourceDictionaries, toRemove.Count);
             foreach (var dict in toRemove)
             {
@@ -72,11 +73,6 @@ public class ThemeService : IThemeService
                 _ => "/Themes/LightTheme.xaml"
             };
 
-            var foundationResource = new ResourceDictionary
-            {
-                Source = new Uri("/Themes/Foundation.xaml", UriKind.Relative)
-            };
-
             _loggingService.LogInfo(Strings.LoadingThemeResource, themeResourcePath);
 
             var themeResource = new ResourceDictionary
@@ -84,37 +80,14 @@ public class ThemeService : IThemeService
                 Source = new Uri(themeResourcePath, UriKind.Relative)
             };
 
-            // 加载通用控件样式
-            var controlStyles = new ResourceDictionary
-            {
-                Source = new Uri("/Themes/ControlStyles.xaml", UriKind.Relative)
-            };
+            // 插入新主题资源到Foundation之后（保持正确的加载顺序）
+            var foundationIndex = Application.Current.Resources.MergedDictionaries
+                .Select((d, i) => new { Dict = d, Index = i })
+                .FirstOrDefault(x => x.Dict.Source?.ToString().Contains("Foundation.xaml") == true)?.Index ?? 0;
 
-            var pageStyles = new ResourceDictionary
-            {
-                Source = new Uri("/Themes/PageStyles.xaml", UriKind.Relative)
-            };
-
-            // 重新构建资源字典 - 先基础token，再主题，再控件和页面样式
-            Application.Current.Resources.MergedDictionaries.Add(foundationResource);
-            Application.Current.Resources.MergedDictionaries.Add(themeResource);
-            Application.Current.Resources.MergedDictionaries.Add(controlStyles);
-            Application.Current.Resources.MergedDictionaries.Add(pageStyles);
+            Application.Current.Resources.MergedDictionaries.Insert(foundationIndex + 1, themeResource);
 
             _loggingService.LogInfo(Strings.ThemeResourceApplied, theme, Application.Current.Resources.MergedDictionaries.Count);
-            
-            // 强制刷新UI
-            Application.Current.Dispatcher.BeginInvoke(() =>
-            {
-                _loggingService.LogInfo(Strings.StartingForcedUIRefresh);
-                // 触发UI刷新
-                foreach (Window window in Application.Current.Windows)
-                {
-                    window.InvalidateVisual();
-                    window.UpdateLayout();
-                }
-                _loggingService.LogInfo(Strings.ForcedUIRefreshComplete);
-            }, System.Windows.Threading.DispatcherPriority.Background);
         }
         catch (Exception ex)
         {

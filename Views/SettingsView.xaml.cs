@@ -1,6 +1,7 @@
 using GHPC_Mod_Manager.ViewModels;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 
 namespace GHPC_Mod_Manager.Views;
@@ -17,5 +18,13 @@ public partial class SettingsView : UserControl
     {
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
+    }
+
+    private void VersionText_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is SettingsViewModel vm)
+        {
+            vm.HandleVersionClick();
+        }
     }
 }

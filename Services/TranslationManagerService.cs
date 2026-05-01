@@ -115,8 +115,20 @@ public class TranslationManagerService : ITranslationManagerService
             _loggingService.LogInfo(Strings.TranslationInstallationStarted, xUnityVersion);
             _loggingService.LogInfo(Strings.InstallingTranslation, xUnityVersion);
 
+            var progressSplit = new ProgressSplitter(progress, 2);
+
+            // === 阶段一：下载 ===
+            // 先下载插件和翻译资源到内存，任一失败则直接返回，不留残留文件
+            var xunityData = await DownloadXUnityArchiveAsync(xUnityVersion, progressSplit.GetProgress(0));
+            if (xunityData == null) return false;
+
+            var translationData = await DownloadTranslationArchiveAsync(progressSplit.GetProgress(1));
+            if (translationData == null) return false;
+
+            // === 阶段二：安装 ===
+            // 两者都下载成功，再解压到游戏目录
             var gameRootPath = _settingsService.Settings.GameRootPath;
-            
+
             // 创建文件操作追踪器
             var tracker = new FileOperationTracker(_loggingService, _settingsService);
             var trackedOps = new TrackedFileOperations(tracker, _loggingService);
@@ -124,21 +136,16 @@ public class TranslationManagerService : ITranslationManagerService
             // 开始追踪文件操作
             tracker.StartTracking($"translation_install_{xUnityVersion}", gameRootPath);
 
-            var progressSplit = new ProgressSplitter(progress, 2);
+            // 解压插件
+            await trackedOps.ExtractArchiveAsync(xunityData, gameRootPath);
 
-            // 1. Install XUnity AutoTranslator
-            var success = await InstallXUnityAutoTranslatorWithTrackingAsync(xUnityVersion, trackedOps, progressSplit.GetProgress(0));
-            if (!success) return false;
-
-            // 2. Clone translation files
-            success = await CloneTranslationFilesWithTrackingAsync(trackedOps, progressSplit.GetProgress(1));
-            if (!success) return false;
+            // 解压翻译资源（排除不需要的文件）
+            await trackedOps.ExtractArchiveAsync(translationData, gameRootPath, new[] { ".git", ".gitignore", "README.md", "LICENSE" });
 
             // 停止追踪并获取结果
             tracker.StopTracking();
             var result = tracker.GetResult();
             var processedFiles = result.GetAllProcessedFiles();
-
 
             if (!processedFiles.Any())
             {
@@ -146,31 +153,30 @@ public class TranslationManagerService : ITranslationManagerService
                 return false;
             }
 
-            // Split files into XUnity and translation repo files based on their paths
+            // 分类文件：XUnity插件 vs 翻译资源
             var modsPath = Path.Combine(gameRootPath, "Mods");
             var autoTranslatorPath = Path.Combine(gameRootPath, "AutoTranslator");
             var userLibsPath = Path.Combine(gameRootPath, "UserLibs");
 
             _installManifest.XUnityAutoTranslatorFiles = processedFiles
-                .Where(f => 
+                .Where(f =>
                 {
                     var fullPath = Path.Combine(gameRootPath, f);
-                    return fullPath.StartsWith(modsPath, StringComparison.OrdinalIgnoreCase) || 
+                    return fullPath.StartsWith(modsPath, StringComparison.OrdinalIgnoreCase) ||
                            fullPath.StartsWith(userLibsPath, StringComparison.OrdinalIgnoreCase) ||
-                           f.Contains("XUnity") || 
+                           f.Contains("XUnity") ||
                            Path.GetFileName(f).Equals("Font", StringComparison.OrdinalIgnoreCase);
                 })
                 .ToList();
 
             _installManifest.TranslationRepoFiles = processedFiles
-                .Where(f => 
+                .Where(f =>
                 {
                     var fullPath = Path.Combine(gameRootPath, f);
-                    return fullPath.StartsWith(autoTranslatorPath, StringComparison.OrdinalIgnoreCase) && 
+                    return fullPath.StartsWith(autoTranslatorPath, StringComparison.OrdinalIgnoreCase) &&
                            !_installManifest.XUnityAutoTranslatorFiles.Contains(f);
                 })
                 .ToList();
-
 
             _installManifest.XUnityVersion = xUnityVersion;
             _installManifest.InstallDate = DateTime.Now;
@@ -358,6 +364,105 @@ public class TranslationManagerService : ITranslationManagerService
         {
             _loggingService.LogError(ex, Strings.TranslationPluginToggleError, ex.Message);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// 仅下载 XUnity 插件 ZIP，不解压。用于初次安装的两阶段提交。
+    /// </summary>
+    private async Task<byte[]?> DownloadXUnityArchiveAsync(string version, IProgress<DownloadProgress>? progress)
+    {
+        try
+        {
+            var releases = await GetXUnityReleasesAsync();
+            var targetRelease = releases.FirstOrDefault(r => r.TagName == version);
+
+            if (targetRelease == null)
+            {
+                _loggingService.LogError(Strings.XUnityVersionNotFound, version);
+                return null;
+            }
+
+            var asset = targetRelease.Assets.FirstOrDefault(a =>
+                a.Name.Contains("MelonMod") &&
+                !a.Name.Contains("IL2CPP") &&
+                a.Name.EndsWith(".zip"));
+
+            if (asset == null)
+            {
+                _loggingService.LogError(Strings.XUnityAssetNotFound);
+                return null;
+            }
+
+            return await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.XUnityInstallError);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 仅下载翻译资源 ZIP，不解压。用于初次安装的两阶段提交。
+    /// </summary>
+    private async Task<byte[]?> DownloadTranslationArchiveAsync(IProgress<DownloadProgress>? progress)
+    {
+        try
+        {
+            var repoUrl = _mainConfigService.GetTranslationConfigUrl();
+            var parseResult = ParseGitHubRepoUrl(repoUrl);
+            if (parseResult == null)
+            {
+                _loggingService.LogError(Strings.TranslationRepoUrlEmpty);
+                return null;
+            }
+            var (owner, repoName) = parseResult.Value;
+
+            var releases = await _networkService.GetGitHubReleasesAsync(owner, repoName);
+            if (!releases.Any())
+            {
+                _loggingService.LogError(Strings.TranslationReleasesFetchError);
+                return null;
+            }
+
+            var validReleases = releases.Where(r => r.TagName.StartsWith("release-") &&
+                                                   r.TagName.Length == 23 &&
+                                                   r.Assets.Any(a => a.Name.Contains("ghpc-translation-") &&
+                                                                    (a.Name.EndsWith(".zip") || a.Name.EndsWith(".tar.gz"))))
+                                       .ToList();
+
+            if (!validReleases.Any())
+            {
+                _loggingService.LogError(Strings.TranslationReleasesFetchError);
+                return null;
+            }
+
+            var latestRelease = validReleases.First();
+            var targetAsset = latestRelease.Assets.FirstOrDefault(a =>
+                a.Name.Contains("ghpc-translation-") && a.Name.EndsWith(".zip"));
+
+            if (targetAsset == null)
+            {
+                _loggingService.LogError(Strings.TranslationAssetNotFound);
+                return null;
+            }
+
+            _loggingService.LogInfo(Strings.DownloadingTranslationRelease, latestRelease.TagName);
+
+            var zipData = await _networkService.DownloadFileAsync(targetAsset.DownloadUrl, progress, expectedSize: targetAsset.Size, expectedDigest: targetAsset.Digest, assetName: targetAsset.Name);
+            if (zipData == null || zipData.Length == 0)
+            {
+                _loggingService.LogError(Strings.FailedToDownloadTranslationZip);
+                return null;
+            }
+
+            return zipData;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.TranslationFilesCloneError);
+            return null;
         }
     }
 

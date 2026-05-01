@@ -786,8 +786,8 @@
   <data name="ProgramSettings" xml:space="preserve">
     <value>Program Settings</value>
   </data>
-  <data name="LanguageSettings" xml:space="preserve">
-    <value>Language Settings</value>
+  <data name="MainSettings" xml:space="preserve">
+    <value>Main Settings</value>
   </data>
   <data name="ThemeSettings" xml:space="preserve">
     <value>Theme Settings</value>
@@ -809,6 +809,12 @@
   </data>
   <data name="GameRootDirectory" xml:space="preserve">
     <value>Root Directory:</value>
+  </data>
+  <data name="SkipConflictCheckOnLaunch" xml:space="preserve">
+    <value>Skip conflict check when launching game</value>
+  </data>
+  <data name="SkipIntegrityCheckOnLaunch" xml:space="preserve">
+    <value>Skip integrity check when launching game</value>
   </data>
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>Data Source Configuration</value>
@@ -2948,7 +2954,7 @@ Do you want to continue installing?</value>
     <value>Mod Info Dumper</value>
   </data>
   <data name="ModInfoDumperTitle" xml:space="preserve">
-    <value>Mod Info Dumper - Diagnostic Tool</value>
+    <value>Info Dumper - Diagnostic Tool</value>
   </data>
   <data name="ModInfoDumperDescription" xml:space="preserve">
     <value>Export installed mod info for troubleshooting</value>
@@ -2985,6 +2991,15 @@ Do you want to continue installing?</value>
   </data>
   <data name="CreatingPackage" xml:space="preserve">
     <value>Creating diagnostic package...</value>
+  </data>
+  <data name="GameRunningWarningTitle" xml:space="preserve">
+    <value>Game is Running</value>
+  </data>
+  <data name="GameRunningWarningMessage" xml:space="preserve">
+    <value>Please reproduce the mod issue, then close the game before exporting the diagnostic package.</value>
+  </data>
+  <data name="ModInfoDumperPrivacyNotice" xml:space="preserve">
+    <value>Package includes: mod list, game logs, system configuration (no personal information)</value>
   </data>
   <data name="ModInfoFiles" xml:space="preserve">
     <value>Files:</value>

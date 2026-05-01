@@ -67,7 +67,7 @@
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
-                            <TextBlock Text="{x:Static resources:Strings.LanguageSettings}"
+                            <TextBlock Text="{x:Static resources:Strings.MainSettings}"
                                    Style="{StaticResource PageSectionTitleTextStyle}"/>
 
                             <Grid Style="{StaticResource SettingsRowStyle}">
@@ -147,6 +147,22 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </Grid>
+
+                        <CheckBox Margin="0,16,0,8"
+                                  IsChecked="{Binding SkipConflictCheck}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.SkipConflictCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding SkipIntegrityCheck}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.SkipIntegrityCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
                     </StackPanel>
                 </Border>
 
@@ -429,9 +445,14 @@
                                        Text="{x:Static resources:Strings.ApplicationVersion}"
                                        Style="{StaticResource FieldLabelTextStyle}"
                                        VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding ApplicationVersion}"
-                                       Style="{StaticResource FieldValueTextStyle}"/>
+                            <Border Grid.Column="1"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Left"
+                                    MouseLeftButtonDown="VersionText_MouseLeftButtonDown"
+                                    Cursor="Arrow">
+                                <TextBlock Text="{Binding ApplicationVersion}"
+                                           Style="{StaticResource FieldValueTextStyle}"/>
+                            </Border>
                         </Grid>
 
                         <Grid Margin="0,0,0,14">

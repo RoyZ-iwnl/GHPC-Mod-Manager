@@ -199,7 +199,7 @@
                         <Grid Width="28">
                             <Path HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
-                                  Data="M 0 0 L 4 4 L 8 0 Z"
+                                  Data="{StaticResource IconChevronDown}"
                                   Fill="{TemplateBinding Foreground}"/>
                         </Grid>
                     </Border>

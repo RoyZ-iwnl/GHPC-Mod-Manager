@@ -161,24 +161,7 @@
                                            Style="{StaticResource StatusPillTextStyle}"
                                            Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                             </Border>
-
-                            <Border Style="{StaticResource StatusPillBorderStyle}"
-                                    Background="{DynamicResource WarningContainerBrush}"
-                                    BorderBrush="{DynamicResource WarningBrush}"
-                                    Visibility="{Binding IsOfflineMode, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{x:Static resources:Strings.OfflineModeTitle}"
-                                    Style="{StaticResource StatusPillTextStyle}"
-                                    Foreground="{DynamicResource OnWarningContainerBrush}"/>
-                            </Border>
-
-                            <Border Style="{StaticResource StatusPillBorderStyle}"
-                                    Background="{DynamicResource AccentSoftBrush}"
-                                    BorderBrush="{DynamicResource AccentBrush}"
-                                    Visibility="{Binding IsAppUpdateAvailable, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{Binding LatestAppVersion}"
-                                           Style="{StaticResource StatusPillTextStyle}"
-                                           Foreground="{DynamicResource AccentStrongBrush}"/>
-                            </Border>
+                            
                         </WrapPanel>
                         <Button Content="{x:Static resources:Strings.StartGame}"
                                 Command="{Binding LaunchGameCommand}"
@@ -198,14 +181,23 @@
                         Background="{DynamicResource ErrorContainerBrush}"
                         BorderBrush="{DynamicResource ErrorBrush}"
                         Visibility="{Binding HasDelistedMods, Converter={StaticResource BoolToVis}}">
-                    <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.DelistedModBannerTitle}"
-                                   Style="{StaticResource PageSectionTitleTextStyle}"
-                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
-                        <TextBlock Margin="0,4,0,0"
-                                   Text="{x:Static resources:Strings.DelistedModBannerMessage}"
-                                   Style="{StaticResource PageSubtitleTextStyle}"
-                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconRemove}"
+                              Width="20" Height="20"
+                              Margin="0,0,12,0"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource OnErrorContainerBrush}"
+                              StrokeThickness="2"
+                              VerticalAlignment="Center"/>
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.DelistedModBannerTitle}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"
+                                       Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="{x:Static resources:Strings.DelistedModBannerMessage}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
+                                       Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -214,14 +206,25 @@
                         Background="{DynamicResource WarningContainerBrush}"
                         BorderBrush="{DynamicResource WarningBrush}"
                         Visibility="{Binding HasUnknownFieldsMods, Converter={StaticResource BoolToVis}}">
-                    <StackPanel>
-                        <TextBlock Text="{x:Static resources:Strings.UnknownConfigFieldsBannerTitle}"
-                                   Style="{StaticResource PageSectionTitleTextStyle}"
-                                   Foreground="{DynamicResource OnWarningContainerBrush}"/>
-                        <TextBlock Margin="0,4,0,0"
-                                   Text="{x:Static resources:Strings.UnknownConfigFieldsBannerMessage}"
-                                   Style="{StaticResource PageSubtitleTextStyle}"
-                                   Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconWarning}"
+                              Width="20" Height="20"
+                              Margin="0,0,12,0"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource OnWarningContainerBrush}"
+                              StrokeThickness="2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"/>
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.UnknownConfigFieldsBannerTitle}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"
+                                       Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="{x:Static resources:Strings.UnknownConfigFieldsBannerMessage}"
+                                       Style="{StaticResource PageSubtitleTextStyle}"
+                                       Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -235,15 +238,26 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock>
-                                <Run Text="{x:Static resources:Strings.NewVersionAvailable}"/>
-                                <Run Text=" "/>
-                                <Run Text="{Binding LatestAppVersion}"/>
-                            </TextBlock>
-                            <TextBlock Margin="0,4,0,0"
-                                       Text="{x:Static resources:Strings.ClickToDownloadAndInstall}"
-                                       Style="{StaticResource PageSubtitleTextStyle}"/>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Path Data="{StaticResource IconDownload}"
+                                  Width="20" Height="20"
+                                  Margin="0,0,12,0"
+                                  Stretch="Uniform"
+                                  Stroke="{DynamicResource AccentBrush}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock>
+                                    <Run Text="{x:Static resources:Strings.NewVersionAvailable}"/>
+                                    <Run Text=" "/>
+                                    <Run Text="{Binding LatestAppVersion}"/>
+                                </TextBlock>
+                                <TextBlock Margin="0,4,0,0"
+                                           Text="{x:Static resources:Strings.ClickToDownloadAndInstall}"
+                                           Style="{StaticResource PageSubtitleTextStyle}"/>
+                            </StackPanel>
                         </StackPanel>
                         <Button Grid.Column="1"
                                 Content="{x:Static resources:Strings.CheckForUpdates}"
@@ -263,14 +277,24 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="{x:Static resources:Strings.TranslationUpdateAvailable}"
-                                       Style="{StaticResource PageSectionTitleTextStyle}"
-                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
-                            <TextBlock Margin="0,4,0,0"
-                                       Text="{x:Static resources:Strings.GoToTranslationManagement}"
-                                       Style="{StaticResource PageSubtitleTextStyle}"
-                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Path Data="{StaticResource IconGlobe}"
+                                  Width="20" Height="20"
+                                  Margin="0,0,12,0"
+                                  Stretch="Uniform"
+                                  Stroke="{DynamicResource OnSecondaryContainerBrush}"
+                                  StrokeThickness="2"
+                                  Fill="Transparent"
+                                  VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="{x:Static resources:Strings.TranslationUpdateAvailable}"
+                                           Style="{StaticResource PageSectionTitleTextStyle}"
+                                           Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                                <TextBlock Margin="0,4,0,0"
+                                           Text="{x:Static resources:Strings.GoToTranslationManagement}"
+                                           Style="{StaticResource PageSubtitleTextStyle}"
+                                           Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
+                            </StackPanel>
                         </StackPanel>
                         <Button Grid.Column="1"
                                 Content="{x:Static resources:Strings.GoToTranslation}"

@@ -88,13 +88,21 @@ namespace GHPC_Mod_Manager.Views.Controls
             if (_parentWindow?.WindowState == WindowState.Maximized)
             {
                 // 还原图标：两个重叠的方块
-                MaximizePath.Data = Geometry.Parse("M 4,2 L 4,4 L 2,4 L 2,12 L 10,12 L 10,10 L 12,10 L 12,2 Z M 4,4 L 10,4 L 10,12 L 2,12 Z");
+                var iconRestore = App.Current.TryFindResource("IconRestore") as Geometry;
+                if (iconRestore != null)
+                {
+                    MaximizePath.Data = iconRestore;
+                }
                 MaximizeButton.ToolTip = Strings.Restore;
             }
             else
             {
                 // 最大化图标：单个方块
-                MaximizePath.Data = Geometry.Parse("M 2,2 L 2,12 L 12,12 L 12,2 Z");
+                var iconMaximize = App.Current.TryFindResource("IconMaximize") as Geometry;
+                if (iconMaximize != null)
+                {
+                    MaximizePath.Data = iconMaximize;
+                }
                 MaximizeButton.ToolTip = Strings.Maximize;
             }
         }

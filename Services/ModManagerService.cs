@@ -233,9 +233,29 @@ public partial class ModManagerService : IModManagerService
                             var backupManifest = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(manifestJson);
                             if (backupManifest != null)
                             {
-                                // Add the original paths of disabled mods
-                                disabledModFiles.AddRange(backupManifest.Values.Select(relativePath =>
-                                    Path.Combine(gameRootPath, relativePath)));
+                                // 只添加Mods根目录的dll文件，跳过子目录中的资源文件
+                                foreach (var relativePath in backupManifest.Values)
+                                {
+                                    var fullPath = Path.Combine(gameRootPath, relativePath);
+
+                                    // 检查是否是Mods目录下的文件
+                                    if (!relativePath.StartsWith("Mods\\", StringComparison.OrdinalIgnoreCase) &&
+                                        !relativePath.StartsWith("Mods/", StringComparison.OrdinalIgnoreCase))
+                                        continue;
+
+                                    // 获取相对于Mods目录的路径
+                                    var relativeToMods = relativePath.Substring(5); // 去掉 "Mods\" 或 "Mods/"
+
+                                    // 跳过子目录中的文件（资源文件）
+                                    if (relativeToMods.Contains('\\') || relativeToMods.Contains('/'))
+                                        continue;
+
+                                    // 只添加根目录的dll文件
+                                    if (Path.GetExtension(relativePath).Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        disabledModFiles.Add(fullPath);
+                                    }
+                                }
                             }
                         }
                         catch

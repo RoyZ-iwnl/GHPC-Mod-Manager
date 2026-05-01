@@ -241,6 +241,17 @@ namespace GHPC_Mod_Manager.Views
         }
 
         /// <summary>
+        /// 标题栏拖拽移动窗口
+        /// </summary>
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 1)
+            {
+                DragMove();
+            }
+        }
+
+        /// <summary>
         /// 键盘快捷键处理
         /// </summary>
         protected override void OnKeyDown(KeyEventArgs e)

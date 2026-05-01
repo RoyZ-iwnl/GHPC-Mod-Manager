@@ -103,10 +103,16 @@ public class ModBackupService : IModBackupService
                     // Preserve directory structure in backup by encoding paths
                     var backupFileName = relativePath.Replace('\\', '_').Replace('/', '_');
                     var backupFile = Path.Combine(modBackupPath, backupFileName);
-                    
+
                     // Store mapping in manifest
                     backupManifest[backupFileName] = relativePath;
-                    
+
+                    // 删除已存在的备份文件（避免 File.Move 抛出异常）
+                    if (File.Exists(backupFile))
+                    {
+                        File.Delete(backupFile);
+                    }
+
                     File.Move(sourceFile, backupFile);
                 }
             }

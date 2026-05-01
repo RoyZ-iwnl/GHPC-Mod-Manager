@@ -52,6 +52,11 @@
                            Text="{x:Static resources:Strings.ModInfoDumperDescription}"
                            Foreground="{DynamicResource OnSurfaceVariantBrush}"
                            FontSize="13"/>
+                <TextBlock Margin="0,8,0,0"
+                           Text="{x:Static resources:Strings.ModInfoDumperPrivacyNotice}"
+                           Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                           FontSize="12"
+                           FontStyle="Italic"/>
             </StackPanel>
 
             <!-- 按钮区域 -->

@@ -54,11 +54,12 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- 标题区域 -->
+            <!-- 标题区域，支持拖拽移动窗口 -->
             <Border Grid.Row="0"
                     Padding="20,16,20,12"
                     Background="{DynamicResource SurfaceContainerBrush}"
-                    CornerRadius="16,16,0,0">
+                    CornerRadius="16,16,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <DockPanel>
                     <!-- 图标 -->
                     <Grid x:Name="IconContainer"
@@ -69,9 +70,7 @@
                           Visibility="Collapsed">
                         <!-- Information图标 -->
                         <Path x:Name="InformationIcon"
-                              Data="M 14,2 A 12,12 0 1,1 14,26 A 12,12 0 1,1 14,2 Z 
-                                    M 14,8 L 14,14 
-                                    M 13,19 A 1,1 0 1,1 15,19 A 1,1 0 1,1 13,19 Z"
+                              Data="{StaticResource IconInformation}"
                               Stroke="{DynamicResource AccentBrush}"
                               StrokeThickness="2"
                               Fill="Transparent"
@@ -80,9 +79,7 @@
 
                         <!-- Warning图标 -->
                         <Path x:Name="WarningIcon"
-                              Data="M 14,2 L 26,24 L 2,24 Z 
-                                    M 14,10 L 14,16 
-                                    M 13,20.5 A 1,1 0 1,1 15,20.5 A 1,1 0 1,1 13,20.5 Z"
+                              Data="{StaticResource IconWarning}"
                               Stroke="{DynamicResource WarningBrush}"
                               StrokeThickness="2"
                               StrokeStartLineCap="Round"
@@ -93,7 +90,7 @@
 
                         <!-- Error图标-->
                         <Path x:Name="ErrorIcon"
-                              Data="M 14,2 A 12,12 0 1,1 14,26 A 12,12 0 1,1 14,2 Z M 8,8 L 20,20 M 20,8 L 8,20"
+                              Data="{StaticResource IconError}"
                               Stroke="{DynamicResource ErrorBrush}"
                               StrokeThickness="2"
                               Fill="Transparent"
@@ -102,7 +99,7 @@
 
                         <!-- Success图标 -->
                         <Path x:Name="SuccessIcon"
-                              Data="M 14,2 A 12,12 0 1,1 14,26 A 12,12 0 1,1 14,2 Z M 8,14 L 12,18 L 20,10"
+                              Data="{StaticResource IconSuccess}"
                               Stroke="{DynamicResource SuccessBrush}"
                               StrokeThickness="2.5"
                               Fill="Transparent"
@@ -111,9 +108,7 @@
 
                         <!-- Question图标 -->
                         <Path x:Name="QuestionIcon"
-                              Data="M 14,2 A 12,12 0 1,1 14,26 A 12,12 0 1,1 14,2 Z 
-                                    M 10,10 Q 10,6 14,6 Q 18,6 18,10 Q 18,14 14,14 L 14,16 
-                                    M 13,20.5 A 1,1 0 1,1 15,20.5 A 1,1 0 1,1 13,20.5 Z"
+                              Data="{StaticResource IconQuestion}"
                               Stroke="{DynamicResource AccentBrush}"
                               StrokeThickness="2"
                               Fill="Transparent"

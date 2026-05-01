@@ -83,7 +83,7 @@
                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Click="Minimize_Click"
                     ToolTip="{x:Static resources:Strings.Minimize}">
-                <Path Data="M 0,6 L 12,6"
+                <Path Data="{StaticResource IconMinimize}"
                       Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                       StrokeThickness="1.5"
                       Width="12"
@@ -96,7 +96,7 @@
                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Click="Maximize_Click">
                 <Path x:Name="MaximizePath"
-                      Data="M 2,2 L 2,12 L 12,12 L 12,2 Z"
+                      Data="{StaticResource IconMaximize}"
                       Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                       StrokeThickness="1.5"
                       Width="12"
@@ -108,7 +108,7 @@
                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Click="Close_Click"
                     ToolTip="{x:Static resources:Strings.Close}">
-                <Path Data="M 2,2 L 12,12 M 12,2 L 2,12"
+                <Path Data="{StaticResource IconClose}"
                       Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                       StrokeThickness="1.5"
                       Width="12"

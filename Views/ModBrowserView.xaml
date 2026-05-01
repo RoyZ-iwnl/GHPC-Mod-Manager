@@ -187,11 +187,15 @@
                             VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal"
                                 Margin="0,0,0,6">
-                        <TextBlock Text="&#x2728;"
-                                   Margin="0,0,8,0"
-                                   FontSize="18"
-                                   VerticalAlignment="Center"
-                                   Foreground="{DynamicResource AccentBrush}"/>
+                        <Path Data="{StaticResource IconSparkle}"
+                              Margin="0,0,8,0"
+                              Width="18"
+                              Height="18"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource AccentBrush}"
+                              StrokeThickness="1.5"
+                              Fill="{DynamicResource AccentBrush}"
+                              VerticalAlignment="Center"/>
                         <TextBlock FontSize="{DynamicResource LabelLarge}"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource OnSurfaceBrush}"
@@ -224,17 +228,22 @@
                 </StackPanel>
 
                 <Button Grid.Column="1"
-                        Content="&#x2715;"
                         Command="{Binding DismissNewModsBannerCommand}"
                         Background="Transparent"
                         BorderThickness="0"
-                        FontSize="16"
                         Padding="8"
                         Foreground="{DynamicResource OnSurfaceVariantBrush}"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Cursor="Hand"
-                        ToolTip="{x:Static resources:Strings.Close}"/>
+                        ToolTip="{x:Static resources:Strings.Close}">
+                    <Path Data="{StaticResource IconClose}"
+                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          StrokeThickness="1.5"
+                          Width="12"
+                          Height="12"
+                          Stretch="Uniform"/>
+                </Button>
             </Grid>
         </Border>
 

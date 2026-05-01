@@ -17,6 +17,7 @@ public partial class ModInfoDumperViewModel : ObservableObject
     private readonly IModManagerService _modManagerService;
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly ILoggingService _loggingService;
+    private readonly IProcessService _processService;
 
     [ObservableProperty]
     private bool _isOperating = false;
@@ -28,12 +29,14 @@ public partial class ModInfoDumperViewModel : ObservableObject
         ISettingsService settingsService,
         IModManagerService modManagerService,
         IMelonLoaderService melonLoaderService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        IProcessService processService)
     {
         _settingsService = settingsService;
         _modManagerService = modManagerService;
         _melonLoaderService = melonLoaderService;
         _loggingService = loggingService;
+        _processService = processService;
     }
 
     /// <summary>
@@ -80,6 +83,15 @@ public partial class ModInfoDumperViewModel : ObservableObject
     private async Task PackAllInfoAsync()
     {
         if (IsOperating) return;
+
+        // 检查游戏是否正在运行
+        if (_processService.IsGameRunning)
+        {
+            await MessageDialogHelper.ShowWarningAsync(
+                Strings.GameRunningWarningMessage,
+                Strings.GameRunningWarningTitle);
+            return;
+        }
 
         // 确认对话框
         if (!await MessageDialogHelper.ConfirmAsync(
@@ -142,6 +154,46 @@ public partial class ModInfoDumperViewModel : ObservableObject
             {
                 skippedFiles.Add($"UserData/MelonPreferences.cfg - {Strings.FileNotFoundSkip}");
                 _loggingService.LogInfo(Strings.FileNotFoundSkip, "UserData/MelonPreferences.cfg");
+            }
+
+            // 尝试收集 AppData\LocalLow\Radian Simulations LLC\GHPC\Player.log
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var playerLogPath = Path.Combine(appDataPath, "..", "LocalLow", "Radian Simulations LLC", "GHPC", "Player.log");
+            playerLogPath = Path.GetFullPath(playerLogPath);
+            if (File.Exists(playerLogPath))
+            {
+                var destPath = Path.Combine(tempDir, "Player.log");
+                File.Copy(playerLogPath, destPath, true);
+                collectedFiles.Add((destPath, "Player.log"));
+                _loggingService.LogInfo(Strings.ReadingFileInfo, "Player.log");
+            }
+            else
+            {
+                skippedFiles.Add($"Player.log - {Strings.FileNotFoundSkip}");
+                _loggingService.LogInfo(Strings.FileNotFoundSkip, "Player.log");
+            }
+
+            // 生成系统配置信息
+            var systemConfigPath = Path.Combine(tempDir, "system_config.txt");
+            await File.WriteAllTextAsync(systemConfigPath, GenerateSystemConfigInfo());
+            collectedFiles.Add((systemConfigPath, "system_config.txt"));
+            _loggingService.LogInfo(Strings.ReadingFileInfo, "system_config.txt");
+
+            // 尝试收集程序运行日志
+            var today = DateTime.Now;
+            var logFileName = $"GHPC_Mod_Manager_{today:yyyy-MM-dd}.log";
+            var appLogPath = Path.Combine(_settingsService.AppDataPath, "logs", logFileName);
+            if (File.Exists(appLogPath))
+            {
+                var destPath = Path.Combine(tempDir, logFileName);
+                File.Copy(appLogPath, destPath, true);
+                collectedFiles.Add((destPath, logFileName));
+                _loggingService.LogInfo(Strings.ReadingFileInfo, logFileName);
+            }
+            else
+            {
+                skippedFiles.Add($"{logFileName} - {Strings.FileNotFoundSkip}");
+                _loggingService.LogInfo(Strings.FileNotFoundSkip, logFileName);
             }
 
             // 生成收集日志
@@ -414,5 +466,95 @@ public partial class ModInfoDumperViewModel : ObservableObject
         if (bytes < 1024 * 1024) return $"{bytes / 1024.0:F1}KB";
         if (bytes < 1024 * 1024 * 1024) return $"{bytes / (1024.0 * 1024.0):F1}MB";
         return $"{bytes / (1024.0 * 1024.0 * 1024.0):F1}GB";
+    }
+
+    /// <summary>
+    /// 生成系统配置信息（不包含隐私信息）
+    /// </summary>
+    private static string GenerateSystemConfigInfo()
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("=== System Configuration ===");
+        sb.AppendLine($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine();
+
+        // 操作系统信息
+        sb.AppendLine("--- Operating System ---");
+        sb.AppendLine($"OS: {Environment.OSVersion}");
+        sb.AppendLine($"64-bit OS: {Environment.Is64BitOperatingSystem}");
+        sb.AppendLine($"64-bit Process: {Environment.Is64BitProcess}");
+        sb.AppendLine($".NET Version: {Environment.Version}");
+        sb.AppendLine();
+
+        // CPU信息
+        sb.AppendLine("--- Processor ---");
+        sb.AppendLine($"Processor Count: {Environment.ProcessorCount}");
+        try
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher("SELECT Name, MaxClockSpeed FROM Win32_Processor");
+            foreach (var obj in searcher.Get())
+            {
+                sb.AppendLine($"CPU: {obj["Name"]}");
+                sb.AppendLine($"Max Clock Speed: {obj["MaxClockSpeed"]} MHz");
+            }
+        }
+        catch { sb.AppendLine("CPU: Unable to retrieve"); }
+        sb.AppendLine();
+
+        // 内存信息
+        sb.AppendLine("--- Memory ---");
+        try
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher("SELECT TotalVisibleMemorySize, FreePhysicalMemory FROM Win32_OperatingSystem");
+            foreach (var obj in searcher.Get())
+            {
+                var totalMB = Convert.ToInt64(obj["TotalVisibleMemorySize"]) / 1024;
+                var freeMB = Convert.ToInt64(obj["FreePhysicalMemory"]) / 1024;
+                sb.AppendLine($"Total RAM: {totalMB} MB ({totalMB / 1024.0:F1} GB)");
+                sb.AppendLine($"Available RAM: {freeMB} MB ({freeMB / 1024.0:F1} GB)");
+            }
+        }
+        catch { sb.AppendLine("Memory: Unable to retrieve"); }
+        sb.AppendLine();
+
+        // 显卡信息
+        sb.AppendLine("--- Graphics ---");
+        try
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher("SELECT Name, AdapterRAM, DriverVersion FROM Win32_VideoController");
+            var gpuIndex = 1;
+            foreach (var obj in searcher.Get())
+            {
+                sb.AppendLine($"GPU {gpuIndex}: {obj["Name"]}");
+                var vramBytes = Convert.ToInt64(obj["AdapterRAM"]);
+                if (vramBytes > 0)
+                {
+                    sb.AppendLine($"  VRAM: {vramBytes / (1024 * 1024)} MB ({vramBytes / (1024.0 * 1024.0 * 1024.0):F1} GB)");
+                }
+                sb.AppendLine($"  Driver: {obj["DriverVersion"]}");
+                gpuIndex++;
+            }
+        }
+        catch { sb.AppendLine("Graphics: Unable to retrieve"); }
+        sb.AppendLine();
+
+        // 磁盘信息
+        sb.AppendLine("--- Storage ---");
+        try
+        {
+            var drives = System.IO.DriveInfo.GetDrives();
+            foreach (var drive in drives)
+            {
+                if (drive.IsReady && drive.DriveType == System.IO.DriveType.Fixed)
+                {
+                    var totalGB = drive.TotalSize / (1024.0 * 1024.0 * 1024.0);
+                    var freeGB = drive.AvailableFreeSpace / (1024.0 * 1024.0 * 1024.0);
+                    sb.AppendLine($"Drive {drive.Name} Total: {totalGB:F1} GB, Free: {freeGB:F1} GB");
+                }
+            }
+        }
+        catch { sb.AppendLine("Storage: Unable to retrieve"); }
+
+        return sb.ToString();
     }
 }

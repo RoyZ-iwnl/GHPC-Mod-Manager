@@ -2706,6 +2706,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 游戏启动设置.
+        /// </summary>
+        public static string GameLaunchSettings {
+            get {
+                return ResourceManager.GetString("GameLaunchSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 游戏路径.
         /// </summary>
         public static string GamePath {
@@ -2756,6 +2765,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GameRunningCannotOperate {
             get {
                 return ResourceManager.GetString("GameRunningCannotOperate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请复现模组故障后关闭游戏再打包。.
+        /// </summary>
+        public static string GameRunningWarningMessage {
+            get {
+                return ResourceManager.GetString("GameRunningWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 游戏正在运行.
+        /// </summary>
+        public static string GameRunningWarningTitle {
+            get {
+                return ResourceManager.GetString("GameRunningWarningTitle", resourceCulture);
             }
         }
         
@@ -3485,15 +3512,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 语言设置.
-        /// </summary>
-        public static string LanguageSettings {
-            get {
-                return ResourceManager.GetString("LanguageSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 应用程序将重启以应用语言更改.
         /// </summary>
         public static string LanguageWillTakeEffectAfterRestart {
@@ -3850,6 +3868,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string MainConfigURL {
             get {
                 return ResourceManager.GetString("MainConfigURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 主程序设置.
+        /// </summary>
+        public static string MainSettings {
+            get {
+                return ResourceManager.GetString("MainSettings", resourceCulture);
             }
         }
         
@@ -4809,7 +4836,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 导出已安装模组信息用于问题诊断.
+        ///   Looks up a localized string similar to 导出已安装模组信息用于问题诊断，打包文件将会生成在桌面。.
         /// </summary>
         public static string ModInfoDumperDescription {
             get {
@@ -4818,7 +4845,16 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 模组信息导出 - 诊断工具.
+        ///   Looks up a localized string similar to 打包范围：模组列表、游戏日志、系统配置（不涉及隐私信息）.
+        /// </summary>
+        public static string ModInfoDumperPrivacyNotice {
+            get {
+                return ResourceManager.GetString("ModInfoDumperPrivacyNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 信息导出 - 诊断工具.
         /// </summary>
         public static string ModInfoDumperTitle {
             get {
@@ -6802,6 +6838,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SilentUpdateCheckFailed {
             get {
                 return ResourceManager.GetString("SilentUpdateCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时跳过冲突检查.
+        /// </summary>
+        public static string SkipConflictCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipConflictCheckOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时跳过完整性检查.
+        /// </summary>
+        public static string SkipIntegrityCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipIntegrityCheckOnLaunch", resourceCulture);
             }
         }
         
