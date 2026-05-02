@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Reflection;
 using GHPC_Mod_Manager.Resources;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
+using System.Media;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -115,7 +117,7 @@ public partial class SettingsViewModel : ObservableObject
     private AppTheme _selectedTheme = AppTheme.Light;
 
     [ObservableProperty]
-    private List<AppTheme> _availableThemes = new() { AppTheme.Light, AppTheme.Dark };
+    private ObservableCollection<AppTheme> _availableThemes = new() { AppTheme.Light, AppTheme.Dark };
 
     [ObservableProperty]
     private UpdateChannel _selectedUpdateChannel = UpdateChannel.Stable;
@@ -224,6 +226,20 @@ public partial class SettingsViewModel : ObservableObject
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
         SkipConflictCheck = settings.SkipConflictCheck;
         SkipIntegrityCheck = settings.SkipIntegrityCheck;
+
+        // 检查是否已解锁终末地主题
+        if (settings.IsEndfieldThemeUnlocked == true && !AvailableThemes.Contains(AppTheme.Endfield))
+        {
+            AvailableThemes.Add(AppTheme.Endfield);
+        }
+
+        // 验证：如果主题是终末地但未解锁，重置为浅色主题
+        if (SelectedTheme == AppTheme.Endfield && settings.IsEndfieldThemeUnlocked != true)
+        {
+            SelectedTheme = AppTheme.Light;
+            settings.Theme = AppTheme.Light;
+            _loggingService.LogInfo(Strings.EndfieldThemeLockedReset);
+        }
     }
 
     [RelayCommand]
@@ -251,8 +267,10 @@ public partial class SettingsViewModel : ObservableObject
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);
 
-            // 应用新主题
-            _themeService.SetTheme(SelectedTheme);
+            if (_themeService.CurrentTheme != SelectedTheme)
+            {
+                _themeService.SetTheme(SelectedTheme);
+            }
 
             // 如果语言改变了，提示用户重启应用
             if (languageChanged)
@@ -471,9 +489,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         try
         {
-            // 应用新主题
             _themeService.SetTheme(SelectedTheme);
-            _loggingService.LogInfo(Strings.ThemeSwitched, SelectedTheme);
         }
         catch (Exception ex)
         {
@@ -533,15 +549,30 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     // 版本号点击彩蛋
-    public void HandleVersionClick()
+    public async void HandleVersionClick()
     {
         _versionClickCount++;
 
-        // 达到阈值时打开网页
+        // 达到阈值时打开网页并解锁终末地主题
         if (_versionClickCount >= EasterEggClickThreshold)
         {
             _versionClickCount = 0;
             _versionClickTimer?.Dispose();
+
+            // 播放彩蛋音频
+            try
+            {
+                var audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "easter_egg.wav");
+                if (File.Exists(audioPath))
+                {
+                    Task.Run(() =>
+                    {
+                        using var player = new SoundPlayer(audioPath);
+                        player.PlaySync();
+                    });
+                }
+            }
+            catch { }
 
             try
             {
@@ -552,6 +583,27 @@ public partial class SettingsViewModel : ObservableObject
                 });
             }
             catch { }
+
+            try
+            {
+                if (_settingsService.Settings.IsEndfieldThemeUnlocked != true)
+                {
+                    _settingsService.Settings.IsEndfieldThemeUnlocked = true;
+                    await _settingsService.SaveSettingsAsync();
+
+                    if (!AvailableThemes.Contains(AppTheme.Endfield))
+                    {
+                        AvailableThemes.Add(AppTheme.Endfield);
+                    }
+
+                    _loggingService.LogInfo(Strings.EndfieldThemeUnlocked);
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogError(ex, Strings.EndfieldThemeUnlockError);
+            }
+
             return;
         }
 

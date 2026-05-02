@@ -1,0 +1,380 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ═══════════════════════════════════════════════════════
+         ENDFIELD THEME - 明日方舟·终末地 工业风格
+         核心理念: 重工业功能主义 · 亮黄+纯白 · 高对比 · 精密感
+    ═══════════════════════════════════════════════════════ -->
+
+    <!-- ── 覆盖 Foundation 圆角（工业风：极硬线条） ── -->
+    <CornerRadius x:Key="RadiusNone">0</CornerRadius>
+    <CornerRadius x:Key="RadiusExtraSmall">0</CornerRadius>
+    <CornerRadius x:Key="RadiusSmall">0</CornerRadius>
+    <CornerRadius x:Key="RadiusMedium">0</CornerRadius>
+    <CornerRadius x:Key="RadiusLarge">0</CornerRadius>
+    <CornerRadius x:Key="RadiusExtraLarge">0</CornerRadius>
+    <CornerRadius x:Key="BadgeCornerRadius">0</CornerRadius>
+
+    <!-- ── 基础色板 ── -->
+    <Color x:Key="CanvasColor">#F8F8F8</Color>
+    <Color x:Key="SurfaceColor">#FFFFFF</Color>
+    <Color x:Key="SurfaceAltColor">#EEEEEE</Color>
+    <Color x:Key="SurfaceContainerColor">#FFFFFF</Color>
+    <Color x:Key="OnSurfaceColor">#111111</Color>
+    <Color x:Key="OnSurfaceMutedColor">#777777</Color>
+    <Color x:Key="BorderColor">#E0E0E0</Color>
+    <Color x:Key="BorderStrongColor">#111111</Color>
+
+    <Color x:Key="AccentColor">#F5E600</Color>
+    <Color x:Key="AccentStrongColor">#D4C800</Color>
+    <Color x:Key="AccentSoftColor">#FFFDE6</Color>
+    <Color x:Key="OnAccentColor">#111111</Color>
+
+    <Color x:Key="NavRailColor">#111111</Color>
+    <Color x:Key="NavRailBorderColor">#222222</Color>
+    <Color x:Key="NavRailTextColor">#F5E600</Color>
+    <Color x:Key="NavRailMutedTextColor">#666666</Color>
+
+    <Color x:Key="SuccessColor">#00C853</Color>
+    <Color x:Key="SuccessSoftColor">#E8F5EC</Color>
+    <Color x:Key="OnSuccessColor">#003314</Color>
+
+    <Color x:Key="WarningColor">#FFAB00</Color>
+    <Color x:Key="WarningSoftColor">#FFF8E1</Color>
+    <Color x:Key="OnWarningColor">#111111</Color>
+
+    <Color x:Key="DangerColor">#FF3D00</Color>
+    <Color x:Key="DangerSoftColor">#FBE9E7</Color>
+    <Color x:Key="OnDangerColor">#FFFFFF</Color>
+
+    <Color x:Key="ShadowColor">#FF000000</Color>
+    <Color x:Key="ScrimColor">#CC000000</Color>
+
+    <!-- ═══════════════════════════════════════════════════════
+         画刷定义 (SolidColorBrush)
+    ═══════════════════════════════════════════════════════ -->
+
+    <SolidColorBrush x:Key="CanvasBrush" Color="{StaticResource CanvasColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}"/>
+    <SolidColorBrush x:Key="SurfaceContainerBrush" Color="{StaticResource SurfaceContainerColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="{StaticResource OnSurfaceMutedColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{StaticResource BorderStrongColor}"/>
+
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentStrongBrush" Color="{StaticResource AccentStrongColor}"/>
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource AccentSoftColor}"/>
+    <SolidColorBrush x:Key="OnAccentBrush" Color="{StaticResource OnAccentColor}"/>
+
+    <SolidColorBrush x:Key="NavRailBrush" Color="{StaticResource NavRailColor}"/>
+    <SolidColorBrush x:Key="NavRailBorderBrush" Color="{StaticResource NavRailBorderColor}"/>
+    <SolidColorBrush x:Key="NavRailTextBrush" Color="{StaticResource NavRailTextColor}"/>
+    <SolidColorBrush x:Key="NavRailMutedTextBrush" Color="{StaticResource NavRailMutedTextColor}"/>
+
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="SuccessContainerBrush" Color="{StaticResource SuccessSoftColor}"/>
+    <SolidColorBrush x:Key="OnSuccessBrush" Color="{StaticResource OnSuccessColor}"/>
+
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="WarningContainerBrush" Color="{StaticResource WarningSoftColor}"/>
+    <SolidColorBrush x:Key="OnWarningBrush" Color="{StaticResource OnWarningColor}"/>
+
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource DangerColor}"/>
+    <SolidColorBrush x:Key="ErrorContainerBrush" Color="{StaticResource DangerSoftColor}"/>
+    <SolidColorBrush x:Key="OnErrorBrush" Color="{StaticResource OnDangerColor}"/>
+    <SolidColorBrush x:Key="OnErrorContainerBrush" Color="{StaticResource DangerColor}"/>
+
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource OnSurfaceMutedColor}"/>
+    <SolidColorBrush x:Key="SecondaryContainerBrush" Color="{StaticResource SurfaceAltColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="{StaticResource OnSurfaceColor}"/>
+
+    <SolidColorBrush x:Key="OutlineBrush" Color="{StaticResource BorderStrongColor}"/>
+    <SolidColorBrush x:Key="OutlineVariantBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource ShadowColor}"/>
+    <SolidColorBrush x:Key="ScrimBrush" Color="{StaticResource ScrimColor}"/>
+
+    <!-- ═══════════════════════════════════════════════════════
+         装饰性纹理
+    ═══════════════════════════════════════════════════════ -->
+
+    <DrawingBrush x:Key="IndustrialStripeBrush" TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,8,8"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#1A000000">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M0,8 L8,0 M-4,4 L4,-4 M4,12 L12,4"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Thickness="1"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <DrawingBrush x:Key="DarkContourBrush" TileMode="Tile" Viewport="0,0,400,400" ViewportUnits="Absolute" Opacity="0.4">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,400,400"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M100,50 C150,20 250,80 300,50 M80,100 C180,60 320,150 350,100 M50,150 C200,120 300,250 380,180 M20,220 C150,200 250,380 320,300 M0,300 C100,280 200,450 300,380"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#22FFFFFF" Thickness="0.5"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <DrawingBrush x:Key="LightContourBrush" TileMode="Tile" Viewport="0,0,300,300" ViewportUnits="Absolute" Opacity="0.15">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <!-- 绘制透明背景 -->
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,300,300"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- 绘制去除了横线的等高线路径 -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <!-- 删除了 M0,100 和 M0,200 开头的横向路径 -->
+                        <PathGeometry Figures="M50,0 C80,30 20,80 50,110 M120,0 C150,50 80,120 120,180 M200,0 C250,80 150,200 200,280"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#111111" Thickness="0.5"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <LinearGradientBrush x:Key="AccentGlowBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F5E600" Offset="0"/>
+        <GradientStop Color="#D4C800" Offset="1"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource CanvasColor}"/>
+    <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnAccentColor}"/>
+    <SolidColorBrush x:Key="PrimaryContainerBrush" Color="{StaticResource AccentSoftColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="{StaticResource AccentStrongColor}"/>
+    <SolidColorBrush x:Key="SurfaceVariantBrush" Color="{StaticResource SurfaceAltColor}"/>
+    <SolidColorBrush x:Key="SurfaceTintBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="InverseSurfaceBrush" Color="#1A1A1A"/>
+    <SolidColorBrush x:Key="InverseOnSurfaceBrush" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="InversePrimaryBrush" Color="#C8B800"/>
+    <SolidColorBrush x:Key="OnWarningContainerBrush" Color="{StaticResource WarningColor}"/>
+
+    <!-- ══════════════════════════════════════════════════════
+         终末地主题按钮样式覆盖
+    ══════════════════════════════════════════════════════ -->
+
+    <Style x:Key="FilledButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OnAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource LabelLarge}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Background="{DynamicResource OnSurfaceBrush}"
+                                Margin="3,3,0,0"
+                                CornerRadius="0"/>
+                        <Border x:Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="0,0,3,3">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="[ " Opacity="0.5" VerticalAlignment="Center"/>
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"/>
+                                <TextBlock Text=" ]" Opacity="0.5" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentStrongBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Chrome" Property="Margin" Value="2,2,1,1"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                            <Setter TargetName="Chrome" Property="Opacity" Value="0.6"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="OutlinedButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OnSurfaceBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Padding" Value="18,10"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource LabelLarge}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BadgeBorderStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Margin" Value="0,0,8,6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+    </Style>
+
+    <Style x:Key="NavigationListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse Grid.Column="0"
+                                 Width="8" Height="8"
+                                 Margin="0,0,12,0"
+                                 VerticalAlignment="Center"
+                                 Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="[ " Opacity="0.5" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Label}"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
+                                       FontSize="{DynamicResource BodyMedium}"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text=" ]" Opacity="0.5" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,8"/>
+                    <Setter Property="Foreground" Value="{DynamicResource NavRailMutedTextBrush}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="Chrome"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="1"
+                                        CornerRadius="0"
+                                        Padding="14,12">
+                                    <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Chrome" Property="Background" Value="#122238"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource NavRailTextBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter TargetName="Chrome" Property="BorderBrush" Value="#66FFFFFF"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 视图特定Badge样式覆盖：方形设计 -->
+    <Style x:Key="StatusPillBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Margin" Value="0,0,8,6"/>
+    </Style>
+
+    <Style x:Key="BrowserBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Margin" Value="0,0,8,6"/>
+    </Style>
+
+    <Style x:Key="BrowserInfoBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="Margin" Value="0,0,6,6"/>
+    </Style>
+
+    <Style x:Key="DenseBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+
+</ResourceDictionary>

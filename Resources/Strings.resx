@@ -801,6 +801,9 @@
   <data name="DarkTheme" xml:space="preserve">
     <value>Dark Theme</value>
   </data>
+  <data name="EndfieldTheme" xml:space="preserve">
+    <value>Endfield</value>
+  </data>
   <data name="ProgramLanguage" xml:space="preserve">
     <value>Language:</value>
   </data>
@@ -1457,6 +1460,15 @@
   </data>
   <data name="ThemeApplicationError" xml:space="preserve">
     <value>Error occurred while applying theme</value>
+  </data>
+  <data name="EndfieldThemeLockedReset" xml:space="preserve">
+    <value>Endfield theme is locked. Reset to Light theme.</value>
+  </data>
+  <data name="EndfieldThemeUnlocked" xml:space="preserve">
+    <value>Endfield theme unlocked.</value>
+  </data>
+  <data name="EndfieldThemeUnlockError" xml:space="preserve">
+    <value>Failed to unlock Endfield theme</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>About</value>

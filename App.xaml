@@ -18,6 +18,7 @@
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
             <converters:TranslationLanguageDisplayConverter x:Key="TranslationLanguageDisplayConverter"/>
+            <converters:BracketTextConverter x:Key="BracketTextConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

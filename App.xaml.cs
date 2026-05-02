@@ -156,7 +156,15 @@ namespace GHPC_Mod_Manager
             
             loggingService.LogInfo(Strings.AppStartupSettingsTheme, settingsService.Settings.Theme);
             loggingService.LogInfo(Strings.AppStartupResourceDictionaryCount, Application.Current.Resources.MergedDictionaries.Count);
-            
+
+            // 验证终末地主题解锁状态
+            if (settingsService.Settings.Theme == AppTheme.Endfield && settingsService.Settings.IsEndfieldThemeUnlocked != true)
+            {
+                loggingService.LogWarning(Strings.EndfieldThemeLockedReset);
+                settingsService.Settings.Theme = AppTheme.Light;
+                await settingsService.SaveSettingsAsync();
+            }
+
             // 由于App.xaml已经加载了Light主题，我们需要确保状态正确同步
             if (settingsService.Settings.Theme == AppTheme.Light)
             {
@@ -166,7 +174,7 @@ namespace GHPC_Mod_Manager
             }
             else
             {
-                // 如果设置是Dark，需要切换主题并同步内部状态
+                // 如果设置是其他主题（Dark/Endfield），需要切换主题并同步内部状态
                 loggingService.LogInfo(Strings.SettingsDarkThemeNeedSwitch);
                 themeService.SetTheme(settingsService.Settings.Theme);
             }

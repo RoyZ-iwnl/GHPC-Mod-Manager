@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             xmlns:helpers="clr-namespace:GHPC_Mod_Manager.Helpers"
              mc:Ignorable="d"
              d:DesignHeight="920"
              d:DesignWidth="1440">
@@ -33,7 +34,7 @@
         </Style>
 
         <Style x:Key="StatusPillBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource BadgeCornerRadius}"/>
             <Setter Property="Padding" Value="10,4"/>
             <Setter Property="Margin" Value="0,0,8,6"/>
         </Style>
@@ -49,12 +50,16 @@
                 Background="{DynamicResource NavRailBrush}"
                 BorderBrush="{DynamicResource NavRailBorderBrush}"
                 BorderThickness="0,0,1,0">
-            <Grid Margin="24,22,20,22">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Grid>
+                <!-- 等高线纹理（仅终末地主题显示） -->
+                <Rectangle Fill="{DynamicResource DarkContourBrush}" IsHitTestVisible="False"/>
+
+                <Grid Margin="24,22,20,22">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0">
                     <Border Background="{DynamicResource AccentSoftBrush}"
@@ -77,29 +82,6 @@
                          ItemsSource="{Binding NavigationItems}"
                          SelectedItem="{Binding SelectedNavigationItem}"
                          Style="{DynamicResource NavigationListBoxStyle}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Ellipse Grid.Column="0"
-                                         Width="8"
-                                         Height="8"
-                                         Margin="0,0,12,0"
-                                         VerticalAlignment="Center"
-                                         Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding Label}"
-                                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
-                                           FontSize="{DynamicResource BodyMedium}"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
                 </ListBox>
 
                 <Border Grid.Row="2"
@@ -116,6 +98,7 @@
                             BorderBrush="{DynamicResource NavRailBorderBrush}"/>
                 </Border>
             </Grid>
+        </Grid>
         </Border>
 
         <Grid Grid.Column="1" Margin="20,16,20,16">
@@ -135,8 +118,14 @@
 
 
                     <TextBlock Grid.Column="0" Margin="0,0,20,0"
-                               Text="{Binding SelectedNavigationItem.Label}"
-                               Style="{StaticResource PageTitleTextStyle}"/>
+                               Style="{StaticResource PageTitleTextStyle}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource BracketTextConverter}">
+                                <Binding Path="SelectedNavigationItem.Label"/>
+                                <Binding Source="{x:Static helpers:ThemeTracker.Instance}" Path="CurrentTheme"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
 
 
 

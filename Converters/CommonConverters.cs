@@ -157,6 +157,7 @@ public class ThemeDisplayConverter : IValueConverter
             {
                 AppTheme.Light => Strings.LightTheme,
                 AppTheme.Dark => Strings.DarkTheme,
+                AppTheme.Endfield => Strings.EndfieldTheme,
                 _ => value.ToString() ?? string.Empty
             };
         }
@@ -372,6 +373,33 @@ public class ChineseLanguageToVisibilityConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 终末地主题专用：标题文本括号转换器（支持主题切换）
+public class BracketTextConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2 || values[0] == null)
+            return string.Empty;
+
+        var text = values[0].ToString();
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        // values[1] 是 ThemeTracker.CurrentTheme
+        if (values[1] is Models.AppTheme theme && theme == Models.AppTheme.Endfield)
+        {
+            return $"[ {text} ]";
+        }
+
+        return text;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

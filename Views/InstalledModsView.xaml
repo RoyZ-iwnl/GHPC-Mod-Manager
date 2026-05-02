@@ -13,23 +13,12 @@
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
 
-        <Style x:Key="CompactFilledButtonStyle" TargetType="Button" BasedOn="{StaticResource FilledButtonStyle}">
-            <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="MinHeight" Value="28"/>
-            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
-        </Style>
-
-        <Style x:Key="CompactOutlinedButtonStyle" TargetType="Button" BasedOn="{StaticResource OutlinedButtonStyle}">
-            <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="MinHeight" Value="28"/>
-            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
-        </Style>
-
         <Style x:Key="DenseSectionCardStyle" TargetType="Border" BasedOn="{StaticResource PageSectionCardStyle}">
             <Setter Property="Padding" Value="14,12"/>
         </Style>
 
         <Style x:Key="DenseBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
+            <Setter Property="CornerRadius" Value="{DynamicResource BadgeCornerRadius}"/>
             <Setter Property="Padding" Value="8,3"/>
             <Setter Property="Margin" Value="0,0,6,6"/>
         </Style>
@@ -128,9 +117,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{DynamicResource SecondaryContainerBrush}"
-                                        BorderBrush="{DynamicResource SecondaryBrush}"
-                                        CornerRadius="6"
-                                        Padding="8,4"
+                                        BorderBrush="{DynamicResource SecondaryBrush}"                                        Padding="8,4"
                                         Margin="0,0,8,4">
                                     <TextBlock Text="{Binding}"
                                                FontSize="{DynamicResource LabelMedium}"
@@ -190,7 +177,7 @@
                                                            FontSize="{DynamicResource BodyLarge}"
                                                            FontWeight="SemiBold"
                                                            TextWrapping="Wrap"
-                                                           Foreground="{DynamicResource AccentBrush}"/>
+                                                           Foreground="{DynamicResource OnSurfaceBrush}"/>
                                             </Button>
 
                                             <TextBlock Margin="8,1,0,0"
@@ -201,7 +188,7 @@
                                         </WrapPanel>
 
                                         <WrapPanel Margin="0,6,0,0">
-                                            <Border Style="{StaticResource DenseBadgeBorderStyle}"
+                                            <Border Style="{DynamicResource DenseBadgeBorderStyle}"
                                                     Background="{DynamicResource SuccessContainerBrush}"
                                                     BorderBrush="{DynamicResource SuccessBrush}">
                                                 <TextBlock Text="{x:Static resources:Strings.Installed}"
@@ -209,7 +196,7 @@
                                                            Foreground="{DynamicResource OnSuccessBrush}"/>
                                             </Border>
 
-                                            <Border Style="{StaticResource DenseBadgeBorderStyle}"
+                                            <Border Style="{DynamicResource DenseBadgeBorderStyle}"
                                                     Background="{DynamicResource AccentSoftBrush}"
                                                     BorderBrush="{DynamicResource AccentBrush}"
                                                     Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}">
@@ -218,7 +205,7 @@
                                                            Foreground="{DynamicResource AccentStrongBrush}"/>
                                             </Border>
 
-                                            <Border Style="{StaticResource DenseBadgeBorderStyle}"
+                                            <Border Style="{DynamicResource DenseBadgeBorderStyle}"
                                                     Background="{DynamicResource ErrorContainerBrush}"
                                                     BorderBrush="{DynamicResource ErrorBrush}"
                                                     Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
@@ -227,7 +214,7 @@
                                                            Foreground="{DynamicResource OnErrorContainerBrush}"/>
                                             </Border>
 
-                                            <Border Style="{StaticResource DenseBadgeBorderStyle}"
+                                            <Border Style="{DynamicResource DenseBadgeBorderStyle}"
                                                     Background="{DynamicResource WarningContainerBrush}"
                                                     BorderBrush="{DynamicResource WarningBrush}"
                                                     Visibility="{Binding HasUnknownConfigFields, Converter={StaticResource BoolToVis}}">
@@ -236,14 +223,14 @@
                                                            Foreground="{DynamicResource OnWarningContainerBrush}"/>
                                             </Border>
 
-                                            <Border Style="{StaticResource DenseBadgeBorderStyle}"
+                                            <Border Style="{DynamicResource DenseBadgeBorderStyle}"
                                                     Visibility="{Binding IsManuallyInstalled, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock Text="{x:Static resources:Strings.Manual}"
                                                            Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                                             </Border>
 
-                                            <ItemsControl ItemsSource="{Binding LocalizedTags}">
+                                            <ItemsControl ItemsSource="{Binding LocalizedTags}" Visibility="Collapsed">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <WrapPanel/>
@@ -251,7 +238,7 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Style="{StaticResource DenseBadgeBorderStyle}">
+                                                        <Border Style="{DynamicResource DenseBadgeBorderStyle}">
                                                             <TextBlock Text="{Binding}"
                                                                        Style="{StaticResource BadgeTextStyle}"
                                                                        Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
@@ -351,27 +338,39 @@
                                                     Command="{Binding DataContext.UpdateModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,6,6"
-                                                    Style="{StaticResource CompactFilledButtonStyle}"
+                                                    Padding="8,5"
+                                                    MinHeight="28"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource FilledButtonStyle}"
                                                     Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
 
                                             <Button Content="{x:Static resources:Strings.Reinstall}"
                                                     Command="{Binding DataContext.ReinstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,6,6"
-                                                    Style="{StaticResource CompactFilledButtonStyle}"
+                                                    Padding="8,5"
+                                                    MinHeight="28"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource FilledButtonStyle}"
                                                     Visibility="{Binding CanReinstall, Converter={StaticResource BoolToVis}}"/>
 
                                             <Button Content="{x:Static resources:Strings.ViewDetails}"
                                                     Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,6,6"
-                                                    Style="{StaticResource CompactOutlinedButtonStyle}"/>
+                                                    Padding="8,5"
+                                                    MinHeight="28"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource OutlinedButtonStyle}"/>
 
                                             <Button Content="{x:Static resources:Strings.Configure}"
                                                     Command="{Binding DataContext.ConfigureModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,6,6"
-                                                    Style="{StaticResource CompactOutlinedButtonStyle}"
+                                                    Padding="8,5"
+                                                    MinHeight="28"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource OutlinedButtonStyle}"
                                                     Visibility="{Binding HasConfiguration, Converter={StaticResource BoolToVis}}"/>
 
                                             <Button Content="{x:Static resources:Strings.Uninstall}"
@@ -379,7 +378,10 @@
                                                     CommandParameter="{Binding}"
                                                     Margin="0,0,0,6"
                                                     IsEnabled="{Binding CanUninstall}"
-                                                    Style="{StaticResource CompactOutlinedButtonStyle}"/>
+                                                    Padding="8,5"
+                                                    MinHeight="28"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource OutlinedButtonStyle}"/>
                                         </WrapPanel>
                                     </Grid>
                                 </Grid>

@@ -12,6 +12,7 @@
 
     <Style x:Key="PageSectionCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
         <Setter Property="Background" Value="{DynamicResource SurfaceContainerBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
     <Style x:Key="PageToolbarCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
@@ -24,27 +25,32 @@
     </Style>
 
     <Style x:Key="PageHeroCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
-        <Setter Property="Background" Value="{DynamicResource HeroGradientBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentSoftBrush}"/>
-        <Setter Property="Padding" Value="22"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource LightContourBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="2,0,0,0"/>
+        <Setter Property="Padding" Value="24"/>
     </Style>
 
     <Style x:Key="PageBannerCardStyle" TargetType="Border" BasedOn="{StaticResource PageSurfaceCardStyle}">
-        <Setter Property="Padding" Value="16,14"/>
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style x:Key="PageTitleTextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource HeadlineLarge}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="{DynamicResource OnBackgroundBrush}"/>
+        <Setter Property="FontWeight" Value="ExtraBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
     </Style>
 
     <Style x:Key="HeroEyebrowTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource MonospaceFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Text" Value="{Binding Path=Text, RelativeSource={RelativeSource Self}, StringFormat='[ {0} ]'}"/>
     </Style>
 
     <Style x:Key="PageSubtitleTextStyle" TargetType="TextBlock">
@@ -54,8 +60,9 @@
     </Style>
 
     <Style x:Key="PageSectionTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource TitleMedium}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
     </Style>
 
@@ -66,7 +73,7 @@
 
     <Style x:Key="MetaLabelTextStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
     </Style>
 
@@ -82,7 +89,7 @@
 
     <Style x:Key="FieldLabelTextStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{DynamicResource BodySmall}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
@@ -94,14 +101,16 @@
     </Style>
 
     <Style x:Key="BadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource MonospaceFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
     </Style>
 
     <Style x:Key="BadgeBorderStyle" TargetType="Border">
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource BadgeCornerRadius}"/>
         <Setter Property="Padding" Value="10,4"/>
         <Setter Property="Margin" Value="0,0,8,6"/>
         <Setter Property="BorderThickness" Value="1"/>

@@ -1,6 +1,7 @@
 using GHPC_Mod_Manager.Models;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Services;
 
@@ -31,15 +32,21 @@ public class ThemeService : IThemeService
     {
         _loggingService.LogInfo(Strings.ThemeServiceInitializeState, actualTheme);
         _currentTheme = actualTheme;
+        ThemeTracker.Instance.CurrentTheme = actualTheme;
     }
 
     public void SetTheme(AppTheme theme)
     {
         _loggingService.LogInfo(Strings.SetThemeCalled, theme, _currentTheme);
-        
-        // 总是应用主题，确保同步
+        if (_currentTheme == theme)
+        {
+            return;
+        }
+
         _currentTheme = theme;
         ApplyTheme(theme);
+        ThemeTracker.Instance.CurrentTheme = theme;
+
         ThemeChanged?.Invoke(this, theme);
         _loggingService.LogInfo(Strings.ThemeSwitched, theme);
     }
@@ -53,7 +60,8 @@ public class ThemeService : IThemeService
             // 只移除主题相关的资源字典（LightTheme/DarkTheme），保留通用资源
             var toRemove = Application.Current.Resources.MergedDictionaries
                 .Where(d => d.Source?.ToString().Contains("LightTheme.xaml") == true ||
-                           d.Source?.ToString().Contains("DarkTheme.xaml") == true)
+                           d.Source?.ToString().Contains("DarkTheme.xaml") == true ||
+                           d.Source?.ToString().Contains("EndfieldTheme.xaml") == true)
                 .ToList();
 
             _loggingService.LogInfo(Strings.PreparingToRemoveResourceDictionaries, toRemove.Count);
@@ -70,6 +78,7 @@ public class ThemeService : IThemeService
             {
                 AppTheme.Light => "/Themes/LightTheme.xaml",
                 AppTheme.Dark => "/Themes/DarkTheme.xaml",
+                AppTheme.Endfield => "/Themes/EndfieldTheme.xaml",
                 _ => "/Themes/LightTheme.xaml"
             };
 
@@ -80,12 +89,8 @@ public class ThemeService : IThemeService
                 Source = new Uri(themeResourcePath, UriKind.Relative)
             };
 
-            // 插入新主题资源到Foundation之后（保持正确的加载顺序）
-            var foundationIndex = Application.Current.Resources.MergedDictionaries
-                .Select((d, i) => new { Dict = d, Index = i })
-                .FirstOrDefault(x => x.Dict.Source?.ToString().Contains("Foundation.xaml") == true)?.Index ?? 0;
-
-            Application.Current.Resources.MergedDictionaries.Insert(foundationIndex + 1, themeResource);
+            // 将新主题资源添加到最后，确保它能覆盖所有其他样式
+            Application.Current.Resources.MergedDictionaries.Add(themeResource);
 
             _loggingService.LogInfo(Strings.ThemeResourceApplied, theme, Application.Current.Resources.MergedDictionaries.Count);
         }

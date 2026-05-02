@@ -18,51 +18,19 @@
         <converters:ResponsiveCardWidthConverter x:Key="ResponsiveCardWidthConverter"/>
         <converters:CollectionSummaryConverter x:Key="CollectionSummaryConverter"/>
 
-        <Style x:Key="CompactFilledButtonStyle" TargetType="Button" BasedOn="{StaticResource FilledButtonStyle}">
-            <Setter Property="Padding" Value="12,7"/>
-            <Setter Property="MinHeight" Value="32"/>
-            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
-        </Style>
-
-        <Style x:Key="CompactOutlinedButtonStyle" TargetType="Button" BasedOn="{StaticResource OutlinedButtonStyle}">
-            <Setter Property="Padding" Value="12,7"/>
-            <Setter Property="MinHeight" Value="32"/>
-            <Setter Property="FontSize" Value="{DynamicResource LabelMedium}"/>
-        </Style>
-
         <Style x:Key="DenseBrowserCardStyle" TargetType="Border" BasedOn="{StaticResource PageSectionCardStyle}">
-            <Setter Property="Padding" Value="18,16"/>
-            <Setter Property="Height" Value="296"/>
-        </Style>
-
-        <Style x:Key="BrowserMetaLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldLabelTextStyle}">
-            <Setter Property="Margin" Value="0,0,0,4"/>
-        </Style>
-
-        <Style x:Key="BrowserSummaryTextStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldValueTextStyle}">
-            <Setter Property="Margin" Value="0,0,0,6"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="Height" Value="220"/>
         </Style>
 
         <Style x:Key="BrowserDescriptionTextStyle" TargetType="TextBlock" BasedOn="{StaticResource PageSubtitleTextStyle}">
-            <Setter Property="MaxHeight" Value="18"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Config.Requirements.Count}" Value="0"/>
-                        <Condition Binding="{Binding Config.Conflicts.Count}" Value="0"/>
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="TextWrapping" Value="Wrap"/>
-                    <Setter Property="MaxHeight" Value="42"/>
-                </MultiDataTrigger>
-            </Style.Triggers>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
 
         <Style x:Key="BrowserBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource BadgeCornerRadius}"/>
             <Setter Property="Padding" Value="10,4"/>
             <Setter Property="Margin" Value="0,0,8,6"/>
         </Style>
@@ -72,7 +40,7 @@
         </Style>
 
         <Style x:Key="BrowserInfoBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource BadgeCornerRadius}"/>
             <Setter Property="Padding" Value="8,3"/>
             <Setter Property="Margin" Value="0,0,6,6"/>
         </Style>
@@ -80,6 +48,7 @@
         <Style x:Key="BrowserInfoBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BadgeTextStyle}">
             <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
         </Style>
+
     </UserControl.Resources>
 
     <Grid>
@@ -214,9 +183,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{DynamicResource SecondaryContainerBrush}"
-                                        BorderBrush="{DynamicResource SecondaryBrush}"
-                                        CornerRadius="6"
-                                        Padding="8,4"
+                                        BorderBrush="{DynamicResource SecondaryBrush}"                                        Padding="8,4"
                                         Margin="0,0,8,4">
                                     <TextBlock Text="{Binding}"
                                                FontSize="{DynamicResource LabelMedium}"
@@ -265,7 +232,7 @@
                           HorizontalScrollBarVisibility="Disabled"
                           Visibility="{Binding FilteredMods.Count, Converter={StaticResource BoolToVis}}">
                 <ItemsControl ItemsSource="{Binding FilteredMods}"
-                              Width="{Binding ElementName=ResultsScrollViewer, Path=ActualWidth}"
+                              Width="{Binding ElementName=ResultsScrollViewer, Path=ViewportWidth}"
                               Margin="0,0,-12,0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -279,27 +246,41 @@
                                     Style="{StaticResource DenseBrowserCardStyle}">
                                 <Border.Width>
                                     <MultiBinding Converter="{StaticResource ResponsiveCardWidthConverter}">
-                                        <Binding ElementName="ResultsScrollViewer" Path="ActualWidth"/>
+                                        <Binding ElementName="ResultsScrollViewer" Path="ViewportWidth"/>
                                     </MultiBinding>
                                 </Border.Width>
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="124"/>
-                                    </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Grid.Row="0"
-                                                Grid.Column="0"
-                                                Margin="0,0,16,0">
+                                    <!-- 行1: 标题（左）+ 状态徽章（右） -->
+                                    <DockPanel Grid.Row="0" Margin="0,0,0,6" LastChildFill="True">
+                                        <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
+                                                    Background="{DynamicResource SuccessContainerBrush}"
+                                                    BorderBrush="{DynamicResource SuccessBrush}"
+                                                    Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                           Style="{StaticResource BrowserBadgeTextStyle}"
+                                                           Foreground="{DynamicResource OnSuccessBrush}"/>
+                                            </Border>
+                                            <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
+                                                    Background="{DynamicResource ErrorContainerBrush}"
+                                                    BorderBrush="{DynamicResource ErrorBrush}"
+                                                    Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
+                                                           Style="{StaticResource BrowserBadgeTextStyle}"
+                                                           Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                            </Border>
+                                        </WrapPanel>
                                         <Button Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
                                                 Style="{DynamicResource TextButtonStyle}"
                                                 Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}">
@@ -307,57 +288,80 @@
                                                        FontSize="{DynamicResource TitleMedium}"
                                                        FontWeight="SemiBold"
                                                        TextWrapping="Wrap"
-                                                       Foreground="{DynamicResource AccentBrush}"/>
+                                                       Foreground="{DynamicResource OnSurfaceBrush}"/>
                                         </Button>
-                                        <TextBlock Margin="0,4,0,0"
-                                                   Text="{Binding Id}"
-                                                   Style="{StaticResource MonoMetaValueTextStyle}"
-                                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-                                    </StackPanel>
+                                    </DockPanel>
 
-                                    <Grid Grid.Row="0"
-                                          Grid.RowSpan="3"
-                                          Grid.Column="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
+                                    <!-- 行2: 描述文字（弹性区） -->
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding LocalizedDescription}"
+                                               Style="{StaticResource BrowserDescriptionTextStyle}"
+                                               Visibility="{Binding LocalizedDescription, Converter={StaticResource StrToVis}}"/>
 
-                                        <StackPanel Grid.Row="0"
-                                                    HorizontalAlignment="Right">
-                                            <WrapPanel HorizontalAlignment="Right">
-                                                <Border Style="{StaticResource BrowserBadgeBorderStyle}"
-                                                        Background="{DynamicResource SuccessContainerBrush}"
-                                                        BorderBrush="{DynamicResource SuccessBrush}"
-                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                               Style="{StaticResource BrowserBadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnSuccessBrush}"/>
-                                                </Border>
-
-                                                <Border Style="{StaticResource BrowserBadgeBorderStyle}"
-                                                        Background="{DynamicResource ErrorContainerBrush}"
-                                                        BorderBrush="{DynamicResource ErrorBrush}"
-                                                        Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
-                                                               Style="{StaticResource BrowserBadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
-                                                </Border>
-                                            </WrapPanel>
-
-                                            <ItemsControl Margin="0,8,0,0"
-                                                          HorizontalAlignment="Right"
-                                                          ItemsSource="{Binding SupportedGameVersions}"
+                                    <!-- 行3: 底部栏 — 版本徽章（左）+ 操作按钮（右） -->
+                                    <DockPanel Grid.Row="2" Margin="0,10,0,0" LastChildFill="True">
+                                        <!-- 右侧：操作按钮，横向排列，最多同时显示2个 -->
+                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <!-- ViewDetails 始终显示 -->
+                                            <Button Content="{x:Static resources:Strings.ViewDetails}"
+                                                    Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12,7"
+                                                    MinHeight="32"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                                            <!-- 主操作按钮，四选一，通过 Visibility 切换 -->
+                                            <Button Content="{x:Static resources:Strings.Install}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12,7"
+                                                    MinHeight="32"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource FilledButtonStyle}"
+                                                    Visibility="{Binding CanInstallFresh, Converter={StaticResource BoolToVis}}"/>
+                                            <Button Content="{x:Static resources:Strings.Update}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12,7"
+                                                    MinHeight="32"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource FilledButtonStyle}"
+                                                    Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
+                                            <Button Content="{x:Static resources:Strings.QuickReinstall}"
+                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12,7"
+                                                    MinHeight="32"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource OutlinedButtonStyle}"
+                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
+                                            <Button Content="{Binding DataContext.RedownloadReinstallText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    Command="{Binding DataContext.RedownloadInstallCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12,7"
+                                                    MinHeight="32"
+                                                    FontSize="{DynamicResource LabelMedium}"
+                                                    Style="{DynamicResource FilledButtonStyle}"
+                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
+                                        </StackPanel>
+                                        <!-- 左侧：游戏版本徽章 + Tags -->
+                                        <StackPanel VerticalAlignment="Center">
+                                            <ItemsControl ItemsSource="{Binding SupportedGameVersions}"
+                                                          VerticalAlignment="Center"
                                                           Visibility="{Binding SupportedGameVersions.Count, Converter={StaticResource BoolToVis}}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <WrapPanel HorizontalAlignment="Right"/>
+                                                        <WrapPanel VerticalAlignment="Center"/>
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Style="{StaticResource BrowserBadgeBorderStyle}">
+                                                        <Border Style="{DynamicResource BrowserBadgeBorderStyle}">
                                                             <Border.Background>
                                                                 <MultiBinding Converter="{StaticResource GameVersionMatchBrush}">
                                                                     <Binding/>
@@ -398,84 +402,17 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="2"
-                                                    HorizontalAlignment="Right"
-                                                    VerticalAlignment="Bottom">
-                                            <Button Content="{x:Static resources:Strings.QuickReinstall}"
-                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,0,8"
-                                                    HorizontalAlignment="Right"
-                                                    Style="{StaticResource CompactOutlinedButtonStyle}"
-                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
-
-                                            <Button Content="{Binding DataContext.RedownloadReinstallText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    Command="{Binding DataContext.RedownloadInstallCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,0,8"
-                                                    HorizontalAlignment="Right"
-                                                    Style="{StaticResource CompactFilledButtonStyle}"
-                                                    Visibility="{Binding CanQuickReinstall, Converter={StaticResource BoolToVis}}"/>
-
-                                            <Button Content="{x:Static resources:Strings.Install}"
-                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,0,8"
-                                                    HorizontalAlignment="Right"
-                                                    Style="{StaticResource CompactFilledButtonStyle}"
-                                                    Visibility="{Binding CanInstallFresh, Converter={StaticResource BoolToVis}}"/>
-
-                                            <Button Content="{x:Static resources:Strings.Update}"
-                                                    Command="{Binding DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,0,0,8"
-                                                    HorizontalAlignment="Right"
-                                                    Style="{StaticResource CompactFilledButtonStyle}"
-                                                    Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVis}}"/>
-
-                                            <Button Content="{x:Static resources:Strings.ViewDetails}"
-                                                    Command="{Binding DataContext.NavigateToDetailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    HorizontalAlignment="Right"
-                                                    Style="{StaticResource CompactOutlinedButtonStyle}"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Border Grid.Row="1"
-                                            Grid.Column="0"
-                                            Margin="0,10,16,0"
-                                            Padding="0,1,0,0">
-                                        <TextBlock Text="{Binding LocalizedDescription}"
-                                                   Style="{StaticResource BrowserDescriptionTextStyle}"
-                                                   Visibility="{Binding LocalizedDescription, Converter={StaticResource StrToVis}}"/>
-                                    </Border>
-
-                                     <Grid Grid.Row="2"
-                                           Grid.Column="0"
-                                           Margin="0,12,16,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0"
-                                                    Margin="0,0,12,0"
-                                                    VerticalAlignment="Top">
-                                            <TextBlock Text="{x:Static resources:Strings.DependenciesSection}"
-                                                       Style="{StaticResource BrowserMetaLabelStyle}"
-                                                       Visibility="{Binding Config.Requirements.Count, Converter={StaticResource BoolToVis}}"/>
-                                            <ItemsControl ItemsSource="{Binding Config.Requirements}"
-                                                          Visibility="{Binding Config.Requirements.Count, Converter={StaticResource BoolToVis}}">
+                                            <ItemsControl ItemsSource="{Binding LocalizedTags}"
+                                                          VerticalAlignment="Center"
+                                                          Visibility="{Binding LocalizedTags.Count, Converter={StaticResource BoolToVis}}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <WrapPanel/>
+                                                        <WrapPanel VerticalAlignment="Center"/>
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}"
+                                                        <Border Style="{DynamicResource BrowserInfoBadgeBorderStyle}"
                                                                 Background="{DynamicResource SecondaryContainerBrush}"
                                                                 BorderBrush="{DynamicResource SecondaryBrush}">
                                                             <TextBlock Text="{Binding}"
@@ -485,55 +422,8 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-
-                                            <TextBlock Text="{x:Static resources:Strings.ConflictsSection}"
-                                                       Style="{StaticResource BrowserMetaLabelStyle}"
-                                                       Visibility="{Binding Config.Conflicts.Count, Converter={StaticResource BoolToVis}}"/>
-                                            <ItemsControl ItemsSource="{Binding Config.Conflicts}"
-                                                          Visibility="{Binding Config.Conflicts.Count, Converter={StaticResource BoolToVis}}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <WrapPanel/>
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}"
-                                                                Background="{DynamicResource WarningContainerBrush}"
-                                                                BorderBrush="{DynamicResource WarningBrush}">
-                                                            <TextBlock Text="{Binding}"
-                                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
-                                                                       Foreground="{DynamicResource OnWarningContainerBrush}"/>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
                                         </StackPanel>
-
-                                        <StackPanel Grid.Column="1"
-                                                    VerticalAlignment="Top">
-                                            <TextBlock Text="{x:Static resources:Strings.ModTags}"
-                                                       Style="{StaticResource BrowserMetaLabelStyle}"
-                                                       Visibility="{Binding LocalizedTags.Count, Converter={StaticResource BoolToVis}}"/>
-                                            <ItemsControl ItemsSource="{Binding LocalizedTags}"
-                                                          Visibility="{Binding LocalizedTags.Count, Converter={StaticResource BoolToVis}}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <WrapPanel/>
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Style="{StaticResource BrowserInfoBadgeBorderStyle}">
-                                                            <TextBlock Text="{Binding}"
-                                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
-                                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </Grid>
+                                    </DockPanel>
                                 </Grid>
                             </Border>
                         </DataTemplate>

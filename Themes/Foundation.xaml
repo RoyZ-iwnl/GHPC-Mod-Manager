@@ -36,6 +36,7 @@
     <CornerRadius x:Key="RadiusMedium">16</CornerRadius>
     <CornerRadius x:Key="RadiusLarge">22</CornerRadius>
     <CornerRadius x:Key="RadiusExtraLarge">30</CornerRadius>
+    <CornerRadius x:Key="BadgeCornerRadius">8</CornerRadius>
 
     <system:Double x:Key="Elevation0">0</system:Double>
     <system:Double x:Key="Elevation1">2</system:Double>

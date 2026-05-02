@@ -113,7 +113,8 @@ public class SettingsService : ISettingsService
                 DoNotShowAnnouncementBeforeUpdate = _settings.DoNotShowAnnouncementBeforeUpdate,
                 ShowUninstalledOnly = _settings.ShowUninstalledOnly,
                 SkipConflictCheck = _settings.SkipConflictCheck,
-                SkipIntegrityCheck = _settings.SkipIntegrityCheck
+                SkipIntegrityCheck = _settings.SkipIntegrityCheck,
+                IsEndfieldThemeUnlocked = _settings.IsEndfieldThemeUnlocked
             };
 
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);

@@ -49,7 +49,7 @@
                                Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
 
                     <WrapPanel Margin="0,14,0,0">
-                        <Border Style="{StaticResource BadgeBorderStyle}"
+                        <Border Style="{DynamicResource BadgeBorderStyle}"
                                 Background="{DynamicResource SuccessContainerBrush}"
                                 BorderBrush="{DynamicResource SuccessBrush}"
                                 Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
@@ -58,14 +58,14 @@
                                        Foreground="{DynamicResource OnSuccessBrush}"/>
                         </Border>
 
-                        <Border Style="{StaticResource BadgeBorderStyle}"
+                        <Border Style="{DynamicResource BadgeBorderStyle}"
                                 Visibility="{Binding Mod.IsManuallyInstalled, Converter={StaticResource BoolToVis}}">
                             <TextBlock Text="{x:Static resources:Strings.Manual}"
                                        Style="{StaticResource BadgeTextStyle}"
                                        Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                         </Border>
 
-                        <Border Style="{StaticResource BadgeBorderStyle}"
+                        <Border Style="{DynamicResource BadgeBorderStyle}"
                                 Background="{DynamicResource ErrorContainerBrush}"
                                 BorderBrush="{DynamicResource ErrorBrush}"
                                 Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
@@ -74,7 +74,7 @@
                                        Foreground="{DynamicResource OnErrorContainerBrush}"/>
                         </Border>
 
-                        <Border Style="{StaticResource BadgeBorderStyle}"
+                        <Border Style="{DynamicResource BadgeBorderStyle}"
                                 Background="{DynamicResource AccentSoftBrush}"
                                 BorderBrush="{DynamicResource AccentBrush}"
                                 Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}">
@@ -148,10 +148,12 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Style="{StaticResource BadgeBorderStyle}">
+                                        <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                Background="{DynamicResource SecondaryContainerBrush}"
+                                                BorderBrush="{DynamicResource SecondaryBrush}">
                                             <TextBlock Text="{Binding}"
                                                        Style="{StaticResource BadgeTextStyle}"
-                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -174,10 +176,12 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Style="{StaticResource BadgeBorderStyle}">
+                                        <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                Background="{DynamicResource SecondaryContainerBrush}"
+                                                BorderBrush="{DynamicResource SecondaryBrush}">
                                             <TextBlock Text="{Binding}"
                                                        Style="{StaticResource BadgeTextStyle}"
-                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                       Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -310,11 +314,11 @@
                                                         CommandParameter="{Binding ModId}">
                                                     <TextBlock Text="{Binding DisplayName}"
                                                                TextWrapping="Wrap"
-                                                               Foreground="{DynamicResource AccentBrush}"/>
+                                                               Foreground="{DynamicResource OnSurfaceBrush}"/>
                                                 </Button>
 
                                                 <Border Grid.Column="1"
-                                                        Style="{StaticResource BadgeBorderStyle}"
+                                                        Style="{DynamicResource BadgeBorderStyle}"
                                                         Background="{DynamicResource SuccessContainerBrush}"
                                                         BorderBrush="{DynamicResource SuccessBrush}"
                                                         Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
@@ -324,13 +328,13 @@
                                                 </Border>
 
                                                 <Border Grid.Column="1"
-                                                        Style="{StaticResource BadgeBorderStyle}"
-                                                        Background="{DynamicResource WarningContainerBrush}"
-                                                        BorderBrush="{DynamicResource WarningBrush}"
+                                                        Style="{DynamicResource BadgeBorderStyle}"
+                                                        Background="{DynamicResource ErrorContainerBrush}"
+                                                        BorderBrush="{DynamicResource ErrorBrush}"
                                                         Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
                                                     <TextBlock Text="{x:Static resources:Strings.NotInstalled}"
                                                                Style="{StaticResource BadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
                                                 </Border>
                                             </Grid>
                                         </Border>
@@ -367,17 +371,17 @@
                                                         CommandParameter="{Binding ModId}">
                                                     <TextBlock Text="{Binding DisplayName}"
                                                                TextWrapping="Wrap"
-                                                               Foreground="{DynamicResource AccentBrush}"/>
+                                                               Foreground="{DynamicResource OnSurfaceBrush}"/>
                                                 </Button>
 
                                                 <Border Grid.Column="1"
-                                                        Style="{StaticResource BadgeBorderStyle}"
-                                                        Background="{DynamicResource WarningContainerBrush}"
-                                                        BorderBrush="{DynamicResource WarningBrush}"
+                                                        Style="{DynamicResource BadgeBorderStyle}"
+                                                        Background="{DynamicResource ErrorContainerBrush}"
+                                                        BorderBrush="{DynamicResource ErrorBrush}"
                                                         Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
                                                     <TextBlock Text="{x:Static resources:Strings.Installed}"
                                                                Style="{StaticResource BadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnWarningContainerBrush}"/>
+                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
                                                 </Border>
                                             </Grid>
                                         </Border>

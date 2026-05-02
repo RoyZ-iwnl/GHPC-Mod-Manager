@@ -23,15 +23,15 @@ namespace GHPC_Mod_Manager.Resources {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings_zh_CN {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Strings_zh_CN() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace GHPC_Mod_Manager.Resources {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 关于.
         /// </summary>
@@ -68,7 +68,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("About", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 操作.
         /// </summary>
@@ -77,7 +77,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Actions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已添加额外Steam库: {0}.
         /// </summary>
@@ -86,7 +86,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AdditionalSteamLibrary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所有缓存已清除（会话缓存已清除，未找到持久化缓存文件）.
         /// </summary>
@@ -95,7 +95,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AllCachesClearedNoFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所有缓存清理成功.
         /// </summary>
@@ -104,7 +104,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AllCachesClearedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已复制全部 {0} 条日志到剪贴板.
         /// </summary>
@@ -113,7 +113,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AllLogsCopiedToClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 公告.
         /// </summary>
@@ -122,7 +122,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Announcement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 语言的公告内容为空.
         /// </summary>
@@ -131,7 +131,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AnnouncementContentEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取公告失败: {0} - {1}.
         /// </summary>
@@ -140,7 +140,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AnnouncementFetchFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 成功加载 {0} 语言的公告.
         /// </summary>
@@ -149,7 +149,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AnnouncementLoadedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载公告失败.
         /// </summary>
@@ -158,7 +158,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AnnouncementLoadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现应用程序更新: {0}.
         /// </summary>
@@ -167,7 +167,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplicationUpdateAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用程序更新检查失败.
         /// </summary>
@@ -176,7 +176,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplicationUpdateCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用版本.
         /// </summary>
@@ -185,7 +185,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplicationVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用.
         /// </summary>
@@ -194,7 +194,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Apply", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在应用代理设置并重新检测网络连接....
         /// </summary>
@@ -203,7 +203,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplyingProxyAndRetesting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用语言设置错误.
         /// </summary>
@@ -212,7 +212,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplyLanguageError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用代理设置失败: {0}.
         /// </summary>
@@ -221,7 +221,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplyProxySettingsFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用主题开始 - 目标主题: {0}.
         /// </summary>
@@ -230,7 +230,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ApplyThemeStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用启动资源字典数量: {0}.
         /// </summary>
@@ -239,7 +239,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AppStartupResourceDictionaryCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用启动设置主题: {0}.
         /// </summary>
@@ -248,7 +248,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AppStartupSettingsTheme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题:.
         /// </summary>
@@ -257,7 +257,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AppTheme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 尝试从备份快速重新安装 {0} 版本 {1}.
         /// </summary>
@@ -266,7 +266,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AttemptingQuickReinstallFromBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 注意!.
         /// </summary>
@@ -275,7 +275,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Attention", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 自动搜寻完成 ，{0}个可能路径.
         /// </summary>
@@ -284,7 +284,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AutoSearchCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 路径搜寻出错.
         /// </summary>
@@ -293,7 +293,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AutoSearchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 搜寻路径···.
         /// </summary>
@@ -302,7 +302,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AutoSearchingGHPC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始搜寻路径.
         /// </summary>
@@ -311,7 +311,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AutoSearchStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到AutoTranslator配置文件.
         /// </summary>
@@ -320,7 +320,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AutoTranslatorConfigNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 可用Mod.
         /// </summary>
@@ -329,7 +329,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AvailableMods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载可用Mod列表时出错.
         /// </summary>
@@ -338,7 +338,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("AvailableModsLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 返回主界面.
         /// </summary>
@@ -347,7 +347,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BackToMain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 备份目录不存在，无需删除: {0}.
         /// </summary>
@@ -356,7 +356,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BackupDirectoryNotExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 如果您已经安装了模组，我们建议在使用此管理器之前备份您的 MODS 文件夹。这将确保您不会丢失任何手动安装的模组。.
         /// </summary>
@@ -365,7 +365,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BackupModsRecommendation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 因清单丢失已清理 {0} 备份.
         /// </summary>
@@ -374,7 +374,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BackupsCleanedDueToMissingManifest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在清理....
         /// </summary>
@@ -383,7 +383,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchCleaningUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制更新文件失败.
         /// </summary>
@@ -392,7 +392,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchCopyFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 解压更新包失败.
         /// </summary>
@@ -401,7 +401,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchExtractFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在解压更新包....
         /// </summary>
@@ -410,7 +410,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchExtractingUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在安装更新....
         /// </summary>
@@ -419,7 +419,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchInstallingUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在重启应用程序....
         /// </summary>
@@ -428,7 +428,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchRestartingApp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新成功完成！.
         /// </summary>
@@ -437,7 +437,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchUpdateCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GHPC模组管理器更新.
         /// </summary>
@@ -446,7 +446,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchUpdateTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 等待应用程序关闭....
         /// </summary>
@@ -455,7 +455,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BatchWaitingForClose", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到现有的 BepInEx 或翻译文件：{0}.
         /// </summary>
@@ -464,7 +464,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BepInExDetectedLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到游戏目录中存在 BepInEx 文件夹或 winhttp.dll。请手动删除之前安装的任何翻译插件和 BepInEx 框架后再继续。.
         /// </summary>
@@ -473,7 +473,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("BepInExDetectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 浏览....
         /// </summary>
@@ -482,7 +482,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Browse", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在计算文件哈希：{0}.
         /// </summary>
@@ -491,7 +491,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CalculatingFileHash", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 取消.
         /// </summary>
@@ -500,7 +500,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法获取MelonLoader版本列表.
         /// </summary>
@@ -509,7 +509,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotGetMelonLoaderVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法获取Mod版本信息.
         /// </summary>
@@ -518,7 +518,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotGetModVersionInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法获取翻译组件版本.
         /// </summary>
@@ -527,7 +527,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotGetTranslationVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法重新安装模组：{0}，CanReinstall 为 false.
         /// </summary>
@@ -536,7 +536,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotReinstallModCanReinstallFalse", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法卸载手动安装的翻译。此翻译不是通过模组管理器安装的。如需卸载，请手动删除相关文件。.
         /// </summary>
@@ -545,7 +545,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotUninstallManuallyInstalledTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法卸载无 MainBinaryFileName 的手动安装模组: {0}。管理器无法确定该模组对应的文件。.
         /// </summary>
@@ -554,7 +554,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotUninstallManualModWithoutBinaryName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法更新手动安装的翻译。此翻译不是通过模组管理器安装的。如需启用更新功能，请手动卸载后通过模组管理器重新安装。.
         /// </summary>
@@ -563,7 +563,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotUpdateManuallyInstalledTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法更新模组：{0}，CanUpdate 为 false.
         /// </summary>
@@ -572,7 +572,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CannotUpdateModCanUpdateFalse", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to cdn.gh-proxy.com (Fastly).
         /// </summary>
@@ -581,7 +581,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CdnGhProxyCom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查模组与翻译更新.
         /// </summary>
@@ -590,7 +590,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckForModUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查更新.
         /// </summary>
@@ -599,7 +599,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckForUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测中....
         /// </summary>
@@ -608,7 +608,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Checking", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查应用程序更新....
         /// </summary>
@@ -617,7 +617,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingForApplicationUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查模组更新....
         /// </summary>
@@ -626,7 +626,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingForModUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查已安装Mod更新....
         /// </summary>
@@ -635,7 +635,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingInstalledModUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查模组冲突: {0}.
         /// </summary>
@@ -644,7 +644,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingModConflicts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查MOD冲突和依赖....
         /// </summary>
@@ -653,7 +653,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingModConflictsAndDependencies", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查模组依赖: {0}.
         /// </summary>
@@ -662,7 +662,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingModDependencies", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检测网络连接状态....
         /// </summary>
@@ -671,7 +671,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingNetworkConnectionStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查特定目录：{0}，前={1} 个文件，后={2} 个文件.
         /// </summary>
@@ -680,7 +680,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingSpecificDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在检查翻译更新....
         /// </summary>
@@ -689,7 +689,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CheckingTranslationUpdates", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 简体中文.
         /// </summary>
@@ -698,7 +698,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChineseSimplified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 分块 {0} 下载中被取消，已保存 {1:N0} 字节.
         /// </summary>
@@ -707,7 +707,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkCancelledWithData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 完成: {1} 字节.
         /// </summary>
@@ -716,7 +716,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 已复制到偏移 {1}.
         /// </summary>
@@ -725,7 +725,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkCopiedToOffset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 下载失败.
         /// </summary>
@@ -734,7 +734,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkDownloadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 在 {1} 次尝试后下载失败.
         /// </summary>
@@ -743,7 +743,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkDownloadMaxRetriesExceeded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0}: 字节范围 {1}-{2}（预期大小: {3} 字节）.
         /// </summary>
@@ -752,7 +752,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkDownloadRange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 失败（第 {1}/{2} 次尝试），{3}毫秒后重试: {4}.
         /// </summary>
@@ -761,7 +761,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkFailedRetrying", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 分块 {0}: 合并到偏移 {1:N0} - {2:N0} ({3:N0} 字节).
         /// </summary>
@@ -770,7 +770,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkMergedToOffset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 块 {0} 验证: {1} 字节.
         /// </summary>
@@ -779,7 +779,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkValidation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 分块 {0} (虚拟): 空数据，已忽略.
         /// </summary>
@@ -788,7 +788,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkVirtualEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 分块 {0} (虚拟): {1:N0} 字节.
         /// </summary>
@@ -797,7 +797,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ChunkVirtualValidation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理残留的禁用备份: {0}.
         /// </summary>
@@ -806,7 +806,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleaningOrphanedDisabledBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理临时文件.
         /// </summary>
@@ -815,7 +815,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleanTempFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理已下载的模组.
         /// </summary>
@@ -824,7 +824,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleanupDownloadedMods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理模组备份失败: {0}.
         /// </summary>
@@ -833,7 +833,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleanupModBackupsFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组备份清理成功。释放了 {0} MB 空间。.
         /// </summary>
@@ -842,7 +842,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleanupModBackupsSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理临时文件失败: {0}.
         /// </summary>
@@ -851,7 +851,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CleanupTempFileFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清空日志.
         /// </summary>
@@ -860,7 +860,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClearLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清除筛选.
         /// </summary>
@@ -869,7 +869,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClearTagFilter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to • 点击 重新检测重试网络连接.
         /// </summary>
@@ -878,7 +878,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickRetryToRetry", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to • 点击 显示日志 查看详细的检测过程.
         /// </summary>
@@ -887,7 +887,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickShowLogForDetails", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 点击&quot;检查更新&quot;按钮进行下载并安装.
         /// </summary>
@@ -896,7 +896,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickToDownloadAndInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 点击安装.
         /// </summary>
@@ -905,7 +905,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickToInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 点击选择并复制注释内容.
         /// </summary>
@@ -914,7 +914,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickToSelectAndCopyComment", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to • 点击 了解解决方案 查看网络问题排查指南.
         /// </summary>
@@ -923,7 +923,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ClickViewSolutions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 关闭.
         /// </summary>
@@ -932,7 +932,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置文件不存在: {0}.
         /// </summary>
@@ -941,7 +941,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigFileNotExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置读取完成: {0}, 共 {1} 项.
         /// </summary>
@@ -950,7 +950,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigReadComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置有序读取完成.
         /// </summary>
@@ -959,7 +959,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigReadOrderedComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置段尚未生成。请先运行一次游戏并退出，然后重试。.
         /// </summary>
@@ -968,7 +968,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigSectionNotGenerated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置 - {0}.
         /// </summary>
@@ -977,7 +977,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationFor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已加载 {0} 个配置项.
         /// </summary>
@@ -986,7 +986,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationItemsLoaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置加载错误.
         /// </summary>
@@ -995,7 +995,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置加载失败.
         /// </summary>
@@ -1004,7 +1004,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationLoadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置预设.
         /// </summary>
@@ -1013,7 +1013,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationPresets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置刷新完成.
         /// </summary>
@@ -1022,7 +1022,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationRefreshComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置刷新错误.
         /// </summary>
@@ -1031,7 +1031,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationRefreshError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置段 [{0}] 已重置。请运行一次游戏以重新生成配置。.
         /// </summary>
@@ -1040,7 +1040,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationReset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重置配置失败.
         /// </summary>
@@ -1049,7 +1049,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationResetFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置已保存.
         /// </summary>
@@ -1058,7 +1058,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationSaved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置保存失败.
         /// </summary>
@@ -1067,7 +1067,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置刷新成功！.
         /// </summary>
@@ -1076,7 +1076,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigurationsRefreshedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置.
         /// </summary>
@@ -1085,7 +1085,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Configure", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置模组错误.
         /// </summary>
@@ -1094,7 +1094,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfigureModError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确认清理.
         /// </summary>
@@ -1103,7 +1103,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmCleanup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 这将删除所有备份的模组文件。你确定吗？.
         /// </summary>
@@ -1112,7 +1112,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmCleanupModBackups", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确认删除.
         /// </summary>
@@ -1121,7 +1121,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmDelete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确定要删除预设 &apos;{0}&apos; 吗？.
         /// </summary>
@@ -1130,7 +1130,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmDeletePreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 此按钮可以清除 MelonPreferences.cfg 中的 [{0}] 配置段。正常运行一次游戏并退出即可重新生成，不过将会丢失已经设置的 mod 配置。\n\n已经保存的预设不受影响，但是不受当前版本支持的配置可能不会生效。\n\n是否继续？.
         /// </summary>
@@ -1139,7 +1139,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmResetConfiguration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确认卸载.
         /// </summary>
@@ -1148,7 +1148,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmUninstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确定要卸载 {0} 吗？.
         /// </summary>
@@ -1157,7 +1157,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmUninstallMod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确定要卸载翻译系统吗？.
         /// </summary>
@@ -1166,7 +1166,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConfirmUninstallTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到MOD冲突.
         /// </summary>
@@ -1175,7 +1175,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictDetectedOnLaunch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 以下已安装的MOD与此MOD存在冲突：.
         /// </summary>
@@ -1184,7 +1184,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictDialogMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到MOD冲突.
         /// </summary>
@@ -1193,7 +1193,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictDialogTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现与模组 {0} 冲突.
         /// </summary>
@@ -1202,7 +1202,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 是否仍要安装此MOD？.
         /// </summary>
@@ -1211,7 +1211,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictInstallAnyway", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确定吗？安装冲突MOD可能导致游戏异常。.
         /// </summary>
@@ -1220,7 +1220,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictInstallConfirm", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 冲突MOD.
         /// </summary>
@@ -1229,7 +1229,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictsSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 以下MOD存在冲突:
         ///
@@ -1242,7 +1242,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConflictWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 连接异常.
         /// </summary>
@@ -1251,7 +1251,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConnectionAbnormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 连接失败.
         /// </summary>
@@ -1260,7 +1260,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConnectionFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 连接正常.
         /// </summary>
@@ -1269,7 +1269,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ConnectionNormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to • 或继续安装，稍后手动配置网络.
         /// </summary>
@@ -1278,7 +1278,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ContinueAndConfigureLater", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制全部.
         /// </summary>
@@ -1287,7 +1287,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopyAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制失败: {0}.
         /// </summary>
@@ -1296,7 +1296,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopyFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制日志.
         /// </summary>
@@ -1305,7 +1305,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopyLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制选中.
         /// </summary>
@@ -1314,7 +1314,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopySelected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制成功.
         /// </summary>
@@ -1323,7 +1323,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopySuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制到剪贴板失败: {0}.
         /// </summary>
@@ -1332,7 +1332,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CopyToClipboardError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法删除目录 {0}：{1}.
         /// </summary>
@@ -1341,7 +1341,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CouldNotRemoveDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在创建诊断包....
         /// </summary>
@@ -1350,7 +1350,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CreatingPackage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 当前语言.
         /// </summary>
@@ -1359,7 +1359,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CurrentLanguage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取当前翻译语言时出错.
         /// </summary>
@@ -1368,7 +1368,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("CurrentLanguageError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 深色主题.
         /// </summary>
@@ -1377,7 +1377,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DarkTheme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 数据刷新完成.
         /// </summary>
@@ -1386,7 +1386,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DataRefreshComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 刷新数据时出错.
         /// </summary>
@@ -1395,7 +1395,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DataRefreshError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 数据刷新失败.
         /// </summary>
@@ -1404,7 +1404,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DataRefreshFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 数据源配置.
         /// </summary>
@@ -1413,7 +1413,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DataSourceConfiguration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0}天前.
         /// </summary>
@@ -1422,7 +1422,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DaysAgo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已添加默认steam路径: {0}.
         /// </summary>
@@ -1431,7 +1431,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DefaultSteamLibrary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已删除MOD备份: {0} 版本 {1}.
         /// </summary>
@@ -1440,7 +1440,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DeletedModBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 删除.
         /// </summary>
@@ -1449,7 +1449,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DeletePreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 删除过期的 GitHub releases 缓存：{0}/{1}（已过期 {2} 天）.
         /// </summary>
@@ -1458,7 +1458,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DeletingExpiredGitHubCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已下架.
         /// </summary>
@@ -1467,7 +1467,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DelistedBadge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 您安装了已下架的MOD，这些MOD可能存在问题或不再维护。.
         /// </summary>
@@ -1476,7 +1476,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DelistedModBannerMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已安装下架MOD.
         /// </summary>
@@ -1485,7 +1485,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DelistedModBannerTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到已下架MOD.
         /// </summary>
@@ -1494,7 +1494,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DelistedModDetectedOnLaunch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 以下已安装的MOD已被下架:
         ///
@@ -1507,7 +1507,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DelistedModWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 依赖MOD.
         /// </summary>
@@ -1516,7 +1516,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependenciesSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 以下依赖MOD尚未安装：.
         /// </summary>
@@ -1525,7 +1525,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependencyDialogMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 缺少依赖.
         /// </summary>
@@ -1534,7 +1534,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependencyDialogTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到缺失依赖.
         /// </summary>
@@ -1543,7 +1543,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependencyMissingOnLaunch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 缺少依赖.
         /// </summary>
@@ -1552,7 +1552,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependencyStatusMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 以下MOD缺少必需的依赖:
         ///
@@ -1565,7 +1565,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DependencyWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 警告: 未能访问子目录 {0}: {1}.
         /// </summary>
@@ -1574,7 +1574,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryAccessWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 目录复制完成.
         /// </summary>
@@ -1583,7 +1583,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 目录复制完成：{0} -&gt; {1}.
         /// </summary>
@@ -1592,7 +1592,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 创建目录: {0}.
         /// </summary>
@@ -1601,7 +1601,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyCreateDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 排除模式: {0}.
         /// </summary>
@@ -1610,7 +1610,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyExcludePatterns", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 根据模式排除目录：{0}.
         /// </summary>
@@ -1619,7 +1619,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyExcludingDir", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 根据模式排除文件：{0}.
         /// </summary>
@@ -1628,7 +1628,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyExcludingFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制文件: {0}.
         /// </summary>
@@ -1637,7 +1637,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 在 {1} 中找到 {0} 个文件.
         /// </summary>
@@ -1646,7 +1646,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyFoundFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 在 {1} 中找到 {0} 个子目录.
         /// </summary>
@@ -1655,7 +1655,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyFoundSubdirs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制文件：{0} -&gt; {1}.
         /// </summary>
@@ -1664,7 +1664,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyingFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 处理目录：{0} -&gt; {1}.
         /// </summary>
@@ -1673,7 +1673,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyProcessing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 递归进入子目录：{0} -&gt; {1}.
         /// </summary>
@@ -1682,7 +1682,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyRecursing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过文件: {0}.
         /// </summary>
@@ -1691,7 +1691,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopySkipFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过目录树: {0}.
         /// </summary>
@@ -1700,7 +1700,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopySkipTree", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 源目录不存在：{0}.
         /// </summary>
@@ -1709,7 +1709,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopySourceNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始复制目录: {0} -&gt; {1}.
         /// </summary>
@@ -1718,7 +1718,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始目录复制：{0} -&gt; {1}，排除模式：[{2}].
         /// </summary>
@@ -1727,7 +1727,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryCopyStarting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 扫描目录：{0}（{1} 个文件）.
         /// </summary>
@@ -1736,7 +1736,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectoryScanned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到 {0} 的快速重装目标位置已存在不同文件，已取消本次快速重装。
         ///
@@ -1750,7 +1750,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DirectRestoreConflictDetectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已禁用.
         /// </summary>
@@ -1759,7 +1759,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Disabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时禁用.
         /// </summary>
@@ -1768,7 +1768,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DisableMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 禁用翻译插件.
         /// </summary>
@@ -1777,7 +1777,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DisableTranslationPlugin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to - DNS解析问题.
         /// </summary>
@@ -1786,7 +1786,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DNSResolutionProblem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to dobby.dll 存在: {0}.
         /// </summary>
@@ -1795,7 +1795,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DobbyDllExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新前不再显示公告.
         /// </summary>
@@ -1804,7 +1804,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DoNotShowAnnouncementBeforeUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {2} 下载第 {0}/{1} 次失败，准备重试：{3}.
         /// </summary>
@@ -1813,7 +1813,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadAttemptRetrying", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载完成: {0}.
         /// </summary>
@@ -1822,7 +1822,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 的 SHA-256 校验失败。期望 {1}，实际 {2}。.
         /// </summary>
@@ -1831,7 +1831,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadDigestMismatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过不支持的摘要校验：{0} - {1}.
         /// </summary>
@@ -1840,7 +1840,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadDigestUnsupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 的 SHA-256 校验通过：{1}.
         /// </summary>
@@ -1849,7 +1849,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadDigestVerified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载的文件数据为空.
         /// </summary>
@@ -1858,7 +1858,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadedFileDataEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载错误: {0}.
         /// </summary>
@@ -1867,7 +1867,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载失败，但没有捕获到具体异常：{0}.
         /// </summary>
@@ -1876,7 +1876,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadFailedWithoutException", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载翻译发布版本: {0}.
         /// </summary>
@@ -1885,7 +1885,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadingTranslationRelease", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载更新: {0}.
         /// </summary>
@@ -1894,7 +1894,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadingUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载更新 {0} - {1}% ({2}) - {3}.
         /// </summary>
@@ -1903,7 +1903,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadingUpdateProgress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载文件未通过完整性校验：{0}.
         /// </summary>
@@ -1912,7 +1912,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadIntegrityCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载 {0} 时已连续 {1} 秒没有进度。.
         /// </summary>
@@ -1921,7 +1921,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadNoProgressTimeout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 大小不匹配！预期: {0}，已下载: {1}.
         /// </summary>
@@ -1930,7 +1930,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadSizeMismatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载大小不匹配：期望 {0}，得到 {1}.
         /// </summary>
@@ -1939,7 +1939,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadSizeMismatchException", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 大小校验通过：{1} 字节.
         /// </summary>
@@ -1948,7 +1948,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadSizeVerified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始下载: {0}.
         /// </summary>
@@ -1957,7 +1957,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载统计差异: 预期 {0:N0}, 实际 {1:N0}, 差异 {2:N0}.
         /// </summary>
@@ -1966,7 +1966,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadStatisticsDifference", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 如果文件完整性校验通过，此差异是统计问题，不影响文件正确性.
         /// </summary>
@@ -1975,7 +1975,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DownloadStatisticsNote", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 是否要下载并安装更新？.
         /// </summary>
@@ -1984,7 +1984,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("DoYouWantToDownloadAndInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to edgeone.gh-proxy.com (腾讯云 2).
         /// </summary>
@@ -1993,7 +1993,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("EdgeOneGhProxyCom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已启用.
         /// </summary>
@@ -2002,7 +2002,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Enabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重新启用.
         /// </summary>
@@ -2011,7 +2011,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("EnableMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启用翻译插件.
         /// </summary>
@@ -2020,7 +2020,43 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("EnableTranslationPlugin", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to 终末地.
+        /// </summary>
+        public static string EndfieldTheme {
+            get {
+                return ResourceManager.GetString("EndfieldTheme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 终末地主题尚未解锁，已重置为浅色主题。.
+        /// </summary>
+        public static string EndfieldThemeLockedReset {
+            get {
+                return ResourceManager.GetString("EndfieldThemeLockedReset", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 终末地主题已解锁。.
+        /// </summary>
+        public static string EndfieldThemeUnlocked {
+            get {
+                return ResourceManager.GetString("EndfieldThemeUnlocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 解锁终末地主题失败.
+        /// </summary>
+        public static string EndfieldThemeUnlockError {
+            get {
+                return ResourceManager.GetString("EndfieldThemeUnlockError", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
@@ -2029,7 +2065,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("English", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 进入网络检测步骤.
         /// </summary>
@@ -2038,7 +2074,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("EnteringNetworkCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 进入离线模式.
         /// </summary>
@@ -2047,7 +2083,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("EnteringOfflineMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 错误.
         /// </summary>
@@ -2056,7 +2092,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用GitHub代理到URL时出错: {0}.
         /// </summary>
@@ -2065,7 +2101,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ErrorApplyingGitHubProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 记录目录状态时出错 {0}：{1}.
         /// </summary>
@@ -2074,7 +2110,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ErrorRecordingDirectoryState", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已退出.
         /// </summary>
@@ -2083,7 +2119,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Exited", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 导出.
         /// </summary>
@@ -2092,7 +2128,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ExportLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在解压归档文件: {0}.
         /// </summary>
@@ -2101,7 +2137,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ExtractingArchive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 解压文件: {0} -&gt; {1}.
         /// </summary>
@@ -2110,7 +2146,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ExtractingFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用语言设置失败.
         /// </summary>
@@ -2119,7 +2155,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToApplyLanguageSetting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用代理设置失败.
         /// </summary>
@@ -2128,7 +2164,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToApplyProxySettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查 {0} 更新失败: {1}.
         /// </summary>
@@ -2137,7 +2173,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToCheckModUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理目录失败: {0}.
         /// </summary>
@@ -2146,7 +2182,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToCleanupDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理持久缓存失败: {0}.
         /// </summary>
@@ -2155,7 +2191,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToClearPersistentCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 删除Mod备份失败: {0} 版本 {1}.
         /// </summary>
@@ -2164,7 +2200,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToDeleteModBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 删除旧缓存文件失败 {0}：{1}.
         /// </summary>
@@ -2173,7 +2209,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToDeleteOldCacheFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载或安装更新失败。请稍后重试。.
         /// </summary>
@@ -2182,7 +2218,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToDownloadOrInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载翻译 ZIP 文件失败.
         /// </summary>
@@ -2191,7 +2227,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToDownloadTranslationZip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 通过代理获取Releases失败: {0}.
         /// </summary>
@@ -2200,7 +2236,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToFetchReleasesViaProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 移动残留禁用备份失败: {0}.
         /// </summary>
@@ -2209,7 +2245,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToMoveOrphanedBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开B站失败.
         /// </summary>
@@ -2218,7 +2254,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToOpenBilibili", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开游戏目录失败.
         /// </summary>
@@ -2227,7 +2263,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToOpenGameDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开GHPC交流群页面失败.
         /// </summary>
@@ -2236,7 +2272,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToOpenGhpcCommunity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法打开模组 {0} 的GitHub页面.
         /// </summary>
@@ -2245,7 +2281,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToOpenGitHubPage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 处理缓存文件失败 {0}：{1}.
         /// </summary>
@@ -2254,7 +2290,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToProcessCacheFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取 {0} 的缓存失败: {1}.
         /// </summary>
@@ -2263,7 +2299,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToReadCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从持久缓存读取 GitHub 发布版本失败 {0}/{1}：{2}.
         /// </summary>
@@ -2272,7 +2308,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToReadGitHubReleasesFromCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取翻译安装清单失败：{0}.
         /// </summary>
@@ -2281,7 +2317,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToReadTranslationInstallManifest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重启应用程序失败。请手动重启.
         /// </summary>
@@ -2290,7 +2326,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToRestartApplication", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存 {0} 的缓存失败: {1}.
         /// </summary>
@@ -2299,7 +2335,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToSaveCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 将 GitHub 发布版本保存到持久缓存失败 {0}/{1}：{2}.
         /// </summary>
@@ -2308,7 +2344,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToSaveGitHubReleasesToCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存代理服务器更改失败.
         /// </summary>
@@ -2317,7 +2353,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToSaveProxyServerChange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存代理设置更改失败.
         /// </summary>
@@ -2326,7 +2362,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FailedToSaveProxySettingChange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在从以下地址获取公告: {0}.
         /// </summary>
@@ -2335,7 +2371,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingAnnouncementFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在从 {0} 获取GitHub版本信息.
         /// </summary>
@@ -2344,7 +2380,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingGitHubReleases", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用token获取GitHub发布信息：{0}.
         /// </summary>
@@ -2353,7 +2389,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingGitHubReleasesWithToken", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在获取主配置....
         /// </summary>
@@ -2362,7 +2398,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingMainConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在从 {0} 获取Mod配置.
         /// </summary>
@@ -2371,7 +2407,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingModConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在从 {0} 获取Mod翻译配置.
         /// </summary>
@@ -2380,7 +2416,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingModI18nConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在从 {0} 获取翻译配置.
         /// </summary>
@@ -2389,7 +2425,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FetchingTranslationConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 创建新文件：{0}.
         /// </summary>
@@ -2398,7 +2434,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopyCreatingNew", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确保目标目录存在：{0}.
         /// </summary>
@@ -2407,7 +2443,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopyEnsuredDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件复制失败 {0} -&gt; {1}: {2}.
         /// </summary>
@@ -2416,7 +2452,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopyFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 将覆盖现有文件：{0}（原始哈希：{1}）.
         /// </summary>
@@ -2425,7 +2461,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopyOverwriting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 源文件不存在：{0}.
         /// </summary>
@@ -2434,7 +2470,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopySourceNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始文件复制：{0} -&gt; {1}.
         /// </summary>
@@ -2443,7 +2479,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopyStarting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 成功复制文件：{0} ({1} 字节).
         /// </summary>
@@ -2452,7 +2488,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileCopySuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件下载完成，大小: {0} 字节.
         /// </summary>
@@ -2461,7 +2497,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileDownloadCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件解压失败: {0}.
         /// </summary>
@@ -2470,7 +2506,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileExtractionFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件解压成功: {0}.
         /// </summary>
@@ -2479,7 +2515,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileExtractionSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件不存在，已跳过：{0}.
         /// </summary>
@@ -2488,7 +2524,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileNotFoundSkip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 调用 GetResult：{0}，{1} 个文件总数，{2} 个新文件，{3} 个覆盖文件.
         /// </summary>
@@ -2497,7 +2533,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationGetResult", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 的所有记录操作：.
         /// </summary>
@@ -2506,7 +2542,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationListHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [{0}] {1}: {2} ({3} 字节).
         /// </summary>
@@ -2515,7 +2551,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationListItem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已记录文件操作 #{0}: {1} {2} -&gt; {3} (大小: {4} 字节).
         /// </summary>
@@ -2524,7 +2560,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationRecorded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件操作追踪器已初始化.
         /// </summary>
@@ -2533,7 +2569,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationTrackerInit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法记录操作 - 追踪未启动.
         /// </summary>
@@ -2542,7 +2578,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationTrackingNotStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始文件操作追踪：{0} 在 {1}.
         /// </summary>
@@ -2551,7 +2587,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationTrackingStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 停止文件操作追踪：{0}，记录了 {1} 个操作，耗时 {2}毫秒.
         /// </summary>
@@ -2560,7 +2596,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileOperationTrackingStopped", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件写入大小不匹配，期望: {0}，实际: {1}.
         /// </summary>
@@ -2569,7 +2605,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileSizeMismatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件验证成功，大小: {0} 字节.
         /// </summary>
@@ -2578,7 +2614,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FileVerificationSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 筛选：.
         /// </summary>
@@ -2587,7 +2623,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Filter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 按标签筛选.
         /// </summary>
@@ -2596,7 +2632,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FilterByTags", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to - 防火墙阻止连接.
         /// </summary>
@@ -2605,7 +2641,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FirewallBlocking", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to B站关注我.
         /// </summary>
@@ -2614,7 +2650,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FollowBilibili", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to UI强制刷新完成.
         /// </summary>
@@ -2623,7 +2659,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ForcedUIRefreshComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 强制刷新云端配置.
         /// </summary>
@@ -2632,7 +2668,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ForceRefreshCloudConfigurations", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 找到配置段: {0}.
         /// </summary>
@@ -2641,7 +2677,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FoundConfigSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现独立注释.
         /// </summary>
@@ -2650,7 +2686,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("FoundStandaloneComment", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏目录未设置或未找到。请在设置中配置游戏路径。.
         /// </summary>
@@ -2659,7 +2695,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameDirectoryNotSetOrNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 在 {0} 未找到GHPC.exe.
         /// </summary>
@@ -2668,7 +2704,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameExeNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏已退出，正在验证安装....
         /// </summary>
@@ -2677,7 +2713,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameExitedVerifyingInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏错误.
         /// </summary>
@@ -2686,7 +2722,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameLaunchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏时发生错误.
         /// </summary>
@@ -2695,7 +2731,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameLaunchErrorOccurred", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏失败.
         /// </summary>
@@ -2704,16 +2740,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameLaunchFailed", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 游戏启动设置.
-        /// </summary>
-        public static string GameLaunchSettings {
-            get {
-                return ResourceManager.GetString("GameLaunchSettings", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏路径.
         /// </summary>
@@ -2722,7 +2749,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GamePath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏路径未设置。请在设置中配置。.
         /// </summary>
@@ -2731,7 +2758,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GamePathNotSet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏根目录：.
         /// </summary>
@@ -2740,7 +2767,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRootDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏根目录: {0}.
         /// </summary>
@@ -2749,7 +2776,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRootDirectoryPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏运行中.
         /// </summary>
@@ -2758,7 +2785,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRunning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏运行中，无法操作.
         /// </summary>
@@ -2767,7 +2794,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRunningCannotOperate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请复现模组故障后关闭游戏再打包。.
         /// </summary>
@@ -2776,7 +2803,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRunningWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏正在运行.
         /// </summary>
@@ -2785,7 +2812,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameRunningWarningTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏进程已启动.
         /// </summary>
@@ -2794,7 +2821,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏已启动，请运行至主菜单后点击菜单中的退出。.
         /// </summary>
@@ -2803,7 +2830,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStartedRunToMainMenu", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏启动成功.
         /// </summary>
@@ -2812,7 +2839,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStartedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏状态：.
         /// </summary>
@@ -2821,7 +2848,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏停止错误.
         /// </summary>
@@ -2830,7 +2857,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStopError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 停止游戏失败.
         /// </summary>
@@ -2839,7 +2866,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStopFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏进程已停止.
         /// </summary>
@@ -2848,7 +2875,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStopped", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏停止成功.
         /// </summary>
@@ -2857,7 +2884,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameStoppedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从资源文件检测到游戏版本：{0}.
         /// </summary>
@@ -2866,7 +2893,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionFromAssets", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 MelonLoader 日志检测到游戏版本：{0}.
         /// </summary>
@@ -2875,7 +2902,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionFromLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 支持的游戏版本为 {2}，但你当前本地游戏版本是 {1}，两者不一致，Mod 可能无法正常工作。
         ///
@@ -2886,7 +2913,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionMismatchDialogMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏版本警告.
         /// </summary>
@@ -2895,7 +2922,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionMismatchDialogTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到游戏版本.
         /// </summary>
@@ -2904,7 +2931,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取游戏版本时出错.
         /// </summary>
@@ -2913,7 +2940,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GameVersionReadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已生成.
         /// </summary>
@@ -2922,7 +2949,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Generated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在生成模组信息....
         /// </summary>
@@ -2931,7 +2958,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GeneratingModInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从主题获取主题色: {0}, isDark: {1}.
         /// </summary>
@@ -2940,7 +2967,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GettingThemeColorsForCurrentTheme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to gh.dmr.gg (Cloudflare 1).
         /// </summary>
@@ -2949,7 +2976,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GhDmrGg", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 指定目录中未找到GHPC.exe.
         /// </summary>
@@ -2958,7 +2985,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GHPCExeNotFoundInDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Object.
         /// </summary>
@@ -2968,7 +2995,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ((object)(obj));
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GHPC模组管理器.
         /// </summary>
@@ -2977,7 +3004,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GHPCModManager", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GHPC模组管理器工作目录.
         /// </summary>
@@ -2986,7 +3013,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GHPCModManagerWorkingDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to gh-proxy.com (Cloudflare 2).
         /// </summary>
@@ -2995,7 +3022,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GhProxyCom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 不能完整移除.git目录: {0}.
         /// </summary>
@@ -3004,7 +3031,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitDirectoryRemovalWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub API Token（可选）.
         /// </summary>
@@ -3013,7 +3040,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubApiToken", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 提高API访问限制（60→5000次/小时）.
         /// </summary>
@@ -3022,7 +3049,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubApiTokenDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取地址：https://github.com/settings/tokens.
         /// </summary>
@@ -3031,7 +3058,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubApiTokenGetUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 注意：配置token后将禁用代理加速，直连GitHub.
         /// </summary>
@@ -3040,7 +3067,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubApiTokenHint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 需要Github账号，仅需勾选 public_repo 权限即可.
         /// </summary>
@@ -3049,7 +3076,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub连通性测试失败.
         /// </summary>
@@ -3058,7 +3085,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubConnectivityTestFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub代理加速.
         /// </summary>
@@ -3067,7 +3094,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyAcceleration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用代理服务加速GitHub下载（备用方案，不建议和反代同时使用）.
         /// </summary>
@@ -3076,7 +3103,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub代理已禁用，使用原始URL: {0}.
         /// </summary>
@@ -3085,7 +3112,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub代理已启用.
         /// </summary>
@@ -3094,7 +3121,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyEnabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub代理失败 ({0})，回退到原始URL: {1}.
         /// </summary>
@@ -3103,7 +3130,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理服务器.
         /// </summary>
@@ -3112,7 +3139,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyServer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub代理已启用，转换URL: {0} -&gt; {1}.
         /// </summary>
@@ -3121,7 +3148,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubProxyTransforming", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub API 访问频率超限。请稍后重试，或启用 GitHub 代理加速以绕过此限制，如您已经启用，请尝试更换其他服务器。.
         /// </summary>
@@ -3130,7 +3157,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubRateLimitMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub API 访问限制.
         /// </summary>
@@ -3139,7 +3166,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubRateLimitTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取 {0}/{1} 的GitHub版本信息时出错.
         /// </summary>
@@ -3148,7 +3175,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubReleasesFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从持久化缓存加载GitHub发布版本: {0}/{1}.
         /// </summary>
@@ -3157,7 +3184,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubReleasesLoadedFromPersistentCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从会话缓存加载 {0}/{1} 的GitHub版本信息.
         /// </summary>
@@ -3166,7 +3193,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubReleasesLoadedFromSessionCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GitHub Token 已迁移到加密存储.
         /// </summary>
@@ -3175,7 +3202,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ← 返回.
         /// </summary>
@@ -3184,7 +3211,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GoBack", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 前往MOD浏览.
         /// </summary>
@@ -3193,7 +3220,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GoToModBrowser", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 前往翻译管理.
         /// </summary>
@@ -3202,7 +3229,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GoToTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 前往翻译管理.
         /// </summary>
@@ -3211,7 +3238,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("GoToTranslationManagement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 哈希已计算：{0} = {1}.
         /// </summary>
@@ -3220,7 +3247,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("HashCalculated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 计算文件哈希：{0}.
         /// </summary>
@@ -3229,7 +3256,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("HashCalculating", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 哈希计算失败：{0} - {1}.
         /// </summary>
@@ -3238,7 +3265,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("HashCalculationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hk.gh-proxy.com (香港).
         /// </summary>
@@ -3247,7 +3274,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("HkGhProxyCom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 提示.
         /// </summary>
@@ -3256,7 +3283,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Information", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装.
         /// </summary>
@@ -3265,7 +3292,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Install", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已安装.
         /// </summary>
@@ -3274,7 +3301,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Installed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已安装：{0} 个MOD.
         /// </summary>
@@ -3283,7 +3310,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstalledModsCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 尚未安装任何MOD.
         /// </summary>
@@ -3292,7 +3319,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstalledModsEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已安装版本.
         /// </summary>
@@ -3301,7 +3328,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstalledVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 安装失败.
         /// </summary>
@@ -3310,7 +3337,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在安装 {0}....
         /// </summary>
@@ -3319,7 +3346,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Installing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在安装MelonLoader....
         /// </summary>
@@ -3328,7 +3355,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallingMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在安装翻译系统版本 {0}.
         /// </summary>
@@ -3337,7 +3364,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallingTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在安装翻译系统....
         /// </summary>
@@ -3346,7 +3373,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallingTranslationSystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装 MelonLoader.
         /// </summary>
@@ -3355,7 +3382,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装此版本.
         /// </summary>
@@ -3364,7 +3391,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallSpecificVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 安装成功.
         /// </summary>
@@ -3373,7 +3400,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装成功！现在需要运行一次游戏来完成全部设置。.
         /// </summary>
@@ -3382,7 +3409,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallSuccessNeedGameRun", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装翻译系统.
         /// </summary>
@@ -3391,7 +3418,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InstallTranslationSystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无效的 GitHub 仓库路径：{0}.
         /// </summary>
@@ -3400,7 +3427,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InvalidGitHubRepositoryPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 的 ReplaceTargetPath 无效。.
         /// </summary>
@@ -3409,7 +3436,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InvalidReplaceTargetPathMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下载的文件不是有效的 ZIP 文件，文件头: {0}.
         /// </summary>
@@ -3418,7 +3445,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("InvalidZipFileHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 项.
         /// </summary>
@@ -3427,7 +3454,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ItemsCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} / {1} 项.
         /// </summary>
@@ -3436,7 +3463,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ItemsCountOfTotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GHPC交流群.
         /// </summary>
@@ -3445,7 +3472,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("JoinGhpcCommunity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 语言已更改.
         /// </summary>
@@ -3454,7 +3481,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageChanged", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 语言设置已保存。应用程序将重启以应用更改。是否继续？.
         /// </summary>
@@ -3463,7 +3490,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageChangedConfirmRestart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 语言已更改，需要重启应用程序才能生效。
         ///
@@ -3474,7 +3501,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageChangedRestartRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取可用语言列表时出错.
         /// </summary>
@@ -3483,7 +3510,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageListError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 语言选择: {0}.
         /// </summary>
@@ -3492,7 +3519,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageSelected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 语言选择.
         /// </summary>
@@ -3501,7 +3528,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用语言设置错误.
         /// </summary>
@@ -3510,7 +3537,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageSettingError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用程序将重启以应用语言更改.
         /// </summary>
@@ -3519,7 +3546,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LanguageWillTakeEffectAfterRestart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 最新版本.
         /// </summary>
@@ -3528,7 +3555,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LatestVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏错误.
         /// </summary>
@@ -3537,7 +3564,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LaunchGameError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在启动游戏: {0}.
         /// </summary>
@@ -3546,7 +3573,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LaunchingGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在启动更新脚本....
         /// </summary>
@@ -3555,7 +3582,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LaunchingUpdateScript", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 级别.
         /// </summary>
@@ -3564,7 +3591,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Level", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 浅色主题.
         /// </summary>
@@ -3573,7 +3600,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LightTheme", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在加载公告....
         /// </summary>
@@ -3582,7 +3609,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingAnnouncement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从本地路径加载模组配置: {0}.
         /// </summary>
@@ -3591,7 +3618,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingModConfigFromLocalPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从本地路径加载模组国际化配置: {0}.
         /// </summary>
@@ -3600,7 +3627,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingModI18nConfigFromLocalPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载版本中....
         /// </summary>
@@ -3609,7 +3636,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingReleases", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载主题资源: {0}.
         /// </summary>
@@ -3618,7 +3645,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingThemeResource", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从本地路径加载翻译配置: {0}.
         /// </summary>
@@ -3627,7 +3654,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadingTranslationConfigFromLocalPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载.
         /// </summary>
@@ -3636,7 +3663,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LoadPreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到本地路径: {0}.
         /// </summary>
@@ -3645,7 +3672,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LocalPathNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 日志内容已复制到剪贴板.
         /// </summary>
@@ -3654,7 +3681,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LogContentCopiedToClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已复制 {0} 条日志到剪贴板.
         /// </summary>
@@ -3663,7 +3690,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("LogsCopiedToClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所有主配置URL均失败.
         /// </summary>
@@ -3672,7 +3699,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigAllUrlsFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  (内置默认).
         /// </summary>
@@ -3681,7 +3708,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigBuiltinDefault", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 反序列化失败.
         /// </summary>
@@ -3690,7 +3717,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigDeserializationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dev mode: 未加载主配置，当前生效数据源（内置默认）：.
         /// </summary>
@@ -3699,7 +3726,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigDevModeNotLoaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置获取成功: {0}.
         /// </summary>
@@ -3708,7 +3735,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchedFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所有主配置URL均获取失败.
         /// </summary>
@@ -3717,7 +3744,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置拉取失败，使用内置默认值.
         /// </summary>
@@ -3726,7 +3753,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchFailedUsingDefaults", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在拉取主配置：{0}.
         /// </summary>
@@ -3735,7 +3762,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchingFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置拉取成功：{0}.
         /// </summary>
@@ -3744,7 +3771,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 超时（&gt;{0}s）.
         /// </summary>
@@ -3753,7 +3780,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchTimeout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置拉取失败 ({0}): {1}.
         /// </summary>
@@ -3762,7 +3789,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigFetchUrlFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置强制刷新失败，保留当前配置.
         /// </summary>
@@ -3771,7 +3798,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigForceRefreshFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dev mode: 已从手动地址加载主配置：{0}.
         /// </summary>
@@ -3780,7 +3807,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigLoadedFromManualUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置已从{0}加载，实际生效数据源：.
         /// </summary>
@@ -3789,7 +3816,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigLoadedFromSource", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置加载失败 ({0}): {1}.
         /// </summary>
@@ -3798,7 +3825,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigLoadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dev mode: 手动地址加载失败，使用内置默认：{0}.
         /// </summary>
@@ -3807,7 +3834,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigManualUrlLoadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Dev mode: 未设置主配置地址，使用内置默认.
         /// </summary>
@@ -3816,7 +3843,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigNoManualUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置尚未加载，使用内置默认值.
         /// </summary>
@@ -3825,7 +3852,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigNotLoadedUsingDefaults", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ProxyServers = {0} 个节点已下发：.
         /// </summary>
@@ -3834,7 +3861,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigProxyServersDelivered", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ProxyServers = (未下发，使用本地枚举).
         /// </summary>
@@ -3843,7 +3870,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigProxyServersNotDelivered", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  (下发).
         /// </summary>
@@ -3852,7 +3879,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigRemote", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 触发fallback，尝试下一个主配置渠道.
         /// </summary>
@@ -3861,7 +3888,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigTriggerFallback", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主配置URL：.
         /// </summary>
@@ -3870,7 +3897,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainConfigURL", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主程序设置.
         /// </summary>
@@ -3879,7 +3906,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MainSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 维护工具.
         /// </summary>
@@ -3888,7 +3915,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MaintenanceTools", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法为 {0} 创建所需备份，当前操作已中止以避免数据丢失。.
         /// </summary>
@@ -3897,7 +3924,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagedBackupRequiredMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 缺失.
         /// </summary>
@@ -3906,7 +3933,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagedModIntegrityIssueMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已修改.
         /// </summary>
@@ -3915,7 +3942,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagedModIntegrityIssueModified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到已安装受管 Mod 的文件完整性异常：
         ///
@@ -3928,7 +3955,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagedModIntegrityLaunchMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到已安装受管 Mod 的文件完整性异常：
         ///
@@ -3941,7 +3968,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagedModIntegrityStartupMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 此 Mod 需要模组管理器版本 {0} 或更高版本。您的当前版本是 {1}。
         ///
@@ -3952,7 +3979,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagerVersionRequirementMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 管理器版本要求.
         /// </summary>
@@ -3961,7 +3988,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManagerVersionRequirementTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载Mod安装清单时出错.
         /// </summary>
@@ -3970,7 +3997,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManifestLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存Mod安装清单时出错.
         /// </summary>
@@ -3979,7 +4006,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManifestSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 手动.
         /// </summary>
@@ -3988,7 +4015,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Manual", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已删除手动MOD文件: {0}.
         /// </summary>
@@ -3997,7 +4024,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManualModDeleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 手动模组 {0} 当前已禁用，正在将禁用备份移至卸载备份.
         /// </summary>
@@ -4006,7 +4033,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManualModDisabledMovingBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 扫描手动安装的Mod时出错.
         /// </summary>
@@ -4015,7 +4042,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManualModScanError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 手动Mod卸载.
         /// </summary>
@@ -4024,7 +4051,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManualModUninstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 是一个手动安装的Mod。您确定要永久删除dll文件吗？此操作无法撤销。.
         /// </summary>
@@ -4033,7 +4060,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ManualModUninstallWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 最大化.
         /// </summary>
@@ -4042,7 +4069,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Maximize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到MelonLoader版本 {0} 的安装文件.
         /// </summary>
@@ -4051,7 +4078,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查MelonLoader安装时出错.
         /// </summary>
@@ -4060,7 +4087,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderCheckError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 找不到当前版本 {0} 的安装包，跳过卸载步骤.
         /// </summary>
@@ -4069,7 +4096,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderCurrentVersionAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在删除：{0}.
         /// </summary>
@@ -4078,7 +4105,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDeletingFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查MelonLoader目录时出错.
         /// </summary>
@@ -4087,7 +4114,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDirCheckError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 目录存在: {0}.
         /// </summary>
@@ -4096,7 +4123,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDirectoryExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader已临时禁用.
         /// </summary>
@@ -4105,7 +4132,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDisabledOverlayHint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 禁用 MelonLoader 失败.
         /// </summary>
@@ -4114,7 +4141,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDisableFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 已禁用.
         /// </summary>
@@ -4123,7 +4150,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDisableSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载当前版本ZIP作为文件索引....
         /// </summary>
@@ -4132,7 +4159,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderDownloadingIndexZip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启用 MelonLoader 失败.
         /// </summary>
@@ -4141,7 +4168,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderEnableFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 已启用.
         /// </summary>
@@ -4150,7 +4177,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderEnableSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件索引已建立：共 {0} 个文件.
         /// </summary>
@@ -4159,7 +4186,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderIndexFileCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader安装过程中发生错误.
         /// </summary>
@@ -4168,7 +4195,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallationError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader版本 {0} 安装成功.
         /// </summary>
@@ -4177,7 +4204,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader已安装，但缺少关键目录。请至少完整运行一次游戏至主菜单后退出，以便生成所需文件。.
         /// </summary>
@@ -4186,7 +4213,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstalledButMissingDirs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 当前版本：.
         /// </summary>
@@ -4195,7 +4222,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstalledVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装MelonLoader错误.
         /// </summary>
@@ -4204,7 +4231,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader安装失败，请尝试启用代理加速或填写Github token。.
         /// </summary>
@@ -4213,7 +4240,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 安装状态：.
         /// </summary>
@@ -4222,7 +4249,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader安装成功！现在需要运行游戏来完成设置。.
         /// </summary>
@@ -4231,7 +4258,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallSuccessNeedGameRun", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 安装验证失败.
         /// </summary>
@@ -4240,7 +4267,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderInstallVerificationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 框架管理.
         /// </summary>
@@ -4249,7 +4276,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderManagement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 找到本地清单，使用本地文件索引（共 {0} 个文件）.
         /// </summary>
@@ -4258,7 +4285,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderManifestLoaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到本地清单，下载当前版本ZIP建立索引.
         /// </summary>
@@ -4267,7 +4294,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderManifestNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader文件清单已保存（共 {0} 个文件）.
         /// </summary>
@@ -4276,7 +4303,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderManifestSaved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存MelonLoader清单失败.
         /// </summary>
@@ -4285,7 +4312,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderManifestSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未检测到.
         /// </summary>
@@ -4294,7 +4321,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderNotDetected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未检测到 MelonLoader，可能在软件关闭期间被删除。请前往设置页面安装 MelonLoader 后再使用 Mod 功能。.
         /// </summary>
@@ -4303,7 +4330,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderNotInstalledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader未安装，将进入安装步骤。.
         /// </summary>
@@ -4312,7 +4339,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderNotInstalledNote", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 未安装.
         /// </summary>
@@ -4321,7 +4348,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderNotInstalledTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 版本列表加载失败，请检查网络连接后重试。.
         /// </summary>
@@ -4330,7 +4357,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderReleaseLoadWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader 版本列表加载失败，请检查网络连接。可以尝试使用代理加速或切换节点后重试。.
         /// </summary>
@@ -4339,7 +4366,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderReleaseLoadWarningZh", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取MelonLoader版本信息时出错.
         /// </summary>
@@ -4348,7 +4375,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderReleasesFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载MelonLoader版本错误.
         /// </summary>
@@ -4357,7 +4384,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderReleasesLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 旧版本文件已清除（共删除 {0} 个文件）.
         /// </summary>
@@ -4366,7 +4393,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderUninstallComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 卸载当前MelonLoader版本失败.
         /// </summary>
@@ -4375,7 +4402,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderUninstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在卸载当前MelonLoader版本 {0}....
         /// </summary>
@@ -4384,7 +4411,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderUninstallingCurrentVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 {0} 检测到MelonLoader版本：{1}.
         /// </summary>
@@ -4393,7 +4420,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderVersionDetected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 Latest.log 检测到MelonLoader版本：{0}.
         /// </summary>
@@ -4402,7 +4429,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderVersionFromLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到MelonLoader DLL和Latest.log，无法检测版本.
         /// </summary>
@@ -4411,7 +4438,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderVersionNotDetectable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到MelonLoader版本 {0}.
         /// </summary>
@@ -4420,7 +4447,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MelonLoaderVersionNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 消息.
         /// </summary>
@@ -4429,7 +4456,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 最小化.
         /// </summary>
@@ -4438,7 +4465,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Minimize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 缺少必需的模组: {0}.
         /// </summary>
@@ -4447,7 +4474,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MissingRequirement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到Mod {0} 的安装文件 {1}.
         /// </summary>
@@ -4456,7 +4483,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组备份目录已创建: {0}.
         /// </summary>
@@ -4465,7 +4492,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModBackupDirectoryCreated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 创建模组备份目录失败: {0}.
         /// </summary>
@@ -4474,7 +4501,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModBackupDirectoryCreateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组备份失败: {0}.
         /// </summary>
@@ -4483,7 +4510,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModBackupFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到模组备份: {0}.
         /// </summary>
@@ -4492,7 +4519,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModBackupNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 {0} 获取Mod配置时出错.
         /// </summary>
@@ -4501,7 +4528,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 目录中未找到 modconfig.json 文件: {0}.
         /// </summary>
@@ -4510,7 +4537,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigJsonNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从缓存加载Mod配置.
         /// </summary>
@@ -4519,7 +4546,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigLoadedFromCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到要更新的模组配置：{0}.
         /// </summary>
@@ -4528,7 +4555,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigNotFoundForUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取Mod {0} 配置时出错.
         /// </summary>
@@ -4537,7 +4564,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigReadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 配置读取失败: {0} - 无配置段名称.
         /// </summary>
@@ -4546,7 +4573,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigReadFailedNoSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组配置有序读取错误.
         /// </summary>
@@ -4555,7 +4582,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigReadOrderedError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 配置保存成功.
         /// </summary>
@@ -4564,7 +4591,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigSaved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存Mod {0} 配置时出错.
         /// </summary>
@@ -4573,7 +4600,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConfigSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组冲突检查完成: {0}.
         /// </summary>
@@ -4582,7 +4609,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConflictCheckComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到模组冲突.
         /// </summary>
@@ -4591,7 +4618,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConflictDetected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组 &apos;{0}&apos; 与以下已安装的模组冲突: {1}。是否仍要继续安装？.
         /// </summary>
@@ -4600,7 +4627,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConflictMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 与 {1} 冲突.
         /// </summary>
@@ -4609,7 +4636,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModConflictsWith", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组依赖检查完成: {0}.
         /// </summary>
@@ -4618,7 +4645,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDependencyCheckComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组 &apos;{0}&apos; 需要先安装以下模组: {1}。请先安装这些依赖模组。.
         /// </summary>
@@ -4627,7 +4654,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDependencyMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 缺少模组依赖.
         /// </summary>
@@ -4636,7 +4663,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDependencyMissing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 简介.
         /// </summary>
@@ -4645,7 +4672,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 已禁用.
         /// </summary>
@@ -4654,7 +4681,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组已禁用并备份: {0}.
         /// </summary>
@@ -4663,7 +4690,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDisabledAndBackedUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组 {0} 当前已禁用，正在将禁用备份移至卸载备份.
         /// </summary>
@@ -4672,7 +4699,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDisabledMovingBackupToUninstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 已禁用.
         /// </summary>
@@ -4681,7 +4708,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDisabledStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 禁用失败.
         /// </summary>
@@ -4690,7 +4717,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModDisableFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 已启用.
         /// </summary>
@@ -4699,7 +4726,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModEnabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组已从备份启用: {0}.
         /// </summary>
@@ -4708,7 +4735,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModEnabledFromBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 已启用.
         /// </summary>
@@ -4717,7 +4744,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModEnabledStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 启用失败.
         /// </summary>
@@ -4726,7 +4753,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModEnableFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启用 Mod 时覆盖了已存在的文件: {0}.
         /// </summary>
@@ -4735,7 +4762,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModFileOverwrittenDuringEnable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从缓存加载Mod翻译配置时出错.
         /// </summary>
@@ -4744,7 +4771,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigCacheLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ModI18n配置为空或无法访问 - 请检查云端URL.
         /// </summary>
@@ -4753,7 +4780,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigEmptyOrInaccessible", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 {0} 获取Mod翻译配置时出错.
         /// </summary>
@@ -4762,7 +4789,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从缓存加载Mod翻译配置.
         /// </summary>
@@ -4771,7 +4798,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigLoadedFromCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod翻译配置已从远程更新.
         /// </summary>
@@ -4780,7 +4807,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigRefreshed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ModI18n配置已刷新 - 加载了 {0} 个模组配置.
         /// </summary>
@@ -4789,7 +4816,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigRefreshedWithCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 刷新Mod翻译配置时出错.
         /// </summary>
@@ -4798,7 +4825,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nConfigRefreshError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 目录中未找到 mod_i18n.json 文件: {0}.
         /// </summary>
@@ -4807,7 +4834,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModI18nJsonNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组信息已复制到剪贴板.
         /// </summary>
@@ -4816,7 +4843,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoCopied", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 复制模组信息.
         /// </summary>
@@ -4825,7 +4852,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoCopyToClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组信息导出.
         /// </summary>
@@ -4834,7 +4861,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoDumper", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 导出已安装模组信息用于问题诊断，打包文件将会生成在桌面。.
         /// </summary>
@@ -4843,7 +4870,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoDumperDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打包范围：模组列表、游戏日志、系统配置（不涉及隐私信息）.
         /// </summary>
@@ -4852,7 +4879,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoDumperPrivacyNotice", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 信息导出 - 诊断工具.
         /// </summary>
@@ -4861,7 +4888,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoDumperTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 文件：.
         /// </summary>
@@ -4870,7 +4897,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 游戏版本：.
         /// </summary>
@@ -4879,7 +4906,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoGameVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 生成时间：.
         /// </summary>
@@ -4888,7 +4915,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoGenerated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 手动安装.
         /// </summary>
@@ -4897,7 +4924,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoManual", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MelonLoader版本：.
         /// </summary>
@@ -4906,7 +4933,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoMelonLoaderVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组列表.
         /// </summary>
@@ -4915,7 +4942,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoModList", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 状态：.
         /// </summary>
@@ -4924,7 +4951,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组总数：.
         /// </summary>
@@ -4933,7 +4960,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoTotalMods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本：.
         /// </summary>
@@ -4942,7 +4969,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInfoVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MOD {0} 在清单中但文件不存在，正在清理清单.
         /// </summary>
@@ -4951,7 +4978,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInManifestButFilesNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 版本 {1} 安装成功.
         /// </summary>
@@ -4960,7 +4987,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装Mod {0} 版本 {1} 时出错.
         /// </summary>
@@ -4969,7 +4996,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModInstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod 管理.
         /// </summary>
@@ -4978,7 +5005,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModManagement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组未找到.
         /// </summary>
@@ -4987,7 +5014,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 未安装.
         /// </summary>
@@ -4996,7 +5023,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModNotInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组未安装，无法更新：{0}.
         /// </summary>
@@ -5005,7 +5032,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModNotInstalledCannotUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组已从备份重新安装: {0} (版本 {1}).
         /// </summary>
@@ -5014,7 +5041,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModReinstalledFromBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 需要: {1}.
         /// </summary>
@@ -5023,7 +5050,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModRequiresDependency", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从备份恢复模组失败: {0}.
         /// </summary>
@@ -5032,7 +5059,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModRestoreFromBackupFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 共 {0} 个Mod.
         /// </summary>
@@ -5041,7 +5068,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModsCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 第 {0} / {1} 个Mod.
         /// </summary>
@@ -5050,7 +5077,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModsFilteredCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 标签.
         /// </summary>
@@ -5059,7 +5086,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModTags", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 切换Mod {0} 到 {1} 时出错.
         /// </summary>
@@ -5068,7 +5095,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModToggleError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组切换文件错误.
         /// </summary>
@@ -5077,7 +5104,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModToggleFileError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod {0} 卸载成功.
         /// </summary>
@@ -5086,7 +5113,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUninstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组已卸载并备份: {0} (版本 {1}).
         /// </summary>
@@ -5095,7 +5122,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUninstalledAndBackedUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 卸载成功.
         /// </summary>
@@ -5104,7 +5131,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUninstalledSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 卸载Mod {0} 时出错.
         /// </summary>
@@ -5113,7 +5140,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUninstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组更新检查完成.
         /// </summary>
@@ -5122,7 +5149,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdateCheckComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组更新检查失败.
         /// </summary>
@@ -5131,7 +5158,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdateCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MOD更新成功: {0}.
         /// </summary>
@@ -5140,7 +5167,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdatedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新MOD {0} 时出错.
         /// </summary>
@@ -5149,7 +5176,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdateError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MOD更新失败: {0}.
         /// </summary>
@@ -5158,7 +5185,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现 {0} 个模组更新.
         /// </summary>
@@ -5167,7 +5194,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModUpdatesFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到Mod {0} 版本 {1}.
         /// </summary>
@@ -5176,7 +5203,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ModVersionNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已将禁用备份移至卸载备份：{0}.
         /// </summary>
@@ -5185,7 +5212,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MovedDisabledBackupToUninstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已将禁用的手动模组备份移至卸载备份：{0}.
         /// </summary>
@@ -5194,7 +5221,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MovedDisabledManualModBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已将翻译文件移至备份：{0} -&gt; {1}.
         /// </summary>
@@ -5203,7 +5230,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MovedTranslationFileToBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 多线程下载成功完成: {0} 字节.
         /// </summary>
@@ -5212,7 +5239,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("MultiThreadedDownloadCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 名称.
         /// </summary>
@@ -5221,7 +5248,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已安装.
         /// </summary>
@@ -5230,7 +5257,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NavInstalledMods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MOD浏览.
         /// </summary>
@@ -5239,7 +5266,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NavModBrowser", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译管理.
         /// </summary>
@@ -5248,7 +5275,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NavTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 需要运行游戏来生成必要目录.
         /// </summary>
@@ -5257,7 +5284,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NeedRunGameToGenerateDirs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测完成 - 结果: {0}.
         /// </summary>
@@ -5266,7 +5293,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测异常发生.
         /// </summary>
@@ -5275,7 +5302,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckException", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ✗ 网络连接检测失败.
         /// </summary>
@@ -5284,7 +5311,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 可能无法正常下载Mod和翻译文件。您可以：.
         /// </summary>
@@ -5293,7 +5320,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckFailedDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ⚠️ 网络连接检测失败.
         /// </summary>
@@ -5302,7 +5329,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckFailedWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测日志.
         /// </summary>
@@ -5311,7 +5338,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测结果：{0}.
         /// </summary>
@@ -5320,7 +5347,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckResult", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ✓ 网络连接检测成功.
         /// </summary>
@@ -5329,7 +5356,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkCheckSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络连接失败.
         /// </summary>
@@ -5338,7 +5365,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkConnectionFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测完成: {0}.
         /// </summary>
@@ -5347,7 +5374,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkDetectionComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络检测异常: {0}.
         /// </summary>
@@ -5356,7 +5383,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkDetectionException", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开网络帮助页面错误.
         /// </summary>
@@ -5365,7 +5392,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkHelpOpenError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已打开网络帮助页面.
         /// </summary>
@@ -5374,7 +5401,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkHelpPageOpened", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开网络帮助页面失败.
         /// </summary>
@@ -5383,7 +5410,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkHelpPageOpenFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 了解解决方案.
         /// </summary>
@@ -5392,7 +5419,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkHelpSolution", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络状态：.
         /// </summary>
@@ -5401,7 +5428,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络连接测试失败: {0}.
         /// </summary>
@@ -5410,7 +5437,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkTestFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络连接测试返回状态码: {0}.
         /// </summary>
@@ -5419,7 +5446,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkTestStatusCode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络连接测试通过直连成功.
         /// </summary>
@@ -5428,7 +5455,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkTestSuccessfulViaDirect", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 网络连接测试通过代理成功.
         /// </summary>
@@ -5437,7 +5464,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NetworkTestSuccessfulViaProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 个新上架MOD.
         /// </summary>
@@ -5446,7 +5473,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NewModsBannerText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现新版本：.
         /// </summary>
@@ -5455,7 +5482,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NewVersionAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 下一步.
         /// </summary>
@@ -5464,7 +5491,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Next", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 否.
         /// </summary>
@@ -5473,7 +5500,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("No", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有可用的 {0} 语言公告.
         /// </summary>
@@ -5482,7 +5509,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoAnnouncementAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到模组 {0} 的备份文件，正在清理备份目录.
         /// </summary>
@@ -5491,7 +5518,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoBackupFilesFoundCleaningUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 运行一次游戏并正常退出以生成配置项.
         /// </summary>
@@ -5500,7 +5527,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoConfigurationOptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到可下载的更新资源.
         /// </summary>
@@ -5509,7 +5536,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoDownloadableAsset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到要禁用的模组文件：{0}.
         /// </summary>
@@ -5518,7 +5545,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoFilesFoundToDisableForMod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 在安装 {0} 期间未处理任何文件.
         /// </summary>
@@ -5527,7 +5554,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoFilesProcessedDuringInstallation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未提供模组备份文件：{0}。这可能表示无法找到模组文件。.
         /// </summary>
@@ -5536,7 +5563,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoFilesProvidedForModBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有游戏进程需要停止.
         /// </summary>
@@ -5545,7 +5572,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoGameProcessToStop", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 模组 {0} 没有可用的GitHub链接.
         /// </summary>
@@ -5554,7 +5581,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoGitHubUrlAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有日志内容可复制.
         /// </summary>
@@ -5563,7 +5590,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoLogContentToCopy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有日志可以复制.
         /// </summary>
@@ -5572,7 +5599,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoLogsToCopy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有已安装的模组.
         /// </summary>
@@ -5581,7 +5608,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoModsInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无匹配.
         /// </summary>
@@ -5590,7 +5617,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoModsMatchFilter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有模组需要检查更新.
         /// </summary>
@@ -5599,7 +5626,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoModsToCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 暂无模组更新.
         /// </summary>
@@ -5608,7 +5635,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoModUpdatesAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请确保您使用的是最新版本的 Steam。我们仅为 Steam 版本的 GHPC 提供官方支持。手动安装或破解版可能会导致兼容性问题。.
         /// </summary>
@@ -5617,7 +5644,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NonSteamVersionWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到发布版本.
         /// </summary>
@@ -5626,7 +5653,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoReleasesFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到稳定版本.
         /// </summary>
@@ -5635,7 +5662,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoStableReleasesFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未生成.
         /// </summary>
@@ -5644,7 +5671,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NotGenerated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未安装.
         /// </summary>
@@ -5653,7 +5680,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NotInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到翻译备份且翻译未安装。请先安装翻译系统。.
         /// </summary>
@@ -5662,7 +5689,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoTranslationBackupFoundPleaseInstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到要禁用的翻译文件.
         /// </summary>
@@ -5671,7 +5698,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoTranslationFilesFoundToDisable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 暂无翻译更新.
         /// </summary>
@@ -5680,7 +5707,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoTranslationUpdatesAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未运行.
         /// </summary>
@@ -5689,7 +5716,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NotRunning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 没有可用的更新可下载.
         /// </summary>
@@ -5698,7 +5725,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("NoUpdateAvailableToDownload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 离线模式 - 使用缓存数据.
         /// </summary>
@@ -5707,7 +5734,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OfflineModeActive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法连接到服务器,已进入离线模式。
         ///
@@ -5720,7 +5747,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OfflineModeMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 离线模式.
         /// </summary>
@@ -5729,7 +5756,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OfflineModeTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确定.
         /// </summary>
@@ -5738,7 +5765,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 仅检查已安装模组.
         /// </summary>
@@ -5747,7 +5774,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OnlyCheckInstalledMods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开配置窗口失败: {0}.
         /// </summary>
@@ -5756,7 +5783,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenConfigWindowFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已打开游戏根目录: {0}.
         /// </summary>
@@ -5765,7 +5792,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenedGameRootDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已打开模组 {0} 的GitHub页面: {1}.
         /// </summary>
@@ -5774,7 +5801,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenedGitHubPage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开游戏目录.
         /// </summary>
@@ -5783,7 +5810,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenGameFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开游戏根目录.
         /// </summary>
@@ -5792,7 +5819,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenGameRootDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开项目URL错误.
         /// </summary>
@@ -5801,7 +5828,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("OpenProjectUrlError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在打包文件....
         /// </summary>
@@ -5810,7 +5837,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackagingFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打包全部信息.
         /// </summary>
@@ -5819,7 +5846,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackAllInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 是否确定是最近一次游戏出现问题？将打包最近一次运行的日志。.
         /// </summary>
@@ -5828,7 +5855,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackAllInfoConfirmMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 确认打包.
         /// </summary>
@@ -5837,7 +5864,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackAllInfoConfirmTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 创建诊断包失败：{0}.
         /// </summary>
@@ -5846,7 +5873,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackCreatedFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 诊断包已创建于：{0}.
         /// </summary>
@@ -5855,7 +5882,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PackCreatedSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请重新运行游戏.
         /// </summary>
@@ -5864,7 +5891,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PleaseRunGameAgain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请选择游戏目录.
         /// </summary>
@@ -5873,7 +5900,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PleaseSelectGameDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请选择GHPC.exe文件.
         /// </summary>
@@ -5882,7 +5909,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PleaseSelectGHPCExe", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请选择GHPC.exe文件所在位置：.
         /// </summary>
@@ -5891,7 +5918,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PleaseSelectGHPCLocation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请选择MelonLoader版本.
         /// </summary>
@@ -5900,7 +5927,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PleaseSelectMelonLoaderVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 插件状态.
         /// </summary>
@@ -5909,7 +5936,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PluginStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 可能原因:.
         /// </summary>
@@ -5918,7 +5945,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PossibleReasons", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 准备移除 {0} 个主题资源字典.
         /// </summary>
@@ -5927,7 +5954,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreparingToRemoveResourceDictionaries", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保留手动 Mod 备份: {0}.
         /// </summary>
@@ -5936,7 +5963,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreservingManualModBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法应用预设：配置段尚未生成。请先运行一次游戏并退出。.
         /// </summary>
@@ -5945,7 +5972,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetCannotApplyNoConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已创建预设: {0}.
         /// </summary>
@@ -5954,7 +5981,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetCreated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设创建错误.
         /// </summary>
@@ -5963,7 +5990,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetCreateError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设创建失败.
         /// </summary>
@@ -5972,7 +5999,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetCreationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已删除预设: {0}.
         /// </summary>
@@ -5981,7 +6008,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetDeleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设删除错误.
         /// </summary>
@@ -5990,7 +6017,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetDeleteError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设删除失败.
         /// </summary>
@@ -5999,7 +6026,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetDeletionFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已加载预设: {0}.
         /// </summary>
@@ -6008,7 +6035,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetLoaded_", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设加载错误.
         /// </summary>
@@ -6017,7 +6044,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设加载失败.
         /// </summary>
@@ -6026,7 +6053,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetLoadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请输入预设名称.
         /// </summary>
@@ -6035,7 +6062,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetNameRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已保存预设: {0}.
         /// </summary>
@@ -6044,7 +6071,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetSaved_", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设保存错误.
         /// </summary>
@@ -6053,7 +6080,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 预设保存失败.
         /// </summary>
@@ -6062,7 +6089,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PresetSaveFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 上一步.
         /// </summary>
@@ -6071,7 +6098,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Previous", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到您曾经在别的目录使用过模组管理器，如果要升级请在设置底部程序内升级。点击&quot;打开目录&quot;查看旧安装位置。.
         /// </summary>
@@ -6080,7 +6107,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreviousInstallationDetectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到旧安装.
         /// </summary>
@@ -6089,7 +6116,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreviousInstallationDetectedTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 忽略.
         /// </summary>
@@ -6098,7 +6125,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreviousInstallationIgnore", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 打开目录.
         /// </summary>
@@ -6107,7 +6134,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("PreviousInstallationOpenFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查游戏进程时出错.
         /// </summary>
@@ -6116,7 +6143,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProcessCheckError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在处理手动模组切换：{0}.
         /// </summary>
@@ -6125,7 +6152,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProcessingManualModToggle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 进程监控已启动.
         /// </summary>
@@ -6134,7 +6161,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProcessMonitoringStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 进程监控已停止.
         /// </summary>
@@ -6143,7 +6170,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProcessMonitoringStopped", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 进程停止错误.
         /// </summary>
@@ -6152,7 +6179,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProcessStopError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 程序语言：.
         /// </summary>
@@ -6161,7 +6188,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProgramLanguage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 程序日志.
         /// </summary>
@@ -6170,7 +6197,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProgramLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 程序设置.
         /// </summary>
@@ -6179,7 +6206,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProgramSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 项目地址.
         /// </summary>
@@ -6188,7 +6215,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProjectUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理连通性测试失败 {0}: {1}.
         /// </summary>
@@ -6197,7 +6224,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxyConnectivityTestFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理连通性测试成功: {0}.
         /// </summary>
@@ -6206,7 +6233,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxyConnectivityTestSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理服务器已更改为: {0}.
         /// </summary>
@@ -6215,7 +6242,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxyServerChanged", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to - 代理服务器配置问题.
         /// </summary>
@@ -6224,7 +6251,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxyServerConfigProblem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理服务器列表已更新 (共{0}个节点).
         /// </summary>
@@ -6233,7 +6260,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxyServerListUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 代理设置已成功应用.
         /// </summary>
@@ -6242,7 +6269,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ProxySettingsApplied", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 快速重装.
         /// </summary>
@@ -6251,7 +6278,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("QuickReinstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 范围请求支持测试: {0}.
         /// </summary>
@@ -6260,7 +6287,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RangeRequestSupportTest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 范围请求测试失败: {0}，回退到单线程下载.
         /// </summary>
@@ -6269,7 +6296,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RangeRequestTestFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 速率限制已清除 - GitHub API 请求现在可以重试.
         /// </summary>
@@ -6278,7 +6305,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RateLimitBlocksCleared", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取配置项: {0} = {1}{2}.
         /// </summary>
@@ -6287,7 +6314,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReadConfigItem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在读取文件信息：{0}.
         /// </summary>
@@ -6296,7 +6323,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReadingFileInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取模组配置: {0}.
         /// </summary>
@@ -6305,7 +6332,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReadingModConfigFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取模组国际化配置: {0}.
         /// </summary>
@@ -6314,7 +6341,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReadingModI18nConfigFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 读取翻译配置: {0}.
         /// </summary>
@@ -6323,7 +6350,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReadingTranslationConfigFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 就绪.
         /// </summary>
@@ -6332,7 +6359,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Ready", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重下并重装.
         /// </summary>
@@ -6341,7 +6368,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RedownloadReinstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 刷新.
         /// </summary>
@@ -6350,7 +6377,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Refresh", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 刷新失败。请查看日志以获取详细信息。.
         /// </summary>
@@ -6359,7 +6386,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RefreshFailedCheckLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 刷新中....
         /// </summary>
@@ -6368,7 +6395,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Refreshing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在刷新数据....
         /// </summary>
@@ -6377,7 +6404,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RefreshingData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重装.
         /// </summary>
@@ -6386,7 +6413,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Reinstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 覆盖安装/更新版本.
         /// </summary>
@@ -6395,7 +6422,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReinstallMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已删除空目录：{0}.
         /// </summary>
@@ -6404,7 +6431,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RemovedEmptyDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已移除 {0} 个主题资源字典.
         /// </summary>
@@ -6413,7 +6440,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RemovedResourceDictionaries", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 移除资源字典: {0}.
         /// </summary>
@@ -6422,7 +6449,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RemovingResourceDictionary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 会直接替换游戏文件。
         ///
@@ -6435,7 +6462,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReplaceInstallWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到 {0} 残留的 .GHPCMM 备份文件。
         ///
@@ -6450,7 +6477,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReplaceLeftoverBackupDetectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 卸载后目标目录已为空：
         ///{1}
@@ -6462,7 +6489,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ReplaceTargetDirectoryEmptyMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 必要目录状态：.
         /// </summary>
@@ -6471,7 +6498,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RequiredDirectoryStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所需管理器版本.
         /// </summary>
@@ -6480,7 +6507,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RequiredManagerVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所需的最低模组管理器版本（可选，如 1.2.0）.
         /// </summary>
@@ -6489,7 +6516,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RequiredManagerVersionHint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重置配置.
         /// </summary>
@@ -6498,7 +6525,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ResetConfiguration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重启应用程序失败.
         /// </summary>
@@ -6507,7 +6534,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestartApplicationError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重启应用程序失败，请手动重启。.
         /// </summary>
@@ -6516,7 +6543,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestartApplicationFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 需要重启.
         /// </summary>
@@ -6525,7 +6552,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestartRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 还原.
         /// </summary>
@@ -6534,7 +6561,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Restore", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已恢复模组文件：{0} -&gt; {1}.
         /// </summary>
@@ -6543,7 +6570,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestoredModFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新失败后从备份恢复模组：{0}.
         /// </summary>
@@ -6552,7 +6579,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestoredModFromBackupAfterFailedUpdate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已恢复翻译文件：{0} -&gt; {1}.
         /// </summary>
@@ -6561,7 +6588,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RestoredTranslationFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 重新检测.
         /// </summary>
@@ -6570,7 +6597,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("RetryNetworkCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 运行中.
         /// </summary>
@@ -6579,7 +6606,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Running", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 另存为.
         /// </summary>
@@ -6588,7 +6615,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SaveAsPreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存.
         /// </summary>
@@ -6597,7 +6624,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SavePreset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存设置.
         /// </summary>
@@ -6606,7 +6633,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SaveSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 搜索：.
         /// </summary>
@@ -6615,7 +6642,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 查找配置段: {0}.
         /// </summary>
@@ -6624,7 +6651,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SearchingForConfigSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安全警告.
         /// </summary>
@@ -6633,7 +6660,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SecurityWarningTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 选择GHPC.exe文件.
         /// </summary>
@@ -6642,7 +6669,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SelectGHPCExeFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请选择程序界面语言：.
         /// </summary>
@@ -6651,7 +6678,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SelectInterfaceLanguage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 请先选择要复制的日志条目.
         /// </summary>
@@ -6660,7 +6687,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SelectLogsToCompany", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 选择版本：.
         /// </summary>
@@ -6669,7 +6696,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SelectVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 会话缓存已清除.
         /// </summary>
@@ -6678,7 +6705,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SessionCacheCleared", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置翻译语言为 {0} 时出错.
         /// </summary>
@@ -6687,7 +6714,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SetLanguageError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置主题调用 - 请求主题: {0}, 当前主题: {1}.
         /// </summary>
@@ -6696,7 +6723,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SetThemeCalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置.
         /// </summary>
@@ -6705,7 +6732,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置显示暗色主题，正在从浅色主题切换.
         /// </summary>
@@ -6714,7 +6741,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsDarkThemeNeedSwitch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置显示浅色主题，与应用启动状态一致.
         /// </summary>
@@ -6723,7 +6750,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsLightThemeConsistent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置加载成功.
         /// </summary>
@@ -6732,7 +6759,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsLoaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置加载错误.
         /// </summary>
@@ -6741,7 +6768,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置文件未找到，使用默认设置.
         /// </summary>
@@ -6750,7 +6777,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置保存成功.
         /// </summary>
@@ -6759,7 +6786,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsSaved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置保存错误.
         /// </summary>
@@ -6768,7 +6795,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置保存失败.
         /// </summary>
@@ -6777,7 +6804,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SettingsSaveFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置完成！.
         /// </summary>
@@ -6786,7 +6813,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SetupComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 设置未完成，请重新运行游戏并确保到达主菜单.
         /// </summary>
@@ -6795,7 +6822,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SetupIncompleteWarning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GHPC模组管理器始化向导.
         /// </summary>
@@ -6804,7 +6831,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SetupWizardTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 显示公告.
         /// </summary>
@@ -6813,7 +6840,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ShowAnnouncement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 显示日志.
         /// </summary>
@@ -6822,7 +6849,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ShowLog", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 仅显示未安装.
         /// </summary>
@@ -6831,7 +6858,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ShowUninstalledOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 静默更新检查失败: {0}.
         /// </summary>
@@ -6840,7 +6867,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SilentUpdateCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏时跳过冲突检查.
         /// </summary>
@@ -6849,7 +6876,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkipConflictCheckOnLaunch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动游戏时跳过完整性检查.
         /// </summary>
@@ -6858,7 +6885,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkipIntegrityCheckOnLaunch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过目录: {0}.
         /// </summary>
@@ -6867,7 +6894,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkippingDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过无权限访问的目录：{0}.
         /// </summary>
@@ -6876,7 +6903,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkippingDirectoryNoAccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 由于之前的速率限制，跳过 GitHub API 请求：{0}/{1}.
         /// </summary>
@@ -6885,7 +6912,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkippingGitHubApiDueToRateLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过网络检测，直接进入游戏目录设置.
         /// </summary>
@@ -6894,7 +6921,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SkippingNetworkCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始游戏.
         /// </summary>
@@ -6903,7 +6930,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始强制刷新UI.
         /// </summary>
@@ -6912,7 +6939,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingForcedUIRefresh", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在启动游戏....
         /// </summary>
@@ -6921,7 +6948,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始 IDM 模式下载: {0} 个块，{1} 个线程，块大小: {2} 字节.
         /// </summary>
@@ -6930,7 +6957,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingIdmDownload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始多线程下载: {0} 个线程，块大小: {1} 字节.
         /// </summary>
@@ -6939,7 +6966,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingMultiThreadedDownload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始网络连接检测.
         /// </summary>
@@ -6948,7 +6975,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingNetworkConnectionCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始网络检测....
         /// </summary>
@@ -6957,7 +6984,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartingNetworkDetection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动时Mod更新检查失败: {0}.
         /// </summary>
@@ -6966,7 +6993,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartupModUpdateCheckFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启动时更新检查错误: {0}.
         /// </summary>
@@ -6975,7 +7002,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StartupUpdateCheckError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 状态.
         /// </summary>
@@ -6984,7 +7011,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Status", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 状态切换失败.
         /// </summary>
@@ -6993,7 +7020,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StatusToggleFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 1: 选择语言.
         /// </summary>
@@ -7002,7 +7029,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step1LanguageSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 2: 网络检查.
         /// </summary>
@@ -7011,7 +7038,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step2NetworkCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 3: 游戏目录.
         /// </summary>
@@ -7020,7 +7047,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step3GameDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 4: MelonLoader 环境检测.
         /// </summary>
@@ -7029,7 +7056,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step4MelonLoaderCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 5: 安装 MelonLoader.
         /// </summary>
@@ -7038,7 +7065,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step5InstallMelonLoader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 6: 首次运行引导.
         /// </summary>
@@ -7047,7 +7074,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step6FirstRunGuide", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 步骤 7: 等待游戏退出.
         /// </summary>
@@ -7056,7 +7083,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Step7WaitGameExit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 停止游戏.
         /// </summary>
@@ -7065,7 +7092,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StopGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 停止游戏错误.
         /// </summary>
@@ -7074,7 +7101,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StopGameError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在停止游戏....
         /// </summary>
@@ -7083,7 +7110,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StoppingGame", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 成功.
         /// </summary>
@@ -7092,7 +7119,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Success", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 建议尝试重新检测或检查网络设置.
         /// </summary>
@@ -7101,7 +7128,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SuggestRetryOrCheckSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 支持版本.
         /// </summary>
@@ -7110,7 +7137,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("SupportedVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件已删除.
         /// </summary>
@@ -7119,7 +7146,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFileDeleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件不存在: {0}.
         /// </summary>
@@ -7128,7 +7155,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFileNotExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件路径: {0}.
         /// </summary>
@@ -7137,7 +7164,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFilePath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件清理成功.
         /// </summary>
@@ -7146,7 +7173,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFilesCleaned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件清理完成.
         /// </summary>
@@ -7155,7 +7182,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFilesCleaned_", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 清理临时文件时出错.
         /// </summary>
@@ -7164,7 +7191,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFilesCleanError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 临时文件清理失败.
         /// </summary>
@@ -7173,7 +7200,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TempFilesCleanFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在测试直连网络连接: {0}.
         /// </summary>
@@ -7182,7 +7209,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TestingDirectNetworkConnection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在测试GitHub连通性....
         /// </summary>
@@ -7191,7 +7218,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TestingGitHubConnectivity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在通过GitHub代理测试网络连接: {0}.
         /// </summary>
@@ -7200,7 +7227,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TestingNetworkConnectionThroughProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 应用主题时发生错误.
         /// </summary>
@@ -7209,7 +7236,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeApplicationError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题初始化完成，资源字典数量: {0}.
         /// </summary>
@@ -7218,7 +7245,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeInitializationComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题资源已应用: {0}, 资源字典总数: {1}.
         /// </summary>
@@ -7227,7 +7254,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeResourceApplied", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题服务构造函数 - 初始主题: {0}.
         /// </summary>
@@ -7236,7 +7263,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeServiceConstructor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 初始化当前状态 - 同步状态至: {0}.
         /// </summary>
@@ -7245,7 +7272,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeServiceInitializeState", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题设置.
         /// </summary>
@@ -7254,7 +7281,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 主题已切换至: {0}.
         /// </summary>
@@ -7263,7 +7290,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ThemeSwitched", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 时间.
         /// </summary>
@@ -7272,7 +7299,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Time", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 提示.
         /// </summary>
@@ -7281,7 +7308,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Tip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 今天.
         /// </summary>
@@ -7290,7 +7317,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Today", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 切换.
         /// </summary>
@@ -7299,7 +7326,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Toggle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 追踪文件操作已初始化.
         /// </summary>
@@ -7308,7 +7335,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TrackedFileOperationsInit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发布版本中未找到翻译资源文件.
         /// </summary>
@@ -7317,7 +7344,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译备份目录已初始化：{0}.
         /// </summary>
@@ -7326,7 +7353,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationBackupDirectoryInitialized", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译备份清单为空或无效.
         /// </summary>
@@ -7335,7 +7362,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationBackupManifestEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从 {0} 获取翻译配置时出错.
         /// </summary>
@@ -7344,7 +7371,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationConfigFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 目录中未找到 translationconfig.json 文件: {0}.
         /// </summary>
@@ -7353,7 +7380,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationConfigJsonNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 从缓存加载翻译配置.
         /// </summary>
@@ -7362,7 +7389,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationConfigLoadedFromCache", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已移除现有翻译文件: {0}.
         /// </summary>
@@ -7371,7 +7398,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationFileRemoved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 克隆翻译文件时出错.
         /// </summary>
@@ -7380,7 +7407,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationFilesCloneError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在移除 {0} 个现有翻译文件.
         /// </summary>
@@ -7389,7 +7416,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationFilesRemoved", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译文件更新成功.
         /// </summary>
@@ -7398,7 +7425,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationFilesUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译文件更新失败.
         /// </summary>
@@ -7407,7 +7434,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationFilesUpdateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始安装翻译系统: XUnity版本 {0}.
         /// </summary>
@@ -7416,7 +7443,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationInstallationStarted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统安装成功.
         /// </summary>
@@ -7425,7 +7452,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装翻译系统时出错.
         /// </summary>
@@ -7434,7 +7461,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationInstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译语言已设置为 {0}.
         /// </summary>
@@ -7443,7 +7470,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationLanguageSet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译语言设置错误.
         /// </summary>
@@ -7452,7 +7479,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationLanguageSetError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译语言设置失败.
         /// </summary>
@@ -7461,7 +7488,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationLanguageSetFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译语言已设置为: {0}.
         /// </summary>
@@ -7470,7 +7497,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationLanguageSetTo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译管理.
         /// </summary>
@@ -7479,7 +7506,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationManagement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 加载翻译安装清单时出错.
         /// </summary>
@@ -7488,7 +7515,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationManifestLoadError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 保存翻译安装清单时出错.
         /// </summary>
@@ -7497,7 +7524,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationManifestSaveError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件.
         /// </summary>
@@ -7506,7 +7533,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPlugin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件控制.
         /// </summary>
@@ -7515,7 +7542,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginControl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件已禁用.
         /// </summary>
@@ -7524,7 +7551,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginDisabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件已启用.
         /// </summary>
@@ -7533,7 +7560,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginEnabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件状态.
         /// </summary>
@@ -7542,7 +7569,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 切换翻译插件状态时出错: {0}.
         /// </summary>
@@ -7551,7 +7578,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginToggleError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件切换失败.
         /// </summary>
@@ -7560,7 +7587,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginToggleFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件更新可用.
         /// </summary>
@@ -7569,7 +7596,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginUpdateAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件更新失败.
         /// </summary>
@@ -7578,7 +7605,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginUpdateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件更新成功.
         /// </summary>
@@ -7587,7 +7614,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationPluginUpdateSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取翻译发布版本时出错.
         /// </summary>
@@ -7596,7 +7623,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationReleasesFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取最新翻译发布时间时出错.
         /// </summary>
@@ -7605,7 +7632,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationReleaseTimeError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译仓库URL为空.
         /// </summary>
@@ -7614,7 +7641,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationRepoUrlEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译资源.
         /// </summary>
@@ -7623,7 +7650,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationResources", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译资源更新可用.
         /// </summary>
@@ -7632,7 +7659,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationResourceUpdateAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统.
         /// </summary>
@@ -7641,7 +7668,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统已经启用.
         /// </summary>
@@ -7650,7 +7677,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemAlreadyEnabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统已禁用并备份.
         /// </summary>
@@ -7659,7 +7686,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemDisabledAndBackedUp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统已从备份启用.
         /// </summary>
@@ -7668,7 +7695,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemEnabledFromBackup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统安装失败.
         /// </summary>
@@ -7677,7 +7704,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemInstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统尚未安装.
         /// </summary>
@@ -7686,7 +7713,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemNotInstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统卸载失败.
         /// </summary>
@@ -7695,7 +7722,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationSystemUninstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 解析发布文件名时间戳失败.
         /// </summary>
@@ -7704,7 +7731,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationTimestampParseError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件会导致帧数下降，游戏中可以按Alt+T暂时关闭，Alt+1~3是指挥模式的快捷键，但是与翻译插件工具冲突，请在指挥模式下使用M键地图发布GO CODE.
         /// </summary>
@@ -7713,7 +7740,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationTipsContent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译插件提示.
         /// </summary>
@@ -7722,7 +7749,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationTipsTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译系统卸载成功.
         /// </summary>
@@ -7731,7 +7758,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUninstalled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 卸载翻译系统时出错.
         /// </summary>
@@ -7740,7 +7767,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUninstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译更新可用.
         /// </summary>
@@ -7749,7 +7776,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdateAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检查翻译更新可用性时出错.
         /// </summary>
@@ -7758,7 +7785,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdateCheckError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mod流程中的翻译更新检查失败: {0}.
         /// </summary>
@@ -7767,7 +7794,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdateCheckInModFlowFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 翻译更新检查 - 已安装: {0}, 最新: {1}, 有更新: {2}.
         /// </summary>
@@ -7776,7 +7803,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdateCheckResult", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新翻译文件时出错.
         /// </summary>
@@ -7785,7 +7812,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdateError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现翻译更新: {0}.
         /// </summary>
@@ -7794,7 +7821,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TranslationUpdatesFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 尝试读取配置文件: {0}.
         /// </summary>
@@ -7803,7 +7830,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("TryingToReadConfigFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法打开游戏目录: {0}.
         /// </summary>
@@ -7812,7 +7839,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnableToOpenGameDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无法打开GitHub页面: {0}.
         /// </summary>
@@ -7821,7 +7848,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnableToOpenGitHubPage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 卸载.
         /// </summary>
@@ -7830,7 +7857,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Uninstall", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 卸载失败.
         /// </summary>
@@ -7839,7 +7866,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在卸载 {0}....
         /// </summary>
@@ -7848,7 +7875,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Uninstalling", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在卸载Mod {0}.
         /// </summary>
@@ -7857,7 +7884,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallingMod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在卸载翻译系统.
         /// </summary>
@@ -7866,7 +7893,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallingTranslation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在卸载翻译系统....
         /// </summary>
@@ -7875,7 +7902,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallingTranslationSystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 卸载成功.
         /// </summary>
@@ -7884,7 +7911,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 卸载翻译系统.
         /// </summary>
@@ -7893,7 +7920,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UninstallTranslationSystem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 无.
         /// </summary>
@@ -7902,7 +7929,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Unknown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未知设置.
         /// </summary>
@@ -7911,7 +7938,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnknownConfigFieldsBadge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 部分MOD包含未知设置，请检查模组管理器更新以确保完整兼容。.
         /// </summary>
@@ -7920,7 +7947,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnknownConfigFieldsBannerMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 检测到未知MOD设置.
         /// </summary>
@@ -7929,7 +7956,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnknownConfigFieldsBannerTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to - 网络连接不稳定.
         /// </summary>
@@ -7938,7 +7965,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnstableNetworkConnection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 不受支持的手动模组.
         /// </summary>
@@ -7947,7 +7974,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnsupportedManualMod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 此模组不受管理器支持，或文件名与官方版本记录不一致。仅可进行切换和卸载操作。.
         /// </summary>
@@ -7956,7 +7983,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UnsupportedManualModDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新.
         /// </summary>
@@ -7965,7 +7992,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Update", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现更新: {0} (当前: {1}).
         /// </summary>
@@ -7974,7 +8001,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新已取消.
         /// </summary>
@@ -7983,7 +8010,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCancelled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新通道：.
         /// </summary>
@@ -7992,7 +8019,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateChannel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 测试版（包含所有版本）.
         /// </summary>
@@ -8001,7 +8028,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateChannelBeta", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 稳定版.
         /// </summary>
@@ -8010,7 +8037,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateChannelStable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 所有更新检查方法都失败了。无法检查更新。.
         /// </summary>
@@ -8019,7 +8046,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckAllMethodsFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 尝试直接访问GitHub API.
         /// </summary>
@@ -8028,7 +8055,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckDirectAccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 直接访问GitHub API失败: {0}.
         /// </summary>
@@ -8037,7 +8064,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckDirectFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用代理 {0} 检查更新失败: {1}.
         /// </summary>
@@ -8046,7 +8073,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckProxyFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用方法成功检查更新: {0}.
         /// </summary>
@@ -8055,7 +8082,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckSuccessWithMethod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 尝试下一个代理服务器: {0}.
         /// </summary>
@@ -8064,7 +8091,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckTryingNextProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在使用代理检查更新: {0}.
         /// </summary>
@@ -8073,7 +8100,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateCheckUsingProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新日期.
         /// </summary>
@@ -8082,7 +8109,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新已下载: {0}.
         /// </summary>
@@ -8091,7 +8118,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateDownloaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新下载失败.
         /// </summary>
@@ -8100,7 +8127,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateDownloadFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 更新失败.
         /// </summary>
@@ -8109,7 +8136,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新安装失败.
         /// </summary>
@@ -8118,7 +8145,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateInstallFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} 更新成功.
         /// </summary>
@@ -8127,7 +8154,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateSuccessful", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新翻译文件.
         /// </summary>
@@ -8136,7 +8163,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateTranslationFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新翻译插件.
         /// </summary>
@@ -8145,7 +8172,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateTranslationPlugin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 更新翻译资源.
         /// </summary>
@@ -8154,7 +8181,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdateTranslationResources", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在更新 {0}....
         /// </summary>
@@ -8163,7 +8190,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Updating", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在更新MOD: {0} 从 {1} 到 {2}.
         /// </summary>
@@ -8172,7 +8199,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdatingMod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在更新代理服务器列表....
         /// </summary>
@@ -8181,7 +8208,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdatingProxyServerList", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在更新翻译文件....
         /// </summary>
@@ -8190,7 +8217,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdatingTranslationFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在更新翻译插件....
         /// </summary>
@@ -8199,7 +8226,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UpdatingTranslationPlugin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to URL 不是 GitHub 仓库：{0}.
         /// </summary>
@@ -8208,7 +8235,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("URLIsNotGitHubRepository", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to URL不是GitHub链接，使用原始链接: {0}.
         /// </summary>
@@ -8217,7 +8244,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("URLNotGitHub", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to URL模式不支持代理，使用原始链接: {0} (路径: {1}).
         /// </summary>
@@ -8226,7 +8253,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("URLPatternNotSupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 启用GitHub加速.
         /// </summary>
@@ -8235,7 +8262,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UseGitHubProxy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 用户点击重试网络检测.
         /// </summary>
@@ -8244,7 +8271,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UserClickedRetryNetworkCheck", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用暗色主题色: {0}.
         /// </summary>
@@ -8253,7 +8280,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UsingDarkThemeColors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用备用方法检测翻译文件.
         /// </summary>
@@ -8262,7 +8289,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UsingFallbackMethodToDetectTranslationFiles", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用亮色主题色: {0}.
         /// </summary>
@@ -8271,7 +8298,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UsingLightThemeColors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用多线程下载（文件大小: {0} 字节）.
         /// </summary>
@@ -8280,7 +8307,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UsingMultiThreadedDownload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 使用单线程下载（{0}，文件大小: {1} 字节）.
         /// </summary>
@@ -8289,7 +8316,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("UsingSingleThreadedDownload", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 验证安装结果:.
         /// </summary>
@@ -8298,7 +8325,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VerifyingInstallationResult", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 对比 v{0}（上一版本）与 v{1}（当前版本）.
         /// </summary>
@@ -8307,7 +8334,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupComparingVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to v{0} 版本清理完成.
         /// </summary>
@@ -8316,7 +8343,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理跳过：当前版本 v{0} 没有 ZIP 附件.
         /// </summary>
@@ -8325,7 +8352,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupCurrentAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已删除遗留文件：{0}.
         /// </summary>
@@ -8334,7 +8361,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupDeletedFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 删除遗留文件失败：{0}.
         /// </summary>
@@ -8343,7 +8370,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupDeleteFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载当前版本 v{0} 用于建立文件索引....
         /// </summary>
@@ -8352,7 +8379,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupDownloadingCurrent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 正在下载上一版本 v{0} 用于建立文件索引....
         /// </summary>
@@ -8361,7 +8388,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupDownloadingPrev", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理失败.
         /// </summary>
@@ -8370,7 +8397,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理跳过：未找到上一个版本.
         /// </summary>
@@ -8379,7 +8406,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupNoPreviousRelease", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理跳过：未找到任何发布版本.
         /// </summary>
@@ -8388,7 +8415,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupNoReleasesFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 发现 {0} 个遗留文件需要删除.
         /// </summary>
@@ -8397,7 +8424,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupObsoleteCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理跳过：上一版本 v{0} 没有 ZIP 附件.
         /// </summary>
@@ -8406,7 +8433,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupPrevAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 版本清理跳过：无法确定安装目录.
         /// </summary>
@@ -8415,7 +8442,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupSkippedNoInstallDir", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始执行 v{0} 版本清理....
         /// </summary>
@@ -8424,7 +8451,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionCleanupStarting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to version.dll 存在: {0}.
         /// </summary>
@@ -8433,7 +8460,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionDllExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 非Steam版兼容性提示.
         /// </summary>
@@ -8442,7 +8469,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("VersionWarningTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 详情.
         /// </summary>
@@ -8451,7 +8478,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ViewDetails", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 查看日志.
         /// </summary>
@@ -8460,7 +8487,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ViewLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 在 GitHub 查看.
         /// </summary>
@@ -8469,7 +8496,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ViewOnGitHub", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 警告.
         /// </summary>
@@ -8478,7 +8505,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 此向导将帮助您为 GHPC (Gunner, HEAT, PC!) 设置模组管理器。.
         /// </summary>
@@ -8487,7 +8514,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WelcomeDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 欢迎使用 GHPC模组管理器.
         /// </summary>
@@ -8496,7 +8523,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WelcomeToGHPCModManager", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 将使用内置代理服务器列表.
         /// </summary>
@@ -8505,7 +8532,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WillUseFallbackProxyList", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取: 检测到慢分块 {0} - 速度: {1:F2} MB/s (平均: {2:F2} MB/s), 进度: {3:F1}%, 耗时: {4:F1}秒.
         /// </summary>
@@ -8514,7 +8541,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingDetectedSlowChunk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取下载完成: {0:N0} 字节, {1} 总分块数, {2} 已完成, {3} 已取消.
         /// </summary>
@@ -8523,7 +8550,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingDownloadComplete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取: 分块 {0} 被窃取但没有部分数据.
         /// </summary>
@@ -8532,7 +8559,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingNoPartialData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取: 从分块 {0} 保存部分数据 ({1:N0} 字节) 为分块 {2}.
         /// </summary>
@@ -8541,7 +8568,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingSavedPartialData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取: 分块 {0}: {1:N0} - {2:N0} ({3:N0} 字节).
         /// </summary>
@@ -8550,7 +8577,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingSplitChunkInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 工作窃取: 将 {0:N0} 字节拆分为 {1} 个小块.
         /// </summary>
@@ -8559,7 +8586,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("WorkStealingSplitRange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到XUnity AutoTranslator安装文件.
         /// </summary>
@@ -8568,7 +8595,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("XUnityAssetNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 安装XUnity AutoTranslator时出错.
         /// </summary>
@@ -8577,7 +8604,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("XUnityInstallError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 获取XUnity AutoTranslator版本信息时出错.
         /// </summary>
@@ -8586,7 +8613,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("XUnityReleasesFetchError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 未找到XUnity AutoTranslator版本 {0}.
         /// </summary>
@@ -8595,7 +8622,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("XUnityVersionNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 是.
         /// </summary>
@@ -8604,7 +8631,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 昨天.
         /// </summary>
@@ -8613,7 +8640,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("Yesterday", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 您正在使用最新版本（{0}）.
         /// </summary>
@@ -8622,7 +8649,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("YouAreUsingLatestVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ZIP 存档已打开，条目总数：{0}.
         /// </summary>
@@ -8631,7 +8658,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipArchiveOpened", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 已创建目录：{0}.
         /// </summary>
@@ -8640,7 +8667,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipCreatedDirectory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 成功解压：{0} ({1} 字节).
         /// </summary>
@@ -8649,7 +8676,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipExtractedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 解压失败 {0}: {1}.
         /// </summary>
@@ -8658,7 +8685,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipExtractFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ZIP 解压完成。已处理：{0}，已跳过：{1}，条目总数：{2}.
         /// </summary>
@@ -8667,7 +8694,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipExtractionCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 开始 ZIP 解压到 {0}，数据大小：{1} 字节，排除模式：[{2}].
         /// </summary>
@@ -8676,7 +8703,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipExtractionStarting", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ZIP 文件为空，没有找到任何条目.
         /// </summary>
@@ -8685,7 +8712,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipFileEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ZIP 文件打开成功，条目数量: {0}.
         /// </summary>
@@ -8694,7 +8721,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipFileOpenSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 处理 ZIP 条目：{0} -&gt; {1}.
         /// </summary>
@@ -8703,7 +8730,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipProcessingEntry", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ZIP 文件处理出错: {0}.
         /// </summary>
@@ -8712,7 +8739,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("ZipProcessingError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 跳过目录条目：{0}.
         /// </summary>

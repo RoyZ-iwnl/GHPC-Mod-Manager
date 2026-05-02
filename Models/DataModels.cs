@@ -9,8 +9,9 @@ namespace GHPC_Mod_Manager.Models;
 // 主题枚举
 public enum AppTheme
 {
-    Light,  // 浅色主题
-    Dark    // 深色主题
+    Light,      // 浅色主题
+    Dark,       // 深色主题
+    Endfield    // 终末地主题
 }
 
 // GitHub代理服务器枚举
@@ -114,6 +115,12 @@ public class AppSettings
     /// 启动游戏时跳过完整性检查
     /// </summary>
     public bool SkipIntegrityCheck { get; set; } = false;
+    /// <summary>
+    /// 是否已解锁终末地主题（彩蛋）
+    /// null 或 false = 未解锁，true = 已解锁
+    /// </summary>
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public bool? IsEndfieldThemeUnlocked { get; set; }
 }
 
 /// <summary>

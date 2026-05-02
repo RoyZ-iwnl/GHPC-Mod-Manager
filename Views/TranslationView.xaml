@@ -37,7 +37,7 @@
                             <TextBlock Text="{x:Static resources:Strings.TranslationSystem}"
                                        Style="{StaticResource PageSectionTitleTextStyle}"/>
                             <WrapPanel Margin="0,14,0,16">
-                                <Border Style="{StaticResource BadgeBorderStyle}"
+                                <Border Style="{DynamicResource BadgeBorderStyle}"
                                         Background="{DynamicResource SuccessContainerBrush}"
                                         BorderBrush="{DynamicResource SuccessBrush}"
                                         Visibility="{Binding IsTranslationInstalled, Converter={StaticResource BoolToVis}}">
@@ -46,7 +46,7 @@
                                                Foreground="{DynamicResource OnSuccessBrush}"/>
                                 </Border>
 
-                                <Border Style="{StaticResource BadgeBorderStyle}"
+                                <Border Style="{DynamicResource BadgeBorderStyle}"
                                         Background="{DynamicResource WarningContainerBrush}"
                                         BorderBrush="{DynamicResource WarningBrush}"
                                         Visibility="{Binding IsTranslationInstalled, Converter={StaticResource InvBoolToVis}}">
@@ -145,7 +145,7 @@
                             <TextBlock Text="{x:Static resources:Strings.TranslationPluginControl}"
                                        Style="{StaticResource PageSectionTitleTextStyle}"/>
                             <WrapPanel Margin="0,14,0,16">
-                                <Border Style="{StaticResource BadgeBorderStyle}"
+                                <Border Style="{DynamicResource BadgeBorderStyle}"
                                         Background="{DynamicResource SuccessContainerBrush}"
                                         BorderBrush="{DynamicResource SuccessBrush}"
                                         Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource BoolToVis}}">
@@ -154,7 +154,7 @@
                                                Foreground="{DynamicResource OnSuccessBrush}"/>
                                 </Border>
 
-                                <Border Style="{StaticResource BadgeBorderStyle}"
+                                <Border Style="{DynamicResource BadgeBorderStyle}"
                                         Background="{DynamicResource WarningContainerBrush}"
                                         BorderBrush="{DynamicResource WarningBrush}"
                                         Visibility="{Binding IsTranslationPluginEnabled, Converter={StaticResource InvBoolToVis}}">
