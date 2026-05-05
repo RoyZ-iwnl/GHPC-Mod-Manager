@@ -178,6 +178,17 @@ namespace GHPC_Mod_Manager.Helpers
         }
 
         /// <summary>
+        /// 显示启动旧应用/忽略对话框
+        /// </summary>
+        /// <param name="message">消息内容</param>
+        /// <param name="title">标题</param>
+        /// <returns>对话框返回结果</returns>
+        public static MessageDialogResult ShowLaunchAppIgnore(string message, string? title = null)
+        {
+            return Show(message, title ?? string.Empty, MessageDialogButton.LaunchAppIgnore, MessageDialogImage.Warning);
+        }
+
+        /// <summary>
         /// 显示去设置更新/取消对话框
         /// </summary>
         /// <param name="message">消息内容</param>

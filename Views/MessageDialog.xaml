@@ -180,6 +180,12 @@
                             Style="{StaticResource DialogPrimaryButtonStyle}"
                             Click="OpenFolder_Click"
                             Visibility="Collapsed"/>
+                    <!-- 启动旧应用按钮 -->
+                    <Button x:Name="LaunchAppButton"
+                            Content="启动旧应用"
+                            Style="{StaticResource DialogPrimaryButtonStyle}"
+                            Click="LaunchApp_Click"
+                            Visibility="Collapsed"/>
                     <!-- 忽略按钮 -->
                     <Button x:Name="IgnoreButton"
                             Content="忽略"

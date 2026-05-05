@@ -135,6 +135,66 @@
 
     <Style TargetType="Button" BasedOn="{StaticResource FilledButtonStyle}"/>
 
+    <Style x:Key="BackButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="14,8"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource LabelLarge}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource RadiusSmall}"
+                            Effect="{StaticResource CardShadowEffect}">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="{TemplateBinding Padding}">
+                            <Path Data="{StaticResource IconArrowLeft}"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  StrokeLineJoin="Round"
+                                  Stretch="Uniform"
+                                  Width="14"
+                                  Height="14"
+                                  Margin="0,0,6,0"
+                                  VerticalAlignment="Center"/>
+                            <ContentPresenter VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentStrongBrush}"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource AccentStrongBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Chrome" Property="Opacity" Value="0.92"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceContainerBrush}"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                            <Setter TargetName="Chrome" Property="Effect" Value="{x:Null}"/>
+                            <Setter TargetName="Chrome" Property="Opacity" Value="0.65"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="OutlinedTextBoxStyle" TargetType="TextBox">
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
@@ -346,6 +406,98 @@
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource BodyMedium}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid x:Name="RootGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Width="44" Height="24">
+                            <Border x:Name="TrackOff"
+                                    CornerRadius="12"
+                                    Background="{DynamicResource SurfaceVariantBrush}"
+                                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                                    BorderThickness="1"/>
+                            <Border x:Name="TrackOn"
+                                    CornerRadius="12"
+                                    Background="{DynamicResource AccentBrush}"
+                                    Opacity="0"/>
+                            <Border x:Name="Thumb"
+                                    Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{DynamicResource OnSurfaceVariantBrush}"
+                                    HorizontalAlignment="Left"
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center">
+                                <Border.RenderTransform>
+                                    <TranslateTransform x:Name="ThumbTransform" X="0"/>
+                                </Border.RenderTransform>
+                            </Border>
+                        </Grid>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="8,0,0,0"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="20" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOff"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="0" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOff"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource OnAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="RootGrid" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="MaterialToggleButtonStyle" TargetType="ToggleButton">

@@ -18,6 +18,7 @@ public partial class InstalledModsViewModel : ObservableObject
     private readonly IServiceProvider _serviceProvider;
     private readonly ISettingsService _settingsService;
     private readonly IMelonLoaderService _melonLoaderService;
+    private readonly IProcessService _processService;
 
     // 所有已安装MOD（原始数据，由MainViewModel注入）
     private List<ModViewModel> _allInstalledMods = new();
@@ -30,6 +31,9 @@ public partial class InstalledModsViewModel : ObservableObject
 
     [ObservableProperty]
     private string _installedModCount = string.Empty;
+
+    [ObservableProperty]
+    private bool _isGameRunning;
 
     [ObservableProperty]
     private bool _isLoading;
@@ -73,13 +77,20 @@ public partial class InstalledModsViewModel : ObservableObject
     // 横幅可见性：有新增MOD时显示
     public bool CanShowNewModsBanner => HasNewMods && NewModsCount > 0;
 
-    public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
+    public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
     {
         _modManagerService = modManagerService;
         _loggingService = loggingService;
         _serviceProvider = serviceProvider;
         _settingsService = settingsService;
         _melonLoaderService = melonLoaderService;
+        _processService = processService;
+
+        IsGameRunning = _processService.IsGameRunning;
+        _processService.GameRunningStateChanged += (s, e) =>
+        {
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => IsGameRunning = e);
+        };
     }
 
     partial void OnSearchTextChanged(string value) => FilterMods();
@@ -263,16 +274,23 @@ public partial class InstalledModsViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task ToggleModAsync(ModViewModel mod)
     {
+        var wasEnabled = mod.IsEnabled;
+        mod.IsEnabled = !wasEnabled; // 乐观更新，立即触发动画
+
         try
         {
-            var success = mod.IsEnabled
+            var success = wasEnabled
                 ? await _modManagerService.DisableModAsync(mod.Id)
                 : await _modManagerService.EnableModAsync(mod.Id);
 
-            if (success) RefreshRequested?.Invoke(this, EventArgs.Empty);
+            if (!success)
+            {
+                mod.IsEnabled = wasEnabled; // 失败回滚，触发弹回动画
+            }
         }
         catch (Exception ex)
         {
+            mod.IsEnabled = wasEnabled; // 异常回滚
             _loggingService.LogError(ex, Strings.ModToggleError, mod.Id);
         }
     }
@@ -326,9 +344,17 @@ public partial class InstalledModsViewModel : ObservableObject
         NavigateToModBrowserRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool CanExecuteModOps() => !IsDownloading && !IsCheckingUpdates;
+    private bool CanExecuteModOps() => !IsDownloading && !IsCheckingUpdates && !IsGameRunning;
 
     partial void OnIsDownloadingChanged(bool value)
+    {
+        UpdateModCommand.NotifyCanExecuteChanged();
+        ReinstallModCommand.NotifyCanExecuteChanged();
+        UninstallModCommand.NotifyCanExecuteChanged();
+        ToggleModCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsGameRunningChanged(bool value)
     {
         UpdateModCommand.NotifyCanExecuteChanged();
         ReinstallModCommand.NotifyCanExecuteChanged();

@@ -201,7 +201,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Border Background="{DynamicResource OnSurfaceBrush}"
+                        <Border x:Name="Shadow"
+                                Background="{DynamicResource OnSurfaceBrush}"
                                 Margin="3,3,0,0"
                                 CornerRadius="0"/>
                         <Border x:Name="Chrome"
@@ -214,10 +215,10 @@
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                <TextBlock Text="[ " Opacity="0.5" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="LeftBracket" Text="[ " Opacity="0.5" VerticalAlignment="Center"/>
                                 <ContentPresenter VerticalAlignment="Center"
                                                   RecognizesAccessKey="True"/>
-                                <TextBlock Text=" ]" Opacity="0.5" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="RightBracket" Text=" ]" Opacity="0.5" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -229,8 +230,12 @@
                             <Setter TargetName="Chrome" Property="Margin" Value="2,2,1,1"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Shadow" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
-                            <Setter TargetName="Chrome" Property="Opacity" Value="0.6"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                            <Setter TargetName="LeftBracket" Property="Opacity" Value="0.3"/>
+                            <Setter TargetName="RightBracket" Property="Opacity" Value="0.3"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -269,6 +274,103 @@
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid x:Name="RootGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Width="44" Height="24">
+                            <Border x:Name="TrackOff"
+                                    CornerRadius="0"
+                                    Background="{DynamicResource SurfaceVariantBrush}"
+                                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                                    BorderThickness="1"/>
+                            <Border x:Name="TrackOn"
+                                    CornerRadius="0"
+                                    Background="{DynamicResource AccentBrush}"
+                                    Opacity="0"/>
+                            <Border x:Name="Thumb"
+                                    Width="18" Height="18"
+                                    CornerRadius="0"
+                                    Background="{DynamicResource OnSurfaceVariantBrush}"
+                                    HorizontalAlignment="Left"
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center">
+                                <Border.RenderTransform>
+                                    <TranslateTransform x:Name="ThumbTransform" X="0"/>
+                                </Border.RenderTransform>
+                            </Border>
+                        </Grid>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="8,0,0,0"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="20" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOff"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="0" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.15"/>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOff"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource OnAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="RootGrid" Property="Opacity" Value="0.5"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -376,5 +478,109 @@
     <Style x:Key="DenseBadgeBorderStyle" TargetType="Border" BasedOn="{StaticResource BadgeBorderStyle}">
         <Setter Property="CornerRadius" Value="0"/>
     </Style>
+
+    <Style x:Key="BackButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OnAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource LabelLarge}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="Shadow"
+                                Background="{DynamicResource OnSurfaceBrush}"
+                                Margin="3,3,0,0"
+                                CornerRadius="0"/>
+                        <Border x:Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="0,0,3,3">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconArrowLeft}"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      Stretch="Uniform"
+                                      Width="16"
+                                      Height="16"
+                                      Margin="0,0,8,0"
+                                      VerticalAlignment="Center"/>
+                                <TextBlock x:Name="LeftBracket" Text="[ " Opacity="0.5" VerticalAlignment="Center"
+                                           Foreground="{TemplateBinding Foreground}"/>
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"/>
+                                <TextBlock x:Name="RightBracket" Text=" ]" Opacity="0.5" VerticalAlignment="Center"
+                                           Foreground="{TemplateBinding Foreground}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentStrongBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Chrome" Property="Margin" Value="2,2,1,1"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Shadow" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource OutlineVariantBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+                            <Setter TargetName="LeftBracket" Property="Opacity" Value="0.3"/>
+                            <Setter TargetName="RightBracket" Property="Opacity" Value="0.3"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════
+         页面切换动画
+    ═══════════════════════════════════════════════════════ -->
+
+    <Storyboard x:Key="EndfieldPageSlideIn">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                         From="40" To="0" Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0.6" To="1" Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="EndfieldSubPageSlideIn">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         From="25" To="0" Duration="0:0:0.18">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0.7" To="1" Duration="0:0:0.18">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
 
 </ResourceDictionary>

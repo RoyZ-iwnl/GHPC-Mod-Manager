@@ -19,6 +19,7 @@ public class RelatedModInfo
     public string DisplayName { get; set; } = string.Empty;
     public bool IsInstalled { get; set; }
     public bool IsEnabled { get; set; }
+    public bool IsDelisted { get; set; }
 }
 
 public partial class ModDetailViewModel : ObservableObject
@@ -28,6 +29,7 @@ public partial class ModDetailViewModel : ObservableObject
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     private readonly IMelonLoaderService _melonLoaderService;
+    private readonly IProcessService _processService;
 
     // 当前展示的MOD
     [ObservableProperty]
@@ -43,6 +45,9 @@ public partial class ModDetailViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isLoadingReleases;
+
+    [ObservableProperty]
+    private bool _isGameRunning;
 
     [ObservableProperty]
     private bool _isInstalling;
@@ -92,13 +97,20 @@ public partial class ModDetailViewModel : ObservableObject
 
     public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
-    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService)
+    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
     {
         _modManagerService = modManagerService;
         _modBackupService = modBackupService;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _melonLoaderService = melonLoaderService;
+        _processService = processService;
+
+        IsGameRunning = _processService.IsGameRunning;
+        _processService.GameRunningStateChanged += (s, e) =>
+        {
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => IsGameRunning = e);
+        };
     }
 
     /// <summary>
@@ -130,12 +142,17 @@ public partial class ModDetailViewModel : ObservableObject
         foreach (var reqId in Mod.Config.Requirements ?? new List<string>())
         {
             var relatedMod = _allMods.FirstOrDefault(m => m.Id == reqId);
+            // 跳过已下架的MOD
+            if (relatedMod?.IsDelisted == true)
+                continue;
+
             Dependencies.Add(new RelatedModInfo
             {
                 ModId = reqId,
                 DisplayName = GetRelatedModDisplayName(reqId, relatedMod),
                 IsInstalled = relatedMod?.IsInstalled ?? false,
-                IsEnabled = relatedMod?.IsEnabled ?? false
+                IsEnabled = relatedMod?.IsEnabled ?? false,
+                IsDelisted = relatedMod?.IsDelisted ?? false
             });
         }
 
@@ -143,12 +160,17 @@ public partial class ModDetailViewModel : ObservableObject
         foreach (var conflictId in Mod.Config.Conflicts ?? new List<string>())
         {
             var relatedMod = _allMods.FirstOrDefault(m => m.Id == conflictId);
+            // 跳过已下架的MOD
+            if (relatedMod?.IsDelisted == true)
+                continue;
+
             Conflicts.Add(new RelatedModInfo
             {
                 ModId = conflictId,
                 DisplayName = GetRelatedModDisplayName(conflictId, relatedMod),
                 IsInstalled = relatedMod?.IsInstalled ?? false,
-                IsEnabled = relatedMod?.IsEnabled ?? false
+                IsEnabled = relatedMod?.IsEnabled ?? false,
+                IsDelisted = relatedMod?.IsDelisted ?? false
             });
         }
 
@@ -465,8 +487,19 @@ public partial class ModDetailViewModel : ObservableObject
             ConfigureModRequested?.Invoke(this, Mod.Id);
     }
 
-    private bool CanInstall() => !IsInstalling && SelectedRelease != null && Mod != null;
-    private bool CanManage() => !IsInstalling && Mod != null;
+    private bool CanInstall() => !IsInstalling && SelectedRelease != null && Mod != null && !IsGameRunning;
+    private bool CanManage() => !IsInstalling && Mod != null && !IsGameRunning;
+
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        InstallSelectedVersionCommand.NotifyCanExecuteChanged();
+        RedownloadInstallSelectedVersionCommand.NotifyCanExecuteChanged();
+        UninstallCommand.NotifyCanExecuteChanged();
+        UninstallManualModCommand.NotifyCanExecuteChanged();
+        ToggleCommand.NotifyCanExecuteChanged();
+        UpdateCommand.NotifyCanExecuteChanged();
+        ConfigureCommand.NotifyCanExecuteChanged();
+    }
 
     partial void OnIsInstallingChanged(bool value)
     {

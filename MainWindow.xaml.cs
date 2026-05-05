@@ -41,11 +41,9 @@ namespace GHPC_Mod_Manager
             // Ensure application shuts down when main window closes
             this.Closing += (s, e) =>
             {
-                // Cancel any background tasks
                 Application.Current.Shutdown();
             };
         }
-
         private void MainWindow_SourceInitialized(object sender, System.EventArgs e)
         {
             // 获取窗口句柄并挂钩WM_GETMINMAXINFO消息，以正确处理最大化

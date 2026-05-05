@@ -1077,6 +1077,9 @@
   <data name="GameRunningCannotOperate" xml:space="preserve">
     <value>Game running, cannot operate</value>
   </data>
+  <data name="CannotChangeGamePathWhileRunning" xml:space="preserve">
+    <value>Cannot change game path while game is running</value>
+  </data>
   <data name="Ready" xml:space="preserve">
     <value>Ready</value>
   </data>
@@ -2694,7 +2697,7 @@ Do you want to restart now?</value>
     <value>No match</value>
   </data>
   <data name="GoBack" xml:space="preserve">
-    <value>← Back</value>
+    <value>Back</value>
   </data>
   <data name="ModDescription" xml:space="preserve">
     <value>Description</value>
@@ -3011,7 +3014,7 @@ Do you want to continue installing?</value>
     <value>Please reproduce the mod issue, then close the game before exporting the diagnostic package.</value>
   </data>
   <data name="ModInfoDumperPrivacyNotice" xml:space="preserve">
-    <value>Package includes: mod list, game logs, system configuration (no personal information)</value>
+    <value>Package includes: mod list, game logs, system configuration, game registry (no personal information)</value>
   </data>
   <data name="ModInfoFiles" xml:space="preserve">
     <value>Files:</value>
@@ -3049,6 +3052,15 @@ Do you want to continue installing?</value>
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>Calculating hash for: {0}</value>
   </data>
+  <data name="CollectingRegistryInfo" xml:space="preserve">
+    <value>Collecting registry info...</value>
+  </data>
+  <data name="RegistryInfoFile" xml:space="preserve">
+    <value>Registry Info</value>
+  </data>
+  <data name="RegistryKeyNotFound" xml:space="preserve">
+    <value>Registry key not found: {0}</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
@@ -3080,5 +3092,23 @@ Please update the Mod Manager first to install this mod.</value>
   </data>
   <data name="RequiredManagerVersionHint" xml:space="preserve">
     <value>Minimum Mod Manager version required (optional, e.g., 1.2.0)</value>
+  </data>
+  <data name="PreviousInstallationLaunchApp" xml:space="preserve">
+    <value>Launch Previous App</value>
+  </data>
+  <data name="PreviousInstallationDetectedMessageNew" xml:space="preserve">
+    <value>A previous installation of GHPC Mod Manager was detected in another directory. You can launch the previous version to continue using it, or ignore this to set up the current instance.</value>
+  </data>
+  <data name="OpenWebsiteOnStartup" xml:space="preserve">
+    <value>Open website on startup</value>
+  </data>
+  <data name="ConfirmDisableWebsiteOnStartup" xml:space="preserve">
+    <value>The Google ads on the website help support the author. Are you sure you want to disable opening the website on startup?</value>
+  </data>
+  <data name="SupportAuthor" xml:space="preserve">
+    <value>Support Author</value>
+  </data>
+  <data name="FailedToOpenSupportPage" xml:space="preserve">
+    <value>Failed to open support page</value>
   </data>
 </root>

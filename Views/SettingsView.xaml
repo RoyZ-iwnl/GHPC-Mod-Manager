@@ -67,6 +67,88 @@
             <Grid HorizontalAlignment="Center"
                   MaxWidth="980">
             <StackPanel>
+                <!-- 关于块 - 移到最上面 -->
+                <Border Margin="0,0,0,16"
+                        Style="{StaticResource PageSectionCardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource PageSectionTitleTextStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource BracketTextConverter}">
+                                    <Binding Source="{x:Static resources:Strings.About}"/>
+                                    <Binding Source="{x:Static helpers:ThemeTracker.Instance}" Path="CurrentTheme"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <Grid Margin="0,16,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ApplicationVersion}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <Border Grid.Column="1"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Left"
+                                    MouseLeftButtonDown="VersionText_MouseLeftButtonDown"
+                                    Cursor="Arrow">
+                                <TextBlock Text="{Binding ApplicationVersion}"
+                                           Style="{StaticResource FieldValueTextStyle}"/>
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ProjectUrl}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Style="{DynamicResource TextButtonStyle}"
+                                    Command="{Binding OpenProjectUrlCommand}">
+                                <TextBlock Text="https://github.com/RoyZ-iwnl/GHPC-Mod-Manager/"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource AccentBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <WrapPanel Margin="0,0,0,8">
+                            <Button Content="{x:Static resources:Strings.CheckForUpdates}"
+                                    Command="{Binding CheckForAppUpdatesCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                            <Button Content="{x:Static resources:Strings.ShowAnnouncement}"
+                                    Command="{Binding ShowAnnouncementCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource OutlinedButtonStyle}"/>
+                            <!-- TODO: 启用时取消注释 - 支持作者按钮 -->
+                            <!--<Button Content="{x:Static resources:Strings.SupportAuthor}"
+                                    Command="{Binding OpenSupportAuthorCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource FilledButtonStyle}"/>-->
+                            <Button Content="{x:Static resources:Strings.FollowBilibili}"
+                                    Command="{Binding OpenFollowBilibiliCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource FilledButtonStyle}"
+                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
+                            <Button Content="{x:Static resources:Strings.JoinGhpcCommunity}"
+                                    Command="{Binding OpenGhpcCommunityCommand}"
+                                    Margin="0,0,0,8"
+                                    Style="{DynamicResource FilledButtonStyle}"
+                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
                 <Border Margin="0,0,0,16"
                         Style="{StaticResource PageSectionCardStyle}">
                     <StackPanel>
@@ -169,6 +251,14 @@
                                   IsChecked="{Binding SkipIntegrityCheck}">
                             <CheckBox.Content>
                                 <TextBlock Text="{x:Static resources:Strings.SkipIntegrityCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding OpenWebsiteOnStartup}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.OpenWebsiteOnStartup}"
                                            FontWeight="SemiBold"/>
                             </CheckBox.Content>
                         </CheckBox>
@@ -364,7 +454,6 @@
                                            Foreground="{DynamicResource OnWarningContainerBrush}"/>
                                 </Border>
                                 <Button Command="{Binding ToggleMelonLoaderCommand}"
-                                        IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
                                         Margin="0,0,12,8"
                                         Style="{DynamicResource OutlinedButtonStyle}">
                                     <Button.Content>
@@ -411,7 +500,6 @@
                                 <!-- 安装/重装按钮 -->
                                 <Button Grid.Column="2"
             Command="{Binding ReinstallMelonLoaderCommand}"
-            IsEnabled="{Binding IsMelonLoaderOperating, Converter={StaticResource InvBool}}"
             Margin="12,0,0,0"
             Style="{DynamicResource FilledButtonStyle}">
                                     <Button.Content>
@@ -461,81 +549,6 @@
                                     Command="{Binding ShowLogWindowCommand}"
                                     Margin="0,0,0,8"
                                     Style="{DynamicResource TextButtonStyle}"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource PageSectionCardStyle}">
-                    <StackPanel>
-                        <TextBlock Style="{StaticResource PageSectionTitleTextStyle}">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource BracketTextConverter}">
-                                    <Binding Source="{x:Static resources:Strings.About}"/>
-                                    <Binding Source="{x:Static helpers:ThemeTracker.Instance}" Path="CurrentTheme"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-
-                        <Grid Margin="0,16,0,14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.ApplicationVersion}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <Border Grid.Column="1"
-                                    Background="Transparent"
-                                    HorizontalAlignment="Left"
-                                    MouseLeftButtonDown="VersionText_MouseLeftButtonDown"
-                                    Cursor="Arrow">
-                                <TextBlock Text="{Binding ApplicationVersion}"
-                                           Style="{StaticResource FieldValueTextStyle}"/>
-                            </Border>
-                        </Grid>
-
-                        <Grid Margin="0,0,0,14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.ProjectUrl}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <Button Grid.Column="1"
-                                    HorizontalAlignment="Left"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Style="{DynamicResource TextButtonStyle}"
-                                    Command="{Binding OpenProjectUrlCommand}">
-                                <TextBlock Text="https://github.com/RoyZ-iwnl/GHPC-Mod-Manager/"
-                                           TextWrapping="Wrap"
-                                           Foreground="{DynamicResource AccentBrush}"/>
-                            </Button>
-                        </Grid>
-
-                        <WrapPanel Margin="0,0,0,8">
-                            <Button Content="{x:Static resources:Strings.CheckForUpdates}"
-                                    Command="{Binding CheckForAppUpdatesCommand}"
-                                    Margin="0,0,12,8"
-                                    Style="{DynamicResource OutlinedButtonStyle}"/>
-                            <Button Content="{x:Static resources:Strings.ShowAnnouncement}"
-                                    Command="{Binding ShowAnnouncementCommand}"
-                                    Margin="0,0,12,8"
-                                    Style="{DynamicResource OutlinedButtonStyle}"/>
-                            <Button Content="{x:Static resources:Strings.FollowBilibili}"
-                                    Command="{Binding OpenFollowBilibiliCommand}"
-                                    Margin="0,0,12,8"
-                                    Style="{DynamicResource FilledButtonStyle}"
-                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
-                            <Button Content="{x:Static resources:Strings.JoinGhpcCommunity}"
-                                    Command="{Binding OpenGhpcCommunityCommand}"
-                                    Margin="0,0,0,8"
-                                    Style="{DynamicResource FilledButtonStyle}"
-                                    Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
                         </WrapPanel>
                     </StackPanel>
                 </Border>

@@ -42,6 +42,7 @@ public partial class ModBrowserViewModel : ObservableObject
     private readonly ISettingsService _settingsService;
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IUpdateService _updateService;
+    private readonly IProcessService _processService;
 
     // 全量MOD列表（由MainViewModel注入）
     private List<ModViewModel> _allMods = new();
@@ -57,6 +58,9 @@ public partial class ModBrowserViewModel : ObservableObject
 
     [ObservableProperty]
     private string _filteredModCount = string.Empty;
+
+    [ObservableProperty]
+    private bool _isGameRunning;
 
     [ObservableProperty]
     private bool _isDownloading;
@@ -107,13 +111,20 @@ public partial class ModBrowserViewModel : ObservableObject
 
     public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
-    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IUpdateService updateService)
+    public ModBrowserViewModel(IModManagerService modManagerService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IUpdateService updateService, IProcessService processService)
     {
         _modManagerService = modManagerService;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _melonLoaderService = melonLoaderService;
         _updateService = updateService;
+        _processService = processService;
+
+        IsGameRunning = _processService.IsGameRunning;
+        _processService.GameRunningStateChanged += (s, e) =>
+        {
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => IsGameRunning = e);
+        };
 
         // 从设置中读取筛选状态
         _showUninstalledOnly = _settingsService.Settings.ShowUninstalledOnly;
@@ -381,7 +392,7 @@ public partial class ModBrowserViewModel : ObservableObject
         }
     }
 
-    private bool CanExecuteModOps() => !IsDownloading;
+    private bool CanExecuteModOps() => !IsDownloading && !IsGameRunning;
 
     /// <summary>
     /// 由MainViewModel调用，推送检测到的新增MOD
@@ -418,6 +429,12 @@ public partial class ModBrowserViewModel : ObservableObject
     private void DismissNewModsBanner()
     {
         IsNewModsBannerDismissed = true;
+    }
+
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        InstallModCommand.NotifyCanExecuteChanged();
+        RedownloadInstallCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnIsDownloadingChanged(bool value)

@@ -72,6 +72,7 @@ namespace GHPC_Mod_Manager.Views
             OpenFolderButton.Visibility = Visibility.Collapsed;
             IgnoreButton.Visibility = Visibility.Collapsed;
             GoToSettingsButton.Visibility = Visibility.Collapsed;
+            LaunchAppButton.Visibility = Visibility.Collapsed;
 
             // 根据类型显示按钮
             switch (button)
@@ -117,6 +118,13 @@ namespace GHPC_Mod_Manager.Views
                     GoToSettingsButton.Visibility = Visibility.Visible;
                     GoToSettingsButton.Content = Strings.CheckForUpdates;
                     GoToSettingsButton.Margin = new Thickness(8, 0, 0, 0);
+                    break;
+                case MessageDialogButton.LaunchAppIgnore:
+                    IgnoreButton.Visibility = Visibility.Visible;
+                    IgnoreButton.Content = Strings.PreviousInstallationIgnore;
+                    LaunchAppButton.Visibility = Visibility.Visible;
+                    LaunchAppButton.Content = Strings.PreviousInstallationLaunchApp;
+                    LaunchAppButton.Margin = new Thickness(8, 0, 0, 0);
                     break;
             }
         }
@@ -172,6 +180,7 @@ namespace GHPC_Mod_Manager.Views
                 MessageDialogButton.YesNo => YesButton,
                 MessageDialogButton.YesNoCancel => YesButton,
                 MessageDialogButton.OpenFolderIgnore => OpenFolderButton,
+                MessageDialogButton.LaunchAppIgnore => LaunchAppButton,
                 MessageDialogButton.GoToSettingsCancel => GoToSettingsButton,
                 _ => null
             };
@@ -241,6 +250,15 @@ namespace GHPC_Mod_Manager.Views
         }
 
         /// <summary>
+        /// 启动旧应用按钮点击
+        /// </summary>
+        private void LaunchApp_Click(object sender, RoutedEventArgs e)
+        {
+            _result = MessageDialogResult.LaunchApp;
+            Close();
+        }
+
+        /// <summary>
         /// 标题栏拖拽移动窗口
         /// </summary>
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -286,6 +304,10 @@ namespace GHPC_Mod_Manager.Views
                 else if (_buttons == MessageDialogButton.OpenFolderIgnore)
                 {
                     _result = MessageDialogResult.OpenFolder;
+                }
+                else if (_buttons == MessageDialogButton.LaunchAppIgnore)
+                {
+                    _result = MessageDialogResult.LaunchApp;
                 }
                 else if (_buttons == MessageDialogButton.GoToSettingsCancel)
                 {

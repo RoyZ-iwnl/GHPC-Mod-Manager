@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:GHPC_Mod_Manager"
         xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
         xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
+        xmlns:helpers="clr-namespace:GHPC_Mod_Manager.Helpers"
         mc:Ignorable="d"
         Title="GHPC Mod Manager"
         MinHeight="760"
@@ -40,6 +41,8 @@
         <controls:WindowTitleBar Grid.Row="0"/>
 
         <!-- 主内容区域 -->
-        <ContentPresenter Grid.Row="1" Content="{Binding CurrentView}"/>
+        <ContentPresenter Grid.Row="1"
+                          Content="{Binding CurrentView}"
+                          helpers:PageTransitionBehavior.IsMainTransition="True"/>
     </Grid>
 </Window>

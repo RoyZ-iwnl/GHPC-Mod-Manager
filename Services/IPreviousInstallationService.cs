@@ -18,4 +18,16 @@ public interface IPreviousInstallationService
     /// </summary>
     /// <returns>true 表示存在旧安装</returns>
     bool HasPreviousInstallation();
+
+    /// <summary>
+    /// 获取旧安装的exe文件完整路径
+    /// </summary>
+    /// <returns>exe路径，不存在则返回 null</returns>
+    string? GetPreviousAppExePath();
+
+    /// <summary>
+    /// 获取旧安装的ProductVersion
+    /// </summary>
+    /// <returns>版本字符串，无法获取则返回 null</returns>
+    string? GetPreviousAppVersion();
 }

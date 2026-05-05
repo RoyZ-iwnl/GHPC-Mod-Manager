@@ -30,8 +30,8 @@
     <!-- 下拉箭头 -->
     <Geometry x:Key="IconChevronDown">M 0,0 L 4,4 L 8,0</Geometry>
 
-    <!-- 火花/新增 -->
-    <Geometry x:Key="IconSparkle">M 12,2 L 14.5,9 L 22,9.5 L 16.5,14.5 L 18.5,22 L 12,17.5 L 5.5,22 L 7.5,14.5 L 2,9.5 L 9.5,9 Z</Geometry>
+    <!-- 左大右小双星/更新 -->
+    <Geometry x:Key="IconSparkle">M 7,6 L 8.5,10.5 L 13,12 L 8.5,13.5 L 7,18 L 5.5,13.5 L 1,12 L 5.5,10.5 Z M 18,7 L 18.9,9.1 L 21,10 L 18.9,10.9 L 18,13 L 17.1,10.9 L 15,10 L 17.1,9.1 Z</Geometry>
 
     <!-- 下载箭头 -->
     <Geometry x:Key="IconDownload">M 12,2 L 12,16 M 6,12 L 12,18 L 18,12 M 4,22 L 20,22</Geometry>
@@ -39,7 +39,7 @@
     <!-- 地球/翻译 -->
     <Geometry x:Key="IconGlobe">M 12,2 A 10,10 0 1,1 12,22 A 10,10 0 1,1 12,2 Z M 2,12 L 22,12 M 12,2 Q 8,7 8,12 Q 8,17 12,22 M 12,2 Q 16,7 16,12 Q 16,17 12,22</Geometry>
 
-    <!-- 上架/商店 -->
+    <!-- 上架/商店 没实际用-->
     <Geometry x:Key="IconStore">M 4,4 L 4,10 A 2,2 0 0,0 8,10 L 8,4 M 8,4 L 8,10 A 2,2 0 0,0 12,10 L 12,4 M 12,4 L 12,10 A 2,2 0 0,0 16,10 L 16,4 M 16,4 L 16,10 A 2,2 0 0,0 20,10 L 20,4 M 2,4 L 22,4 M 4,10 L 4,20 L 20,20 L 20,10</Geometry>
 
     <!-- 下架/移除 -->
@@ -50,5 +50,8 @@
 
     <!-- 更新/旋转箭头 -->
     <Geometry x:Key="IconUpdate">M 4,12 A 8,8 0 0,1 18.4,5.6 M 20,12 A 8,8 0 0,1 5.6,18.4 M 18.4,5.6 L 18.4,10 M 18.4,5.6 L 14,5.6 M 5.6,18.4 L 5.6,14 M 5.6,18.4 L 10,18.4</Geometry>
+
+    <!-- 返回/左箭头 -->
+    <Geometry x:Key="IconArrowLeft">M 18,12 L 5,12 M 11,5 L 5,12 L 11,19</Geometry>
 
 </ResourceDictionary>

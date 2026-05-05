@@ -1077,6 +1077,9 @@
   <data name="GameRunningCannotOperate" xml:space="preserve">
     <value>游戏运行中，无法操作</value>
   </data>
+  <data name="CannotChangeGamePathWhileRunning" xml:space="preserve">
+    <value>游戏运行中，无法更改游戏路径</value>
+  </data>
   <data name="Ready" xml:space="preserve">
     <value>就绪</value>
   </data>
@@ -2659,7 +2662,7 @@
     <value>无匹配</value>
   </data>
   <data name="GoBack" xml:space="preserve">
-    <value>← 返回</value>
+    <value>返回</value>
   </data>
   <data name="ModDescription" xml:space="preserve">
     <value>简介</value>
@@ -2976,7 +2979,7 @@
     <value>请复现模组故障后关闭游戏再打包。</value>
   </data>
   <data name="ModInfoDumperPrivacyNotice" xml:space="preserve">
-    <value>打包范围：模组列表、游戏日志、系统配置（不涉及隐私信息）</value>
+    <value>打包范围：模组列表、游戏日志、系统配置、游戏注册表（不涉及隐私信息）</value>
   </data>
   <data name="ModInfoFiles" xml:space="preserve">
     <value>文件：</value>
@@ -3014,6 +3017,15 @@
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>正在计算文件哈希：{0}</value>
   </data>
+  <data name="CollectingRegistryInfo" xml:space="preserve">
+    <value>正在收集注册表信息...</value>
+  </data>
+  <data name="RegistryInfoFile" xml:space="preserve">
+    <value>注册表信息</value>
+  </data>
+  <data name="RegistryKeyNotFound" xml:space="preserve">
+    <value>注册表项不存在：{0}</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>是</value>
   </data>
@@ -3045,5 +3057,23 @@
   </data>
   <data name="RequiredManagerVersionHint" xml:space="preserve">
     <value>所需的最低模组管理器版本（可选，如 1.2.0）</value>
+  </data>
+  <data name="PreviousInstallationLaunchApp" xml:space="preserve">
+    <value>启动旧应用</value>
+  </data>
+  <data name="PreviousInstallationDetectedMessageNew" xml:space="preserve">
+    <value>检测到您曾经在别的目录使用过模组管理器，您可以启动旧版本继续使用，或忽略此提示设置当前实例。</value>
+  </data>
+  <data name="OpenWebsiteOnStartup" xml:space="preserve">
+    <value>启动时打开官网</value>
+  </data>
+  <data name="ConfirmDisableWebsiteOnStartup" xml:space="preserve">
+    <value>网站上的谷歌广告会支持作者，是否确认关闭？</value>
+  </data>
+  <data name="SupportAuthor" xml:space="preserve">
+    <value>支持作者</value>
+  </data>
+  <data name="FailedToOpenSupportPage" xml:space="preserve">
+    <value>打开支持页面失败</value>
   </data>
 </root>

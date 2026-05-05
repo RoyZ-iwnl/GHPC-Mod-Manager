@@ -7,23 +7,86 @@ using GHPC_Mod_Manager.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace GHPC_Mod_Manager
 {
     public partial class App : Application
     {
         private IHost? _host;
+        private static Mutex? _mutex;
+        private const string MutexName = "GHPC_Mod_Manager_SingleInstance_Mutex";
+
+        // 待处理的协议激活参数
+        private static string[]? _pendingProtocolArgs;
+
+        // Windows API 用于激活已运行的实例
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_RESTORE = 9;
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            // 单实例检测
+            bool createdNew;
+            _mutex = new Mutex(true, MutexName, out createdNew);
+
+            // 如果命令行有参数，说明可能是协议激活
+            bool hasProtocolArgs = e.Args.Length > 0 && e.Args.Any(arg => arg.StartsWith("ghpcmm://", StringComparison.OrdinalIgnoreCase));
+
+            if (!createdNew)
+            {
+                // 已有实例在运行
+                Task<bool>? protocolSendTask = null;
+                if (hasProtocolArgs)
+                {
+                    var protocolArg = e.Args.FirstOrDefault(arg => arg.StartsWith("ghpcmm://", StringComparison.OrdinalIgnoreCase));
+                    if (protocolArg != null)
+                    {
+                        protocolSendTask = ProtocolIpcClient.SendAsync(protocolArg);
+                    }
+                }
+
+                // 找到并激活已运行的实例窗口
+                IntPtr hwnd = FindMainWindow();
+                if (hwnd != IntPtr.Zero)
+                {
+                    ShowWindow(hwnd, SW_RESTORE);
+                    SetForegroundWindow(hwnd);
+                }
+
+                if (protocolSendTask != null)
+                {
+                    await protocolSendTask;
+                }
+
+                _mutex?.Dispose();
+                _mutex = null;
+                Shutdown();
+                return;
+            }
+
             // 解析命令行参数
             CommandLineArgs.Parse(e.Args);
-            
+
+            // 保存协议参数（在服务初始化完成后处理）
+            if (hasProtocolArgs)
+            {
+                _pendingProtocolArgs = e.Args;
+            }
+
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
@@ -47,6 +110,8 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IDialogService, DialogService>();
                     services.AddSingleton<IPreviousInstallationService, PreviousInstallationService>();
                     services.AddSingleton<IModCatalogStateService, ModCatalogStateService>();
+                    services.AddSingleton<IProtocolActivationService, ProtocolActivationService>();
+                    services.AddSingleton<IProtocolIpcServer, NamedPipeProtocolIpcServer>();
                     services.ConfigureHttpClientDefaults(builder =>
                     {
                         builder.ConfigureHttpClient(client =>
@@ -122,6 +187,10 @@ namespace GHPC_Mod_Manager
                 .Build();
 
             await _host.StartAsync();
+
+            // 启动协议IPC服务端
+            var protocolIpcServer = _host.Services.GetRequiredService<IProtocolIpcServer>();
+            protocolIpcServer.Start();
 
             var settingsService = _host.Services.GetRequiredService<ISettingsService>();
             await settingsService.LoadSettingsAsync();
@@ -203,6 +272,35 @@ namespace GHPC_Mod_Manager
             MainWindow = mainWindow;
             mainWindow.Show();
 
+            // TODO: 启用时取消注释 - 启动时打开官网
+            // if (settingsService.Settings.OpenWebsiteOnStartup)
+            // {
+            //     try
+            //     {
+            //         Process.Start(new ProcessStartInfo
+            //         {
+            //             FileName = "https://ghpcmm.link/",
+            //             UseShellExecute = true
+            //         });
+            //     }
+            //     catch { }
+            // }
+
+            // 注册自定义URL协议（首次运行时）
+            RegisterUrlProtocol();
+
+            // 处理协议激活（在主窗口显示后执行）
+            if (_pendingProtocolArgs != null)
+            {
+                var protocolArg = _pendingProtocolArgs.FirstOrDefault(arg => arg.StartsWith("ghpcmm://", StringComparison.OrdinalIgnoreCase));
+                if (protocolArg != null)
+                {
+                    var protocolActivationService = _host.Services.GetRequiredService<IProtocolActivationService>();
+                    await protocolActivationService.HandleAsync(protocolArg);
+                }
+                _pendingProtocolArgs = null;
+            }
+
             // 非首次运行时保存当前程序路径到注册表
             if (!settingsService.Settings.IsFirstRun)
             {
@@ -243,6 +341,10 @@ namespace GHPC_Mod_Manager
                         disposableTranslation.Dispose();
                     }
 
+                    // Stop protocol IPC server
+                    var protocolIpcServer = _host.Services.GetService<IProtocolIpcServer>();
+                    protocolIpcServer?.Dispose();
+
                     await _host.StopAsync(TimeSpan.FromSeconds(5));
                     _host.Dispose();
                 }
@@ -252,14 +354,50 @@ namespace GHPC_Mod_Manager
                 }
             }
 
+            // 释放 Mutex（必须在 Environment.Exit 之前）
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
+            _mutex = null;
+
             // Force exit if needed
             System.Environment.Exit(0);
         }
 
         public static T GetService<T>() where T : class
         {
-            return ((App)Current)._host?.Services.GetService<T>() 
+            return ((App)Current)._host?.Services.GetService<T>()
                 ?? throw new InvalidOperationException($"Service {typeof(T).Name} not found");
+        }
+
+        /// <summary>
+        /// 释放单实例Mutex并启动旧版本应用，然后关闭当前实例
+        /// </summary>
+        /// <param name="previousExePath">旧版本exe的完整路径</param>
+        public static void ReleaseMutexAndLaunchPrevious(string previousExePath)
+        {
+            // 必须先释放Mutex，否则旧exe启动后会检测到Mutex已存在而立即退出
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
+            _mutex = null;
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = previousExePath,
+                    UseShellExecute = true,
+                    WorkingDirectory = Path.GetDirectoryName(previousExePath)
+                });
+            }
+            catch
+            {
+                // 启动失败时保留当前实例，不继续退出
+                return;
+            }
+
+            // 启动成功后关闭当前实例
+            Current.Shutdown();
+            System.Environment.Exit(0);
         }
 
         private static bool ValidateServerCertificate(X509Chain? chain, SslPolicyErrors sslPolicyErrors)
@@ -285,6 +423,71 @@ namespace GHPC_Mod_Manager
             }
 
             return false;
+        }
+
+        // 查找主窗口句柄
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
+
+        private IntPtr FindMainWindow()
+        {
+            IntPtr result = IntPtr.Zero;
+
+            EnumWindows((hWnd, lParam) =>
+            {
+                int length = GetWindowTextLength(hWnd);
+                if (length == 0) return true;
+
+                var sb = new System.Text.StringBuilder(length + 1);
+                GetWindowText(hWnd, sb, sb.Capacity);
+
+                string title = sb.ToString();
+                // 查找 GHPC Mod Manager 主窗口
+                if (title.Contains("GHPC Mod Manager") && IsWindowVisible(hWnd))
+                {
+                    result = hWnd;
+                    return false; // 停止枚举
+                }
+                return true;
+            }, IntPtr.Zero);
+
+            return result;
+        }
+
+        // 注册自定义URL协议到注册表
+        private void RegisterUrlProtocol()
+        {
+            try
+            {
+                var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+                if (string.IsNullOrEmpty(exePath)) return;
+
+                using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\ghpcmm"))
+                {
+                    key?.SetValue("", "URL:GHPC Mod Manager Protocol");
+                    key?.SetValue("URL Protocol", "");
+                }
+
+                using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\ghpcmm\shell\open\command"))
+                {
+                    key?.SetValue("", $"\"{exePath}\" \"%1\"");
+                }
+            }
+            catch
+            {
+                // 忽略协议注册错误，应用仍可正常运行
+            }
         }
     }
 }

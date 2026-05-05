@@ -62,14 +62,34 @@
                     </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0">
-                    <Border Background="{DynamicResource AccentSoftBrush}"
-                            CornerRadius="{DynamicResource RadiusSmall}"
+                    <Border CornerRadius="{DynamicResource RadiusSmall}"
                             Padding="10,6"
                             HorizontalAlignment="Left">
-                        <TextBlock Text="Gunner HEAT PC!"
-                                   Foreground="{DynamicResource AccentBrush}"
-                                   FontWeight="SemiBold"
-                                   FontSize="{DynamicResource LabelLarge}"/>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Source={x:Static helpers:ThemeTracker.Instance}, Path=CurrentTheme}" Value="Endfield">
+                                        <Setter Property="Background" Value="{DynamicResource NavRailBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock FontWeight="SemiBold"
+                                   FontSize="{DynamicResource LabelLarge}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="Gunner HEAT PC!"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Source={x:Static helpers:ThemeTracker.Instance}, Path=CurrentTheme}" Value="Endfield">
+                                            <Setter Property="Text" Value="ENDFIELD"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </Border>
 
                     <TextBlock Margin="0,16,0,6"
@@ -154,7 +174,12 @@
                         </WrapPanel>
                         <Button Content="{x:Static resources:Strings.StartGame}"
                                 Command="{Binding LaunchGameCommand}"
-                                IsEnabled="{Binding IsGameRunning, Converter={StaticResource InvBool}}"
+                                Visibility="{Binding IsGameRunning, Converter={StaticResource InvBoolToVis}}"
+                                Margin="0,4,8,4"
+                                Style="{DynamicResource FilledButtonStyle}"/>
+                        <Button Content="{x:Static resources:Strings.StopGame}"
+                                Command="{Binding StopGameCommand}"
+                                Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}"
                                 Margin="0,4,8,4"
                                 Style="{DynamicResource FilledButtonStyle}"/>
                         <Button Content="{x:Static resources:Strings.OpenGameFolder}"
@@ -300,8 +325,8 @@
                     Margin="0,12,0,12"
                     Style="{StaticResource PageSurfaceCardStyle}"
                     Padding="0">
-                <ContentControl Margin="16"
-                                Content="{Binding CurrentPageView}"/>
+                <helpers:TransitionContentControl Margin="16"
+                                              Content="{Binding CurrentPageView}"/>
             </Border>
 
             <Border Grid.Row="3"
@@ -391,32 +416,5 @@
             </Border>
         </Grid>
 
-        <Grid Grid.ColumnSpan="2"
-              Background="{DynamicResource ScrimBrush}"
-              Opacity="0.92"
-              Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
-            <Border Background="{DynamicResource SurfaceBrush}"
-                    BorderBrush="{DynamicResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource RadiusLarge}"
-                    Padding="30"
-                    Width="440"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                <StackPanel>
-                    <TextBlock Text="{x:Static resources:Strings.GameRunning}"
-                               Style="{StaticResource PageTitleTextStyle}"
-                               TextAlignment="Center"/>
-                    <TextBlock Margin="0,12,0,20"
-                               Text="{x:Static resources:Strings.GameRunningCannotOperate}"
-                               Style="{StaticResource PageSubtitleTextStyle}"
-                               TextAlignment="Center"/>
-                    <Button Content="{x:Static resources:Strings.StopGame}"
-                            Command="{Binding StopGameCommand}"
-                            HorizontalAlignment="Center"
-                            Style="{DynamicResource FilledButtonStyle}"/>
-                </StackPanel>
-            </Border>
-        </Grid>
     </Grid>
 </UserControl>

@@ -1657,7 +1657,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOperations))]
+    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
     private void OpenSettings()
     {
         _navigationService.NavigateToSettings();
@@ -2254,7 +2254,6 @@ public partial class MainViewModel : ObservableObject
         // Update all commands that should be disabled during operations
         LaunchGameCommand?.NotifyCanExecuteChanged();
         StopGameCommand?.NotifyCanExecuteChanged();
-        OpenSettingsCommand?.NotifyCanExecuteChanged();
         InstallTranslationCommand?.NotifyCanExecuteChanged();
         UpdateTranslationCommand?.NotifyCanExecuteChanged();
         UpdateTranslationPluginCommand?.NotifyCanExecuteChanged();

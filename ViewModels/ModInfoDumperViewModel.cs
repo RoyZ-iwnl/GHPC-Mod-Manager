@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
 using GHPC_Mod_Manager.Services;
+using Microsoft.Win32;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -178,6 +179,14 @@ public partial class ModInfoDumperViewModel : ObservableObject
             await File.WriteAllTextAsync(systemConfigPath, GenerateSystemConfigInfo());
             collectedFiles.Add((systemConfigPath, "system_config.txt"));
             _loggingService.LogInfo(Strings.ReadingFileInfo, "system_config.txt");
+
+            // 尝试收集游戏注册表信息
+            _loggingService.LogInfo(Strings.CollectingRegistryInfo);
+            var registryInfoPath = Path.Combine(tempDir, "registry_info.txt");
+            var registryContent = CollectGhpcRegistryInfo();
+            await File.WriteAllTextAsync(registryInfoPath, registryContent);
+            collectedFiles.Add((registryInfoPath, "registry_info.txt"));
+            _loggingService.LogInfo(Strings.ReadingFileInfo, "registry_info.txt");
 
             // 尝试收集程序运行日志
             var today = DateTime.Now;
@@ -554,6 +563,74 @@ public partial class ModInfoDumperViewModel : ObservableObject
             }
         }
         catch { sb.AppendLine("Storage: Unable to retrieve"); }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// 收集GHPC游戏注册表信息
+    /// </summary>
+    private static string CollectGhpcRegistryInfo()
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("=== GHPC Registry Info ===");
+        sb.AppendLine($"Collected: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine();
+
+        const string registryPath = @"Software\Radian Simulations LLC\GHPC";
+
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(registryPath);
+            if (key == null)
+            {
+                sb.AppendLine(string.Format(Strings.RegistryKeyNotFound, registryPath));
+                return sb.ToString();
+            }
+
+            sb.AppendLine($"Registry Key: {registryPath}");
+            sb.AppendLine();
+
+            // 获取所有值
+            sb.AppendLine("--- Values ---");
+            foreach (var valueName in key.GetValueNames())
+            {
+                var value = key.GetValue(valueName);
+                var valueType = value?.GetType().Name ?? "NULL";
+                var valueStr = value?.ToString() ?? "(null)";
+                sb.AppendLine($"{valueName} ({valueType}): {valueStr}");
+            }
+
+            // 获取所有子键
+            sb.AppendLine();
+            sb.AppendLine("--- SubKeys ---");
+            foreach (var subKeyName in key.GetSubKeyNames())
+            {
+                sb.AppendLine($"[SubKey] {subKeyName}");
+                try
+                {
+                    using var subKey = key.OpenSubKey(subKeyName);
+                    if (subKey != null)
+                    {
+                        foreach (var valueName in subKey.GetValueNames())
+                        {
+                            var value = subKey.GetValue(valueName);
+                            var valueType = value?.GetType().Name ?? "NULL";
+                            var valueStr = value?.ToString() ?? "(null)";
+                            sb.AppendLine($"    {valueName} ({valueType}): {valueStr}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    sb.AppendLine($"    (Error reading subkey: {ex.Message})");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            sb.AppendLine($"Error accessing registry: {ex.Message}");
+        }
 
         return sb.ToString();
     }

@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
+        <converters:InverseBooleanConverter x:Key="InvBool"/>
         <converters:StringToVisibilityConverter x:Key="StrToVis"/>
         <converters:StringToInverseVisibilityConverter x:Key="StrToInvVis"/>
 
@@ -89,7 +90,7 @@
                         Content="{x:Static resources:Strings.GoBack}"
                         Command="{Binding GoBackCommand}"
                         VerticalAlignment="Top"
-                        Style="{DynamicResource OutlinedButtonStyle}"/>
+                        Style="{DynamicResource BackButtonStyle}"/>
             </Grid>
         </Border>
 
@@ -196,16 +197,27 @@
                             <TextBlock Text="{x:Static resources:Strings.Actions}"
                                        Style="{StaticResource PageSectionTitleTextStyle}"/>
 
-                            <StackPanel Margin="0,16,0,0"
-                                        Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
-                                <Button Content="{x:Static resources:Strings.Toggle}"
-                                        Command="{Binding ToggleCommand}"
-                                        Margin="0,0,0,10"
-                                        Style="{DynamicResource OutlinedButtonStyle}"/>
-                                <Button Content="{x:Static resources:Strings.Uninstall}"
-                                        Command="{Binding UninstallManualModCommand}"
-                                        Style="{DynamicResource FilledButtonStyle}"/>
-                            </StackPanel>
+                            <Grid Margin="0,16,0,0"
+                                  Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource BoolToVis}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <Button Content="{x:Static resources:Strings.Uninstall}"
+                                            Command="{Binding UninstallManualModCommand}"
+                                            Style="{DynamicResource FilledButtonStyle}"/>
+                                </StackPanel>
+
+                                <CheckBox Grid.Column="1"
+                                          Style="{DynamicResource ToggleSwitchStyle}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          IsChecked="{Binding Mod.IsEnabled, Mode=OneWay}"
+                                          IsEnabled="{Binding IsGameRunning, Converter={StaticResource InvBool}}"
+                                          Command="{Binding ToggleCommand}"/>
+                            </Grid>
 
                             <StackPanel Margin="0,16,0,0"
                                         Visibility="{Binding Mod.IsUnsupportedManualMod, Converter={StaticResource InvBoolToVis}}">
@@ -246,31 +258,42 @@
                                             Visibility="{Binding HasSelectedReleaseBackup, Converter={StaticResource InvBoolToVis}}"/>
                                 </WrapPanel>
 
-                                <WrapPanel Margin="0,18,0,0"
-                                           Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
-                                    <Button Content="{x:Static resources:Strings.Update}"
-                                            Command="{Binding UpdateCommand}"
-                                            Margin="0,0,8,8"
-                                            Style="{DynamicResource FilledButtonStyle}"
-                                            Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}"/>
-                                    <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
-                                            Command="{Binding InstallSelectedVersionCommand}"
-                                            Margin="0,0,8,8"
-                                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                                    <Button Content="{x:Static resources:Strings.Toggle}"
-                                            Command="{Binding ToggleCommand}"
-                                            Margin="0,0,8,8"
-                                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                                    <Button Content="{x:Static resources:Strings.Configure}"
-                                            Command="{Binding ConfigureCommand}"
-                                            Margin="0,0,8,8"
-                                            Style="{DynamicResource OutlinedButtonStyle}"
-                                            Visibility="{Binding Mod.HasConfiguration, Converter={StaticResource BoolToVis}}"/>
-                                    <Button Content="{x:Static resources:Strings.Uninstall}"
-                                            Command="{Binding UninstallCommand}"
-                                            Margin="0,0,0,8"
-                                            Style="{DynamicResource OutlinedButtonStyle}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,18,0,0"
+                                      Visibility="{Binding Mod.IsInstalled, Converter={StaticResource BoolToVis}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <WrapPanel Grid.Column="0">
+                                        <Button Content="{x:Static resources:Strings.Update}"
+                                                Command="{Binding UpdateCommand}"
+                                                Margin="0,0,8,8"
+                                                Style="{DynamicResource FilledButtonStyle}"
+                                                Visibility="{Binding Mod.CanUpdate, Converter={StaticResource BoolToVis}}"/>
+                                        <Button Content="{x:Static resources:Strings.InstallSpecificVersion}"
+                                                Command="{Binding InstallSelectedVersionCommand}"
+                                                Margin="0,0,8,8"
+                                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                                        <Button Content="{x:Static resources:Strings.Configure}"
+                                                Command="{Binding ConfigureCommand}"
+                                                Margin="0,0,8,8"
+                                                Style="{DynamicResource OutlinedButtonStyle}"
+                                                Visibility="{Binding Mod.HasConfiguration, Converter={StaticResource BoolToVis}}"/>
+                                        <Button Content="{x:Static resources:Strings.Uninstall}"
+                                                Command="{Binding UninstallCommand}"
+                                                Margin="0,0,0,8"
+                                                Style="{DynamicResource OutlinedButtonStyle}"/>
+                                    </WrapPanel>
+
+                                    <CheckBox Grid.Column="1"
+                                              Style="{DynamicResource ToggleSwitchStyle}"
+                                              HorizontalAlignment="Right"
+                                              VerticalAlignment="Center"
+                                              IsChecked="{Binding Mod.IsEnabled, Mode=OneWay}"
+                                              IsEnabled="{Binding IsGameRunning, Converter={StaticResource InvBool}}"
+                                              Command="{Binding ToggleCommand}"/>
+                                </Grid>
 
                                 <Button Content="{x:Static resources:Strings.ViewOnGitHub}"
                                         Command="{Binding OpenGitHubCommand}"
@@ -317,25 +340,34 @@
                                                                Foreground="{DynamicResource OnSurfaceBrush}"/>
                                                 </Button>
 
-                                                <Border Grid.Column="1"
-                                                        Style="{DynamicResource BadgeBorderStyle}"
-                                                        Background="{DynamicResource SuccessContainerBrush}"
-                                                        BorderBrush="{DynamicResource SuccessBrush}"
-                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                               Style="{StaticResource BadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnSuccessBrush}"/>
-                                                </Border>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                            Background="{DynamicResource SuccessContainerBrush}"
+                                                            BorderBrush="{DynamicResource SuccessBrush}"
+                                                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                        <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                                   Style="{StaticResource BadgeTextStyle}"
+                                                                   Foreground="{DynamicResource OnSuccessBrush}"/>
+                                                    </Border>
 
-                                                <Border Grid.Column="1"
-                                                        Style="{DynamicResource BadgeBorderStyle}"
-                                                        Background="{DynamicResource ErrorContainerBrush}"
-                                                        BorderBrush="{DynamicResource ErrorBrush}"
-                                                        Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.NotInstalled}"
-                                                               Style="{StaticResource BadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
-                                                </Border>
+                                                    <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                            Background="{DynamicResource ErrorContainerBrush}"
+                                                            BorderBrush="{DynamicResource ErrorBrush}"
+                                                            Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
+                                                        <TextBlock Text="{x:Static resources:Strings.NotInstalled}"
+                                                                   Style="{StaticResource BadgeTextStyle}"
+                                                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                    </Border>
+
+                                                    <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                            Background="{DynamicResource ErrorContainerBrush}"
+                                                            BorderBrush="{DynamicResource ErrorBrush}"
+                                                            Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
+                                                        <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
+                                                                   Style="{StaticResource BadgeTextStyle}"
+                                                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                    </Border>
+                                                </StackPanel>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -374,15 +406,25 @@
                                                                Foreground="{DynamicResource OnSurfaceBrush}"/>
                                                 </Button>
 
-                                                <Border Grid.Column="1"
-                                                        Style="{DynamicResource BadgeBorderStyle}"
-                                                        Background="{DynamicResource ErrorContainerBrush}"
-                                                        BorderBrush="{DynamicResource ErrorBrush}"
-                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                               Style="{StaticResource BadgeTextStyle}"
-                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
-                                                </Border>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                            Background="{DynamicResource ErrorContainerBrush}"
+                                                            BorderBrush="{DynamicResource ErrorBrush}"
+                                                            Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                        <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                                   Style="{StaticResource BadgeTextStyle}"
+                                                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                    </Border>
+
+                                                    <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                            Background="{DynamicResource ErrorContainerBrush}"
+                                                            BorderBrush="{DynamicResource ErrorBrush}"
+                                                            Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
+                                                        <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
+                                                                   Style="{StaticResource BadgeTextStyle}"
+                                                                   Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                    </Border>
+                                                </StackPanel>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

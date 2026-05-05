@@ -121,6 +121,10 @@ public class AppSettings
     /// </summary>
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public bool? IsEndfieldThemeUnlocked { get; set; }
+    /// <summary>
+    /// 启动时打开官网（默认 true）
+    /// </summary>
+    public bool OpenWebsiteOnStartup { get; set; } = true;
 }
 
 /// <summary>

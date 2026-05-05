@@ -360,24 +360,54 @@ public partial class SetupWizardViewModel : ObservableObject
                     && _previousInstallationService.HasPreviousInstallation())
                 {
                     var previousPath = _previousInstallationService.GetPreviousAppPath()!;
-                    var result = MessageDialogHelper.Show(
-                        Strings.PreviousInstallationDetectedMessage,
-                        Strings.PreviousInstallationDetectedTitle,
-                        MessageDialogButton.OpenFolderIgnore,
-                        MessageDialogImage.Warning);
+                    var previousExePath = _previousInstallationService.GetPreviousAppExePath();
+                    var previousVersion = _previousInstallationService.GetPreviousAppVersion();
 
-                    if (result == MessageDialogResult.OpenFolder)
+                    // 检查旧版本是否 >= 1.3.5（支持IPC单实例切换）
+                    bool canLaunchPrevious = false;
+                    if (!string.IsNullOrEmpty(previousVersion) && !string.IsNullOrEmpty(previousExePath))
                     {
-                        // 打开旧目录，不退出程序（让用户自己决定）
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = previousPath,
-                            UseShellExecute = true,
-                            Verb = "open"
-                        });
-                        return; // 不继续跳转
+                        canLaunchPrevious = IsVersionAtLeast(previousVersion, "1.3.5");
                     }
-                    // Ignore → 继续正常进入步骤1
+
+                    if (canLaunchPrevious)
+                    {
+                        // 旧版本 >= 1.3.5，显示 [启动旧应用] [忽略] 按钮
+                        var result = MessageDialogHelper.Show(
+                            Strings.PreviousInstallationDetectedMessageNew,
+                            Strings.PreviousInstallationDetectedTitle,
+                            MessageDialogButton.LaunchAppIgnore,
+                            MessageDialogImage.Warning);
+
+                        if (result == MessageDialogResult.LaunchApp)
+                        {
+                            // 释放Mutex并启动旧版本，然后退出当前实例
+                            App.ReleaseMutexAndLaunchPrevious(previousExePath!);
+                            return; // 不会执行到这里，App已退出
+                        }
+                        // Ignore → 继续正常进入步骤1
+                    }
+                    else
+                    {
+                        // 旧版本 < 1.3.5 或无法获取版本，保持原有 [打开目录] [忽略] 行为
+                        var result = MessageDialogHelper.Show(
+                            Strings.PreviousInstallationDetectedMessage,
+                            Strings.PreviousInstallationDetectedTitle,
+                            MessageDialogButton.OpenFolderIgnore,
+                            MessageDialogImage.Warning);
+
+                        if (result == MessageDialogResult.OpenFolder)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = previousPath,
+                                UseShellExecute = true,
+                                Verb = "open"
+                            });
+                            return; // 不继续跳转
+                        }
+                        // Ignore → 继续正常进入步骤1
+                    }
                 }
                 // 语言已经通过Apply按钮设置，这里只需要决定下一步
                 CurrentStep = 1; // Go to Welcome Page
@@ -947,6 +977,50 @@ public partial class SetupWizardViewModel : ObservableObject
         {
             _loggingService.LogError(ex, Strings.AutoSearchError);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// 检查版本号是否 >= 指定最低版本
+    /// 支持格式: "1.3.5"、"1.3.5+commit" 等
+    /// </summary>
+    private static bool IsVersionAtLeast(string version, string minimumVersion)
+    {
+        try
+        {
+            // 去掉 v 前缀和 + 后的构建元数据
+            version = version.TrimStart('v');
+            minimumVersion = minimumVersion.TrimStart('v');
+
+            var plusIndex = version.IndexOf('+');
+            if (plusIndex > 0)
+                version = version.Substring(0, plusIndex);
+
+            var verParts = version.Split('.').Select(s =>
+            {
+                int.TryParse(s, out var n);
+                return n;
+            }).ToArray();
+
+            var minParts = minimumVersion.Split('.').Select(s =>
+            {
+                int.TryParse(s, out var n);
+                return n;
+            }).ToArray();
+
+            for (int i = 0; i < Math.Max(verParts.Length, minParts.Length); i++)
+            {
+                var ver = i < verParts.Length ? verParts[i] : 0;
+                var min = i < minParts.Length ? minParts[i] : 0;
+
+                if (ver > min) return true;
+                if (ver < min) return false;
+            }
+            return true; // 相等
+        }
+        catch
+        {
+            return false; // 解析失败视为不满足
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Reflection;
 using GHPC_Mod_Manager.Resources;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,12 +32,16 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IModManagerService _modManagerService;
     private readonly Lazy<MainViewModel> _mainViewModel;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IProcessService _processService;
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
 
     // 记录原始语言，用于检测是否改变
     private string _originalLanguage = "zh-CN";
+
+    // 记录原始游戏路径，用于检测是否改变
+    private string _originalGameRootPath = string.Empty;
 
     [ObservableProperty]
     private string _selectedLanguage = "zh-CN";
@@ -139,6 +144,33 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _skipIntegrityCheck;
 
+    [ObservableProperty]
+    private bool _openWebsiteOnStartup;
+
+    partial void OnOpenWebsiteOnStartupChanged(bool value)
+    {
+        // 如果用户尝试关闭，弹窗确认
+        if (!value)
+        {
+            // TODO: 启用时取消注释
+            // var result = System.Windows.MessageBox.Show(
+            //     Strings.ConfirmDisableWebsiteOnStartup,
+            //     Strings.Confirm,
+            //     System.Windows.MessageBoxButton.YesNo,
+            //     System.Windows.MessageBoxImage.Question);
+            //
+            // if (result == System.Windows.MessageBoxResult.No)
+            // {
+            //     // 用户取消，恢复为 true
+            //     OpenWebsiteOnStartup = true;
+            //     return;
+            // }
+        }
+
+        _settingsService.Settings.OpenWebsiteOnStartup = value;
+        _ = _settingsService.SaveSettingsAsync();
+    }
+
     // MelonLoader 管理
     [ObservableProperty]
     private string _melonLoaderInstalledVersion = string.Empty;
@@ -156,12 +188,21 @@ public partial class SettingsViewModel : ObservableObject
     private GitHubRelease? _selectedMelonLoaderRelease;
 
     [ObservableProperty]
+    private bool _isGameRunning;
+
+    [ObservableProperty]
     private bool _isMelonLoaderOperating;
 
     // 版本号点击彩蛋
-    private int _versionClickCount = 0;
-    private System.Threading.Timer? _versionClickTimer;
-    private const int EasterEggClickThreshold = 7;
+    private int _versionClickCount = 0; // 记录点击次数
+    private System.Threading.Timer? _versionClickTimer; // 点击计时器，用于在一定时间内重置点击计数
+    private const int EasterEggClickThreshold = 10; // 点击次数阈值，达到后触发彩蛋
+
+    // Windows API 播放音频（支持重叠）
+    [DllImport("winmm.dll", CharSet = CharSet.Auto)]
+    private static extern uint mciSendString(string command, string? buffer, uint bufferSize, IntPtr callback);
+
+    private static int _audioInstanceCounter = 0;
 
     public string ApplicationVersion => GetApplicationVersion();
 
@@ -189,7 +230,8 @@ public partial class SettingsViewModel : ObservableObject
         IMainConfigService mainConfigService,
         IModManagerService modManagerService,
         Lazy<MainViewModel> mainViewModel,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IProcessService processService)
     {
         _settingsService = settingsService;
         _navigationService = navigationService;
@@ -204,6 +246,16 @@ public partial class SettingsViewModel : ObservableObject
         _modManagerService = modManagerService;
         _mainViewModel = mainViewModel;
         _serviceProvider = serviceProvider;
+        _processService = processService;
+
+        IsGameRunning = _processService.IsGameRunning;
+        _processService.GameRunningStateChanged += (s, e) =>
+        {
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => IsGameRunning = e);
+        };
+
+        // 订阅主题变更事件，同步更新设置页显示
+        _themeService.ThemeChanged += OnThemeChanged;
 
         LoadSettings();
         RefreshProxyServerList();
@@ -216,6 +268,7 @@ public partial class SettingsViewModel : ObservableObject
         SelectedLanguage = settings.Language;
         _originalLanguage = settings.Language; // 记录原始语言
         GameRootPath = settings.GameRootPath;
+        _originalGameRootPath = settings.GameRootPath; // 记录原始游戏路径
         // dev模式下从 CommandLineArgs 读取，显示当前生效的 URL
         MainConfigUrl = CommandLineArgs.DevConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
@@ -226,6 +279,7 @@ public partial class SettingsViewModel : ObservableObject
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
         SkipConflictCheck = settings.SkipConflictCheck;
         SkipIntegrityCheck = settings.SkipIntegrityCheck;
+        OpenWebsiteOnStartup = settings.OpenWebsiteOnStartup;
 
         // 检查是否已解锁终末地主题
         if (settings.IsEndfieldThemeUnlocked == true && !AvailableThemes.Contains(AppTheme.Endfield))
@@ -242,11 +296,33 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    private void OnThemeChanged(object? sender, AppTheme newTheme)
+    {
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            SelectedTheme = newTheme;
+
+            // 如果是 Endfield 且未在列表中，添加到可用主题
+            if (newTheme == AppTheme.Endfield && !AvailableThemes.Contains(AppTheme.Endfield))
+            {
+                AvailableThemes.Add(AppTheme.Endfield);
+            }
+        });
+    }
+
     [RelayCommand]
     private async Task SaveSettingsAsync()
     {
         try
         {
+            // 检查游戏路径是否改变且游戏是否在运行
+            bool gamePathChanged = GameRootPath != _originalGameRootPath;
+            if (gamePathChanged && IsGameRunning)
+            {
+                MessageDialogHelper.ShowError(Strings.CannotChangeGamePathWhileRunning, Strings.Error);
+                return;
+            }
+
             // 检测语言是否改变
             bool languageChanged = SelectedLanguage != _originalLanguage;
 
@@ -371,7 +447,7 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanBrowseGameDirectory))]
     private void BrowseGameDirectory()
     {
         var dialog = new OpenFileDialog
@@ -532,6 +608,24 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenSupportAuthor()
+    {
+        // TODO: 启用时取消注释
+        // try
+        // {
+        //     Process.Start(new ProcessStartInfo
+        //     {
+        //         FileName = "https://ghpcmm.link/support",
+        //         UseShellExecute = true
+        //     });
+        // }
+        // catch (Exception ex)
+        // {
+        //     _loggingService.LogError(ex, Strings.FailedToOpenSupportPage);
+        // }
+    }
+
+    [RelayCommand]
     private void OpenProjectUrl()
     {
         try
@@ -553,32 +647,52 @@ public partial class SettingsViewModel : ObservableObject
     {
         _versionClickCount++;
 
+        // 第一次点击时播放电量低音效（可重叠）
+        if (_versionClickCount == 2)
+        {
+            try
+            {
+                var audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "battery_low.wav");
+                if (File.Exists(audioPath))
+                {
+                    // mciSendString 每个文件用独立别名，支持真正的重叠播放
+                    var alias = $"battery_{Interlocked.Increment(ref _audioInstanceCounter)}";
+                    mciSendString($"open \"{audioPath}\" type waveaudio alias {alias}", null, 0, IntPtr.Zero);
+                    mciSendString($"play {alias}", null, 0, IntPtr.Zero);
+                }
+            }
+            catch { }
+        }
+
         // 达到阈值时打开网页并解锁终末地主题
         if (_versionClickCount >= EasterEggClickThreshold)
         {
             _versionClickCount = 0;
             _versionClickTimer?.Dispose();
 
-            // 播放彩蛋音频
+            // 播放彩蛋音频（可重叠）
             try
             {
                 var audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "easter_egg.wav");
                 if (File.Exists(audioPath))
                 {
-                    Task.Run(() =>
-                    {
-                        using var player = new SoundPlayer(audioPath);
-                        player.PlaySync();
-                    });
+                    // mciSendString 每个文件用独立别名，支持真正的重叠播放
+                    var alias = $"easter_{Interlocked.Increment(ref _audioInstanceCounter)}";
+                    mciSendString($"open \"{audioPath}\" type waveaudio alias {alias}", null, 0, IntPtr.Zero);
+                    mciSendString($"play {alias}", null, 0, IntPtr.Zero);
                 }
             }
             catch { }
 
             try
             {
+                var url = _settingsService.Settings.Language == "zh-CN"
+                    ? "https://ghpcmm.link/eg"
+                    : "https://ghpc.dmr.gg/eg";
+
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://ghpc.dmr.gg/eg",
+                    FileName = url,
                     UseShellExecute = true
                 });
             }
@@ -737,7 +851,7 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteMelonLoaderOps))]
     private async Task ToggleMelonLoaderAsync()
     {
         var gameRoot = _settingsService.Settings.GameRootPath;
@@ -784,7 +898,7 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExecuteMelonLoaderOps))]
     private async Task ReinstallMelonLoaderAsync()
     {
         if (SelectedMelonLoaderRelease == null)
@@ -837,6 +951,23 @@ public partial class SettingsViewModel : ObservableObject
         {
             IsMelonLoaderOperating = false;
         }
+    }
+
+    private bool CanExecuteMelonLoaderOps() => !IsGameRunning && !IsMelonLoaderOperating;
+
+    private bool CanBrowseGameDirectory() => !IsGameRunning;
+
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
+        ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
+        BrowseGameDirectoryCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsMelonLoaderOperatingChanged(bool value)
+    {
+        ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
+        ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]

@@ -49,6 +49,30 @@
             <Setter Property="FontSize" Value="{DynamicResource LabelSmall}"/>
         </Style>
 
+        <Style x:Key="GameVersionBadgeTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BrowserBadgeTextStyle}">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+            <Style.Triggers>
+                <DataTrigger Value="match">
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                            <Binding/>
+                            <Binding Path="DataContext.CurrentGameVersion" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                        </MultiBinding>
+                    </DataTrigger.Binding>
+                    <Setter Property="Foreground" Value="{DynamicResource OnSuccessBrush}"/>
+                </DataTrigger>
+                <DataTrigger Value="mismatch">
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
+                            <Binding/>
+                            <Binding Path="DataContext.CurrentGameVersion" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                        </MultiBinding>
+                    </DataTrigger.Binding>
+                    <Setter Property="Foreground" Value="{DynamicResource OnWarningBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid>
@@ -369,35 +393,8 @@
                                                                              RelativeSource="{RelativeSource AncestorType=UserControl}"/>
                                                                 </MultiBinding>
                                                             </Border.Background>
-                                                            <TextBlock Text="{Binding}">
-                                                                <TextBlock.Style>
-                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource BrowserBadgeTextStyle}">
-                                                                        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Value="match">
-                                                                                <DataTrigger.Binding>
-                                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
-                                                                                        <Binding/>
-                                                                                        <Binding Path="DataContext.CurrentGameVersion"
-                                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                                                                    </MultiBinding>
-                                                                                </DataTrigger.Binding>
-                                                                                <Setter Property="Foreground" Value="{DynamicResource OnSuccessBrush}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Value="mismatch">
-                                                                                <DataTrigger.Binding>
-                                                                                    <MultiBinding Converter="{StaticResource GameVersionMatchBool}">
-                                                                                        <Binding/>
-                                                                                        <Binding Path="DataContext.CurrentGameVersion"
-                                                                                                 RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                                                                    </MultiBinding>
-                                                                                </DataTrigger.Binding>
-                                                                                <Setter Property="Foreground" Value="{DynamicResource OnWarningBrush}"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </TextBlock.Style>
-                                                            </TextBlock>
+                                                            <TextBlock Text="{Binding}"
+                                                                       Style="{DynamicResource GameVersionBadgeTextStyle}"/>
                                                         </Border>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

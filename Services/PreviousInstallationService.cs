@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 
 namespace GHPC_Mod_Manager.Services;
@@ -47,5 +48,37 @@ public class PreviousInstallationService : IPreviousInstallationService
 
         // 忽略大小写比较（Windows 路径不区分大小写）
         return !string.Equals(currentPath, storedPath, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public string? GetPreviousAppExePath()
+    {
+        var previousPath = GetPreviousAppPath();
+        if (string.IsNullOrWhiteSpace(previousPath)) return null;
+        if (!Directory.Exists(previousPath)) return null;
+
+        // 查找与当前进程同名的exe
+        var currentExeName = Process.GetCurrentProcess().MainModule?.FileName;
+        if (string.IsNullOrEmpty(currentExeName)) return null;
+
+        var exeName = Path.GetFileName(currentExeName);
+        var previousExePath = Path.Combine(previousPath, exeName);
+
+        return File.Exists(previousExePath) ? previousExePath : null;
+    }
+
+    public string? GetPreviousAppVersion()
+    {
+        var exePath = GetPreviousAppExePath();
+        if (string.IsNullOrEmpty(exePath)) return null;
+
+        try
+        {
+            var versionInfo = FileVersionInfo.GetVersionInfo(exePath);
+            return versionInfo.ProductVersion;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
