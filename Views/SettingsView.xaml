@@ -256,12 +256,22 @@
                         </CheckBox>
 
                         <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding SkipGameVersionCheck}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.SkipGameVersionCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <!-- 启动时打开官网选项已隐藏
+                        <CheckBox Margin="0,0,0,8"
                                   IsChecked="{Binding OpenWebsiteOnStartup}">
                             <CheckBox.Content>
                                 <TextBlock Text="{x:Static resources:Strings.OpenWebsiteOnStartup}"
                                            FontWeight="SemiBold"/>
                             </CheckBox.Content>
                         </CheckBox>
+                        -->
                     </StackPanel>
                 </Border>
 

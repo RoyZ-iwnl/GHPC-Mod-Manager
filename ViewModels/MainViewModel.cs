@@ -26,7 +26,8 @@ public enum NavigationPage
 {
     InstalledMods,
     ModBrowser,
-    Translation
+    Translation,
+    SaveEditor
 }
 
 internal static class ModInstallCompatibilityHelper
@@ -100,11 +101,13 @@ public partial class MainViewModel : ObservableObject
     private InstalledModsViewModel? _installedModsViewModel;
     private ModBrowserViewModel? _modBrowserViewModel;
     private ModDetailViewModel? _modDetailViewModel;
+    private SaveEditorViewModel? _saveEditorViewModel;
 
     // 子View（导航页面）
     private UserControl? _installedModsView;
     private UserControl? _modBrowserView;
     private UserControl? _translationView;
+    private UserControl? _saveEditorView;
 
     [ObservableProperty]
     private UserControl? _currentPageView;
@@ -133,7 +136,10 @@ public partial class MainViewModel : ObservableObject
     partial void OnSelectedNavigationItemChanged(NavigationItem? value)
     {
         if (value != null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Navigation] Selected: {value.Label}, Page: {value.Page}");
             NavigateToPage(value.Page);
+        }
     }
 
     [ObservableProperty]
@@ -339,6 +345,7 @@ public partial class MainViewModel : ObservableObject
             new NavigationItem { Label = Strings.NavInstalledMods, Page = NavigationPage.InstalledMods },
             new NavigationItem { Label = Strings.NavModBrowser, Page = NavigationPage.ModBrowser },
             new NavigationItem { Label = Strings.NavTranslation, Page = NavigationPage.Translation },
+            new NavigationItem { Label = Strings.NavSaveEditor, Page = NavigationPage.SaveEditor },
         };
 
         // 订阅页面导航事件
@@ -377,6 +384,12 @@ public partial class MainViewModel : ObservableObject
                 _translationView.DataContext = this;
                 CurrentPageView = _translationView;
                 break;
+            case NavigationPage.SaveEditor:
+                _saveEditorViewModel ??= _serviceProvider.GetRequiredService<SaveEditorViewModel>();
+                _saveEditorView ??= (UserControl)_serviceProvider.GetRequiredService<SaveEditorView>();
+                _saveEditorView.DataContext = _saveEditorViewModel;
+                CurrentPageView = _saveEditorView;
+                break;
         }
     }
 
@@ -390,6 +403,7 @@ public partial class MainViewModel : ObservableObject
             "ModBrowser" => NavigationPage.ModBrowser,
             "InstalledMods" => NavigationPage.InstalledMods,
             "Translation" => NavigationPage.Translation,
+            "SaveEditor" => NavigationPage.SaveEditor,
             _ => NavigationPage.InstalledMods
         };
 
@@ -1520,6 +1534,16 @@ public partial class MainViewModel : ObservableObject
                 }
             }
 
+            if (!_settingsService.Settings.SkipGameVersionCheck)
+            {
+                var versionCheckOkay = await CheckInstalledModsGameVersionCompatibilityAsync(promptOnMismatch: true);
+                if (!versionCheckOkay)
+                {
+                    StatusMessage = Strings.Ready;
+                    return;
+                }
+            }
+
             StatusMessage = Strings.StartingGame;
             var success = await _processService.LaunchGameAsync(gameRootPath);
 
@@ -1590,6 +1614,61 @@ public partial class MainViewModel : ObservableObject
             return true;
         }
     }
+
+    private async Task<bool> CheckInstalledModsGameVersionCompatibilityAsync(bool promptOnMismatch)
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrWhiteSpace(gameRoot))
+            return true;
+
+        var currentGameVersion = await _melonLoaderService.GetCurrentGameVersionAsync(gameRoot);
+        if (string.IsNullOrWhiteSpace(currentGameVersion))
+            return true;
+
+        var normalizedCurrentVersion = NormalizeVersion(currentGameVersion);
+        if (string.IsNullOrWhiteSpace(normalizedCurrentVersion))
+            return true;
+
+        var installedMods = Mods.Where(m => m.IsInstalled).ToList();
+        var incompatibleMods = new List<ModViewModel>();
+
+        foreach (var mod in installedMods)
+        {
+            var supportedVersions = mod.SupportedGameVersions
+                .Select(NormalizeVersion)
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Where(v => !string.Equals(v, Strings.Unknown, StringComparison.OrdinalIgnoreCase))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (supportedVersions.Count == 0)
+                continue;
+
+            if (!supportedVersions.Contains(normalizedCurrentVersion, StringComparer.OrdinalIgnoreCase))
+            {
+                incompatibleMods.Add(mod);
+            }
+        }
+
+        if (!incompatibleMods.Any())
+            return true;
+
+        var modListText = string.Join("\n", incompatibleMods.Select(m => $"  - {m.DisplayName} ({m.SupportedVersionsText})"));
+        var message = string.Format(Strings.GameVersionIncompatibleModsOnLaunchMessage, currentGameVersion, modListText);
+
+        if (promptOnMismatch)
+        {
+            return MessageDialogHelper.Confirm(message, Strings.GameVersionIncompatibleModsOnLaunchTitle);
+        }
+        else
+        {
+            MessageDialogHelper.ShowWarning(message, Strings.GameVersionIncompatibleModsOnLaunchTitle);
+            return true;
+        }
+    }
+
+    private static string NormalizeVersion(string? version)
+        => version?.Trim().TrimStart('v', 'V') ?? string.Empty;
 
     /// <summary>
     /// 获取MOD的显示名称

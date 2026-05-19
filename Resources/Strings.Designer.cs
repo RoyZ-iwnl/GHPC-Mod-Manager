@@ -943,11 +943,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collecting registry info....
+        ///   Looks up a localized string similar to Collecting GHPC Data folder....
         /// </summary>
-        public static string CollectingRegistryInfo {
+        public static string CollectingGhpcDataFolder {
             get {
-                return ResourceManager.GetString("CollectingRegistryInfo", resourceCulture);
+                return ResourceManager.GetString("CollectingGhpcDataFolder", resourceCulture);
             }
         }
         
@@ -2175,6 +2175,33 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blue.
+        /// </summary>
+        public static string FactionBlue {
+            get {
+                return ResourceManager.GetString("FactionBlue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neutral.
+        /// </summary>
+        public static string FactionNeutral {
+            get {
+                return ResourceManager.GetString("FactionNeutral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Red.
+        /// </summary>
+        public static string FactionRed {
+            get {
+                return ResourceManager.GetString("FactionRed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to apply language setting.
         /// </summary>
         public static string FailedToApplyLanguageSetting {
@@ -2936,6 +2963,28 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GameVersionFromLog {
             get {
                 return ResourceManager.GetString("GameVersionFromLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following installed mods are not compatible with your current game version ({0}):
+        ///
+        ///{1}
+        ///
+        ///Do you still want to launch the game?.
+        /// </summary>
+        public static string GameVersionIncompatibleModsOnLaunchMessage {
+            get {
+                return ResourceManager.GetString("GameVersionIncompatibleModsOnLaunchMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Version Compatibility Warning.
+        /// </summary>
+        public static string GameVersionIncompatibleModsOnLaunchTitle {
+            get {
+                return ResourceManager.GetString("GameVersionIncompatibleModsOnLaunchTitle", resourceCulture);
             }
         }
         
@@ -5330,6 +5379,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save Editor.
+        /// </summary>
+        public static string NavSaveEditor {
+            get {
+                return ResourceManager.GetString("NavSaveEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Translation.
         /// </summary>
         public static string NavTranslation {
@@ -6540,24 +6598,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Registry Info.
-        /// </summary>
-        public static string RegistryInfoFile {
-            get {
-                return ResourceManager.GetString("RegistryInfoFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Registry key not found: {0}.
-        /// </summary>
-        public static string RegistryKeyNotFound {
-            get {
-                return ResourceManager.GetString("RegistryKeyNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Reinstall.
         /// </summary>
         public static string Reinstall {
@@ -6765,6 +6805,411 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveAsPreset {
             get {
                 return ResourceManager.GetString("SaveAsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Files.
+        /// </summary>
+        public static string SaveEditor_AllFiles {
+            get {
+                return ResourceManager.GetString("SaveEditor_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto backup before saving.
+        /// </summary>
+        public static string SaveEditor_AutoBackupHint {
+            get {
+                return ResourceManager.GetString("SaveEditor_AutoBackupHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup failed.
+        /// </summary>
+        public static string SaveEditor_BackupFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup Management.
+        /// </summary>
+        public static string SaveEditor_BackupManagement {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save file does not exist, cannot backup.
+        /// </summary>
+        public static string SaveEditor_BackupNotExist {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup successful!.
+        /// </summary>
+        public static string SaveEditor_BackupSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string SaveEditor_Browse {
+            get {
+                return ResourceManager.GetString("SaveEditor_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string SaveEditor_Cancel {
+            get {
+                return ResourceManager.GetString("SaveEditor_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to toggle faction completion status:.
+        /// </summary>
+        public static string SaveEditor_ClickToToggleFaction {
+            get {
+                return ResourceManager.GetString("SaveEditor_ClickToToggleFaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark all tasks as complete? All existing faction statuses will be set to 1 (completed).
+        /// </summary>
+        public static string SaveEditor_CompleteConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_CompleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All tasks completed.
+        /// </summary>
+        public static string SaveEditor_CompleteSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_CompleteSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        public static string SaveEditor_Confirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string SaveEditor_Delete {
+            get {
+                return ResourceManager.GetString("SaveEditor_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this backup?.
+        /// </summary>
+        public static string SaveEditor_DeleteConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete failed.
+        /// </summary>
+        public static string SaveEditor_DeleteFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup deleted.
+        /// </summary>
+        public static string SaveEditor_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save File Path.
+        /// </summary>
+        public static string SaveEditor_FilePath {
+            get {
+                return ResourceManager.GetString("SaveEditor_FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC Save File.
+        /// </summary>
+        public static string SaveEditor_GHPCSaveFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_GHPCSaveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved changes.
+        /// </summary>
+        public static string SaveEditor_HasUnsavedChanges {
+            get {
+                return ResourceManager.GetString("SaveEditor_HasUnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save file loaded.
+        /// </summary>
+        public static string SaveEditor_Loaded {
+            get {
+                return ResourceManager.GetString("SaveEditor_Loaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load save file.
+        /// </summary>
+        public static string SaveEditor_LoadFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_LoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual Backup.
+        /// </summary>
+        public static string SaveEditor_ManualBackup {
+            get {
+                return ResourceManager.GetString("SaveEditor_ManualBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual backup completed.
+        /// </summary>
+        public static string SaveEditor_ManualBackupSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_ManualBackupSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No save data.
+        /// </summary>
+        public static string SaveEditor_NoData {
+            get {
+                return ResourceManager.GetString("SaveEditor_NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save file does not exist.
+        /// </summary>
+        public static string SaveEditor_NoFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_NoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One-Key Complete.
+        /// </summary>
+        public static string SaveEditor_OneKeyComplete {
+            get {
+                return ResourceManager.GetString("SaveEditor_OneKeyComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One-Key Reset.
+        /// </summary>
+        public static string SaveEditor_OneKeyReset {
+            get {
+                return ResourceManager.GetString("SaveEditor_OneKeyReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify save file path.
+        /// </summary>
+        public static string SaveEditor_PathEmpty {
+            get {
+                return ResourceManager.GetString("SaveEditor_PathEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset all task progress? This cannot be undone!.
+        /// </summary>
+        public static string SaveEditor_ResetConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_ResetConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All progress reset.
+        /// </summary>
+        public static string SaveEditor_ResetSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_ResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        public static string SaveEditor_Restore {
+            get {
+                return ResourceManager.GetString("SaveEditor_Restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore from backup? Current save will be overwritten!.
+        /// </summary>
+        public static string SaveEditor_RestoreConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restored from backup.
+        /// </summary>
+        public static string SaveEditor_RestoredFromBackup {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoredFromBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore failed, please check backup file.
+        /// </summary>
+        public static string SaveEditor_RestoreFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore successful!.
+        /// </summary>
+        public static string SaveEditor_RestoreSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup time: {0}.
+        /// </summary>
+        public static string SaveEditor_RestoreTime {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string SaveEditor_Save {
+            get {
+                return ResourceManager.GetString("SaveEditor_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save failed.
+        /// </summary>
+        public static string SaveEditor_SaveFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_SaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save successful!.
+        /// </summary>
+        public static string SaveEditor_SaveSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Save File.
+        /// </summary>
+        public static string SaveEditor_SelectFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_SelectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a task first.
+        /// </summary>
+        public static string SaveEditor_SelectTaskFirst {
+            get {
+                return ResourceManager.GetString("SaveEditor_SelectTaskFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Operation.
+        /// </summary>
+        public static string SaveEditor_TaskOperation {
+            get {
+                return ResourceManager.GetString("SaveEditor_TaskOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Progress.
+        /// </summary>
+        public static string SaveEditor_TaskProgress {
+            get {
+                return ResourceManager.GetString("SaveEditor_TaskProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0} theaters.
+        /// </summary>
+        public static string SaveEditor_TheatersLoaded {
+            get {
+                return ResourceManager.GetString("SaveEditor_TheatersLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggled {0} ({1}) status.
+        /// </summary>
+        public static string SaveEditor_ToggleStatus {
+            get {
+                return ResourceManager.GetString("SaveEditor_ToggleStatus", resourceCulture);
             }
         }
         
@@ -7035,6 +7480,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SkipConflictCheckOnLaunch {
             get {
                 return ResourceManager.GetString("SkipConflictCheckOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip game version compatibility check when launching game.
+        /// </summary>
+        public static string SkipGameVersionCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipGameVersionCheckOnLaunch", resourceCulture);
             }
         }
         

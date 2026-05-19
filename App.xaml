@@ -19,6 +19,11 @@
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
             <converters:TranslationLanguageDisplayConverter x:Key="TranslationLanguageDisplayConverter"/>
             <converters:BracketTextConverter x:Key="BracketTextConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:NullToVisibilityInverseConverter x:Key="NullToVisibilityInverseConverter"/>
+            <converters:BoolToCompletionBrushConverter x:Key="BoolToCompletionBrushConverter"/>
+            <converters:FactionForegroundConverter x:Key="FactionForegroundConverter"/>
+            <converters:BoolToSaveHintConverter x:Key="BoolToSaveHintConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

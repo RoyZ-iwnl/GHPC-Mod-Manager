@@ -819,6 +819,9 @@
   <data name="SkipIntegrityCheckOnLaunch" xml:space="preserve">
     <value>启动游戏时跳过完整性检查</value>
   </data>
+  <data name="SkipGameVersionCheckOnLaunch" xml:space="preserve">
+    <value>启动游戏时跳过游戏版本兼容性检查</value>
+  </data>
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>数据源配置</value>
   </data>
@@ -2649,6 +2652,9 @@
   <data name="NavTranslation" xml:space="preserve">
     <value>翻译管理</value>
   </data>
+  <data name="NavSaveEditor" xml:space="preserve">
+    <value>存档编辑器</value>
+  </data>
   <data name="FilterByTags" xml:space="preserve">
     <value>按标签筛选</value>
   </data>
@@ -2930,6 +2936,16 @@
 
 是否仍要继续安装？</value>
   </data>
+  <data name="GameVersionIncompatibleModsOnLaunchTitle" xml:space="preserve">
+    <value>游戏版本兼容性警告</value>
+  </data>
+  <data name="GameVersionIncompatibleModsOnLaunchMessage" xml:space="preserve">
+    <value>以下已安装的Mod与当前游戏版本 ({0}) 不兼容：
+
+{1}
+
+是否仍要启动游戏？</value>
+  </data>
   <data name="ModInfoDumper" xml:space="preserve">
     <value>模组信息导出</value>
   </data>
@@ -3017,14 +3033,8 @@
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>正在计算文件哈希：{0}</value>
   </data>
-  <data name="CollectingRegistryInfo" xml:space="preserve">
-    <value>正在收集注册表信息...</value>
-  </data>
-  <data name="RegistryInfoFile" xml:space="preserve">
-    <value>注册表信息</value>
-  </data>
-  <data name="RegistryKeyNotFound" xml:space="preserve">
-    <value>注册表项不存在：{0}</value>
+  <data name="CollectingGhpcDataFolder" xml:space="preserve">
+    <value>正在收集 GHPC Data 文件夹...</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>是</value>
@@ -3075,5 +3085,150 @@
   </data>
   <data name="FailedToOpenSupportPage" xml:space="preserve">
     <value>打开支持页面失败</value>
+  </data>
+  <!-- Save Editor -->
+  <data name="SaveEditor_FilePath" xml:space="preserve">
+    <value>存档文件路径</value>
+  </data>
+  <data name="SaveEditor_Browse" xml:space="preserve">
+    <value>浏览...</value>
+  </data>
+  <data name="SaveEditor_TaskProgress" xml:space="preserve">
+    <value>任务进度</value>
+  </data>
+  <data name="SaveEditor_TaskOperation" xml:space="preserve">
+    <value>任务操作</value>
+  </data>
+  <data name="SaveEditor_ClickToToggleFaction" xml:space="preserve">
+    <value>点击切换阵营完成状态:</value>
+  </data>
+  <data name="SaveEditor_SelectTaskFirst" xml:space="preserve">
+    <value>请先选择一个任务</value>
+  </data>
+  <data name="SaveEditor_BackupManagement" xml:space="preserve">
+    <value>备份管理</value>
+  </data>
+  <data name="SaveEditor_ManualBackup" xml:space="preserve">
+    <value>手动备份</value>
+  </data>
+  <data name="SaveEditor_AutoBackupHint" xml:space="preserve">
+    <value>保存前会自动备份</value>
+  </data>
+  <data name="SaveEditor_OneKeyComplete" xml:space="preserve">
+    <value>一键通关</value>
+  </data>
+  <data name="SaveEditor_OneKeyReset" xml:space="preserve">
+    <value>一键重置</value>
+  </data>
+  <data name="SaveEditor_Save" xml:space="preserve">
+    <value>保存存档</value>
+  </data>
+  <data name="SaveEditor_HasUnsavedChanges" xml:space="preserve">
+    <value>有未保存的更改</value>
+  </data>
+  <data name="SaveEditor_PathEmpty" xml:space="preserve">
+    <value>请指定存档文件路径</value>
+  </data>
+  <data name="SaveEditor_LoadFailed" xml:space="preserve">
+    <value>无法加载存档文件</value>
+  </data>
+  <data name="SaveEditor_NoFile" xml:space="preserve">
+    <value>存档文件不存在</value>
+  </data>
+  <data name="SaveEditor_Loaded" xml:space="preserve">
+    <value>存档已加载</value>
+  </data>
+  <data name="SaveEditor_NoData" xml:space="preserve">
+    <value>存档中没有任务进度数据</value>
+  </data>
+  <data name="SaveEditor_SaveFailed" xml:space="preserve">
+    <value>保存失败</value>
+  </data>
+  <data name="SaveEditor_SaveSuccess" xml:space="preserve">
+    <value>存档保存成功！</value>
+  </data>
+  <data name="SaveEditor_BackupSuccess" xml:space="preserve">
+    <value>备份成功！</value>
+  </data>
+  <data name="SaveEditor_BackupFailed" xml:space="preserve">
+    <value>备份失败</value>
+  </data>
+  <data name="SaveEditor_BackupNotExist" xml:space="preserve">
+    <value>存档文件不存在，无法备份</value>
+  </data>
+  <data name="SaveEditor_RestoreConfirm" xml:space="preserve">
+    <value>确定要从备份恢复吗？当前存档将被覆盖！</value>
+  </data>
+  <data name="SaveEditor_RestoreTime" xml:space="preserve">
+    <value>备份时间: {0}</value>
+  </data>
+  <data name="SaveEditor_RestoreSuccess" xml:space="preserve">
+    <value>恢复成功！</value>
+  </data>
+  <data name="SaveEditor_RestoreFailed" xml:space="preserve">
+    <value>恢复失败，请检查备份文件</value>
+  </data>
+  <data name="SaveEditor_DeleteConfirm" xml:space="preserve">
+    <value>确定要删除此备份吗？</value>
+  </data>
+  <data name="SaveEditor_DeleteSuccess" xml:space="preserve">
+    <value>备份已删除</value>
+  </data>
+  <data name="SaveEditor_DeleteFailed" xml:space="preserve">
+    <value>删除失败</value>
+  </data>
+  <data name="SaveEditor_ResetConfirm" xml:space="preserve">
+    <value>确定要重置所有任务进度吗？此操作不可撤销！</value>
+  </data>
+  <data name="SaveEditor_ResetSuccess" xml:space="preserve">
+    <value>已重置所有进度</value>
+  </data>
+  <data name="SaveEditor_CompleteConfirm" xml:space="preserve">
+    <value>确定要将所有任务标记为完成吗？每个任务中所有已存在的阵营都会被设为1（已完成）</value>
+  </data>
+  <data name="SaveEditor_CompleteSuccess" xml:space="preserve">
+    <value>已完成所有任务</value>
+  </data>
+  <data name="SaveEditor_ToggleStatus" xml:space="preserve">
+    <value>已切换 {0} ({1}) 状态</value>
+  </data>
+  <data name="SaveEditor_TheatersLoaded" xml:space="preserve">
+    <value>已加载 {0} 个战役</value>
+  </data>
+  <data name="SaveEditor_ManualBackupSuccess" xml:space="preserve">
+    <value>手动备份已完成</value>
+  </data>
+  <data name="SaveEditor_RestoredFromBackup" xml:space="preserve">
+    <value>已从备份恢复</value>
+  </data>
+  <data name="SaveEditor_Restore" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="SaveEditor_Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="SaveEditor_Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="SaveEditor_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="SaveEditor_SelectFile" xml:space="preserve">
+    <value>选择存档文件</value>
+  </data>
+  <data name="SaveEditor_GHPCSaveFile" xml:space="preserve">
+    <value>GHPC存档文件</value>
+  </data>
+  <data name="SaveEditor_AllFiles" xml:space="preserve">
+    <value>所有文件</value>
+  </data>
+  <data name="FactionBlue" xml:space="preserve">
+    <value>蓝</value>
+  </data>
+  <data name="FactionRed" xml:space="preserve">
+    <value>红</value>
+  </data>
+  <data name="FactionNeutral" xml:space="preserve">
+    <value>中立</value>
   </data>
 </root>

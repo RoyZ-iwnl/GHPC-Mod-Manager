@@ -819,6 +819,9 @@
   <data name="SkipIntegrityCheckOnLaunch" xml:space="preserve">
     <value>Skip integrity check when launching game</value>
   </data>
+  <data name="SkipGameVersionCheckOnLaunch" xml:space="preserve">
+    <value>Skip game version compatibility check when launching game</value>
+  </data>
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>Data Source Configuration</value>
   </data>
@@ -2684,6 +2687,9 @@ Do you want to restart now?</value>
   <data name="NavTranslation" xml:space="preserve">
     <value>Translation</value>
   </data>
+  <data name="NavSaveEditor" xml:space="preserve">
+    <value>Save Editor</value>
+  </data>
   <data name="FilterByTags" xml:space="preserve">
     <value>Filter by Tags</value>
   </data>
@@ -2965,6 +2971,16 @@ Do you want to restart now?</value>
 
 Do you want to continue installing?</value>
   </data>
+  <data name="GameVersionIncompatibleModsOnLaunchTitle" xml:space="preserve">
+    <value>Game Version Compatibility Warning</value>
+  </data>
+  <data name="GameVersionIncompatibleModsOnLaunchMessage" xml:space="preserve">
+    <value>The following installed mods are not compatible with your current game version ({0}):
+
+{1}
+
+Do you still want to launch the game?</value>
+  </data>
   <data name="ModInfoDumper" xml:space="preserve">
     <value>Mod Info Dumper</value>
   </data>
@@ -3052,14 +3068,8 @@ Do you want to continue installing?</value>
   <data name="CalculatingFileHash" xml:space="preserve">
     <value>Calculating hash for: {0}</value>
   </data>
-  <data name="CollectingRegistryInfo" xml:space="preserve">
-    <value>Collecting registry info...</value>
-  </data>
-  <data name="RegistryInfoFile" xml:space="preserve">
-    <value>Registry Info</value>
-  </data>
-  <data name="RegistryKeyNotFound" xml:space="preserve">
-    <value>Registry key not found: {0}</value>
+  <data name="CollectingGhpcDataFolder" xml:space="preserve">
+    <value>Collecting GHPC Data folder...</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
@@ -3110,5 +3120,150 @@ Please update the Mod Manager first to install this mod.</value>
   </data>
   <data name="FailedToOpenSupportPage" xml:space="preserve">
     <value>Failed to open support page</value>
+  </data>
+  <!-- Save Editor -->
+  <data name="SaveEditor_FilePath" xml:space="preserve">
+    <value>Save File Path</value>
+  </data>
+  <data name="SaveEditor_Browse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="SaveEditor_TaskProgress" xml:space="preserve">
+    <value>Task Progress</value>
+  </data>
+  <data name="SaveEditor_TaskOperation" xml:space="preserve">
+    <value>Task Operation</value>
+  </data>
+  <data name="SaveEditor_ClickToToggleFaction" xml:space="preserve">
+    <value>Click to toggle faction completion status:</value>
+  </data>
+  <data name="SaveEditor_SelectTaskFirst" xml:space="preserve">
+    <value>Please select a task first</value>
+  </data>
+  <data name="SaveEditor_BackupManagement" xml:space="preserve">
+    <value>Backup Management</value>
+  </data>
+  <data name="SaveEditor_ManualBackup" xml:space="preserve">
+    <value>Manual Backup</value>
+  </data>
+  <data name="SaveEditor_AutoBackupHint" xml:space="preserve">
+    <value>Auto backup before saving</value>
+  </data>
+  <data name="SaveEditor_OneKeyComplete" xml:space="preserve">
+    <value>One-Key Complete</value>
+  </data>
+  <data name="SaveEditor_OneKeyReset" xml:space="preserve">
+    <value>One-Key Reset</value>
+  </data>
+  <data name="SaveEditor_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveEditor_HasUnsavedChanges" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="SaveEditor_PathEmpty" xml:space="preserve">
+    <value>Please specify save file path</value>
+  </data>
+  <data name="SaveEditor_LoadFailed" xml:space="preserve">
+    <value>Failed to load save file</value>
+  </data>
+  <data name="SaveEditor_NoFile" xml:space="preserve">
+    <value>Save file does not exist</value>
+  </data>
+  <data name="SaveEditor_Loaded" xml:space="preserve">
+    <value>Save file loaded</value>
+  </data>
+  <data name="SaveEditor_NoData" xml:space="preserve">
+    <value>No save data</value>
+  </data>
+  <data name="SaveEditor_SaveFailed" xml:space="preserve">
+    <value>Save failed</value>
+  </data>
+  <data name="SaveEditor_SaveSuccess" xml:space="preserve">
+    <value>Save successful!</value>
+  </data>
+  <data name="SaveEditor_BackupSuccess" xml:space="preserve">
+    <value>Backup successful!</value>
+  </data>
+  <data name="SaveEditor_BackupFailed" xml:space="preserve">
+    <value>Backup failed</value>
+  </data>
+  <data name="SaveEditor_BackupNotExist" xml:space="preserve">
+    <value>Save file does not exist, cannot backup</value>
+  </data>
+  <data name="SaveEditor_RestoreConfirm" xml:space="preserve">
+    <value>Restore from backup? Current save will be overwritten!</value>
+  </data>
+  <data name="SaveEditor_RestoreTime" xml:space="preserve">
+    <value>Backup time: {0}</value>
+  </data>
+  <data name="SaveEditor_RestoreSuccess" xml:space="preserve">
+    <value>Restore successful!</value>
+  </data>
+  <data name="SaveEditor_RestoreFailed" xml:space="preserve">
+    <value>Restore failed, please check backup file</value>
+  </data>
+  <data name="SaveEditor_DeleteConfirm" xml:space="preserve">
+    <value>Delete this backup?</value>
+  </data>
+  <data name="SaveEditor_DeleteSuccess" xml:space="preserve">
+    <value>Backup deleted</value>
+  </data>
+  <data name="SaveEditor_DeleteFailed" xml:space="preserve">
+    <value>Delete failed</value>
+  </data>
+  <data name="SaveEditor_ResetConfirm" xml:space="preserve">
+    <value>Reset all task progress? This cannot be undone!</value>
+  </data>
+  <data name="SaveEditor_ResetSuccess" xml:space="preserve">
+    <value>All progress reset</value>
+  </data>
+  <data name="SaveEditor_CompleteConfirm" xml:space="preserve">
+    <value>Mark all tasks as complete? All existing faction statuses will be set to 1 (completed)</value>
+  </data>
+  <data name="SaveEditor_CompleteSuccess" xml:space="preserve">
+    <value>All tasks completed</value>
+  </data>
+  <data name="SaveEditor_ToggleStatus" xml:space="preserve">
+    <value>Toggled {0} ({1}) status</value>
+  </data>
+  <data name="SaveEditor_TheatersLoaded" xml:space="preserve">
+    <value>Loaded {0} theaters</value>
+  </data>
+  <data name="SaveEditor_ManualBackupSuccess" xml:space="preserve">
+    <value>Manual backup completed</value>
+  </data>
+  <data name="SaveEditor_RestoredFromBackup" xml:space="preserve">
+    <value>Restored from backup</value>
+  </data>
+  <data name="SaveEditor_Restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="SaveEditor_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SaveEditor_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="SaveEditor_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveEditor_SelectFile" xml:space="preserve">
+    <value>Select Save File</value>
+  </data>
+  <data name="SaveEditor_GHPCSaveFile" xml:space="preserve">
+    <value>GHPC Save File</value>
+  </data>
+  <data name="SaveEditor_AllFiles" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="FactionBlue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="FactionRed" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="FactionNeutral" xml:space="preserve">
+    <value>Neutral</value>
   </data>
 </root>

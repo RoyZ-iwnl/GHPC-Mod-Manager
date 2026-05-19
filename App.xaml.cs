@@ -112,6 +112,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IModCatalogStateService, ModCatalogStateService>();
                     services.AddSingleton<IProtocolActivationService, ProtocolActivationService>();
                     services.AddSingleton<IProtocolIpcServer, NamedPipeProtocolIpcServer>();
+                    services.AddSingleton<ISaveEditorService, SaveEditorService>();
                     services.ConfigureHttpClientDefaults(builder =>
                     {
                         builder.ConfigureHttpClient(client =>
@@ -166,6 +167,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<InstalledModsViewModel>();
                     services.AddSingleton<ModBrowserViewModel>();
                     services.AddSingleton<ModDetailViewModel>();
+                    services.AddSingleton<SaveEditorViewModel>();
 
                     // Views
                     services.AddTransient<MainWindow>();
@@ -178,6 +180,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<ModBrowserView>();
                     services.AddSingleton<TranslationView>();
                     services.AddTransient<ModDetailView>();
+                    services.AddTransient<SaveEditorView>();
                 })
                 .ConfigureLogging(logging =>
                 {

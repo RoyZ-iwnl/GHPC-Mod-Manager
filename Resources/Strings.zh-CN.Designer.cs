@@ -943,11 +943,11 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 正在收集注册表信息....
+        ///   Looks up a localized string similar to 正在收集 GHPC Data 文件夹....
         /// </summary>
-        public static string CollectingRegistryInfo {
+        public static string CollectingGhpcDataFolder {
             get {
-                return ResourceManager.GetString("CollectingRegistryInfo", resourceCulture);
+                return ResourceManager.GetString("CollectingGhpcDataFolder", resourceCulture);
             }
         }
         
@@ -2175,6 +2175,33 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 蓝.
+        /// </summary>
+        public static string FactionBlue {
+            get {
+                return ResourceManager.GetString("FactionBlue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 中立.
+        /// </summary>
+        public static string FactionNeutral {
+            get {
+                return ResourceManager.GetString("FactionNeutral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 红.
+        /// </summary>
+        public static string FactionRed {
+            get {
+                return ResourceManager.GetString("FactionRed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 应用语言设置失败.
         /// </summary>
         public static string FailedToApplyLanguageSetting {
@@ -2936,6 +2963,28 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GameVersionFromLog {
             get {
                 return ResourceManager.GetString("GameVersionFromLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 以下已安装的Mod与当前游戏版本 ({0}) 不兼容：
+        ///
+        ///{1}
+        ///
+        ///是否仍要启动游戏？.
+        /// </summary>
+        public static string GameVersionIncompatibleModsOnLaunchMessage {
+            get {
+                return ResourceManager.GetString("GameVersionIncompatibleModsOnLaunchMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 游戏版本兼容性警告.
+        /// </summary>
+        public static string GameVersionIncompatibleModsOnLaunchTitle {
+            get {
+                return ResourceManager.GetString("GameVersionIncompatibleModsOnLaunchTitle", resourceCulture);
             }
         }
         
@@ -5304,6 +5353,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 存档编辑器.
+        /// </summary>
+        public static string NavSaveEditor {
+            get {
+                return ResourceManager.GetString("NavSaveEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 翻译管理.
         /// </summary>
         public static string NavTranslation {
@@ -6469,24 +6527,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 注册表信息.
-        /// </summary>
-        public static string RegistryInfoFile {
-            get {
-                return ResourceManager.GetString("RegistryInfoFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 注册表项不存在：{0}.
-        /// </summary>
-        public static string RegistryKeyNotFound {
-            get {
-                return ResourceManager.GetString("RegistryKeyNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 重装.
         /// </summary>
         public static string Reinstall {
@@ -6694,6 +6734,411 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveAsPreset {
             get {
                 return ResourceManager.GetString("SaveAsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 所有文件.
+        /// </summary>
+        public static string SaveEditor_AllFiles {
+            get {
+                return ResourceManager.GetString("SaveEditor_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 保存前会自动备份.
+        /// </summary>
+        public static string SaveEditor_AutoBackupHint {
+            get {
+                return ResourceManager.GetString("SaveEditor_AutoBackupHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 备份失败.
+        /// </summary>
+        public static string SaveEditor_BackupFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 备份管理.
+        /// </summary>
+        public static string SaveEditor_BackupManagement {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档文件不存在，无法备份.
+        /// </summary>
+        public static string SaveEditor_BackupNotExist {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 备份成功！.
+        /// </summary>
+        public static string SaveEditor_BackupSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_BackupSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 浏览....
+        /// </summary>
+        public static string SaveEditor_Browse {
+            get {
+                return ResourceManager.GetString("SaveEditor_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 取消.
+        /// </summary>
+        public static string SaveEditor_Cancel {
+            get {
+                return ResourceManager.GetString("SaveEditor_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 点击切换阵营完成状态:.
+        /// </summary>
+        public static string SaveEditor_ClickToToggleFaction {
+            get {
+                return ResourceManager.GetString("SaveEditor_ClickToToggleFaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 确定要将所有任务标记为完成吗？每个任务中所有已存在的阵营都会被设为1（已完成）.
+        /// </summary>
+        public static string SaveEditor_CompleteConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_CompleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已完成所有任务.
+        /// </summary>
+        public static string SaveEditor_CompleteSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_CompleteSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 确认.
+        /// </summary>
+        public static string SaveEditor_Confirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 删除.
+        /// </summary>
+        public static string SaveEditor_Delete {
+            get {
+                return ResourceManager.GetString("SaveEditor_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 确定要删除此备份吗？.
+        /// </summary>
+        public static string SaveEditor_DeleteConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 删除失败.
+        /// </summary>
+        public static string SaveEditor_DeleteFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 备份已删除.
+        /// </summary>
+        public static string SaveEditor_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档文件路径.
+        /// </summary>
+        public static string SaveEditor_FilePath {
+            get {
+                return ResourceManager.GetString("SaveEditor_FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC存档文件.
+        /// </summary>
+        public static string SaveEditor_GHPCSaveFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_GHPCSaveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 有未保存的更改.
+        /// </summary>
+        public static string SaveEditor_HasUnsavedChanges {
+            get {
+                return ResourceManager.GetString("SaveEditor_HasUnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档已加载.
+        /// </summary>
+        public static string SaveEditor_Loaded {
+            get {
+                return ResourceManager.GetString("SaveEditor_Loaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 无法加载存档文件.
+        /// </summary>
+        public static string SaveEditor_LoadFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_LoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 手动备份.
+        /// </summary>
+        public static string SaveEditor_ManualBackup {
+            get {
+                return ResourceManager.GetString("SaveEditor_ManualBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 手动备份已完成.
+        /// </summary>
+        public static string SaveEditor_ManualBackupSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_ManualBackupSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档中没有任务进度数据.
+        /// </summary>
+        public static string SaveEditor_NoData {
+            get {
+                return ResourceManager.GetString("SaveEditor_NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档文件不存在.
+        /// </summary>
+        public static string SaveEditor_NoFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_NoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 一键通关.
+        /// </summary>
+        public static string SaveEditor_OneKeyComplete {
+            get {
+                return ResourceManager.GetString("SaveEditor_OneKeyComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 一键重置.
+        /// </summary>
+        public static string SaveEditor_OneKeyReset {
+            get {
+                return ResourceManager.GetString("SaveEditor_OneKeyReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请指定存档文件路径.
+        /// </summary>
+        public static string SaveEditor_PathEmpty {
+            get {
+                return ResourceManager.GetString("SaveEditor_PathEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 确定要重置所有任务进度吗？此操作不可撤销！.
+        /// </summary>
+        public static string SaveEditor_ResetConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_ResetConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已重置所有进度.
+        /// </summary>
+        public static string SaveEditor_ResetSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_ResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 恢复.
+        /// </summary>
+        public static string SaveEditor_Restore {
+            get {
+                return ResourceManager.GetString("SaveEditor_Restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 确定要从备份恢复吗？当前存档将被覆盖！.
+        /// </summary>
+        public static string SaveEditor_RestoreConfirm {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已从备份恢复.
+        /// </summary>
+        public static string SaveEditor_RestoredFromBackup {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoredFromBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 恢复失败，请检查备份文件.
+        /// </summary>
+        public static string SaveEditor_RestoreFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 恢复成功！.
+        /// </summary>
+        public static string SaveEditor_RestoreSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 备份时间: {0}.
+        /// </summary>
+        public static string SaveEditor_RestoreTime {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 保存存档.
+        /// </summary>
+        public static string SaveEditor_Save {
+            get {
+                return ResourceManager.GetString("SaveEditor_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 保存失败.
+        /// </summary>
+        public static string SaveEditor_SaveFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_SaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档保存成功！.
+        /// </summary>
+        public static string SaveEditor_SaveSuccess {
+            get {
+                return ResourceManager.GetString("SaveEditor_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 选择存档文件.
+        /// </summary>
+        public static string SaveEditor_SelectFile {
+            get {
+                return ResourceManager.GetString("SaveEditor_SelectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请先选择一个任务.
+        /// </summary>
+        public static string SaveEditor_SelectTaskFirst {
+            get {
+                return ResourceManager.GetString("SaveEditor_SelectTaskFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 任务操作.
+        /// </summary>
+        public static string SaveEditor_TaskOperation {
+            get {
+                return ResourceManager.GetString("SaveEditor_TaskOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 任务进度.
+        /// </summary>
+        public static string SaveEditor_TaskProgress {
+            get {
+                return ResourceManager.GetString("SaveEditor_TaskProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已加载 {0} 个战役.
+        /// </summary>
+        public static string SaveEditor_TheatersLoaded {
+            get {
+                return ResourceManager.GetString("SaveEditor_TheatersLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已切换 {0} ({1}) 状态.
+        /// </summary>
+        public static string SaveEditor_ToggleStatus {
+            get {
+                return ResourceManager.GetString("SaveEditor_ToggleStatus", resourceCulture);
             }
         }
         
@@ -6955,6 +7400,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SkipConflictCheckOnLaunch {
             get {
                 return ResourceManager.GetString("SkipConflictCheckOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时跳过游戏版本兼容性检查.
+        /// </summary>
+        public static string SkipGameVersionCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipGameVersionCheckOnLaunch", resourceCulture);
             }
         }
         

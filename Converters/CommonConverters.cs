@@ -378,6 +378,93 @@ public class ChineseLanguageToVisibilityConverter : IValueConverter
     }
 }
 
+// Null转可见性转换器（null时隐藏）
+public class NullToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return value != null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// Null转反向可见性转换器（null时显示）
+public class NullToVisibilityInverseConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return value == null ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 任务完成状态颜色转换器
+public class BoolToCompletionBrushConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var isCompleted = value is bool b && b;
+        return isCompleted
+            ? Application.Current.TryFindResource("AccentBrush") ?? System.Windows.Media.Brushes.Green
+            : Application.Current.TryFindResource("SecondaryTextBrush") ?? System.Windows.Media.Brushes.Gray;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 阵营文字颜色转换器
+public class FactionForegroundConverter : IValueConverter
+{
+    private static readonly System.Windows.Media.Brush BlueBrush = System.Windows.Media.Brushes.DodgerBlue;
+    private static readonly System.Windows.Media.Brush RedBrush = System.Windows.Media.Brushes.OrangeRed;
+    private static readonly System.Windows.Media.Brush NeutralBrush = System.Windows.Media.Brushes.Gray;
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return (value as string) switch
+        {
+            "Blue" => BlueBrush,
+            "Red" => RedBrush,
+            "Neutral" => NeutralBrush,
+            _ => Application.Current.TryFindResource("PrimaryTextBrush") ?? System.Windows.Media.Brushes.White
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 是否有修改转提示文字转换器
+public class BoolToSaveHintConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool hasChanges && hasChanges)
+        {
+            return "有未保存的更改";
+        }
+        return "";
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 // 终末地主题专用：标题文本括号转换器（支持主题切换）
 public class BracketTextConverter : IMultiValueConverter
 {

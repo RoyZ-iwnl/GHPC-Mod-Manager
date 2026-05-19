@@ -145,6 +145,9 @@ public partial class SettingsViewModel : ObservableObject
     private bool _skipIntegrityCheck;
 
     [ObservableProperty]
+    private bool _skipGameVersionCheck;
+
+    [ObservableProperty]
     private bool _openWebsiteOnStartup;
 
     partial void OnOpenWebsiteOnStartupChanged(bool value)
@@ -279,6 +282,7 @@ public partial class SettingsViewModel : ObservableObject
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
         SkipConflictCheck = settings.SkipConflictCheck;
         SkipIntegrityCheck = settings.SkipIntegrityCheck;
+        SkipGameVersionCheck = settings.SkipGameVersionCheck;
         OpenWebsiteOnStartup = settings.OpenWebsiteOnStartup;
 
         // 检查是否已解锁终末地主题
@@ -339,6 +343,7 @@ public partial class SettingsViewModel : ObservableObject
             settings.UpdateChannel = SelectedUpdateChannel; // 保存更新通道设置
             settings.SkipConflictCheck = SkipConflictCheck;
             settings.SkipIntegrityCheck = SkipIntegrityCheck;
+            settings.SkipGameVersionCheck = SkipGameVersionCheck;
 
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);

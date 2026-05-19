@@ -116,6 +116,10 @@ public class AppSettings
     /// </summary>
     public bool SkipIntegrityCheck { get; set; } = false;
     /// <summary>
+    /// 启动游戏时跳过游戏版本兼容性检查
+    /// </summary>
+    public bool SkipGameVersionCheck { get; set; } = false;
+    /// <summary>
     /// 是否已解锁终末地主题（彩蛋）
     /// null 或 false = 未解锁，true = 已解锁
     /// </summary>
