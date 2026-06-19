@@ -1458,92 +1458,25 @@ public partial class MainViewModel : ObservableObject
                 return;
             }
 
-            StatusMessage = Strings.CheckingModConflictsAndDependencies;
+            // 打开启动检查窗口
+            var launchCheckWindow = new Views.LaunchCheckWindow(
+                _settingsService,
+                _serviceProvider.GetRequiredService<ILaunchCheckService>(),
+                _loggingService,
+                Mods.ToList());
 
-            // 检查MOD冲突
-            if (!_settingsService.Settings.SkipConflictCheck)
+            launchCheckWindow.Owner = Application.Current.MainWindow;
+
+            var result = launchCheckWindow.ShowDialog();
+
+            // 用户取消或检查未通过
+            if (result != true)
             {
-                var (hasConflicts, conflicts) = await _modManagerService.CheckEnabledModsConflictsAsync();
-                if (hasConflicts)
-            {
-                var conflictMessages = conflicts.Select(c =>
-                    string.Format(Strings.ModConflictsWith,
-                        GetModDisplayName(c.ModId),
-                        GetModDisplayName(c.ConflictsWith)))
-                    .ToList();
-
-                var conflictText = string.Join("\n", conflictMessages);
-                var result = MessageDialogHelper.Confirm(
-                    string.Format(Strings.ConflictWarningMessage, conflictText),
-                    Strings.ConflictDetectedOnLaunch);
-
-                if (!result)
-                {
-                    StatusMessage = Strings.Ready;
-                    return;
-                }
-            }
+                StatusMessage = Strings.Ready;
+                return;
             }
 
-            // 检查MOD依赖
-            var (hasMissingDeps, missingDeps) = await _modManagerService.CheckEnabledModsDependenciesAsync();
-            if (hasMissingDeps)
-            {
-                var depMessages = missingDeps.Select(d =>
-                    string.Format(Strings.ModRequiresDependency,
-                        GetModDisplayName(d.ModId),
-                        GetModDisplayName(d.RequiredMod)))
-                    .ToList();
-
-                var depText = string.Join("\n", depMessages);
-                var result = MessageDialogHelper.Confirm(
-                    string.Format(Strings.DependencyWarningMessage, depText),
-                    Strings.DependencyMissingOnLaunch);
-
-                if (!result)
-                {
-                    StatusMessage = Strings.Ready;
-                    return;
-                }
-            }
-
-            // 检查已安装的下架Mod
-            var delistedMods = Mods.Where(m => m.IsInstalled && m.IsDelisted).ToList();
-            if (delistedMods.Any())
-            {
-                var delistedNames = delistedMods.Select(m => m.DisplayName).ToList();
-                var delistedText = string.Join("\n• ", delistedNames);
-                var result = MessageDialogHelper.Confirm(
-                    string.Format(Strings.DelistedModWarningMessage, "• " + delistedText),
-                    Strings.DelistedModDetectedOnLaunch);
-
-                if (!result)
-                {
-                    StatusMessage = Strings.Ready;
-                    return;
-                }
-            }
-
-            if (!_settingsService.Settings.SkipIntegrityCheck)
-            {
-                var integrityOkay = await CheckManagedModIntegrityAsync(promptOnMismatch: true);
-                if (!integrityOkay)
-                {
-                    StatusMessage = Strings.Ready;
-                    return;
-                }
-            }
-
-            if (!_settingsService.Settings.SkipGameVersionCheck)
-            {
-                var versionCheckOkay = await CheckInstalledModsGameVersionCompatibilityAsync(promptOnMismatch: true);
-                if (!versionCheckOkay)
-                {
-                    StatusMessage = Strings.Ready;
-                    return;
-                }
-            }
-
+            // 检查通过，启动游戏
             StatusMessage = Strings.StartingGame;
             var success = await _processService.LaunchGameAsync(gameRootPath);
 

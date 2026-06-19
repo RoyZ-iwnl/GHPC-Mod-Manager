@@ -264,13 +264,13 @@ public partial class ModDetailViewModel : ObservableObject
                     IsInstalling = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
-                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDialogTitle);
+                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDetectedOnLaunch);
                     if (!firstResult) return;
 
                     // 二次确认
                     var secondResult = MessageDialogHelper.Confirm(
                         Strings.ConflictInstallConfirm,
-                        Strings.ConflictDialogTitle);
+                        Strings.ConflictDetectedOnLaunch);
                     if (!secondResult) return;
 
                     IsInstalling = true;

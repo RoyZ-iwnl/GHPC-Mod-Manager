@@ -280,26 +280,35 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- 行1: 标题（左）+ 状态徽章（右） -->
+                                    <!-- 行1: 标题（左）+ 状态徽章 + 版本信息（右） -->
                                     <DockPanel Grid.Row="0" Margin="0,0,0,6" LastChildFill="True">
-                                        <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                            <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
-                                                    Background="{DynamicResource SuccessContainerBrush}"
-                                                    BorderBrush="{DynamicResource SuccessBrush}"
-                                                    Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock Text="{x:Static resources:Strings.Installed}"
-                                                           Style="{StaticResource BrowserBadgeTextStyle}"
-                                                           Foreground="{DynamicResource OnSuccessBrush}"/>
-                                            </Border>
-                                            <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
-                                                    Background="{DynamicResource ErrorContainerBrush}"
-                                                    BorderBrush="{DynamicResource ErrorBrush}"
-                                                    Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
-                                                           Style="{StaticResource BrowserBadgeTextStyle}"
-                                                           Foreground="{DynamicResource OnErrorContainerBrush}"/>
-                                            </Border>
-                                        </WrapPanel>
+                                        <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top" MinWidth="140">
+                                            <WrapPanel HorizontalAlignment="Right">
+                                                <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
+                                                        Background="{DynamicResource SuccessContainerBrush}"
+                                                        BorderBrush="{DynamicResource SuccessBrush}"
+                                                        Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                               Style="{StaticResource BrowserBadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnSuccessBrush}"/>
+                                                </Border>
+                                                <Border Style="{DynamicResource BrowserBadgeBorderStyle}"
+                                                        Background="{DynamicResource ErrorContainerBrush}"
+                                                        BorderBrush="{DynamicResource ErrorBrush}"
+                                                        Visibility="{Binding IsDelisted, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="{x:Static resources:Strings.DelistedBadge}"
+                                                               Style="{StaticResource BrowserBadgeTextStyle}"
+                                                               Foreground="{DynamicResource OnErrorContainerBrush}"/>
+                                                </Border>
+                                            </WrapPanel>
+                                            <!-- 版本信息：右上角显示最新版本和更新日期 -->
+                                            <TextBlock Text="{Binding LatestVersionWithDate}"
+                                                       Style="{StaticResource BrowserInfoBadgeTextStyle}"
+                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                                       HorizontalAlignment="Right"
+                                                       Margin="0,4,0,0"
+                                                       Visibility="{Binding LatestVersionWithDate, Converter={StaticResource StrToVis}}"/>
+                                        </StackPanel>
                                         <Button Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"

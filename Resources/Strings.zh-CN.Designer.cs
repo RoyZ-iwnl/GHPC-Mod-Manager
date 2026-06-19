@@ -1460,20 +1460,20 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 删除.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已删除MOD备份: {0} 版本 {1}.
         /// </summary>
         public static string DeletedModBackup {
             get {
                 return ResourceManager.GetString("DeletedModBackup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 删除.
-        /// </summary>
-        public static string DeletePreset {
-            get {
-                return ResourceManager.GetString("DeletePreset", resourceCulture);
             }
         }
         
@@ -3642,6 +3642,177 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 游戏版本兼容性.
+        /// </summary>
+        public static string LaunchCheckCompatibility {
+            get {
+                return ResourceManager.GetString("LaunchCheckCompatibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod冲突检查.
+        /// </summary>
+        public static string LaunchCheckConflict {
+            get {
+                return ResourceManager.GetString("LaunchCheckConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 仍然继续.
+        /// </summary>
+        public static string LaunchCheckContinueAnyway {
+            get {
+                return ResourceManager.GetString("LaunchCheckContinueAnyway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 当前版本.
+        /// </summary>
+        public static string LaunchCheckCurrentVersion {
+            get {
+                return ResourceManager.GetString("LaunchCheckCurrentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 下架Mod警告.
+        /// </summary>
+        public static string LaunchCheckDelisted {
+            get {
+                return ResourceManager.GetString("LaunchCheckDelisted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod依赖检查.
+        /// </summary>
+        public static string LaunchCheckDependency {
+            get {
+                return ResourceManager.GetString("LaunchCheckDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 失败.
+        /// </summary>
+        public static string LaunchCheckFailed {
+            get {
+                return ResourceManager.GetString("LaunchCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 游戏路径验证.
+        /// </summary>
+        public static string LaunchCheckGamePath {
+            get {
+                return ResourceManager.GetString("LaunchCheckGamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 游戏版本.
+        /// </summary>
+        public static string LaunchCheckGameVersion {
+            get {
+                return ResourceManager.GetString("LaunchCheckGameVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 检查中....
+        /// </summary>
+        public static string LaunchCheckInProgress {
+            get {
+                return ResourceManager.GetString("LaunchCheckInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod完整性检查.
+        /// </summary>
+        public static string LaunchCheckIntegrity {
+            get {
+                return ResourceManager.GetString("LaunchCheckIntegrity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 问题总览.
+        /// </summary>
+        public static string LaunchCheckIssueSummary {
+            get {
+                return ResourceManager.GetString("LaunchCheckIssueSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 最新版本.
+        /// </summary>
+        public static string LaunchCheckLatestVersion {
+            get {
+                return ResourceManager.GetString("LaunchCheckLatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod管理器版本检查.
+        /// </summary>
+        public static string LaunchCheckManagerVersion {
+            get {
+                return ResourceManager.GetString("LaunchCheckManagerVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod更新检查.
+        /// </summary>
+        public static string LaunchCheckModUpdate {
+            get {
+                return ResourceManager.GetString("LaunchCheckModUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 通过.
+        /// </summary>
+        public static string LaunchCheckPassed {
+            get {
+                return ResourceManager.GetString("LaunchCheckPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已跳过.
+        /// </summary>
+        public static string LaunchCheckSkipped {
+            get {
+                return ResourceManager.GetString("LaunchCheckSkipped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动前检查.
+        /// </summary>
+        public static string LaunchCheckTitle {
+            get {
+                return ResourceManager.GetString("LaunchCheckTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 警告.
+        /// </summary>
+        public static string LaunchCheckWarning {
+            get {
+                return ResourceManager.GetString("LaunchCheckWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 启动游戏错误.
         /// </summary>
         public static string LaunchGameError {
@@ -4051,6 +4222,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ManagedModIntegrityStartupMessage {
             get {
                 return ResourceManager.GetString("ManagedModIntegrityStartupMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod管理器有新版本可用: {0}.
+        /// </summary>
+        public static string ManagerUpdateAvailable {
+            get {
+                return ResourceManager.GetString("ManagerUpdateAvailable", resourceCulture);
             }
         }
         
@@ -4957,7 +5137,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 打包范围：模组列表、游戏日志、系统配置、游戏注册表（不涉及隐私信息）.
+        ///   Looks up a localized string similar to 打包范围：模组列表、游戏日志、系统配置、游戏存档（不涉及隐私信息）.
         /// </summary>
         public static string ModInfoDumperPrivacyNotice {
             get {
@@ -5268,6 +5448,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModUpdateFailed {
             get {
                 return ResourceManager.GetString("ModUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 以下Mod有新版本可用:.
+        /// </summary>
+        public static string ModUpdatesAvailableOnLaunch {
+            get {
+                return ResourceManager.GetString("ModUpdatesAvailableOnLaunch", resourceCulture);
             }
         }
         
@@ -5821,6 +6010,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 离线.
+        /// </summary>
+        public static string Offline {
+            get {
+                return ResourceManager.GetString("Offline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 离线模式 - 使用缓存数据.
         /// </summary>
         public static string OfflineModeActive {
@@ -5857,6 +6055,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 在线.
+        /// </summary>
+        public static string Online {
+            get {
+                return ResourceManager.GetString("Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时进行在线检查.
+        /// </summary>
+        public static string OnlineCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("OnlineCheckOnLaunch", resourceCulture);
             }
         }
         
@@ -6792,24 +7008,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 浏览....
-        /// </summary>
-        public static string SaveEditor_Browse {
-            get {
-                return ResourceManager.GetString("SaveEditor_Browse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 取消.
-        /// </summary>
-        public static string SaveEditor_Cancel {
-            get {
-                return ResourceManager.GetString("SaveEditor_Cancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 点击切换阵营完成状态:.
         /// </summary>
         public static string SaveEditor_ClickToToggleFaction {
@@ -6842,15 +7040,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveEditor_Confirm {
             get {
                 return ResourceManager.GetString("SaveEditor_Confirm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 删除.
-        /// </summary>
-        public static string SaveEditor_Delete {
-            get {
-                return ResourceManager.GetString("SaveEditor_Delete", resourceCulture);
             }
         }
         
@@ -7418,6 +7607,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SkipIntegrityCheckOnLaunch {
             get {
                 return ResourceManager.GetString("SkipIntegrityCheckOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时跳过Mod管理器版本检查.
+        /// </summary>
+        public static string SkipManagerVersionCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipManagerVersionCheckOnLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动游戏时跳过Mod更新检查.
+        /// </summary>
+        public static string SkipModUpdateCheckOnLaunch {
+            get {
+                return ResourceManager.GetString("SkipModUpdateCheckOnLaunch", resourceCulture);
             }
         }
         

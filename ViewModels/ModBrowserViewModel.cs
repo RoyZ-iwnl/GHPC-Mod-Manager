@@ -315,6 +315,21 @@ public partial class ModBrowserViewModel : ObservableObject
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
 
+            // 安装前强制刷新最新版本，避免安装缓存中的旧版本
+            try
+            {
+                var freshReleases = await _modManagerService.GetModReleasesAsync(mod.Id, forceRefresh: true);
+                var freshVersion = freshReleases.FirstOrDefault()?.TagName;
+                if (!string.IsNullOrEmpty(freshVersion) && freshVersion != mod.LatestVersion)
+                {
+                    mod.LatestVersion = freshVersion;
+                }
+            }
+            catch
+            {
+                // 刷新失败时使用已有版本继续安装
+            }
+
             // 检查冲突：已安装的MOD中是否有与当前MOD冲突的
             if (mod.Config?.Conflicts?.Any() == true)
             {
@@ -328,12 +343,12 @@ public partial class ModBrowserViewModel : ObservableObject
                     IsDownloading = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
-                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDialogTitle);
+                    var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDetectedOnLaunch);
                     if (!firstResult) return;
 
                     var secondResult = MessageDialogHelper.Confirm(
                         Strings.ConflictInstallConfirm,
-                        Strings.ConflictDialogTitle);
+                        Strings.ConflictDetectedOnLaunch);
                     if (!secondResult) return;
 
                     IsDownloading = true;

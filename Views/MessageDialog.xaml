@@ -6,6 +6,7 @@
         Width="420"
         MinWidth="320"
         MaxWidth="520"
+        MaxHeight="700"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
@@ -132,14 +133,16 @@
             <Border Grid.Row="1"
                     Padding="20,16"
                     Background="{DynamicResource SurfaceBrush}">
-                <TextBlock x:Name="MessageText"
-                           Text=""
-                           FontFamily="{DynamicResource DefaultFontFamily}"
-                           FontSize="{DynamicResource BodyMedium}"
-                           FontWeight="Normal"
-                           Foreground="{DynamicResource OnSurfaceBrush}"
-                           TextWrapping="Wrap"
-                           MaxHeight="280"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="MessageText"
+                               Text=""
+                               FontFamily="{DynamicResource DefaultFontFamily}"
+                               FontSize="{DynamicResource BodyMedium}"
+                               FontWeight="Normal"
+                               Foreground="{DynamicResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"/>
+                </ScrollViewer>
             </Border>
 
             <!-- 按钮区域 -->

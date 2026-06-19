@@ -69,6 +69,7 @@
     <Style x:Key="PageSectionHintTextStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="{DynamicResource BodySmall}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
     <Style x:Key="MetaLabelTextStyle" TargetType="TextBlock">

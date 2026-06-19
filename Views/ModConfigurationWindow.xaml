@@ -94,7 +94,7 @@
                                         Command="{Binding SavePresetCommand}"
                                         Margin="0,0,8,8"
                                         Style="{DynamicResource OutlinedButtonStyle}"/>
-                                <Button Content="{x:Static resources:Strings.DeletePreset}"
+                                <Button Content="{x:Static resources:Strings.Delete}"
                                         Command="{Binding DeletePresetCommand}"
                                         Margin="0,0,16,8"
                                         Style="{DynamicResource OutlinedButtonStyle}"/>

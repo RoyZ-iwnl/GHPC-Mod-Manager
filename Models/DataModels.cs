@@ -120,6 +120,18 @@ public class AppSettings
     /// </summary>
     public bool SkipGameVersionCheck { get; set; } = false;
     /// <summary>
+    /// 启动游戏时跳过Mod更新检查
+    /// </summary>
+    public bool SkipModUpdateCheck { get; set; } = false;
+    /// <summary>
+    /// 启动游戏时跳过Mod管理器版本检查
+    /// </summary>
+    public bool SkipManagerVersionCheck { get; set; } = false;
+    /// <summary>
+    /// 启动游戏时进行在线检查（全局开关）
+    /// </summary>
+    public bool OnlineCheckOnLaunch { get; set; } = true;
+    /// <summary>
     /// 是否已解锁终末地主题（彩蛋）
     /// null 或 false = 未解锁，true = 已解锁
     /// </summary>

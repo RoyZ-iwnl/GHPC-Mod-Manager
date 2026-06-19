@@ -105,6 +105,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IModBackupService, ModBackupService>();
                     services.AddSingleton<IAnnouncementService, AnnouncementService>();
                     services.AddSingleton<IUpdateService, UpdateService>();
+                    services.AddSingleton<ILaunchCheckService, LaunchCheckService>();
                     services.AddSingleton<ISteamGameFinderService, SteamGameFinderService>();
                     services.AddSingleton<IVersionCleanupService, VersionCleanupService>();
                     services.AddSingleton<IDialogService, DialogService>();

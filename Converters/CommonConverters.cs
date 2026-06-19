@@ -423,25 +423,134 @@ public class BoolToCompletionBrushConverter : IValueConverter
     }
 }
 
+public class BoolToTextDecorationsConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return value is bool b && !b ? TextDecorations.Strikethrough : null;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
 // 阵营文字颜色转换器
 public class FactionForegroundConverter : IValueConverter
 {
-    private static readonly System.Windows.Media.Brush BlueBrush = System.Windows.Media.Brushes.DodgerBlue;
-    private static readonly System.Windows.Media.Brush RedBrush = System.Windows.Media.Brushes.OrangeRed;
-    private static readonly System.Windows.Media.Brush NeutralBrush = System.Windows.Media.Brushes.Gray;
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return (value as string) switch
+        var faction = value as string;
+        return faction switch
         {
-            "Blue" => BlueBrush,
-            "Red" => RedBrush,
-            "Neutral" => NeutralBrush,
+            "Blue" => Application.Current.TryFindResource("FactionBlueBrush") ?? System.Windows.Media.Brushes.DodgerBlue,
+            "Red" => Application.Current.TryFindResource("FactionRedBrush") ?? System.Windows.Media.Brushes.OrangeRed,
+            "Neutral" => Application.Current.TryFindResource("FactionNeutralBrush") ?? System.Windows.Media.Brushes.Gray,
             _ => Application.Current.TryFindResource("PrimaryTextBrush") ?? System.Windows.Media.Brushes.White
         };
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 阵营背景颜色转换器
+public class FactionBackgroundConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var faction = value as string;
+        return faction switch
+        {
+            "Blue" => Application.Current.TryFindResource("FactionBlueContainerBrush") ?? System.Windows.Media.Brushes.LightBlue,
+            "Red" => Application.Current.TryFindResource("FactionRedContainerBrush") ?? System.Windows.Media.Brushes.MistyRose,
+            "Neutral" => Application.Current.TryFindResource("FactionNeutralContainerBrush") ?? System.Windows.Media.Brushes.LightGray,
+            _ => Application.Current.TryFindResource("SurfaceContainerBrush") ?? System.Windows.Media.Brushes.White
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class FactionBadgeForegroundConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        var faction = values.Length > 0 ? values[0] as string : null;
+        var isCompleted = values.Length > 1 && values[1] is bool b && b;
+        var isCompletedBrush = faction switch
+        {
+            "Blue" => Application.Current.TryFindResource("FactionBlueBrush") ?? System.Windows.Media.Brushes.DodgerBlue,
+            "Red" => Application.Current.TryFindResource("FactionRedBrush") ?? System.Windows.Media.Brushes.OrangeRed,
+            "Neutral" => Application.Current.TryFindResource("FactionNeutralBrush") ?? System.Windows.Media.Brushes.Gray,
+            _ => Application.Current.TryFindResource("PrimaryTextBrush") ?? System.Windows.Media.Brushes.White
+        };
+
+        return isCompleted
+            ? isCompletedBrush
+            : Application.Current.TryFindResource("FactionIncompleteBrush") ?? System.Windows.Media.Brushes.Gray;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class FactionBadgeBackgroundConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        var faction = values.Length > 0 ? values[0] as string : null;
+        var isCompleted = values.Length > 1 && values[1] is bool b && b;
+        if (!isCompleted)
+        {
+            return Application.Current.TryFindResource("FactionIncompleteContainerBrush") ?? System.Windows.Media.Brushes.Transparent;
+        }
+
+        return faction switch
+        {
+            "Blue" => Application.Current.TryFindResource("FactionBlueContainerBrush") ?? System.Windows.Media.Brushes.LightBlue,
+            "Red" => Application.Current.TryFindResource("FactionRedContainerBrush") ?? System.Windows.Media.Brushes.MistyRose,
+            "Neutral" => Application.Current.TryFindResource("FactionNeutralContainerBrush") ?? System.Windows.Media.Brushes.LightGoldenrodYellow,
+            _ => Application.Current.TryFindResource("SurfaceContainerBrush") ?? System.Windows.Media.Brushes.White
+        };
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class FactionBadgeBorderConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        var faction = values.Length > 0 ? values[0] as string : null;
+        var isCompleted = values.Length > 1 && values[1] is bool b && b;
+        if (!isCompleted)
+        {
+            return Application.Current.TryFindResource("FactionIncompleteBorderBrush") ?? System.Windows.Media.Brushes.Gray;
+        }
+
+        return faction switch
+        {
+            "Blue" => Application.Current.TryFindResource("FactionBlueBrush") ?? System.Windows.Media.Brushes.DodgerBlue,
+            "Red" => Application.Current.TryFindResource("FactionRedBrush") ?? System.Windows.Media.Brushes.OrangeRed,
+            "Neutral" => Application.Current.TryFindResource("FactionNeutralBrush") ?? System.Windows.Media.Brushes.Goldenrod,
+            _ => Application.Current.TryFindResource("PrimaryTextBrush") ?? System.Windows.Media.Brushes.White
+        };
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }
@@ -491,3 +600,75 @@ public class BracketTextConverter : IMultiValueConverter
         throw new NotImplementedException();
     }
 }
+
+// 启动检查步骤状态转Visibility转换器
+public class LaunchCheckStatusToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is ViewModels.LaunchCheckStepStatus status && parameter is string targetStatus)
+        {
+            if (Enum.TryParse<ViewModels.LaunchCheckStepStatus>(targetStatus, out var target))
+            {
+                return status == target ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        return Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 启动检查步骤状态转颜色转换器
+public class LaunchCheckStatusToBrushConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is ViewModels.LaunchCheckStepStatus status)
+        {
+            return status switch
+            {
+                ViewModels.LaunchCheckStepStatus.Passed => Application.Current.TryFindResource("SuccessBrush"),
+                ViewModels.LaunchCheckStepStatus.Warning => Application.Current.TryFindResource("WarningBrush"),
+                ViewModels.LaunchCheckStepStatus.Failed => Application.Current.TryFindResource("ErrorBrush"),
+                ViewModels.LaunchCheckStepStatus.InProgress => Application.Current.TryFindResource("AccentBrush"),
+                ViewModels.LaunchCheckStepStatus.Skipped => Application.Current.TryFindResource("DisabledBrush"),
+                _ => Application.Current.TryFindResource("BorderBrush")
+            };
+        }
+        return Application.Current.TryFindResource("BorderBrush");
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+// 启动检查进度条宽度转换器
+public class ProgressToWidthConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 3) return 0.0;
+
+        if (values[0] is int currentStep &&
+            values[1] is int totalSteps &&
+            values[2] is double containerWidth &&
+            totalSteps > 0)
+        {
+            double stepWidth = (containerWidth - 20) / totalSteps;
+            return stepWidth * (currentStep + 1);
+        }
+        return 0.0;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+

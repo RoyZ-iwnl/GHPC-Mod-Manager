@@ -94,7 +94,8 @@
 
                     <TextBlock Margin="0,16,0,6"
                                Text="{x:Static resources:Strings.GHPCModManager}"
-                               Style="{StaticResource RailTitleStyle}"/>
+                               Style="{StaticResource RailTitleStyle}"
+                               FontSize="15"/>
                 </StackPanel>
 
                 <ListBox Grid.Row="1"

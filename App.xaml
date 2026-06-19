@@ -22,8 +22,16 @@
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <converters:NullToVisibilityInverseConverter x:Key="NullToVisibilityInverseConverter"/>
             <converters:BoolToCompletionBrushConverter x:Key="BoolToCompletionBrushConverter"/>
+            <converters:BoolToTextDecorationsConverter x:Key="BoolToTextDecorationsConverter"/>
             <converters:FactionForegroundConverter x:Key="FactionForegroundConverter"/>
+            <converters:FactionBackgroundConverter x:Key="FactionBackgroundConverter"/>
+            <converters:FactionBadgeForegroundConverter x:Key="FactionBadgeForegroundConverter"/>
+            <converters:FactionBadgeBackgroundConverter x:Key="FactionBadgeBackgroundConverter"/>
+            <converters:FactionBadgeBorderConverter x:Key="FactionBadgeBorderConverter"/>
             <converters:BoolToSaveHintConverter x:Key="BoolToSaveHintConverter"/>
+            <converters:LaunchCheckStatusToVisibilityConverter x:Key="LaunchCheckStatusToVisibilityConverter"/>
+            <converters:LaunchCheckStatusToBrushConverter x:Key="LaunchCheckStatusToBrushConverter"/>
+            <converters:ProgressToWidthConverter x:Key="ProgressToWidthConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

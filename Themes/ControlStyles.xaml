@@ -896,4 +896,32 @@
         </Setter>
     </Style>
 
+    <!-- ═══════════════════════════════════════════════════════
+         启动检查窗口时间线动画（Light/Dark主题通用）
+    ═══════════════════════════════════════════════════════ -->
+    <Storyboard x:Key="LaunchCheckStepSlideIn">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                         From="40" To="0" Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0.6" To="1" Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- 步骤完成时的淡入动画 -->
+    <Storyboard x:Key="LaunchCheckStepComplete">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0.7" To="1" Duration="0:0:0.15">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
 </ResourceDictionary>

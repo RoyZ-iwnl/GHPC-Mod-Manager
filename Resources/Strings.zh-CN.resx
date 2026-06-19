@@ -1,110 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -423,7 +365,7 @@
   <data name="SavePreset" xml:space="preserve">
     <value>保存</value>
   </data>
-  <data name="DeletePreset" xml:space="preserve">
+  <data name="Delete" xml:space="preserve">
     <value>删除</value>
   </data>
   <data name="SaveAsPreset" xml:space="preserve">
@@ -821,6 +763,21 @@
   </data>
   <data name="SkipGameVersionCheckOnLaunch" xml:space="preserve">
     <value>启动游戏时跳过游戏版本兼容性检查</value>
+  </data>
+  <data name="SkipModUpdateCheckOnLaunch" xml:space="preserve">
+    <value>启动游戏时跳过Mod更新检查</value>
+  </data>
+  <data name="SkipManagerVersionCheckOnLaunch" xml:space="preserve">
+    <value>启动游戏时跳过Mod管理器版本检查</value>
+  </data>
+  <data name="OnlineCheckOnLaunch" xml:space="preserve">
+    <value>启动游戏时进行在线检查</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>在线</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>离线</value>
   </data>
   <data name="DataSourceConfiguration" xml:space="preserve">
     <value>数据源配置</value>
@@ -2501,6 +2458,63 @@
 
 这些MOD可能存在问题或不再维护。是否仍要启动游戏?</value>
   </data>
+  <data name="LaunchCheckTitle" xml:space="preserve">
+    <value>启动前检查</value>
+  </data>
+  <data name="LaunchCheckGamePath" xml:space="preserve">
+    <value>游戏路径验证</value>
+  </data>
+  <data name="LaunchCheckModUpdate" xml:space="preserve">
+    <value>Mod更新检查</value>
+  </data>
+  <data name="LaunchCheckConflict" xml:space="preserve">
+    <value>Mod冲突检查</value>
+  </data>
+  <data name="LaunchCheckDependency" xml:space="preserve">
+    <value>Mod依赖检查</value>
+  </data>
+  <data name="LaunchCheckDelisted" xml:space="preserve">
+    <value>下架Mod警告</value>
+  </data>
+  <data name="LaunchCheckIntegrity" xml:space="preserve">
+    <value>Mod完整性检查</value>
+  </data>
+  <data name="LaunchCheckCompatibility" xml:space="preserve">
+    <value>游戏版本兼容性</value>
+  </data>
+  <data name="LaunchCheckManagerVersion" xml:space="preserve">
+    <value>Mod管理器版本检查</value>
+  </data>
+  <data name="LaunchCheckPassed" xml:space="preserve">
+    <value>通过</value>
+  </data>
+  <data name="LaunchCheckFailed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="LaunchCheckInProgress" xml:space="preserve">
+    <value>检查中...</value>
+  </data>
+  <data name="LaunchCheckSkipped" xml:space="preserve">
+    <value>已跳过</value>
+  </data>
+  <data name="LaunchCheckContinueAnyway" xml:space="preserve">
+    <value>仍然继续</value>
+  </data>
+  <data name="LaunchCheckIssueSummary" xml:space="preserve">
+    <value>问题总览</value>
+  </data>
+  <data name="LaunchCheckGameVersion" xml:space="preserve">
+    <value>游戏版本</value>
+  </data>
+  <data name="LaunchCheckCurrentVersion" xml:space="preserve">
+    <value>当前版本</value>
+  </data>
+  <data name="ManagerUpdateAvailable" xml:space="preserve">
+    <value>Mod管理器有新版本可用: {0}</value>
+  </data>
+  <data name="ModUpdatesAvailableOnLaunch" xml:space="preserve">
+    <value>以下Mod有新版本可用:</value>
+  </data>
   <data name="InvalidReplaceTargetPathMessage" xml:space="preserve">
     <value>Mod {0} 的 ReplaceTargetPath 无效。</value>
   </data>
@@ -2696,9 +2710,6 @@
   </data>
   <data name="QuickReinstall" xml:space="preserve">
     <value>快速重装</value>
-  </data>
-  <data name="ConflictDialogTitle" xml:space="preserve">
-    <value>检测到MOD冲突</value>
   </data>
   <data name="ConflictDialogMessage" xml:space="preserve">
     <value>以下已安装的MOD与此MOD存在冲突：</value>
@@ -2995,7 +3006,7 @@
     <value>请复现模组故障后关闭游戏再打包。</value>
   </data>
   <data name="ModInfoDumperPrivacyNotice" xml:space="preserve">
-    <value>打包范围：模组列表、游戏日志、系统配置、游戏注册表（不涉及隐私信息）</value>
+    <value>打包范围：模组列表、游戏日志、系统配置、游戏存档（不涉及隐私信息）</value>
   </data>
   <data name="ModInfoFiles" xml:space="preserve">
     <value>文件：</value>
@@ -3086,12 +3097,8 @@
   <data name="FailedToOpenSupportPage" xml:space="preserve">
     <value>打开支持页面失败</value>
   </data>
-  <!-- Save Editor -->
   <data name="SaveEditor_FilePath" xml:space="preserve">
     <value>存档文件路径</value>
-  </data>
-  <data name="SaveEditor_Browse" xml:space="preserve">
-    <value>浏览...</value>
   </data>
   <data name="SaveEditor_TaskProgress" xml:space="preserve">
     <value>任务进度</value>
@@ -3204,14 +3211,8 @@
   <data name="SaveEditor_Restore" xml:space="preserve">
     <value>恢复</value>
   </data>
-  <data name="SaveEditor_Delete" xml:space="preserve">
-    <value>删除</value>
-  </data>
   <data name="SaveEditor_Confirm" xml:space="preserve">
     <value>确认</value>
-  </data>
-  <data name="SaveEditor_Cancel" xml:space="preserve">
-    <value>取消</value>
   </data>
   <data name="SaveEditor_SelectFile" xml:space="preserve">
     <value>选择存档文件</value>

@@ -1,0 +1,304 @@
+<Window x:Class="GHPC_Mod_Manager.Views.LaunchCheckWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
+        xmlns:helpers="clr-namespace:GHPC_Mod_Manager.Helpers"
+        xmlns:vm="clr-namespace:GHPC_Mod_Manager.ViewModels"
+        Title="{x:Static resources:Strings.LaunchCheckTitle}"
+        Width="800"
+        Height="650"
+        MinWidth="700"
+        MinHeight="550"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None"
+        helpers:PageTransitionBehavior.IsMainTransition="True">
+
+    <!-- WindowChrome -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
+
+        <!-- 主内容区 -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 标题 -->
+            <TextBlock Grid.Row="0"
+                       Text="{x:Static resources:Strings.LaunchCheckTitle}"
+                       Style="{StaticResource PageTitleTextStyle}"
+                       Margin="0,0,0,16"/>
+
+            <!-- 时间线进度条 + 检查内容 -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- 时间线进度条（点连成线） -->
+                <Grid Grid.Row="0" Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 进度条背景 -->
+                    <Border Height="4" CornerRadius="2" Background="{DynamicResource BorderBrush}"
+                            VerticalAlignment="Center" Margin="10,0"/>
+
+                    <!-- 进度条前景（根据当前步骤动态） -->
+                    <Border Height="4" CornerRadius="2"
+                            Background="{DynamicResource AccentBrush}"
+                            VerticalAlignment="Center" HorizontalAlignment="Left"
+                            Margin="10,0">
+                        <Border.Width>
+                            <MultiBinding Converter="{StaticResource ProgressToWidthConverter}">
+                                <Binding Path="CurrentStepIndex"/>
+                                <Binding Path="Steps.Count"/>
+                                <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=Grid}"/>
+                            </MultiBinding>
+                        </Border.Width>
+                    </Border>
+
+                    <!-- 步骤圆点（覆盖在进度条上，可点击查看详情） -->
+                    <ItemsControl ItemsSource="{Binding Steps}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                    <Button Command="{Binding DataContext.SelectStepCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="0"
+                                            Cursor="Hand"
+                                            ToolTip="{Binding LocalizedTitle}">
+                                        <Grid Width="24" Height="24">
+                                            <Ellipse Width="16" Height="16"
+                                                     StrokeThickness="3"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Setter Property="Stroke" Value="{DynamicResource BorderBrush}"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource BackgroundBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Passed">
+                                                                <Setter Property="Stroke" Value="{DynamicResource SuccessBrush}"/>
+                                                                <Setter Property="Fill" Value="{DynamicResource SuccessBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Warning">
+                                                                <Setter Property="Stroke" Value="{DynamicResource WarningBrush}"/>
+                                                                <Setter Property="Fill" Value="{DynamicResource WarningBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                                                <Setter Property="Stroke" Value="{DynamicResource ErrorBrush}"/>
+                                                                <Setter Property="Fill" Value="{DynamicResource ErrorBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="InProgress">
+                                                                <Setter Property="Stroke" Value="{DynamicResource AccentBrush}"/>
+                                                                <Setter Property="Fill" Value="{DynamicResource AccentBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Skipped">
+                                                                <Setter Property="Stroke" Value="{DynamicResource DisabledBrush}"/>
+                                                                <Setter Property="Fill" Value="{DynamicResource DisabledBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+                                        </Grid>
+                                    </Button>
+                                    <TextBlock Text="{Binding LocalizedTitle}"
+                                               FontSize="11"
+                                               Margin="0,6,0,0"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="88"
+                                               Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+
+                <!-- 右侧：当前步骤详情 -->
+                <Border Grid.Row="1"
+                        Style="{StaticResource PageSurfaceCardStyle}"
+                        Padding="16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 当前步骤标题 -->
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding CurrentStepTitle}"
+                                   Style="{StaticResource PageSectionTitleTextStyle}"
+                                   Margin="0,0,0,12"/>
+
+                        <!-- 状态指示 -->
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding CurrentStepStatusText}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,12">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentStep.Status}" Value="Passed">
+                                            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentStep.Status}" Value="Warning">
+                                            <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentStep.Status}" Value="Failed">
+                                            <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentStep.Status}" Value="InProgress">
+                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- 详情列表 -->
+                        <ScrollViewer Grid.Row="2"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding CurrentStepDetails}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,4"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- 进度条（检查中显示） -->
+                        <ProgressBar Grid.Row="3"
+                                     IsIndeterminate="True"
+                                     Height="4"
+                                     Margin="0,12,0,0"
+                                     Visibility="{Binding IsChecking, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <!-- 问题总览 -->
+                        <Border Grid.Row="4"
+                                Margin="0,12,0,0"
+                                Padding="12"
+                                Background="{DynamicResource SurfaceAltBrush}"
+                                CornerRadius="8"
+                                Visibility="{Binding HasIssueSummary, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="{x:Static resources:Strings.LaunchCheckIssueSummary}"
+                                           Style="{StaticResource PageSectionTitleTextStyle}"
+                                           FontSize="16"
+                                           Margin="0,0,0,8"/>
+                                <ItemsControl ItemsSource="{Binding IssueSummary}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,2,0,2"
+                                                       FontSize="13"
+                                                       Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 底部按钮区 -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,16,0,0">
+                <!-- 取消按钮 -->
+                <Button Content="{x:Static resources:Strings.Cancel}"
+                        Command="{Binding CancelCommand}"
+                        Visibility="{Binding ShowCancelButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource OutlinedButtonStyle}"
+                        MinWidth="100"
+                        Margin="0,0,12,0"/>
+
+                <!-- 继续按钮（仅在有警告/失败时显示） -->
+                <Button Content="{x:Static resources:Strings.LaunchCheckContinueAnyway}"
+                        Command="{Binding ContinueCommand}"
+                        Visibility="{Binding ShowContinueButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource FilledButtonStyle}"
+                        MinWidth="120"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 状态栏：在线/离线状态 -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="16,8">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Width="8" Height="8" Margin="0,0,8,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="{DynamicResource SuccessBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOnlineMode}" Value="False">
+                                    <Setter Property="Fill" Value="{DynamicResource WarningBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock VerticalAlignment="Center" FontSize="12">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource PageSectionHintTextStyle}">
+                            <Setter Property="Text" Value="{x:Static resources:Strings.Online}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOnlineMode}" Value="False">
+                                    <Setter Property="Text" Value="{x:Static resources:Strings.Offline}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

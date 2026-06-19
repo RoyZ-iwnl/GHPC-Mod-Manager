@@ -263,6 +263,30 @@
                             </CheckBox.Content>
                         </CheckBox>
 
+                        <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding SkipModUpdateCheck}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.SkipModUpdateCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <CheckBox Margin="0,0,0,8"
+                                  IsChecked="{Binding SkipManagerVersionCheck}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.SkipManagerVersionCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <CheckBox Margin="0,8,0,8"
+                                  IsChecked="{Binding OnlineCheckOnLaunch}">
+                            <CheckBox.Content>
+                                <TextBlock Text="{x:Static resources:Strings.OnlineCheckOnLaunch}"
+                                           FontWeight="SemiBold"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+
                         <!-- 启动时打开官网选项已隐藏
                         <CheckBox Margin="0,0,0,8"
                                   IsChecked="{Binding OpenWebsiteOnStartup}">

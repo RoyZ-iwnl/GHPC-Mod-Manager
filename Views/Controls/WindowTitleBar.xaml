@@ -68,12 +68,13 @@
         <!-- 标题文字区域 -->
         <TextBlock x:Name="TitleText"
                    Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
-                   Margin="12,0,0,0"
+                   Margin="12,0,138,0"
                    VerticalAlignment="Center"
                    FontFamily="{DynamicResource DefaultFontFamily}"
                    FontSize="{DynamicResource LabelLarge}"
                    FontWeight="SemiBold"
-                   Foreground="{DynamicResource OnSurfaceBrush}"/>
+                   Foreground="{DynamicResource OnSurfaceBrush}"
+                   TextTrimming="CharacterEllipsis"/>
 
         <!-- 窗口控制按钮 -->
         <StackPanel Orientation="Horizontal"

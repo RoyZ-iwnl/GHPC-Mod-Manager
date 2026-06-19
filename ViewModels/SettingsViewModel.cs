@@ -148,6 +148,15 @@ public partial class SettingsViewModel : ObservableObject
     private bool _skipGameVersionCheck;
 
     [ObservableProperty]
+    private bool _skipModUpdateCheck;
+
+    [ObservableProperty]
+    private bool _skipManagerVersionCheck;
+
+    [ObservableProperty]
+    private bool _onlineCheckOnLaunch;
+
+    [ObservableProperty]
     private bool _openWebsiteOnStartup;
 
     partial void OnOpenWebsiteOnStartupChanged(bool value)
@@ -283,6 +292,9 @@ public partial class SettingsViewModel : ObservableObject
         SkipConflictCheck = settings.SkipConflictCheck;
         SkipIntegrityCheck = settings.SkipIntegrityCheck;
         SkipGameVersionCheck = settings.SkipGameVersionCheck;
+        SkipModUpdateCheck = settings.SkipModUpdateCheck;
+        SkipManagerVersionCheck = settings.SkipManagerVersionCheck;
+        OnlineCheckOnLaunch = settings.OnlineCheckOnLaunch;
         OpenWebsiteOnStartup = settings.OpenWebsiteOnStartup;
 
         // 检查是否已解锁终末地主题
@@ -344,6 +356,9 @@ public partial class SettingsViewModel : ObservableObject
             settings.SkipConflictCheck = SkipConflictCheck;
             settings.SkipIntegrityCheck = SkipIntegrityCheck;
             settings.SkipGameVersionCheck = SkipGameVersionCheck;
+            settings.SkipModUpdateCheck = SkipModUpdateCheck;
+            settings.SkipManagerVersionCheck = SkipManagerVersionCheck;
+            settings.OnlineCheckOnLaunch = OnlineCheckOnLaunch;
 
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);

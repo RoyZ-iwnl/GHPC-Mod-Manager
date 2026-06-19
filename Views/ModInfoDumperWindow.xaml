@@ -5,7 +5,10 @@
         xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
         xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
         Title="{x:Static resources:Strings.ModInfoDumperTitle}"
-        Height="352" Width="480"
+        SizeToContent="Height"
+        MinHeight="280"
+        MaxHeight="500"
+        Width="480"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="None"
@@ -51,12 +54,14 @@
                 <TextBlock Margin="0,4,0,0"
                            Text="{x:Static resources:Strings.ModInfoDumperDescription}"
                            Foreground="{DynamicResource OnSurfaceVariantBrush}"
-                           FontSize="13"/>
+                           FontSize="13"
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="0,8,0,0"
                            Text="{x:Static resources:Strings.ModInfoDumperPrivacyNotice}"
                            Foreground="{DynamicResource OnSurfaceVariantBrush}"
                            FontSize="12"
-                           FontStyle="Italic"/>
+                           FontStyle="Italic"
+                           TextWrapping="Wrap"/>
             </StackPanel>
 
             <!-- 按钮区域 -->
