@@ -6,6 +6,7 @@ using GHPC_Mod_Manager.Views;
 using GHPC_Mod_Manager.Helpers;
 using Microsoft.Win32;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -76,6 +77,21 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private ProxyServerItem? _selectedProxyServer;
 
+    // 测速结果列表
+    [ObservableProperty]
+    private List<ProxyServerSpeedTestResult> _proxyServerTestResults = new();
+
+    // 测速状态
+    [ObservableProperty]
+    private bool _isSpeedTesting;
+
+    [ObservableProperty]
+    private string _speedTestProgress = string.Empty;
+
+    // 选中的测速结果（用于RadioButton选择）
+    [ObservableProperty]
+    private ProxyServerSpeedTestResult? _selectedSpeedTestResult;
+
     [ObservableProperty]
     private bool _useDnsOverHttps;
 
@@ -83,9 +99,15 @@ public partial class SettingsViewModel : ObservableObject
     {
         // 配置token时禁用代理，token清空时重新启用代理选项
         OnPropertyChanged(nameof(IsGitHubProxyEnabled));
+
+        // 同步更新选中的测速结果
+        if (value != null && ProxyServerTestResults.Count > 0)
+        {
+            SelectedSpeedTestResult = ProxyServerTestResults.FirstOrDefault(r => r.Server == value.EnumValue);
+        }
     }
 
-    private void RefreshProxyServerList()
+    public void RefreshProxyServerList()
     {
         var remote = _mainConfigService.GetRemoteProxyServers();
         var lang = _settingsService.Settings.Language;
@@ -93,10 +115,51 @@ public partial class SettingsViewModel : ObservableObject
             ? ProxyServerItem.BuildFromRemote(remote, lang)
             : ProxyServerItem.BuildFallback();
 
-        // 列表刷新后根据已保存枚举值选中对应项
+        // 列表刷新后根据已保存的服务器ID选中对应项（优先使用服务器ID）
+        var savedServerId = _settingsService.Settings.GitHubProxyServerId;
         var savedEnum = _settingsService.Settings.GitHubProxyServer;
-        SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.EnumValue == savedEnum)
-            ?? AvailableProxyServers[0];
+
+        if (!string.IsNullOrEmpty(savedServerId))
+        {
+            SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.ServerId == savedServerId)
+                ?? AvailableProxyServers.FirstOrDefault(p => p.EnumValue == savedEnum)
+                ?? AvailableProxyServers[0];
+        }
+        else
+        {
+            SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.EnumValue == savedEnum)
+                ?? AvailableProxyServers[0];
+        }
+
+        // 同时更新测速结果列表
+        RefreshSpeedTestResults();
+    }
+
+    // 刷新测速结果列表（基于当前的 AvailableProxyServers）
+    private void RefreshSpeedTestResults()
+    {
+        var results = new List<ProxyServerSpeedTestResult>();
+        foreach (var proxy in AvailableProxyServers)
+        {
+            // 使用 proxy.ServerId 作为服务器标识（远程下发的Id）
+            var result = new ProxyServerSpeedTestResult
+            {
+                Server = proxy.EnumValue,
+                ServerId = proxy.ServerId,  // 保存远程下发的服务器Id
+                Domain = proxy.Domain,
+                DisplayName = proxy.DisplayName,
+                Status = SpeedTestStatus.Pending
+            };
+            results.Add(result);
+        }
+        ProxyServerTestResults = results;
+
+        // 选中当前选中的代理服务器对应的测速结果
+        if (SelectedProxyServer != null)
+        {
+            SelectedSpeedTestResult = results.FirstOrDefault(r => r.ServerId == SelectedProxyServer.ServerId)
+                ?? results.FirstOrDefault(r => r.Server == SelectedProxyServer.EnumValue);
+        }
     }
 
     [ObservableProperty]
@@ -349,6 +412,7 @@ public partial class SettingsViewModel : ObservableObject
             CommandLineArgs.DevConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
+            settings.GitHubProxyServerId = SelectedProxyServer?.ServerId ?? string.Empty;
             settings.UseDnsOverHttps = UseDnsOverHttps && SelectedLanguage == "zh-CN";
             settings.GitHubApiToken = GitHubApiToken;
             settings.Theme = SelectedTheme; // 保存主题设置
@@ -997,4 +1061,278 @@ public partial class SettingsViewModel : ObservableObject
         window.Owner = Application.Current.MainWindow;
         window.ShowDialog();
     }
+
+    #region 代理服务器测速功能
+
+    // 测速使用的测试URL（小型文件，用于测试下载速度）
+    private const string SpeedTestUrl = "https://raw.githubusercontent.com/microsoft/vscode/main/package.json";
+    private const int SpeedTestTimeoutMs = 10000; // 10秒超时
+
+    [RelayCommand]
+    private async Task TestAllProxyServersAsync()
+    {
+        if (IsSpeedTesting || ProxyServerTestResults.Count == 0)
+            return;
+
+        try
+        {
+            IsSpeedTesting = true;
+            int total = ProxyServerTestResults.Count;
+            int completed = 0;
+
+            foreach (var result in ProxyServerTestResults)
+            {
+                SpeedTestProgress = string.Format(Strings.SpeedTestProgress, result.DisplayName, completed + 1, total);
+                await TestSingleProxyServerAsync(result);
+                completed++;
+                SpeedTestProgress = $"已完成 {completed}/{total}";
+            }
+
+            // 找出最优服务器并自动选中
+            var bestResult = ProxyServerTestResults
+                .Where(r => r.Status == SpeedTestStatus.Success)
+                .OrderBy(r => r.LatencyMs)
+                .FirstOrDefault();
+
+            if (bestResult != null)
+            {
+                SelectedSpeedTestResult = bestResult;
+                // 优先使用ServerId匹配，其次使用枚举匹配
+                SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.ServerId == bestResult.ServerId)
+                    ?? AvailableProxyServers.FirstOrDefault(p => p.EnumValue == bestResult.Server);
+            }
+
+            SpeedTestProgress = Strings.SpeedTestComplete;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "ProxySpeedTestFailed");
+            SpeedTestProgress = Strings.SpeedTestFailed;
+        }
+        finally
+        {
+            IsSpeedTesting = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestSingleProxyServerAsync(ProxyServerSpeedTestResult? result)
+    {
+        if (result == null || result.Status == SpeedTestStatus.Testing)
+            return;
+
+        try
+        {
+            result.Status = SpeedTestStatus.Testing;
+
+            // 获取代理域名（使用ServerId从远程配置获取）
+            string proxyDomain = GetProxyDomain(result.ServerId);
+            _loggingService.LogInfo($"测速服务器: {result.ServerId}, 域名: {proxyDomain}");
+
+            // 1. 延迟测试：通过代理访问 GitHub API 测试连通性
+            var (latency, isRateLimited) = await TestLatencyViaProxyAsync(proxyDomain);
+            result.LatencyMs = latency;
+            result.IsRateLimited = isRateLimited;
+            _loggingService.LogInfo($"延迟测试结果: {latency}ms, 超限: {isRateLimited}");
+
+            // 2. 下载速度测试：使用代理下载小文件测试速度
+            double speedMbps = await TestDownloadSpeedViaProxyAsync(proxyDomain);
+            result.SpeedMbps = speedMbps;
+            _loggingService.LogInfo($"速度测试结果: {speedMbps:F2} MB/s");
+
+            // 如果被限流，标记状态但不算失败
+            if (result.IsRateLimited)
+            {
+                // rate limited but still connected
+                result.Status = SpeedTestStatus.Success;
+            }
+            else
+            {
+                result.Status = SpeedTestStatus.Success;
+            }
+            result.TestTime = DateTime.Now;
+        }
+        catch (OperationCanceledException)
+        {
+            result.Status = SpeedTestStatus.Timeout;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "SpeedTestError");
+            result.Status = SpeedTestStatus.Failed;
+        }
+    }
+
+    // 测试延迟 - 通过代理服务器访问 GitHub API
+    // 返回: (延迟毫秒, 是否API超限)
+    private async Task<(int latency, bool isRateLimited)> TestLatencyViaProxyAsync(string proxyDomain)
+    {
+        // 使用代理域名访问 GitHub API
+        string testUrl = $"https://{proxyDomain}/https://api.github.com/repos/thebeninator/Pact-Increased-Lethality/releases";
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+
+        using var client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromMilliseconds(SpeedTestTimeoutMs)
+        };
+        client.DefaultRequestHeaders.Add("User-Agent", "GHPC-Mod-Manager/1.0");
+
+        var stopwatch = Stopwatch.StartNew();
+        try
+        {
+            var response = await client.GetAsync(testUrl);
+            var statusCode = (int)response.StatusCode;
+            var content = await response.Content.ReadAsStringAsync();
+            stopwatch.Stop();
+
+            // 判断是否成功连接
+            // 200: 成功获取 releases
+            // 404: 仓库不存在，但代理连通
+            // 403: 可能 rate limit，需要检查响应内容
+            if (statusCode == 200)
+            {
+                return ((int)stopwatch.ElapsedMilliseconds, false);
+            }
+            else if (statusCode == 404)
+            {
+                return ((int)stopwatch.ElapsedMilliseconds, false);
+            }
+            else if (statusCode == 403)
+            {
+                // 检查是否是 rate limit
+                if (content.Contains("rate limit") || content.Contains("API rate limit"))
+                {
+                    // rate limit 也说明代理连通，只是配额用完了
+                    return ((int)stopwatch.ElapsedMilliseconds, true);
+                }
+                // 其他 403 可能是代理被拒绝
+                throw new Exception($"代理返回403: {content.Substring(0, Math.Min(100, content.Length))}");
+            }
+            else
+            {
+                throw new Exception($"代理返回错误码: {statusCode}");
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            stopwatch.Stop();
+            throw; // 重新抛出，让外层处理超时
+        }
+        catch
+        {
+            stopwatch.Stop();
+            throw;
+        }
+    }
+
+    // 测试下载速度 - 通过代理下载小文件
+    private async Task<double> TestDownloadSpeedViaProxyAsync(string proxyDomain)
+    {
+        // 使用代理下载一个小文件（vscode的package.json很小，适合测速）
+        string testUrl = $"https://{proxyDomain}/https://raw.githubusercontent.com/microsoft/vscode/main/package.json";
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+
+        using var client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromMilliseconds(SpeedTestTimeoutMs)
+        };
+        client.DefaultRequestHeaders.Add("User-Agent", "GHPC-Mod-Manager/1.0");
+
+        try
+        {
+            var response = await client.GetAsync(testUrl, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            using var contentStream = await response.Content.ReadAsStreamAsync();
+            using var memoryStream = new MemoryStream();
+
+            var buffer = new byte[8192];
+            long totalBytes = 0;
+            var startTime = DateTime.Now;
+
+            while (true)
+            {
+                var bytesRead = await contentStream.ReadAsync(buffer);
+                if (bytesRead == 0) break;
+
+                await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+                totalBytes += bytesRead;
+
+                // 超时检测
+                if ((DateTime.Now - startTime).TotalSeconds > 10)
+                    break;
+            }
+
+            var elapsed = (DateTime.Now - startTime).TotalSeconds;
+            if (elapsed > 0 && totalBytes > 0)
+            {
+                // 转换为 MB/s
+                return (totalBytes / 1024.0 / 1024.0) / elapsed;
+            }
+
+            return 0;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    // 获取代理服务器域名（根据服务器Id从远程配置获取）
+    private string GetProxyDomain(string serverId)
+    {
+        // 优先从远程配置获取
+        var remoteServers = _mainConfigService.GetRemoteProxyServers();
+        if (remoteServers != null)
+        {
+            var remote = remoteServers.FirstOrDefault(p =>
+                string.Equals(p.Id, serverId, StringComparison.OrdinalIgnoreCase));
+            if (remote != null)
+                return remote.Domain;
+        }
+
+        // 兜底到本地枚举映射
+        if (Enum.TryParse<GitHubProxyServer>(serverId, out var enumVal))
+        {
+            return enumVal switch
+            {
+                GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+                GitHubProxyServer.Gh1DmrGg => "gh1.dmr.gg",
+                GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+                GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+                GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+                GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+                _ => "gh.dmr.gg"
+            };
+        }
+
+        return "gh.dmr.gg";
+    }
+
+    // 选择测速结果时同步到 SelectedProxyServer
+    partial void OnSelectedSpeedTestResultChanged(ProxyServerSpeedTestResult? value)
+    {
+        if (value != null)
+        {
+            // 更新所有项的选中状态（单选）
+            foreach (var item in ProxyServerTestResults)
+            {
+                item.IsSelected = item == value;
+            }
+
+            // 优先使用ServerId匹配，其次使用枚举匹配
+            SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.ServerId == value.ServerId)
+                ?? AvailableProxyServers.FirstOrDefault(p => p.EnumValue == value.Server);
+        }
+    }
+
+    #endregion
 }

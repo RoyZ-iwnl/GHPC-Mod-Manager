@@ -21,7 +21,7 @@ public interface IMelonLoaderService
     bool IsMelonLoaderDisabled(string gameRootPath);
     /// <summary>通过下载当前版本ZIP建立索引，删除旧版本文件</summary>
     Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null);
-    /// <summary>从 globalgamemanagers 读取游戏版本号，匹配格式如 0.1.0-alpha+20260319.1</summary>
+    /// <summary>从 sharedassets0.assets 读取游戏版本号，匹配格式如 20260618 或 20260618.1</summary>
     Task<string?> GetCurrentGameVersionAsync(string gameRootPath);
 }
 
@@ -470,24 +470,28 @@ public class MelonLoaderService : IMelonLoaderService
         {
             try
             {
-                // 方法1: 从 globalgamemanagers 读取（无需 MelonLoader）
-                // 版本格式: 0.1.0-alpha+20260319.1，匹配完整格式避免误判
-                var assetsPath = Path.Combine(gameRootPath, "GHPC_Data", "globalgamemanagers");
+                // 方法1: 从 sharedassets0.assets 读取（无需 MelonLoader）
+                // 版本格式: BuildData之后的 20260618 或 20260618.1
+                var assetsPath = Path.Combine(gameRootPath, "GHPC_Data", "sharedassets0.assets");
                 if (File.Exists(assetsPath))
                 {
                     var data = File.ReadAllBytes(assetsPath);
-                    // 正则匹配完整版本格式，如 0.1.0-alpha+20260319.1
-                    var pattern = new System.Text.RegularExpressions.Regex(@"\d+\.\d+\.\d+-alpha\+20\d{6}(?:\.\d+)?");
-                    var match = pattern.Match(System.Text.Encoding.UTF8.GetString(data));
+                    var text = System.Text.Encoding.UTF8.GetString(data);
+                    var buildDataIdx = text.IndexOf("BuildData", StringComparison.Ordinal);
 
-                    if (match.Success)
+                    if (buildDataIdx >= 0)
                     {
-                        // 取 + 后的日期版本部分，如 20260319.1
-                        var fullVersion = match.Value;
-                        var plusIdx = fullVersion.IndexOf('+');
-                        var version = fullVersion[(plusIdx + 1)..];
-                        _loggingService.LogInfo(Strings.GameVersionFromAssets, version);
-                        return version;
+                        // 在BuildData之后200字符内搜索版本号
+                        var searchText = text.Substring(buildDataIdx, Math.Min(500, text.Length - buildDataIdx));
+                        var pattern = new System.Text.RegularExpressions.Regex(@"20\d{6}(?:\.\d+)?");
+                        var match = pattern.Match(searchText);
+
+                        if (match.Success)
+                        {
+                            var version = match.Value;
+                            _loggingService.LogInfo(Strings.GameVersionFromAssets, version);
+                            return version;
+                        }
                     }
                 }
 
@@ -501,14 +505,15 @@ public class MelonLoaderService : IMelonLoaderService
 
                 foreach (var line in File.ReadLines(logPath))
                 {
-                    // 匹配 "Game Version: 0.1.0-alpha+20260210.1"
+                    // 匹配 "Game Version: 20260618" 或 "Game Version: 20260618.1"
                     var idx = line.IndexOf("Game Version: ", StringComparison.Ordinal);
                     if (idx < 0) continue;
 
                     var versionStr = line[(idx + "Game Version: ".Length)..].Trim();
-                    // 取最后一个 + 后的部分
-                    var plusIdx = versionStr.LastIndexOf('+');
-                    var version = plusIdx >= 0 ? versionStr[(plusIdx + 1)..] : null;
+                    // 直接匹配日期版本格式 20XXXXXX 或 20XXXXXX.X
+                    var logPattern = new System.Text.RegularExpressions.Regex(@"20\d{6}(?:\.\d+)?");
+                    var logMatch = logPattern.Match(versionStr);
+                    var version = logMatch.Success ? logMatch.Value : null;
                     if (version != null)
                     {
                         _loggingService.LogInfo(Strings.GameVersionFromLog, version);

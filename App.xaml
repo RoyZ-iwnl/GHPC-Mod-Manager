@@ -16,6 +16,7 @@
             <!-- Register converters -->
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+            <converters:InverseBooleanConverter x:Key="InverseBoolConverter"/>
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
             <converters:TranslationLanguageDisplayConverter x:Key="TranslationLanguageDisplayConverter"/>
             <converters:BracketTextConverter x:Key="BracketTextConverter"/>

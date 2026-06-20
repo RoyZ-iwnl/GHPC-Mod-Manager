@@ -3267,4 +3267,64 @@ Please update the Mod Manager first to install this mod.</value>
   <data name="FactionNeutral" xml:space="preserve">
     <value>Neutral</value>
   </data>
+  <data name="SpeedTestLatency" xml:space="preserve">
+    <value>Latency</value>
+  </data>
+  <data name="SpeedTestDownloadSpeed" xml:space="preserve">
+    <value>Download Speed</value>
+  </data>
+  <data name="SpeedTestOperation" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="SpeedTestTestAll" xml:space="preserve">
+    <value>Test All Servers</value>
+  </data>
+  <data name="SpeedTestStatusPending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="SpeedTestStatusTesting" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
+  <data name="SpeedTestStatusSuccess" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="SpeedTestStatusFailed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="SpeedTestStatusTimeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
+  <data name="SpeedTestStatusUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="SpeedTestStatusRateLimited" xml:space="preserve">
+    <value>API Rate Limited</value>
+  </data>
+  <data name="SpeedTestButtonTest" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="SpeedTestButtonTesting" xml:space="preserve">
+    <value>Testing</value>
+  </data>
+  <data name="SpeedTestButtonRetest" xml:space="preserve">
+    <value>Retest</value>
+  </data>
+  <data name="SpeedTestButtonRetry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="SpeedTestComplete" xml:space="preserve">
+    <value>Speed test complete</value>
+  </data>
+  <data name="SpeedTestProgress" xml:space="preserve">
+    <value>Testing {0}... ({1}/{2})</value>
+  </data>
+  <data name="SpeedTestFailed" xml:space="preserve">
+    <value>Speed test failed</value>
+  </data>
+  <data name="UseDnsOverHttps" xml:space="preserve">
+    <value>Enable Built-in DNS over HTTPS (DoH)</value>
+  </data>
+  <data name="UseDnsOverHttpsDescription" xml:space="preserve">
+    <value>Try DoH nodes in order of priority to improve DNS pollution or resolution failure issues.</value>
+  </data>
 </root>

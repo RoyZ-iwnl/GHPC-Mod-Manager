@@ -1213,15 +1213,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 检测到MOD冲突.
-        /// </summary>
-        public static string ConflictDialogTitle {
-            get {
-                return ResourceManager.GetString("ConflictDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 发现与模组 {0} 冲突.
         /// </summary>
         public static string ConflictFound {
@@ -3750,15 +3741,6 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 最新版本.
-        /// </summary>
-        public static string LaunchCheckLatestVersion {
-            get {
-                return ResourceManager.GetString("LaunchCheckLatestVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Mod管理器版本检查.
         /// </summary>
         public static string LaunchCheckManagerVersion {
@@ -3800,15 +3782,6 @@ namespace GHPC_Mod_Manager.Resources {
         public static string LaunchCheckTitle {
             get {
                 return ResourceManager.GetString("LaunchCheckTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 警告.
-        /// </summary>
-        public static string LaunchCheckWarning {
-            get {
-                return ResourceManager.GetString("LaunchCheckWarning", resourceCulture);
             }
         }
         
@@ -7665,6 +7638,168 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 重测.
+        /// </summary>
+        public static string SpeedTestButtonRetest {
+            get {
+                return ResourceManager.GetString("SpeedTestButtonRetest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 重试.
+        /// </summary>
+        public static string SpeedTestButtonRetry {
+            get {
+                return ResourceManager.GetString("SpeedTestButtonRetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测速.
+        /// </summary>
+        public static string SpeedTestButtonTest {
+            get {
+                return ResourceManager.GetString("SpeedTestButtonTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测试中.
+        /// </summary>
+        public static string SpeedTestButtonTesting {
+            get {
+                return ResourceManager.GetString("SpeedTestButtonTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测速完成.
+        /// </summary>
+        public static string SpeedTestComplete {
+            get {
+                return ResourceManager.GetString("SpeedTestComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 下载速度.
+        /// </summary>
+        public static string SpeedTestDownloadSpeed {
+            get {
+                return ResourceManager.GetString("SpeedTestDownloadSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测速失败.
+        /// </summary>
+        public static string SpeedTestFailed {
+            get {
+                return ResourceManager.GetString("SpeedTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 延迟.
+        /// </summary>
+        public static string SpeedTestLatency {
+            get {
+                return ResourceManager.GetString("SpeedTestLatency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 操作.
+        /// </summary>
+        public static string SpeedTestOperation {
+            get {
+                return ResourceManager.GetString("SpeedTestOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在测试 {0}... ({1}/{2}).
+        /// </summary>
+        public static string SpeedTestProgress {
+            get {
+                return ResourceManager.GetString("SpeedTestProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 失败.
+        /// </summary>
+        public static string SpeedTestStatusFailed {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 待测试.
+        /// </summary>
+        public static string SpeedTestStatusPending {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API超限.
+        /// </summary>
+        public static string SpeedTestStatusRateLimited {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusRateLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 成功.
+        /// </summary>
+        public static string SpeedTestStatusSuccess {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测试中....
+        /// </summary>
+        public static string SpeedTestStatusTesting {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 超时.
+        /// </summary>
+        public static string SpeedTestStatusTimeout {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 未知.
+        /// </summary>
+        public static string SpeedTestStatusUnknown {
+            get {
+                return ResourceManager.GetString("SpeedTestStatusUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测试全部服务器.
+        /// </summary>
+        public static string SpeedTestTestAll {
+            get {
+                return ResourceManager.GetString("SpeedTestTestAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 开始游戏.
         /// </summary>
         public static string StartGame {
@@ -9002,6 +9137,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string URLPatternNotSupported {
             get {
                 return ResourceManager.GetString("URLPatternNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启用内置 DNS over HTTPS (DoH).
+        /// </summary>
+        public static string UseDnsOverHttps {
+            get {
+                return ResourceManager.GetString("UseDnsOverHttps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。.
+        /// </summary>
+        public static string UseDnsOverHttpsDescription {
+            get {
+                return ResourceManager.GetString("UseDnsOverHttpsDescription", resourceCulture);
             }
         }
         

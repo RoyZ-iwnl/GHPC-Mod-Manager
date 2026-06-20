@@ -6,6 +6,7 @@ using GHPC_Mod_Manager.Helpers;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
 
@@ -190,6 +191,18 @@ public partial class SetupWizardViewModel : ObservableObject
     [ObservableProperty]
     private ProxyServerItem? _selectedProxyServer;
 
+    [ObservableProperty]
+    private List<ProxyServerSpeedTestResult> _proxyServerTestResults = new();
+
+    [ObservableProperty]
+    private ProxyServerSpeedTestResult? _selectedSpeedTestResult;
+
+    [ObservableProperty]
+    private bool _isSpeedTesting;
+
+    [ObservableProperty]
+    private string _speedTestProgress = string.Empty;
+
     partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
         if (_isInitializing || value == null || SelectedLanguage != "zh-CN")
@@ -197,17 +210,24 @@ public partial class SetupWizardViewModel : ObservableObject
 
         UpdateNavigationButtons();
 
-        // 同步保存枚举值到设置
+        if (ProxyServerTestResults.Count > 0)
+        {
+            SelectedSpeedTestResult = ProxyServerTestResults.FirstOrDefault(r => r.ServerId == value.ServerId)
+                ?? ProxyServerTestResults.FirstOrDefault(r => r.Server == value.EnumValue);
+        }
+
+        // 同步保存代理服务器到设置
         _ = Task.Run(async () =>
         {
             try
             {
                 _settingsService.Settings.GitHubProxyServer = value.EnumValue;
+                _settingsService.Settings.GitHubProxyServerId = value.ServerId;
                 await _settingsService.SaveSettingsAsync();
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    var message = string.Format(Strings.ProxyServerChanged, value.EnumValue);
+                    var message = string.Format(Strings.ProxyServerChanged, value.DisplayName);
                     AddToNetworkLog(message);
                 });
             }
@@ -216,6 +236,36 @@ public partial class SetupWizardViewModel : ObservableObject
                 _loggingService.LogError(ex, Strings.FailedToSaveProxyServerChange);
             }
         });
+    }
+
+    partial void OnSelectedSpeedTestResultChanged(ProxyServerSpeedTestResult? value)
+    {
+        if (value == null)
+            return;
+
+        foreach (var item in ProxyServerTestResults)
+            item.IsSelected = item == value;
+
+        SelectedProxyServer = AvailableProxyServers.FirstOrDefault(p => p.ServerId == value.ServerId)
+            ?? AvailableProxyServers.FirstOrDefault(p => p.EnumValue == value.Server);
+    }
+
+    private void RefreshSpeedTestResults()
+    {
+        ProxyServerTestResults = AvailableProxyServers.Select(proxy => new ProxyServerSpeedTestResult
+        {
+            Server = proxy.EnumValue,
+            ServerId = proxy.ServerId,
+            Domain = proxy.Domain,
+            DisplayName = proxy.DisplayName,
+            Status = SpeedTestStatus.Pending
+        }).ToList();
+
+        if (SelectedProxyServer != null)
+        {
+            SelectedSpeedTestResult = ProxyServerTestResults.FirstOrDefault(r => r.ServerId == SelectedProxyServer.ServerId)
+                ?? ProxyServerTestResults.FirstOrDefault(r => r.Server == SelectedProxyServer.EnumValue);
+        }
     }
 
     [ObservableProperty]
@@ -283,8 +333,12 @@ public partial class SetupWizardViewModel : ObservableObject
         // 代理列表在进入步骤2时通过 RefreshProxyServersAsync 拉取，这里先用兜底列表
         var fallback = ProxyServerItem.BuildFallback();
         AvailableProxyServers = fallback;
+        var savedServerId = _settingsService.Settings.GitHubProxyServerId;
         var savedEnum = _settingsService.Settings.GitHubProxyServer;
-        SelectedProxyServer = fallback.FirstOrDefault(p => p.EnumValue == savedEnum) ?? fallback[0];
+        SelectedProxyServer = !string.IsNullOrEmpty(savedServerId)
+            ? fallback.FirstOrDefault(p => p.ServerId == savedServerId) ?? fallback.FirstOrDefault(p => p.EnumValue == savedEnum) ?? fallback[0]
+            : fallback.FirstOrDefault(p => p.EnumValue == savedEnum) ?? fallback[0];
+        RefreshSpeedTestResults();
 
         // Mark initialization as complete after setting all values
         _isInitializing = false;
@@ -642,11 +696,165 @@ public partial class SetupWizardViewModel : ObservableObject
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             AvailableProxyServers = newList;
+            var savedServerId = _settingsService.Settings.GitHubProxyServerId;
             var savedEnum = _settingsService.Settings.GitHubProxyServer;
-            SelectedProxyServer = newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0];
+            SelectedProxyServer = !string.IsNullOrEmpty(savedServerId)
+                ? newList.FirstOrDefault(p => p.ServerId == savedServerId) ?? newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0]
+                : newList.FirstOrDefault(p => p.EnumValue == savedEnum) ?? newList[0];
+            RefreshSpeedTestResults();
         });
 
         AddToNetworkLog(string.Format(Strings.ProxyServerListUpdated, newList.Count));
+    }
+
+    private const int SpeedTestTimeoutMs = 10000;
+
+    [RelayCommand]
+    private async Task TestAllProxyServersAsync()
+    {
+        if (IsSpeedTesting || ProxyServerTestResults.Count == 0)
+            return;
+
+        try
+        {
+            IsSpeedTesting = true;
+            var total = ProxyServerTestResults.Count;
+            var completed = 0;
+
+            foreach (var result in ProxyServerTestResults)
+            {
+                SpeedTestProgress = string.Format(Strings.SpeedTestProgress, result.DisplayName, completed + 1, total);
+                await TestSingleProxyServerAsync(result);
+                completed++;
+            }
+
+            var bestResult = ProxyServerTestResults
+                .Where(r => r.Status == SpeedTestStatus.Success && !r.IsRateLimited)
+                .OrderBy(r => r.LatencyMs)
+                .FirstOrDefault();
+
+            if (bestResult != null)
+                SelectedSpeedTestResult = bestResult;
+
+            SpeedTestProgress = Strings.SpeedTestComplete;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "ProxySpeedTestFailed");
+            SpeedTestProgress = Strings.SpeedTestFailed;
+        }
+        finally
+        {
+            IsSpeedTesting = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestSingleProxyServerAsync(ProxyServerSpeedTestResult? result)
+    {
+        if (result == null || result.Status == SpeedTestStatus.Testing)
+            return;
+
+        try
+        {
+            result.Status = SpeedTestStatus.Testing;
+            var proxyDomain = GetProxyDomain(result.ServerId);
+            var (latency, isRateLimited) = await TestLatencyViaProxyAsync(proxyDomain);
+            result.LatencyMs = latency;
+            result.IsRateLimited = isRateLimited;
+            result.SpeedMbps = await TestDownloadSpeedViaProxyAsync(proxyDomain);
+            result.Status = SpeedTestStatus.Success;
+            result.TestTime = DateTime.Now;
+        }
+        catch (TaskCanceledException)
+        {
+            result.Status = SpeedTestStatus.Timeout;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "SpeedTestError");
+            result.Status = SpeedTestStatus.Failed;
+        }
+    }
+
+    private async Task<(int latency, bool isRateLimited)> TestLatencyViaProxyAsync(string proxyDomain)
+    {
+        var testUrl = $"https://{proxyDomain}/https://api.github.com/repos/thebeninator/Pact-Increased-Lethality/releases";
+        using var client = CreateSpeedTestHttpClient();
+        var stopwatch = Stopwatch.StartNew();
+        var response = await client.GetAsync(testUrl);
+        var statusCode = (int)response.StatusCode;
+        var content = await response.Content.ReadAsStringAsync();
+        stopwatch.Stop();
+
+        if (statusCode == 200 || statusCode == 404)
+            return ((int)stopwatch.ElapsedMilliseconds, false);
+
+        if (statusCode == 403 && (content.Contains("rate limit", StringComparison.OrdinalIgnoreCase) || content.Contains("API rate limit", StringComparison.OrdinalIgnoreCase)))
+            return ((int)stopwatch.ElapsedMilliseconds, true);
+
+        throw new Exception($"Proxy API test failed: HTTP {statusCode}");
+    }
+
+    private async Task<double> TestDownloadSpeedViaProxyAsync(string proxyDomain)
+    {
+        var testUrl = $"https://{proxyDomain}/https://raw.githubusercontent.com/microsoft/vscode/main/package.json";
+        using var client = CreateSpeedTestHttpClient();
+        var response = await client.GetAsync(testUrl, HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        var buffer = new byte[8192];
+        long totalBytes = 0;
+        var startTime = DateTime.Now;
+
+        while (true)
+        {
+            var bytesRead = await stream.ReadAsync(buffer);
+            if (bytesRead == 0)
+                break;
+            totalBytes += bytesRead;
+            if ((DateTime.Now - startTime).TotalSeconds > 10)
+                break;
+        }
+
+        var elapsed = (DateTime.Now - startTime).TotalSeconds;
+        return elapsed > 0 && totalBytes > 0 ? (totalBytes / 1024.0 / 1024.0) / elapsed : 0;
+    }
+
+    private HttpClient CreateSpeedTestHttpClient()
+    {
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+        var client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromMilliseconds(SpeedTestTimeoutMs)
+        };
+        client.DefaultRequestHeaders.Add("User-Agent", "GHPC-Mod-Manager/1.0");
+        return client;
+    }
+
+    private string GetProxyDomain(string serverId)
+    {
+        var remoteServers = _mainConfigService.GetRemoteProxyServers();
+        var remote = remoteServers?.FirstOrDefault(p => string.Equals(p.Id, serverId, StringComparison.OrdinalIgnoreCase));
+        if (remote != null)
+            return remote.Domain;
+
+        return Enum.TryParse<GitHubProxyServer>(serverId, out var enumVal)
+            ? enumVal switch
+            {
+                GitHubProxyServer.GhDmrGg => "gh.dmr.gg",
+                GitHubProxyServer.Gh1DmrGg => "gh1.dmr.gg",
+                GitHubProxyServer.EdgeOneGhProxyCom => "edgeone.gh-proxy.com",
+                GitHubProxyServer.GhProxyCom => "gh-proxy.com",
+                GitHubProxyServer.HkGhProxyCom => "hk.gh-proxy.com",
+                GitHubProxyServer.CdnGhProxyCom => "cdn.gh-proxy.com",
+                _ => "gh.dmr.gg"
+            }
+            : "gh.dmr.gg";
     }
 
     private async Task<bool> ValidateGameDirectoryAsync()

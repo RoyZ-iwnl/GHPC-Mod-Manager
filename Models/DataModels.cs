@@ -1,6 +1,9 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using GHPC_Mod_Manager.Resources;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -31,11 +34,35 @@ public enum GitHubProxyServer
 public class ProxyServerItem
 {
     public GitHubProxyServer EnumValue { get; set; }
+    public string ServerId { get; set; } = string.Empty;  // 远程下发的服务器Id
+    public string Domain { get; set; } = string.Empty;    // 代理域名
     public string DisplayName { get; set; } = string.Empty;
 
     public ProxyServerItem(GitHubProxyServer enumValue, string displayName)
     {
         EnumValue = enumValue;
+        ServerId = enumValue.ToString();
+        DisplayName = displayName;
+        // 从DisplayName提取域名部分
+        var parts = displayName.Split(' ');
+        if (parts.Length > 0)
+            Domain = parts[0];
+    }
+
+    public ProxyServerItem(string serverId, string domain, string displayName)
+    {
+        // 优先尝试解析枚举
+        if (Enum.TryParse<GitHubProxyServer>(serverId, out var enumVal))
+        {
+            EnumValue = enumVal;
+        }
+        else
+        {
+            // 无法解析枚举时使用默认值
+            EnumValue = GitHubProxyServer.GhDmrGg;
+        }
+        ServerId = serverId;
+        Domain = domain;
         DisplayName = displayName;
     }
 
@@ -57,13 +84,178 @@ public class ProxyServerItem
         var result = new List<ProxyServerItem>();
         foreach (var ps in remote)
         {
-            if (!Enum.TryParse<GitHubProxyServer>(ps.Id, out var enumVal))
-                continue;
             var name = ps.DisplayName.TryGetValue(lang, out var n) ? n : ps.Domain;
-            result.Add(new ProxyServerItem(enumVal, $"{ps.Domain} ({name})"));
+            // 使用新的构造函数，支持任意远程服务器
+            result.Add(new ProxyServerItem(ps.Id, ps.Domain, $"{ps.Domain} ({name})"));
         }
         return result.Count > 0 ? result : BuildFallback();
     }
+}
+
+/// <summary>
+/// 代理服务器测速状态
+/// </summary>
+public enum SpeedTestStatus
+{
+    Pending,       // 待测试
+    Testing,       // 测试中
+    Success,       // 成功
+    Failed,        // 失败
+    Timeout        // 超时
+}
+
+/// <summary>
+/// 代理服务器测速结果
+/// </summary>
+public class ProxyServerSpeedTestResult : ObservableObject
+{
+    public GitHubProxyServer Server { get; set; }
+    public string ServerId { get; set; } = string.Empty;  // 远程下发的服务器Id
+    public string Domain { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
+
+    private int _latencyMs;
+    public int LatencyMs
+    {
+        get => _latencyMs;
+        set
+        {
+            if (SetProperty(ref _latencyMs, value))
+            {
+                OnPropertyChanged(nameof(LatencyDisplay));
+                OnPropertyChanged(nameof(LatencyColor));
+            }
+        }
+    }
+
+    private double _speedMbps;
+    public double SpeedMbps
+    {
+        get => _speedMbps;
+        set
+        {
+            if (SetProperty(ref _speedMbps, value))
+            {
+                OnPropertyChanged(nameof(SpeedDisplay));
+                OnPropertyChanged(nameof(SpeedColor));
+            }
+        }
+    }
+
+    private SpeedTestStatus _status = SpeedTestStatus.Pending;
+    public SpeedTestStatus Status
+    {
+        get => _status;
+        set
+        {
+            if (SetProperty(ref _status, value))
+            {
+                OnPropertyChanged(nameof(StatusDisplay));
+                OnPropertyChanged(nameof(StatusColor));
+                OnPropertyChanged(nameof(TestButtonContent));
+                OnPropertyChanged(nameof(IsTestable));
+                OnPropertyChanged(nameof(LatencyDisplay));
+                OnPropertyChanged(nameof(LatencyColor));
+                OnPropertyChanged(nameof(SpeedDisplay));
+                OnPropertyChanged(nameof(SpeedColor));
+            }
+        }
+    }
+
+    private bool _isRateLimited;
+    public bool IsRateLimited
+    {
+        get => _isRateLimited;
+        set
+        {
+            if (SetProperty(ref _isRateLimited, value))
+            {
+                OnPropertyChanged(nameof(StatusDisplay));
+                OnPropertyChanged(nameof(StatusColor));
+            }
+        }
+    }
+
+    public DateTime TestTime { get; set; }
+
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
+
+    // 计算属性
+    public string LatencyDisplay => Status == SpeedTestStatus.Success ? $"{LatencyMs} ms" : "—";
+
+    public string SpeedDisplay
+    {
+        get
+        {
+            if (Status != SpeedTestStatus.Success) return "—";
+            if (SpeedMbps >= 1)
+                return $"{SpeedMbps:F1} MB/s";
+            return $"{SpeedMbps * 1024:F0} KB/s";
+        }
+    }
+
+    public string StatusDisplay
+    {
+        get
+        {
+            if (IsRateLimited) return Strings.SpeedTestStatusRateLimited;
+            return Status switch
+            {
+                SpeedTestStatus.Pending => Strings.SpeedTestStatusPending,
+                SpeedTestStatus.Testing => Strings.SpeedTestStatusTesting,
+                SpeedTestStatus.Success => Strings.SpeedTestStatusSuccess,
+                SpeedTestStatus.Failed => Strings.SpeedTestStatusFailed,
+                SpeedTestStatus.Timeout => Strings.SpeedTestStatusTimeout,
+                _ => Strings.SpeedTestStatusUnknown
+            };
+        }
+    }
+
+    public System.Windows.Media.Brush StatusColor => Status switch
+    {
+        SpeedTestStatus.Success => IsRateLimited
+            ? System.Windows.Application.Current.TryFindResource("WarningBrush") as System.Windows.Media.Brush
+            : System.Windows.Application.Current.TryFindResource("SuccessBrush") as System.Windows.Media.Brush,
+        SpeedTestStatus.Failed or SpeedTestStatus.Timeout => System.Windows.Application.Current.TryFindResource("ErrorBrush") as System.Windows.Media.Brush,
+        SpeedTestStatus.Testing => System.Windows.Application.Current.TryFindResource("AccentBrush") as System.Windows.Media.Brush,
+        _ => System.Windows.Application.Current.TryFindResource("OnSurfaceVariantBrush") as System.Windows.Media.Brush
+    };
+
+    public string TestButtonContent => Status switch
+    {
+        SpeedTestStatus.Pending => Strings.SpeedTestButtonTest,
+        SpeedTestStatus.Testing => Strings.SpeedTestButtonTesting,
+        SpeedTestStatus.Success => Strings.SpeedTestButtonRetest,
+        SpeedTestStatus.Failed => Strings.SpeedTestButtonRetry,
+        SpeedTestStatus.Timeout => Strings.SpeedTestButtonRetry,
+        _ => Strings.SpeedTestButtonTest
+    };
+
+    public bool IsTestable => Status != SpeedTestStatus.Testing;
+
+    // 颜色根据值动态变化（供Binding使用）
+    public System.Windows.Media.Brush LatencyColor => Status != SpeedTestStatus.Success
+        ? System.Windows.Application.Current.TryFindResource("OnSurfaceVariantBrush") as System.Windows.Media.Brush
+        : LatencyMs switch
+        {
+            < 200 => System.Windows.Application.Current.TryFindResource("SuccessBrush") as System.Windows.Media.Brush,
+            < 400 => System.Windows.Application.Current.TryFindResource("WarningBrush") as System.Windows.Media.Brush,
+            _ => System.Windows.Application.Current.TryFindResource("ErrorBrush") as System.Windows.Media.Brush
+        };
+
+    public System.Windows.Media.Brush SpeedColor => Status != SpeedTestStatus.Success
+        ? System.Windows.Application.Current.TryFindResource("OnSurfaceVariantBrush") as System.Windows.Media.Brush
+        : SpeedMbps switch
+        {
+            >= 5 => System.Windows.Application.Current.TryFindResource("SuccessBrush") as System.Windows.Media.Brush,
+            >= 1 => System.Windows.Application.Current.TryFindResource("WarningBrush") as System.Windows.Media.Brush,
+            _ => System.Windows.Application.Current.TryFindResource("ErrorBrush") as System.Windows.Media.Brush
+        };
 }
 
 // 更新通道枚举
@@ -87,6 +279,10 @@ public class AppSettings
     public AppTheme Theme { get; set; } = AppTheme.Light;
     public bool UseGitHubProxy { get; set; } = false;
     public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg;
+    /// <summary>
+    /// 远程下发的代理服务器Id（字符串形式，用于支持远程配置的所有服务器）
+    /// </summary>
+    public string GitHubProxyServerId { get; set; } = string.Empty;
     public bool UseDnsOverHttps { get; set; } = false;
     public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Stable;
     public string GitHubApiToken { get; set; } = string.Empty;

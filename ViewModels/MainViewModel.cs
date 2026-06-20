@@ -96,6 +96,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IMelonLoaderService _melonLoaderService;
     private readonly IAnnouncementService _announcementService;
     private readonly IModCatalogStateService _modCatalogStateService;
+    private readonly IMainConfigService _mainConfigService;
 
     // 子ViewModel（导航页面）
     private InstalledModsViewModel? _installedModsViewModel;
@@ -291,7 +292,8 @@ public partial class MainViewModel : ObservableObject
         IUpdateService updateService,
         IMelonLoaderService melonLoaderService,
         IAnnouncementService announcementService,
-        IModCatalogStateService modCatalogStateService)
+        IModCatalogStateService modCatalogStateService,
+        IMainConfigService mainConfigService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -305,6 +307,7 @@ public partial class MainViewModel : ObservableObject
         _melonLoaderService = melonLoaderService;
         _announcementService = announcementService;
         _modCatalogStateService = modCatalogStateService;
+        _mainConfigService = mainConfigService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
         IsGameRunning = _processService.IsGameRunning;
@@ -727,6 +730,13 @@ public partial class MainViewModel : ObservableObject
             OperationProgressValue = 0;
             IsLoading = true;
             StatusMessage = Strings.RefreshingData;
+
+            // 刷新主配置（可能包含新的代理服务器列表）
+            await _mainConfigService.ForceReloadAsync();
+
+            // 刷新代理服务器列表（从重新加载的主配置中获取最新列表）
+            var settingsViewModel = _serviceProvider.GetRequiredService<SettingsViewModel>();
+            settingsViewModel.RefreshProxyServerList();
 
             // 清除会话缓存（非GitHub资源）
             _networkService.ClearSessionCache();

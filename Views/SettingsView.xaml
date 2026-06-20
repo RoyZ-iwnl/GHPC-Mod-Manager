@@ -386,25 +386,142 @@
 
                         <Grid Margin="24,0,0,16"
                               Visibility="{Binding UseGitHubProxy, Converter={StaticResource BoolToVis}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.GitHubProxyServer}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding AvailableProxyServers}"
-                                      SelectedItem="{Binding SelectedProxyServer}"
-                                      MaxWidth="320"
-                                      HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding DisplayName}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- 标题行 -->
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="70"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Text="{x:Static resources:Strings.GitHubProxyServer}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{x:Static resources:Strings.SpeedTestLatency}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2"
+                                           Text="{x:Static resources:Strings.SpeedTestDownloadSpeed}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="3"
+                                           Text="{x:Static resources:Strings.SpeedTestOperation}"
+                                           Style="{StaticResource FieldLabelTextStyle}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- 服务器列表 - 带滚动 -->
+                            <Border Grid.Row="1"
+                                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="{DynamicResource RadiusSmall}"
+                                    MaxHeight="280">
+                                <ListBox ItemsSource="{Binding ProxyServerTestResults}"
+                                         SelectedItem="{Binding SelectedSpeedTestResult}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <Border x:Name="Bd"
+                                                                Padding="12,8"
+                                                                BorderBrush="{DynamicResource OutlineVariantBrush}"
+                                                                BorderThickness="0,0,0,1"
+                                                                Background="Transparent">
+                                                            <Grid>
+                                                                <!-- 选中指示器 -->
+                                                                <Border x:Name="SelectionBar"
+                                                                        Width="3"
+                                                                        HorizontalAlignment="Left"
+                                                                        Margin="-12,0,0,0"
+                                                                        Background="Transparent"/>
+                                                                <Grid Margin="4,0,0,0">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="80"/>
+                                                                        <ColumnDefinition Width="100"/>
+                                                                        <ColumnDefinition Width="70"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                                        <TextBlock Text="{Binding DisplayName}"
+                                                                                   Style="{StaticResource FieldValueTextStyle}"
+                                                                                   FontWeight="Medium"
+                                                                                   TextTrimming="CharacterEllipsis"/>
+                                                                        <TextBlock Text="{Binding StatusDisplay}"
+                                                                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                                                                   Foreground="{Binding StatusColor}"
+                                                                                   FontSize="11"/>
+                                                                    </StackPanel>
+                                                                    <TextBlock Grid.Column="1"
+                                                                               Text="{Binding LatencyDisplay}"
+                                                                               Style="{StaticResource MonoMetaValueTextStyle}"
+                                                                               Foreground="{Binding LatencyColor}"
+                                                                               HorizontalAlignment="Center"
+                                                                               VerticalAlignment="Center"/>
+                                                                    <TextBlock Grid.Column="2"
+                                                                               Text="{Binding SpeedDisplay}"
+                                                                               Style="{StaticResource MonoMetaValueTextStyle}"
+                                                                               Foreground="{Binding SpeedColor}"
+                                                                               HorizontalAlignment="Center"
+                                                                               VerticalAlignment="Center"/>
+                                                                    <Button Grid.Column="3"
+                                                                            Content="{Binding TestButtonContent}"
+                                                                            Command="{Binding DataContext.TestSingleProxyServerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            IsEnabled="{Binding IsTestable}"
+                                                                            Style="{StaticResource TextButtonStyle}"
+                                                                            Padding="6,2"
+                                                                            FontSize="11"
+                                                                            HorizontalAlignment="Center"/>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter TargetName="SelectionBar" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SurfaceAltBrush}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </Border>
+
+                            <!-- 批量测速按钮和进度 -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button Content="{x:Static resources:Strings.SpeedTestTestAll}"
+                                        Command="{Binding TestAllProxyServersCommand}"
+                                        IsEnabled="{Binding IsSpeedTesting, Converter={StaticResource InverseBoolConverter}}"
+                                        Style="{StaticResource FilledButtonStyle}"
+                                        Padding="12,6"
+                                        Margin="0,0,12,0"/>
+                                <TextBlock Text="{Binding SpeedTestProgress}"
+                                           Style="{StaticResource PageSectionHintTextStyle}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
                         </Grid>
 
                         <CheckBox Margin="0,0,0,16"
@@ -412,10 +529,10 @@
                                   Visibility="{Binding IsDnsOverHttpsVisible, Converter={StaticResource BoolToVis}}">
                             <CheckBox.Content>
                                 <StackPanel>
-                                    <TextBlock Text="启用内置 DNS over HTTPS (DoH)"
+                                    <TextBlock Text="{x:Static resources:Strings.UseDnsOverHttps}"
                                                FontWeight="SemiBold"/>
                                     <TextBlock Margin="0,2,0,0"
-                                               Text="按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。"
+                                               Text="{x:Static resources:Strings.UseDnsOverHttpsDescription}"
                                                Style="{StaticResource PageSectionHintTextStyle}"/>
                                 </StackPanel>
                             </CheckBox.Content>

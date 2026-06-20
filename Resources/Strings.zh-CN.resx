@@ -3232,4 +3232,64 @@
   <data name="FactionNeutral" xml:space="preserve">
     <value>中立</value>
   </data>
+  <data name="SpeedTestLatency" xml:space="preserve">
+    <value>延迟</value>
+  </data>
+  <data name="SpeedTestDownloadSpeed" xml:space="preserve">
+    <value>下载速度</value>
+  </data>
+  <data name="SpeedTestOperation" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="SpeedTestTestAll" xml:space="preserve">
+    <value>测试全部服务器</value>
+  </data>
+  <data name="SpeedTestStatusPending" xml:space="preserve">
+    <value>待测试</value>
+  </data>
+  <data name="SpeedTestStatusTesting" xml:space="preserve">
+    <value>测试中...</value>
+  </data>
+  <data name="SpeedTestStatusSuccess" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="SpeedTestStatusFailed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="SpeedTestStatusTimeout" xml:space="preserve">
+    <value>超时</value>
+  </data>
+  <data name="SpeedTestStatusUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="SpeedTestStatusRateLimited" xml:space="preserve">
+    <value>API超限</value>
+  </data>
+  <data name="SpeedTestButtonTest" xml:space="preserve">
+    <value>测速</value>
+  </data>
+  <data name="SpeedTestButtonTesting" xml:space="preserve">
+    <value>测试中</value>
+  </data>
+  <data name="SpeedTestButtonRetest" xml:space="preserve">
+    <value>重测</value>
+  </data>
+  <data name="SpeedTestButtonRetry" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="SpeedTestComplete" xml:space="preserve">
+    <value>测速完成</value>
+  </data>
+  <data name="SpeedTestProgress" xml:space="preserve">
+    <value>正在测试 {0}... ({1}/{2})</value>
+  </data>
+  <data name="SpeedTestFailed" xml:space="preserve">
+    <value>测速失败</value>
+  </data>
+  <data name="UseDnsOverHttps" xml:space="preserve">
+    <value>启用内置 DNS over HTTPS (DoH)</value>
+  </data>
+  <data name="UseDnsOverHttpsDescription" xml:space="preserve">
+    <value>按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。</value>
+  </data>
 </root>

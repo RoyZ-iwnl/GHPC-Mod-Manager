@@ -1,4 +1,5 @@
 using GHPC_Mod_Manager.ViewModels;
+using GHPC_Mod_Manager.Models;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,6 +26,16 @@ public partial class SettingsView : UserControl
         if (DataContext is SettingsViewModel vm)
         {
             vm.HandleVersionClick();
+        }
+    }
+
+    private void ProxyServerItem_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is System.Windows.FrameworkElement element &&
+            element.DataContext is ProxyServerSpeedTestResult result &&
+            DataContext is SettingsViewModel vm)
+        {
+            vm.SelectedSpeedTestResult = result;
         }
     }
 }
