@@ -103,7 +103,28 @@ public partial class SettingsViewModel : ObservableObject
         // 同步更新选中的测速结果
         if (value != null && ProxyServerTestResults.Count > 0)
         {
-            SelectedSpeedTestResult = ProxyServerTestResults.FirstOrDefault(r => r.Server == value.EnumValue);
+            SelectedSpeedTestResult = ProxyServerTestResults.FirstOrDefault(r => r.ServerId == value.ServerId)
+                ?? ProxyServerTestResults.FirstOrDefault(r => r.Server == value.EnumValue);
+        }
+
+        // 保存选择到设置
+        if (value != null)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    _loggingService.LogInfo($"保存代理服务器选择: ServerId={value.ServerId}, EnumValue={value.EnumValue}");
+                    _settingsService.Settings.GitHubProxyServer = value.EnumValue;
+                    _settingsService.Settings.GitHubProxyServerId = value.ServerId;
+                    await _settingsService.SaveSettingsAsync();
+                    _loggingService.LogInfo($"保存成功: GitHubProxyServerId={_settingsService.Settings.GitHubProxyServerId}");
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError(ex, "FailedToSaveProxyServerChange");
+                }
+            });
         }
     }
 

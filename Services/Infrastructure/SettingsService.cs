@@ -103,6 +103,7 @@ public class SettingsService : ISettingsService
                 Theme = _settings.Theme,
                 UseGitHubProxy = _settings.UseGitHubProxy,
                 GitHubProxyServer = _settings.GitHubProxyServer,
+                GitHubProxyServerId = _settings.GitHubProxyServerId,
                 UseDnsOverHttps = _settings.UseDnsOverHttps,
                 UpdateChannel = _settings.UpdateChannel,
                 GitHubApiToken = string.IsNullOrEmpty(_settings.GitHubApiToken)
