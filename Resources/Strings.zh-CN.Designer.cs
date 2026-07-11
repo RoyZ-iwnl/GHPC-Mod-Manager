@@ -7053,6 +7053,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 游戏运行时无法编辑存档.
+        /// </summary>
+        public static string SaveEditor_GameRunning {
+            get {
+                return ResourceManager.GetString("SaveEditor_GameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GHPC存档文件.
         /// </summary>
         public static string SaveEditor_GHPCSaveFile {
@@ -7179,6 +7188,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 恢复前备份当前存档失败.
+        /// </summary>
+        public static string SaveEditor_RestoreBackupCurrentFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreBackupCurrentFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 确定要从备份恢复吗？当前存档将被覆盖！.
         /// </summary>
         public static string SaveEditor_RestoreConfirm {
@@ -7292,6 +7310,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveEditor_TheatersLoaded {
             get {
                 return ResourceManager.GetString("SaveEditor_TheatersLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 存档中未找到任务：{0}/{1}/{2}.
+        /// </summary>
+        public static string SaveEditor_ToggleNotFound {
+            get {
+                return ResourceManager.GetString("SaveEditor_ToggleNotFound", resourceCulture);
             }
         }
         

@@ -2742,6 +2742,132 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No sponsors yet.
+        /// </summary>
+        public static string FundingEmpty {
+            get {
+                return ResourceManager.GetString("FundingEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All URLs failed and no cache available.
+        /// </summary>
+        public static string FundingFetchFailedEmpty {
+            get {
+                return ResourceManager.GetString("FundingFetchFailedEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetching sponsor list from {0}.
+        /// </summary>
+        public static string FundingFetchingFrom {
+            get {
+                return ResourceManager.GetString("FundingFetchingFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsor list fetched ({0}).
+        /// </summary>
+        public static string FundingFetchSuccess {
+            get {
+                return ResourceManager.GetString("FundingFetchSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsor list fetched from {0} ({1}).
+        /// </summary>
+        public static string FundingFetchSuccessUrl {
+            get {
+                return ResourceManager.GetString("FundingFetchSuccessUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to fetch from {0}: {1}.
+        /// </summary>
+        public static string FundingFetchUrlFailed {
+            get {
+                return ResourceManager.GetString("FundingFetchUrlFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0} sponsors.
+        /// </summary>
+        public static string FundingLoaded {
+            get {
+                return ResourceManager.GetString("FundingLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load sponsor list.
+        /// </summary>
+        public static string FundingLoadFailed {
+            get {
+                return ResourceManager.GetString("FundingLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading sponsor list....
+        /// </summary>
+        public static string FundingLoading {
+            get {
+                return ResourceManager.GetString("FundingLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thanks to everyone who supports this project.
+        /// </summary>
+        public static string FundingThanksIntro {
+            get {
+                return ResourceManager.GetString("FundingThanksIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trying fallback URL....
+        /// </summary>
+        public static string FundingTriggerFallback {
+            get {
+                return ResourceManager.GetString("FundingTriggerFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsor list loaded from cache ({0}).
+        /// </summary>
+        public static string FundingUsingCache {
+            get {
+                return ResourceManager.GetString("FundingUsingCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All URLs failed, using cached sponsor list ({0}).
+        /// </summary>
+        public static string FundingUsingStale {
+            get {
+                return ResourceManager.GetString("FundingUsingStale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsors.
+        /// </summary>
+        public static string FundingWindowTitle {
+            get {
+                return ResourceManager.GetString("FundingWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Game directory is not set or not found. Please configure the game path in Settings..
         /// </summary>
         public static string GameDirectoryNotSetOrNotFound {
@@ -7124,6 +7250,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot edit save while game is running.
+        /// </summary>
+        public static string SaveEditor_GameRunning {
+            get {
+                return ResourceManager.GetString("SaveEditor_GameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GHPC Save File.
         /// </summary>
         public static string SaveEditor_GHPCSaveFile {
@@ -7250,6 +7385,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to backup current save before restore.
+        /// </summary>
+        public static string SaveEditor_RestoreBackupCurrentFailed {
+            get {
+                return ResourceManager.GetString("SaveEditor_RestoreBackupCurrentFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restore from backup? Current save will be overwritten!.
         /// </summary>
         public static string SaveEditor_RestoreConfirm {
@@ -7363,6 +7507,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SaveEditor_TheatersLoaded {
             get {
                 return ResourceManager.GetString("SaveEditor_TheatersLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mission not found in save data: {0}/{1}/{2}.
+        /// </summary>
+        public static string SaveEditor_ToggleNotFound {
+            get {
+                return ResourceManager.GetString("SaveEditor_ToggleNotFound", resourceCulture);
             }
         }
         
@@ -7615,6 +7768,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ShowLog {
             get {
                 return ResourceManager.GetString("ShowLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsors List.
+        /// </summary>
+        public static string ShowSponsorsList {
+            get {
+                return ResourceManager.GetString("ShowSponsorsList", resourceCulture);
             }
         }
         
@@ -7876,6 +8038,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SpeedTestTestAll {
             get {
                 return ResourceManager.GetString("SpeedTestTestAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sponsor by {0}.
+        /// </summary>
+        public static string SponsorByFormat {
+            get {
+                return ResourceManager.GetString("SponsorByFormat", resourceCulture);
             }
         }
         

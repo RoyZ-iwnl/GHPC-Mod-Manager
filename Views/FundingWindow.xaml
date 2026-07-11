@@ -1,0 +1,135 @@
+<Window x:Class="GHPC_Mod_Manager.Views.FundingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        xmlns:controls="clr-namespace:GHPC_Mod_Manager.Views.Controls"
+        Title="{x:Static resources:Strings.FundingWindowTitle}"
+        Width="560"
+        Height="720"
+        MinWidth="420"
+        MinHeight="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None">
+
+    <!-- WindowChrome保留系统边框和阴影效果 -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <controls:WindowTitleBar Grid.Row="0"/>
+
+        <!-- 主内容 -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部致谢区 -->
+            <Border Grid.Row="0"
+                    Style="{StaticResource PageHeroCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="THANKS"
+                               Style="{StaticResource HeroEyebrowTextStyle}"/>
+                    <TextBlock Margin="0,6,0,0"
+                               Text="{x:Static resources:Strings.FundingWindowTitle}"
+                               Style="{StaticResource PageTitleTextStyle}"/>
+                    <TextBlock Margin="0,6,0,0"
+                               Text="{x:Static resources:Strings.FundingThanksIntro}"
+                               Style="{StaticResource PageSubtitleTextStyle}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 滚动字幕区域 -->
+            <Border Grid.Row="1"
+                    x:Name="ScrollClipBorder"
+                    Margin="0,18,0,18"
+                    Style="{StaticResource PageSurfaceCardStyle}"
+                    Padding="0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    ClipToBounds="True">
+                <Grid>
+                    <!-- 加载中 -->
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ProgressBar IsIndeterminate="True"
+                                     Width="220"
+                                     Height="6"
+                                     Margin="0,0,0,12"/>
+                        <TextBlock Text="{x:Static resources:Strings.FundingLoading}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"/>
+                    </StackPanel>
+
+                    <!-- 错误 -->
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding ErrorMessage}"
+                               Style="{StaticResource EmptyStateTextStyle}"
+                               Foreground="{DynamicResource ErrorBrush}"
+                               MaxWidth="420"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+                    <!-- 空状态 -->
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding HasContent, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static resources:Strings.FundingEmpty}"
+                                   Style="{StaticResource EmptyStateTextStyle}"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- 赞助者名单滚动列表：Canvas不约束子元素高度，ItemsControl.ActualHeight=内容真实高度 -->
+                    <Canvas x:Name="ScrollHost"
+                            Visibility="{Binding HasContent, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl x:Name="CreditsItems"
+                                      Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,14"
+                                               FontFamily="{DynamicResource DefaultFontFamily}"
+                                               FontSize="{DynamicResource HeadlineSmall}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Canvas>
+                </Grid>
+            </Border>
+
+            <!-- 底部关闭按钮 -->
+            <Border Grid.Row="2"
+                    Style="{StaticResource PageToolbarCardStyle}">
+                <Button Content="{x:Static resources:Strings.Close}"
+                        Width="120"
+                        HorizontalAlignment="Right"
+                        Style="{DynamicResource FilledButtonStyle}"
+                        Click="CloseButton_Click"/>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

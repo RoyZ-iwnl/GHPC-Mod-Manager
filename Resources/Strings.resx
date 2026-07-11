@@ -3210,6 +3210,9 @@ Please update the Mod Manager first to install this mod.</value>
   <data name="SaveEditor_RestoreFailed" xml:space="preserve">
     <value>Restore failed, please check backup file</value>
   </data>
+  <data name="SaveEditor_RestoreBackupCurrentFailed" xml:space="preserve">
+    <value>Failed to backup current save before restore</value>
+  </data>
   <data name="SaveEditor_DeleteConfirm" xml:space="preserve">
     <value>Delete this backup?</value>
   </data>
@@ -3257,6 +3260,12 @@ Please update the Mod Manager first to install this mod.</value>
   </data>
   <data name="SaveEditor_AllFiles" xml:space="preserve">
     <value>All Files</value>
+  </data>
+  <data name="SaveEditor_GameRunning" xml:space="preserve">
+    <value>Cannot edit save while game is running</value>
+  </data>
+  <data name="SaveEditor_ToggleNotFound" xml:space="preserve">
+    <value>Mission not found in save data: {0}/{1}/{2}</value>
   </data>
   <data name="FactionBlue" xml:space="preserve">
     <value>Blue</value>
@@ -3326,5 +3335,53 @@ Please update the Mod Manager first to install this mod.</value>
   </data>
   <data name="UseDnsOverHttpsDescription" xml:space="preserve">
     <value>Try DoH nodes in order of priority to improve DNS pollution or resolution failure issues.</value>
+  </data>
+  <data name="FundingWindowTitle" xml:space="preserve">
+    <value>Sponsors</value>
+  </data>
+  <data name="ShowSponsorsList" xml:space="preserve">
+    <value>Sponsors List</value>
+  </data>
+  <data name="FundingLoading" xml:space="preserve">
+    <value>Loading sponsor list...</value>
+  </data>
+  <data name="FundingLoadFailed" xml:space="preserve">
+    <value>Failed to load sponsor list</value>
+  </data>
+  <data name="FundingEmpty" xml:space="preserve">
+    <value>No sponsors yet</value>
+  </data>
+  <data name="FundingThanksIntro" xml:space="preserve">
+    <value>Thanks to everyone who supports this project</value>
+  </data>
+  <data name="FundingUsingCache" xml:space="preserve">
+    <value>Sponsor list loaded from cache ({0})</value>
+  </data>
+  <data name="FundingFetchSuccess" xml:space="preserve">
+    <value>Sponsor list fetched ({0})</value>
+  </data>
+  <data name="FundingUsingStale" xml:space="preserve">
+    <value>All URLs failed, using cached sponsor list ({0})</value>
+  </data>
+  <data name="FundingFetchFailedEmpty" xml:space="preserve">
+    <value>All URLs failed and no cache available</value>
+  </data>
+  <data name="FundingFetchingFrom" xml:space="preserve">
+    <value>Fetching sponsor list from {0}</value>
+  </data>
+  <data name="FundingFetchSuccessUrl" xml:space="preserve">
+    <value>Sponsor list fetched from {0} ({1})</value>
+  </data>
+  <data name="FundingFetchUrlFailed" xml:space="preserve">
+    <value>Failed to fetch from {0}: {1}</value>
+  </data>
+  <data name="FundingTriggerFallback" xml:space="preserve">
+    <value>Trying fallback URL...</value>
+  </data>
+  <data name="FundingLoaded" xml:space="preserve">
+    <value>Loaded {0} sponsors</value>
+  </data>
+  <data name="SponsorByFormat" xml:space="preserve">
+    <value>Sponsor by {0}</value>
   </data>
 </root>

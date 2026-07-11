@@ -355,6 +355,14 @@ public class MainConfig
     public string? ModI18nUrlFallback { get; set; }
     [JsonProperty("ModI18nUrlfallback2")]
     public string? ModI18nUrlFallback2 { get; set; }
+
+    // 赞助者ID列表地址（纯文本，每行一个ID），三级回退同 ModConfig
+    public string? FundingIdsUrl { get; set; }
+    [JsonProperty("FundingIdsUrlfallback")]
+    public string? FundingIdsUrlFallback { get; set; }
+    [JsonProperty("FundingIdsUrlfallback2")]
+    public string? FundingIdsUrlFallback2 { get; set; }
+
     public List<MainConfigProxyServer>? ProxyServers { get; set; }
 }
 

@@ -302,6 +302,34 @@ public partial class SettingsViewModel : ObservableObject
 
     public string ApplicationVersion => GetApplicationVersion();
 
+    // 赞助者冠名（关于区显示）：{冠名版本名} v{版本号} {本地化Sponsor by {赞助者名}}
+    // "Sponsor by" 部分走 i18n（中文：由{赞助者}冠名赞助），无赞助者时仅显示版本号
+    public string SponsorDisplay
+    {
+        get
+        {
+            var version = string.IsNullOrEmpty(Helpers.SponsorInfo.ShortVersion)
+                ? "v" : $"v{Helpers.SponsorInfo.ShortVersion}";
+
+            var hasSuffix = !string.IsNullOrWhiteSpace(Helpers.SponsorInfo.SponsorTitleSuffix);
+            var hasName = !string.IsNullOrWhiteSpace(Helpers.SponsorInfo.SponsorName);
+
+            // 前缀：冠名版本名（如 "某赞助者 Version"）
+            var prefix = hasSuffix ? $"{Helpers.SponsorInfo.SponsorTitleSuffix} " : "";
+
+            // 末尾段：本地化的 "Sponsor by {赞助者名}"
+            var tail = hasName ? " " + string.Format(Strings.SponsorByFormat, Helpers.SponsorInfo.SponsorName) : "";
+
+            if (!hasSuffix && !hasName)
+                return version; // 无赞助者：仅版本号
+
+            return $"{prefix}{version}{tail}";
+        }
+    }
+
+    // 是否有赞助者冠名（控制关于区冠名元素显隐）
+    public bool HasSponsor => Helpers.SponsorInfo.HasSponsor;
+
     public bool IsChineseLanguage => SelectedLanguage == "zh-CN";
 
     public bool IsGitHubProxyVisible => IsChineseLanguage;
@@ -715,19 +743,49 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private void OpenSupportAuthor()
     {
-        // TODO: 启用时取消注释
-        // try
-        // {
-        //     Process.Start(new ProcessStartInfo
-        //     {
-        //         FileName = "https://ghpcmm.link/support",
-        //         UseShellExecute = true
-        //     });
-        // }
-        // catch (Exception ex)
-        // {
-        //     _loggingService.LogError(ex, Strings.FailedToOpenSupportPage);
-        // }
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://ifdian.net/a/GHPCMM",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenSupportPage);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ShowFundingWindow()
+    {
+        try
+        {
+            var viewModel = _serviceProvider.GetRequiredService<FundingWindowViewModel>();
+            await viewModel.LoadAsync();
+
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var window = new FundingWindow
+                {
+                    DataContext = viewModel,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                if (System.Windows.Application.Current.MainWindow != null)
+                {
+                    window.Owner = System.Windows.Application.Current.MainWindow;
+                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+
+                window.ShowDialog();
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FundingLoadFailed);
+        }
     }
 
     [RelayCommand]

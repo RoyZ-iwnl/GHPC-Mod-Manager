@@ -1,4 +1,5 @@
 using GHPC_Mod_Manager.Resources;
+using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,6 +28,16 @@ public class AnnouncementService : IAnnouncementService
     {
         try
         {
+            // === 临时硬编码测试：读取本地公告文件（测试完删除此块） ===
+            //var localPath = @"D:\Project\Github\GHPC\GHPC-Mod-Manager-Web\announce\zh-CN.md";
+            //if (File.Exists(localPath))
+            //{
+            //    var content = await File.ReadAllTextAsync(localPath);
+            //    if (!string.IsNullOrWhiteSpace(content))
+            //        return (content, ComputeMd5(content));
+            //}
+            // === 临时测试结束 ===
+
             var languageFileMap = new Dictionary<string, string>
             {
                 ["zh-CN"] = "zh-CN.md",

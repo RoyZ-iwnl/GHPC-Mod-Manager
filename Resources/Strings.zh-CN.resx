@@ -3175,6 +3175,9 @@
   <data name="SaveEditor_RestoreFailed" xml:space="preserve">
     <value>恢复失败，请检查备份文件</value>
   </data>
+  <data name="SaveEditor_RestoreBackupCurrentFailed" xml:space="preserve">
+    <value>恢复前备份当前存档失败</value>
+  </data>
   <data name="SaveEditor_DeleteConfirm" xml:space="preserve">
     <value>确定要删除此备份吗？</value>
   </data>
@@ -3222,6 +3225,12 @@
   </data>
   <data name="SaveEditor_AllFiles" xml:space="preserve">
     <value>所有文件</value>
+  </data>
+  <data name="SaveEditor_GameRunning" xml:space="preserve">
+    <value>游戏运行时无法编辑存档</value>
+  </data>
+  <data name="SaveEditor_ToggleNotFound" xml:space="preserve">
+    <value>存档中未找到任务：{0}/{1}/{2}</value>
   </data>
   <data name="FactionBlue" xml:space="preserve">
     <value>蓝</value>
@@ -3291,5 +3300,53 @@
   </data>
   <data name="UseDnsOverHttpsDescription" xml:space="preserve">
     <value>按预设优先级依次尝试 DoH 节点，可改善 DNS 污染或解析失败问题。</value>
+  </data>
+  <data name="FundingWindowTitle" xml:space="preserve">
+    <value>赞助者名单</value>
+  </data>
+  <data name="ShowSponsorsList" xml:space="preserve">
+    <value>赞助者名单</value>
+  </data>
+  <data name="FundingLoading" xml:space="preserve">
+    <value>正在加载赞助者名单...</value>
+  </data>
+  <data name="FundingLoadFailed" xml:space="preserve">
+    <value>加载赞助者名单失败</value>
+  </data>
+  <data name="FundingEmpty" xml:space="preserve">
+    <value>暂无赞助者</value>
+  </data>
+  <data name="FundingThanksIntro" xml:space="preserve">
+    <value>感谢每一位支持本项目的朋友</value>
+  </data>
+  <data name="FundingUsingCache" xml:space="preserve">
+    <value>赞助者名单已从缓存加载 ({0})</value>
+  </data>
+  <data name="FundingFetchSuccess" xml:space="preserve">
+    <value>已获取赞助者名单 ({0})</value>
+  </data>
+  <data name="FundingUsingStale" xml:space="preserve">
+    <value>全部地址失败，使用缓存赞助者名单 ({0})</value>
+  </data>
+  <data name="FundingFetchFailedEmpty" xml:space="preserve">
+    <value>全部地址失败且无缓存</value>
+  </data>
+  <data name="FundingFetchingFrom" xml:space="preserve">
+    <value>正在获取赞助者名单: {0}</value>
+  </data>
+  <data name="FundingFetchSuccessUrl" xml:space="preserve">
+    <value>已从 {0} 获取赞助者名单 ({1})</value>
+  </data>
+  <data name="FundingFetchUrlFailed" xml:space="preserve">
+    <value>获取失败 {0}: {1}</value>
+  </data>
+  <data name="FundingTriggerFallback" xml:space="preserve">
+    <value>尝试回退地址...</value>
+  </data>
+  <data name="FundingLoaded" xml:space="preserve">
+    <value>已加载 {0} 位赞助者</value>
+  </data>
+  <data name="SponsorByFormat" xml:space="preserve">
+    <value>由{0}冠名赞助</value>
   </data>
 </root>

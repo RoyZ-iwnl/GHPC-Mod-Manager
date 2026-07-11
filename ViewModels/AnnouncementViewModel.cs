@@ -292,7 +292,9 @@ public partial class AnnouncementViewModel : ObservableObject
                 // 只处理外部链接，内部锚点让浏览器自然处理
                 if (href.startsWith('http://') || href.startsWith('https://')) {{
                     e.preventDefault();
-                    window.external.notify(href);
+                    // WebView2 用 window.chrome.webview.postMessage 向宿主发消息，
+                    // 旧的 window.external.notify 是 IE 引擎 API，WebView2 不支持
+                    window.chrome.webview.postMessage(href);
                 }}
                 // 内部锚点链接不阻止默认行为，让浏览器处理
             }}

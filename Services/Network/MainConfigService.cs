@@ -20,6 +20,10 @@ file static class BuiltinDefaults
     public const string ModI18n            = "https://GHPC.DMR.gg/config/mod_i18n.json";
     public const string ModI18nFallback    = "https://ghpc1.dmr.gg/config/mod_i18n.json";
     public const string ModI18nRaw = "https://raw.githubusercontent.com/RoyZ-iwnl/GHPC-Mod-Manager-Web/refs/heads/main/config/mod_i18n.json";
+
+    // 赞助者ID列表（纯文本，每行一个ID）
+    public const string FundingIds         = "https://GHPC.DMR.gg/funding/IDs.txt";
+    public const string FundingIdsFallback = "https://GHPC1.DMR.gg/funding/IDs.txt";
 }
 
 public interface IMainConfigService
@@ -45,6 +49,11 @@ public interface IMainConfigService
     string GetModI18nUrlFallback();
     string? GetModI18nUrlFallback2();
     IReadOnlyList<string> GetModI18nUrlCandidates();
+    // 赞助者ID列表地址（三级回退，同 ModConfig）
+    string GetFundingIdsUrl();
+    string GetFundingIdsUrlFallback();
+    string? GetFundingIdsUrlFallback2();
+    IReadOnlyList<string> GetFundingIdsUrlCandidates();
     /// <summary>
     /// 获取下发的代理服务器列表，未下发时返回 null
     /// </summary>
@@ -194,6 +203,8 @@ public class MainConfigService : IMainConfigService
         _loggingService.LogInfo($"  TranslationConfigUrl = {BuiltinDefaults.TranslationConfig}");
         _loggingService.LogInfo($"  ModI18nUrl           = {BuiltinDefaults.ModI18n}");
         _loggingService.LogInfo($"  ModI18nUrlfallback   = {BuiltinDefaults.ModI18nFallback}");
+        _loggingService.LogInfo($"  FundingIdsUrl         = {BuiltinDefaults.FundingIds}");
+        _loggingService.LogInfo($"  FundingIdsUrlfallback = {BuiltinDefaults.FundingIdsFallback}");
     }
 
     /// <summary>
@@ -256,6 +267,10 @@ public class MainConfigService : IMainConfigService
         _loggingService.LogInfo($"  ModI18nUrlfallback    = {config.ModI18nUrlFallback ?? BuiltinDefaults.ModI18nFallback}{(config.ModI18nUrlFallback == null ? builtinDefault : remote)}");
         if (!string.IsNullOrWhiteSpace(config.ModI18nUrlFallback2))
             _loggingService.LogInfo($"  ModI18nUrlfallback2   = {config.ModI18nUrlFallback2}{remote}");
+        _loggingService.LogInfo($"  FundingIdsUrl         = {config.FundingIdsUrl ?? BuiltinDefaults.FundingIds}{(config.FundingIdsUrl == null ? builtinDefault : remote)}");
+        _loggingService.LogInfo($"  FundingIdsUrlfallback = {config.FundingIdsUrlFallback ?? BuiltinDefaults.FundingIdsFallback}{(config.FundingIdsUrlFallback == null ? builtinDefault : remote)}");
+        if (!string.IsNullOrWhiteSpace(config.FundingIdsUrlFallback2))
+            _loggingService.LogInfo($"  FundingIdsUrlfallback2= {config.FundingIdsUrlFallback2}{remote}");
 
         if (config.ProxyServers != null && config.ProxyServers.Count > 0)
         {
@@ -458,6 +473,23 @@ public class MainConfigService : IMainConfigService
             CandidateAt(rawLastResort, 1)
         );
     }
+
+    // 赞助者ID列表地址：下发优先，否则内置默认（无 raw 兜底，仅三级回退）
+    public string GetFundingIdsUrl() =>
+        Config?.FundingIdsUrl ?? BuiltinDefaults.FundingIds;
+
+    public string GetFundingIdsUrlFallback() =>
+        Config?.FundingIdsUrlFallback ?? BuiltinDefaults.FundingIdsFallback;
+
+    public string? GetFundingIdsUrlFallback2() =>
+        Config?.FundingIdsUrlFallback2;
+
+    public IReadOnlyList<string> GetFundingIdsUrlCandidates() =>
+        BuildUniqueUrlList(
+            GetFundingIdsUrl(),
+            GetFundingIdsUrlFallback(),
+            GetFundingIdsUrlFallback2()
+        );
 
     // dev模式下也返回 Config 里的 ProxyServers（从手动路径加载的 main.json）
     public List<MainConfigProxyServer>? GetRemoteProxyServers() =>

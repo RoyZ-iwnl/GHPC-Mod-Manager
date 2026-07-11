@@ -22,14 +22,22 @@ namespace GHPC_Mod_Manager
                 var parts = informationalVersion.Split('+');
                 var version = parts[0];
                 var hash = parts.Length > 1 ? parts[1][..Math.Min(7, parts[1].Length)] : null;
+
+                // 赞助者冠名后缀（来自 SponsorInfo），非空时用连字符接在版本号后
+                var suffix = Helpers.SponsorInfo.SponsorTitleSuffix;
+                var versionSegment = !string.IsNullOrWhiteSpace(suffix)
+                    ? $"v{version}-{suffix}"
+                    : $"v{version}";
+
                 title = hash != null
-                    ? $"GHPC Mod Manager v{version} ({hash})"
-                    : $"GHPC Mod Manager v{version}";
+                    ? $"GHPC Mod Manager {versionSegment} ({hash})"
+                    : $"GHPC Mod Manager {versionSegment}";
             }
             else
             {
                 title = "GHPC Mod Manager";
             }
+
             Title = title;
 
             // Smart window sizing based on screen working area

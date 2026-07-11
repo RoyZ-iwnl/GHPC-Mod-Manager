@@ -154,6 +154,7 @@ namespace GHPC_Mod_Manager
                     });
 
                     services.AddHttpClient<INetworkService, NetworkService>();
+                    services.AddHttpClient<IFundingService, FundingService>();
 
                     // ViewModels
                     services.AddTransient<MainWindowViewModel>();
@@ -163,6 +164,7 @@ namespace GHPC_Mod_Manager
                     services.AddTransient<SettingsViewModel>();
                     services.AddTransient<ModConfigurationViewModel>();
                     services.AddTransient<AnnouncementViewModel>();
+                    services.AddTransient<FundingWindowViewModel>();
                     services.AddTransient<ModInfoDumperViewModel>();
                     // 子页面ViewModel（单例，数据共享）
                     services.AddSingleton<InstalledModsViewModel>();

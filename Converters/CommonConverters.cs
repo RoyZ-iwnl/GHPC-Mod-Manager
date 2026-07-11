@@ -563,7 +563,7 @@ public class BoolToSaveHintConverter : IValueConverter
     {
         if (value is bool hasChanges && hasChanges)
         {
-            return "有未保存的更改";
+            return Strings.SaveEditor_HasUnsavedChanges;
         }
         return "";
     }

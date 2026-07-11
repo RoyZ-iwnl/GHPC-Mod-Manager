@@ -21,7 +21,7 @@ public interface ISaveEditorService
     /// <summary>
     /// 获取默认存档路径
     /// </summary>
-    string GetDefaultSaveFilePath(string gameRootPath);
+    string GetDefaultSaveFilePath();
 
     /// <summary>
     /// 手动备份存档文件
@@ -51,17 +51,20 @@ public interface ISaveEditorService
     /// <summary>
     /// 重置所有任务进度
     /// </summary>
-    void ResetAllProgress(SaveFileData data);
+    /// <returns>实际是否修改了数据（结构不符时返回 false）</returns>
+    bool ResetAllProgress(SaveFileData data);
 
     /// <summary>
     /// 完成所有任务（将所有已存在的阵营状态设为1）
     /// </summary>
-    void CompleteAllMissions(SaveFileData data, string faction = "All");
+    /// <returns>实际是否修改了数据（结构不符时返回 false）</returns>
+    bool CompleteAllMissions(SaveFileData data);
 
     /// <summary>
     /// 切换任务完成状态
     /// </summary>
-    void ToggleMissionCompletion(SaveFileData data, string theaterId, string missionName, string faction);
+    /// <returns>实际是否切换成功（找不到任务时返回 false）</returns>
+    bool ToggleMissionCompletion(SaveFileData data, string theaterId, string missionName, string faction);
 
     /// <summary>
     /// 存档文件是否存在

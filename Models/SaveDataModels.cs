@@ -35,43 +35,6 @@ public class SaveDataValue
 }
 
 /// <summary>
-/// 任务完成状态
-/// </summary>
-public class MissionStatus
-{
-    public bool Blue { get; set; }
-    public bool Red { get; set; }
-    public bool Neutral { get; set; }
-}
-
-/// <summary>
-/// 战役信息（用于UI显示）
-/// </summary>
-public class TheaterInfo
-{
-    public string Id { get; set; } = string.Empty;
-    public string DisplayName { get; set; } = string.Empty;
-    public List<MissionInfo> Missions { get; set; } = new();
-}
-
-/// <summary>
-/// 任务信息（用于UI显示）
-/// </summary>
-public class MissionInfo
-{
-    public string Name { get; set; } = string.Empty;
-    public Dictionary<string, int> CompletionStatus { get; set; } = new();
-
-    public bool Blue => CompletionStatus.TryGetValue("Blue", out var v) && v == 1;
-    public bool Red => CompletionStatus.TryGetValue("Red", out var v) && v == 1;
-    public bool Neutral => CompletionStatus.TryGetValue("Neutral", out var v) && v == 1;
-
-    public bool HasBlue => CompletionStatus.ContainsKey("Blue");
-    public bool HasRed => CompletionStatus.ContainsKey("Red");
-    public bool HasNeutral => CompletionStatus.ContainsKey("Neutral");
-}
-
-/// <summary>
 /// 备份记录
 /// </summary>
 public class BackupRecord
@@ -83,15 +46,6 @@ public class BackupRecord
 
     public string DisplayTime => BackupTime.ToString("yyyy-MM-dd HH:mm:ss");
     public string DisplaySize => FileSize < 1024 ? $"{FileSize} B" : (FileSize < 1024 * 1024 ? $"{FileSize / 1024.0:F1} KB" : $"{FileSize / 1024.0 / 1024.0:F1} MB");
-}
-
-/// <summary>
-/// 备份配置
-/// </summary>
-public class BackupConfig
-{
-    public List<BackupRecord> Backups { get; set; } = new();
-    public int MaxBackupCount { get; set; } = 20;
 }
 
 /// <summary>

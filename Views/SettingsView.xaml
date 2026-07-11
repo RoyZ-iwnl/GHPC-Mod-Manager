@@ -80,24 +80,37 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <Grid Margin="0,16,0,14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.ApplicationVersion}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <Border Grid.Column="1"
-                                    Background="Transparent"
-                                    HorizontalAlignment="Left"
-                                    MouseLeftButtonDown="VersionText_MouseLeftButtonDown"
-                                    Cursor="Arrow">
-                                <TextBlock Text="{Binding ApplicationVersion}"
-                                           Style="{StaticResource FieldValueTextStyle}"/>
-                            </Border>
-                        </Grid>
+                        <!-- 版本+冠名条（Accent背景突出，三主题自动适配；点击触发版本号彩蛋解锁终末地主题） -->
+                        <Border Margin="0,16,0,14"
+                                Style="{StaticResource PageBannerCardStyle}"
+                                CornerRadius="{DynamicResource RadiusMedium}"
+                                Cursor="Hand"
+                                MouseLeftButtonDown="VersionText_MouseLeftButtonDown">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- 左侧图标：四角星，呼应赞助主题 -->
+                                <Path Grid.Column="0"
+                                      Data="{StaticResource IconSparkle}"
+                                      Stroke="{DynamicResource OnAccentBrush}"
+                                      Fill="{DynamicResource OnAccentBrush}"
+                                      StrokeThickness="1.5"
+                                      Stretch="Uniform"
+                                      Width="28" Height="28"
+                                      Margin="0,0,14,0"
+                                      VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding SponsorDisplay}"
+                                               FontFamily="{DynamicResource DisplayFontFamily}"
+                                               FontSize="{DynamicResource HeadlineMedium}"
+                                               FontWeight="ExtraBold"
+                                               Foreground="{DynamicResource OnAccentBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
                         <Grid Margin="0,0,0,14">
                             <Grid.ColumnDefinitions>
@@ -130,11 +143,15 @@
                                     Command="{Binding ShowAnnouncementCommand}"
                                     Margin="0,0,12,8"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
-                            <!-- TODO: 启用时取消注释 - 支持作者按钮 -->
-                            <!--<Button Content="{x:Static resources:Strings.SupportAuthor}"
+                            <!-- 支持作者 + 赞助者名单（彩虹流动边框） -->
+                            <Button Content="{x:Static resources:Strings.SupportAuthor}"
                                     Command="{Binding OpenSupportAuthorCommand}"
                                     Margin="0,0,12,8"
-                                    Style="{DynamicResource FilledButtonStyle}"/>-->
+                                    Style="{DynamicResource RainbowBorderButtonStyle}"/>
+                            <Button Content="{x:Static resources:Strings.ShowSponsorsList}"
+                                    Command="{Binding ShowFundingWindowCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource RainbowBorderButtonStyle}"/>
                             <Button Content="{x:Static resources:Strings.FollowBilibili}"
                                     Command="{Binding OpenFollowBilibiliCommand}"
                                     Margin="0,0,12,8"

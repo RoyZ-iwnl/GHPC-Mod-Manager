@@ -601,7 +601,7 @@
                                       Margin="0,2,8,0"
                                       Focusable="False"
                                       IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Style="{StaticResource ComboBoxToggleButtonStyle}"
+                                      Style="{DynamicResource ComboBoxToggleButtonStyle}"
                                       Foreground="{DynamicResource OnSurfaceBrush}"/>
 
                         <Border x:Name="HeaderBorder"

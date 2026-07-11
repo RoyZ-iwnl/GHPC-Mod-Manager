@@ -1,4 +1,5 @@
 using GHPC_Mod_Manager.Models;
+using GHPC_Mod_Manager.Resources;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -42,6 +43,10 @@ public class SaveEditorService : ISaveEditorService
 
     public async Task SaveSaveFileAsync(string saveFilePath, SaveFileData data)
     {
+        // 原子写入：先写临时文件，成功后替换目标，避免写入中断损坏存档
+        var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+        var tempPath = saveFilePath + ".tmp";
+
         try
         {
             var directory = Path.GetDirectoryName(saveFilePath);
@@ -50,19 +55,28 @@ public class SaveEditorService : ISaveEditorService
                 Directory.CreateDirectory(directory);
             }
 
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            await File.WriteAllTextAsync(saveFilePath, json);
+            await File.WriteAllTextAsync(tempPath, json);
+
+            // 同卷 Move/Replace 是原子操作，覆盖目标文件
+            if (File.Exists(saveFilePath))
+                File.Replace(tempPath, saveFilePath, null);
+            else
+                File.Move(tempPath, saveFilePath);
 
             _loggingService.LogInfo("SaveEditor_Saved", saveFilePath);
         }
-        catch (Exception ex)
+        catch
         {
-            _loggingService.LogError(ex, "SaveEditor_SaveFailed", saveFilePath);
+            // 失败时清理残留的临时文件，不影响原存档
+            if (File.Exists(tempPath))
+            {
+                try { File.Delete(tempPath); } catch { /* 忽略清理失败 */ }
+            }
             throw;
         }
     }
 
-    public string GetDefaultSaveFilePath(string gameRootPath)
+    public string GetDefaultSaveFilePath()
     {
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         return Path.Combine(documentsPath, "My Games", "GHPC", "Data", "GHPC_data.sav");
@@ -173,9 +187,9 @@ public class SaveEditorService : ISaveEditorService
         }
     }
 
-    public void ResetAllProgress(SaveFileData data)
+    public bool ResetAllProgress(SaveFileData data)
     {
-        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return;
+        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return false;
 
         foreach (var theater in data.PlayerSave.Value.TheaterMissionPlayStates.Values)
         {
@@ -189,11 +203,12 @@ public class SaveEditorService : ISaveEditorService
         }
 
         _loggingService.LogInfo("SaveEditor_ProgressReset");
+        return true;
     }
 
-    public void CompleteAllMissions(SaveFileData data, string faction = "All")
+    public bool CompleteAllMissions(SaveFileData data)
     {
-        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return;
+        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return false;
 
         foreach (var theater in data.PlayerSave.Value.TheaterMissionPlayStates.Values)
         {
@@ -207,18 +222,24 @@ public class SaveEditorService : ISaveEditorService
         }
 
         _loggingService.LogInfo("SaveEditor_AllMissionsCompleted");
+        return true;
     }
 
-    public void ToggleMissionCompletion(SaveFileData data, string theaterId, string missionName, string faction)
+    public bool ToggleMissionCompletion(SaveFileData data, string theaterId, string missionName, string faction)
     {
-        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return;
+        if (data?.PlayerSave?.Value?.TheaterMissionPlayStates == null) return false;
 
         if (data.PlayerSave.Value.TheaterMissionPlayStates.TryGetValue(theaterId, out var theater)
             && theater.TryGetValue(missionName, out var mission)
             && mission.TryGetValue(faction, out var status))
         {
             mission[faction] = status == 1 ? 0 : 1;
+            return true;
         }
+
+        // 找不到任务时记录日志，便于排查存档结构差异
+        _loggingService.LogWarning(Strings.SaveEditor_ToggleNotFound, theaterId, missionName, faction);
+        return false;
     }
 
     public bool SaveFileExists(string saveFilePath)

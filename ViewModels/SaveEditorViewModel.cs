@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using GHPC_Mod_Manager.Models;
 using GHPC_Mod_Manager.Resources;
 using GHPC_Mod_Manager.Services;
+using GHPC_Mod_Manager.Services.Game;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -15,8 +16,8 @@ public partial class SaveEditorViewModel : ObservableObject
     private readonly ISettingsService _settingsService;
     private readonly IDialogService _dialogService;
     private readonly ILoggingService _loggingService;
+    private readonly IProcessService _processService;
 
-    private string _currentSaveFilePath = string.Empty;
     private SaveFileData? _currentSaveData;
 
     [ObservableProperty]
@@ -27,6 +28,9 @@ public partial class SaveEditorViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isLoaded = false;
+
+    [ObservableProperty]
+    private bool _isGameRunning = false;
 
     [ObservableProperty]
     private ObservableCollection<TheaterTreeNode> _theaterTree = new();
@@ -50,22 +54,68 @@ public partial class SaveEditorViewModel : ObservableObject
         ISaveEditorService saveEditorService,
         ISettingsService settingsService,
         IDialogService dialogService,
-        ILoggingService loggingService)
+        ILoggingService loggingService,
+        IProcessService processService)
     {
         _saveEditorService = saveEditorService;
         _settingsService = settingsService;
         _dialogService = dialogService;
         _loggingService = loggingService;
+        _processService = processService;
 
-        SaveFilePath = _saveEditorService.GetDefaultSaveFilePath(_settingsService.Settings.GameRootPath);
+        // 订阅游戏运行状态变化，运行时禁用所有写操作
+        IsGameRunning = _processService.IsGameRunning;
+        _processService.GameRunningStateChanged += (s, e) =>
+        {
+            Application.Current?.Dispatcher.Invoke(() => IsGameRunning = e);
+        };
+
+        SaveFilePath = _saveEditorService.GetDefaultSaveFilePath();
         IsSaveFileExists = _saveEditorService.SaveFileExists(SaveFilePath);
         RefreshBackupList();
 
         if (IsSaveFileExists)
         {
-            _ = LoadSaveFile();
+            _ = LoadInitialSaveFileAsync();
         }
     }
+
+    // 构造期间的初始加载，独立方法以便捕获异常避免未处理异常
+    private async Task LoadInitialSaveFileAsync()
+    {
+        try
+        {
+            await LoadSaveFile();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "SaveEditor_LoadFailed", SaveFilePath);
+        }
+    }
+
+    // 游戏运行状态变化时刷新写操作命令的可用性
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        SaveFileCommand.NotifyCanExecuteChanged();
+        ManualBackupCommand.NotifyCanExecuteChanged();
+        RestoreFromBackupCommand.NotifyCanExecuteChanged();
+        ResetProgressCommand.NotifyCanExecuteChanged();
+        CompleteAllMissionsCommand.NotifyCanExecuteChanged();
+        ToggleMissionStatusCommand.NotifyCanExecuteChanged();
+
+        if (value)
+        {
+            StatusMessage = Strings.SaveEditor_GameRunning;
+        }
+        else
+        {
+            // 游戏停止后恢复状态栏提示，避免停留在"运行中"文案
+            StatusMessage = IsLoaded ? Strings.SaveEditor_Loaded : Strings.SaveEditor_NoData;
+        }
+    }
+
+    // 写操作可用性：游戏未运行时才允许
+    private bool CanWriteOperation() => !IsGameRunning;
 
     [RelayCommand]
     private async Task LoadSaveFile()
@@ -76,22 +126,31 @@ public partial class SaveEditorViewModel : ObservableObject
             return;
         }
 
+        // 先判断文件是否存在，区分"文件不存在"与"格式错误"两种失败原因
+        if (!_saveEditorService.SaveFileExists(SaveFilePath))
+        {
+            IsLoaded = false;
+            IsSaveFileExists = false;
+            _dialogService.ShowError(Strings.SaveEditor_NoFile, Strings.SaveEditor_LoadFailed);
+            return;
+        }
+
         var data = await _saveEditorService.LoadSaveFileAsync(SaveFilePath);
         if (data == null)
         {
+            // 文件存在但加载失败：JSON格式错误或IO异常
             _dialogService.ShowError(Strings.SaveEditor_LoadFailed, Strings.SaveEditor_LoadFailed);
             return;
         }
 
         _currentSaveData = data;
-        _currentSaveFilePath = SaveFilePath;
         LoadTheatersFromData(data);
         IsLoaded = true;
         HasChanges = false;
         StatusMessage = Strings.SaveEditor_Loaded;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private async Task SaveFile()
     {
         if (_currentSaveData == null)
@@ -138,7 +197,7 @@ public partial class SaveEditorViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private async Task ManualBackup()
     {
         if (!_saveEditorService.SaveFileExists(SaveFilePath))
@@ -161,7 +220,7 @@ public partial class SaveEditorViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private async Task RestoreFromBackup(BackupRecord? backup)
     {
         if (backup == null) return;
@@ -171,6 +230,20 @@ public partial class SaveEditorViewModel : ObservableObject
 
         if (result)
         {
+            // 恢复前先备份当前存档（若存在），保证可撤销，避免当前进度永久丢失
+            if (_saveEditorService.SaveFileExists(SaveFilePath))
+            {
+                try
+                {
+                    await _saveEditorService.BackupSaveFileAsync(SaveFilePath);
+                    RefreshBackupList();
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogError(ex, "SaveEditor_RestoreBackupCurrentFailed", SaveFilePath);
+                }
+            }
+
             var success = await _saveEditorService.RestoreFromBackupAsync(backup.FilePath, SaveFilePath);
             if (success)
             {
@@ -215,7 +288,7 @@ public partial class SaveEditorViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private void ResetProgress()
     {
         if (_currentSaveData == null) return;
@@ -224,14 +297,22 @@ public partial class SaveEditorViewModel : ObservableObject
 
         if (result)
         {
-            _saveEditorService.ResetAllProgress(_currentSaveData);
-            LoadTheatersFromData(_currentSaveData);
-            HasChanges = true;
-            StatusMessage = Strings.SaveEditor_ResetSuccess;
+            // 结构不符时返回 false，此时不应提示"成功"
+            var changed = _saveEditorService.ResetAllProgress(_currentSaveData);
+            if (changed)
+            {
+                LoadTheatersFromData(_currentSaveData);
+                HasChanges = true;
+                StatusMessage = Strings.SaveEditor_ResetSuccess;
+            }
+            else
+            {
+                _dialogService.ShowWarning(Strings.SaveEditor_NoData, Strings.SaveEditor_Confirm);
+            }
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private void CompleteAllMissions()
     {
         if (_currentSaveData == null) return;
@@ -240,27 +321,38 @@ public partial class SaveEditorViewModel : ObservableObject
 
         if (result)
         {
-            _saveEditorService.CompleteAllMissions(_currentSaveData);
-            LoadTheatersFromData(_currentSaveData);
-            HasChanges = true;
-            StatusMessage = Strings.SaveEditor_CompleteSuccess;
+            var changed = _saveEditorService.CompleteAllMissions(_currentSaveData);
+            if (changed)
+            {
+                LoadTheatersFromData(_currentSaveData);
+                HasChanges = true;
+                StatusMessage = Strings.SaveEditor_CompleteSuccess;
+            }
+            else
+            {
+                _dialogService.ShowWarning(Strings.SaveEditor_NoData, Strings.SaveEditor_Confirm);
+            }
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanWriteOperation))]
     private void ToggleMissionStatus(string faction)
     {
         if (_currentSaveData == null || SelectedMissionNode == null) return;
 
-        _saveEditorService.ToggleMissionCompletion(
+        var toggled = _saveEditorService.ToggleMissionCompletion(
             _currentSaveData,
             SelectedMissionNode.TheaterId,
             SelectedMissionNode.Name,
             faction);
 
+        // 无论是否切换成功都刷新UI，保持与数据一致；仅在成功时标记更改
         RefreshMissionStatus(SelectedMissionNode);
-        HasChanges = true;
-        StatusMessage = string.Format(Strings.SaveEditor_ToggleStatus, SelectedMissionNode.Name, faction);
+        if (toggled)
+        {
+            HasChanges = true;
+            StatusMessage = string.Format(Strings.SaveEditor_ToggleStatus, SelectedMissionNode.Name, faction);
+        }
     }
 
     private void LoadTheatersFromData(SaveFileData data)
