@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using GHPC_Mod_Manager.Models;
 using Newtonsoft.Json;
 using System.IO;
@@ -35,7 +36,7 @@ public class NetworkService : INetworkService
 
 
     // Rate limit tracking
-    private static readonly Dictionary<string, DateTime> _rateLimitBlocks = new();
+    private static readonly ConcurrentDictionary<string, DateTime> _rateLimitBlocks = new();
     private static DateTime _lastRateLimitWarning = DateTime.MinValue;
     private const int RateLimitWarningCooldownMinutes = 5; // Show warning at most once every 5 minutes
 
@@ -45,7 +46,7 @@ public class NetworkService : INetworkService
     private const int DownloadRetryAttempts = 3;
 
     // 本次启动的内存缓存（非GitHub资源）
-    private readonly Dictionary<string, object> _sessionCache = new();
+    private readonly ConcurrentDictionary<string, object> _sessionCache = new();
 
     public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
     {
@@ -353,14 +354,17 @@ public class NetworkService : INetworkService
             }
             
             // Check if we're currently rate limited for this repository
+            // GitHub primary rate limit 每小时重置，标记项 1 小时后过期允许重试
             var rateLimitKey = $"github_api_{repoOwner}_{repoName}";
-            if (_rateLimitBlocks.ContainsKey(rateLimitKey))
+            if (_rateLimitBlocks.TryGetValue(rateLimitKey, out var blockedAt) && blockedAt > DateTime.Now.AddHours(-1))
             {
                 _loggingService.LogInfo(Strings.SkippingGitHubApiDueToRateLimit, repoOwner, repoName);
                 // Try to return stale cache if available
                 var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
                 return staleCache ?? new List<GitHubRelease>();
             }
+            // 过期项清理，允许继续走 API 重试（避免永久跳过）
+            _rateLimitBlocks.TryRemove(rateLimitKey, out _);
             
             // Make API request
             List<GitHubRelease> result;
@@ -375,7 +379,8 @@ public class NetworkService : INetworkService
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("Authorization", $"token {_settingsService.Settings.GitHubApiToken}");
 
-                var response = await _httpClient.SendAsync(request);
+                // using 确保响应资源释放，与同文件其他 SendAsync 调用一致
+                using var response = await _httpClient.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 result = releases ?? new List<GitHubRelease>();
@@ -400,6 +405,10 @@ public class NetworkService : INetworkService
                 var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 result = releases ?? new List<GitHubRelease>();
             }
+
+            // 按 PublishedAt 倒序排列，确保调用方 FirstOrDefault() 取到最新发布版本
+            // 而非依赖 GitHub API 默认的 created_at 排序（修改发布时间后两者顺序可能不一致）
+            result = result.OrderByDescending(r => r.PublishedAt).ToList();
 
             // Save to persistent cache (always save fresh data)
             await SaveGitHubReleasesToPersistentCacheAsync(repoOwner, repoName, result);

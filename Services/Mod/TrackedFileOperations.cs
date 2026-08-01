@@ -5,6 +5,7 @@ using GHPC_Mod_Manager.Resources;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using SharpCompress.Readers;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Services.Mod;
 
@@ -54,6 +55,8 @@ public class TrackedFileOperations
             }
 
             var destinationPath = Path.Combine(targetDirectory, entryKey);
+            // 校验目标路径未越界,防止 zip-slip 路径遍历
+            destinationPath = PathSecurityHelper.EnsurePathInsideDirectory(destinationPath, targetDirectory);
             var destinationDir = Path.GetDirectoryName(destinationPath);
 
             _loggingService.LogInfo(Strings.ZipProcessingEntry, entryKey, destinationPath);
@@ -141,6 +144,8 @@ public class TrackedFileOperations
             }
 
             var destinationPath = Path.Combine(targetDirectory, entry.FullName);
+            // 校验目标路径未越界,防止 zip-slip 路径遍历
+            destinationPath = PathSecurityHelper.EnsurePathInsideDirectory(destinationPath, targetDirectory);
             var destinationDir = Path.GetDirectoryName(destinationPath);
 
             _loggingService.LogInfo(Strings.ZipProcessingEntry, entry.FullName, destinationPath);

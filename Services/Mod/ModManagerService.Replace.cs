@@ -164,13 +164,25 @@ public partial class ModManagerService
             if (downloadedFileName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
                 var tempDownloadPath = await SaveTempDownloadFileAsync(downloadData, downloadedFileName);
-                var targetPath = Path.Combine(modsPath, downloadedFileName);
-                await trackedOps.CopyFileAsync(tempDownloadPath, targetPath);
-                File.Delete(tempDownloadPath);
+                try
+                {
+                    var targetPath = Path.Combine(modsPath, downloadedFileName);
+                    await trackedOps.CopyFileAsync(tempDownloadPath, targetPath);
+                }
+                finally
+                {
+                    // 即使 CopyFileAsync 抛异常也要清理临时文件,避免 temp/ 残留
+                    try { File.Delete(tempDownloadPath); } catch { }
+                }
             }
             else if (IsArchiveFile(downloadedFileName))
             {
                 await trackedOps.ExtractArchiveAsync(downloadData, modsPath);
+            }
+            else
+            {
+                // 既非 .dll 也非压缩包,无法处理;明确记录原因,避免上层 NoFilesProcessedDuringInstallation 报错时原因不明
+                _loggingService.LogError("不支持的 Mod 文件类型: {0}", downloadedFileName);
             }
         }
         finally
@@ -333,7 +345,7 @@ public partial class ModManagerService
             if (changed)
             {
                 _installManifest.SchemaVersion = ModInstallManifest.CurrentSchemaVersion;
-                await SaveManifestAsync();
+                await SaveManifestCoreAsync();
 
                 // 迁移成功后删除备份
                 if (File.Exists(backupPath))
@@ -439,8 +451,13 @@ public partial class ModManagerService
             if (fileName == BackupManifestFileName || fileName == BackupPathsFileName)
                 continue;
 
+            // 无 manifest/paths 映射时不再用下划线回退解码(含下划线的文件名如 my_mod.dll 会被错误还原为 my/mod.dll)。
+            // 视为备份不可用跳过该文件,由下方 plan.Files.Count==0 返回 null 触发重新下载,避免错误路径写入游戏目录
             if (!relativePathMap.TryGetValue(fileName, out var relativePath))
-                relativePath = NormalizeRelativePath(fileName.Replace('_', Path.DirectorySeparatorChar));
+            {
+                _loggingService.LogWarning("备份文件缺少路径映射,已跳过: {0}", fileName);
+                continue;
+            }
 
             plan.Files.Add(new BackupRestoreEntry
             {
@@ -448,6 +465,18 @@ public partial class ModManagerService
                 RelativePath = relativePath,
                 Sha256 = sha256Map.GetValueOrDefault(fileName, string.Empty)
             });
+        }
+
+        // 检测 manifest 记录但磁盘缺失的文件,避免部分丢失时静默只恢复存在的(导致不完整安装)
+        if (includeVersionManifest && sha256Map.Count > 0)
+        {
+            var existingFiles = plan.Files.Select(f => Path.GetFileName(f.BackupFilePath)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var missingFiles = sha256Map.Keys.Where(k => !existingFiles.Contains(k)).ToList();
+            if (missingFiles.Any())
+            {
+                _loggingService.LogError("备份不完整,缺失 {0} 个文件: {1}", missingFiles.Count, string.Join(", ", missingFiles));
+                return null;
+            }
         }
 
         return plan.Files.Count > 0 ? plan : null;
@@ -465,6 +494,13 @@ public partial class ModManagerService
             if (!string.IsNullOrEmpty(targetDir))
                 Directory.CreateDirectory(targetDir);
 
+            // 校验备份文件完整性,损坏/被篡改时中止恢复
+            if (!string.IsNullOrEmpty(entry.Sha256))
+            {
+                var actualSha256 = await CalculateFileSha256Async(entry.BackupFilePath);
+                if (!string.Equals(actualSha256, entry.Sha256, StringComparison.OrdinalIgnoreCase))
+                    throw new IOException($"备份文件校验失败(已损坏或被篡改): {entry.RelativePath}");
+            }
             File.Copy(entry.BackupFilePath, targetPath, true);
             restoredPaths.Add(entry.RelativePath);
         }
@@ -489,6 +525,13 @@ public partial class ModManagerService
             if (!string.IsNullOrEmpty(targetDir))
                 Directory.CreateDirectory(targetDir);
 
+            // 校验备份文件完整性,损坏/被篡改时中止恢复
+            if (!string.IsNullOrEmpty(entry.Sha256))
+            {
+                var actualSha256 = await CalculateFileSha256Async(entry.BackupFilePath);
+                if (!string.Equals(actualSha256, entry.Sha256, StringComparison.OrdinalIgnoreCase))
+                    throw new IOException($"备份文件校验失败(已损坏或被篡改): {entry.RelativePath}");
+            }
             File.Copy(entry.BackupFilePath, targetPath, true);
             restoredPaths.Add(entry.RelativePath);
         }
@@ -615,6 +658,24 @@ public partial class ModManagerService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 回滚 Replace 模式安装:删除已写入的新文件,把 .GHPCMM{modId} 备份还原回原位置。
+    /// 在 InstallReplaceModeAsync 失败时调用,避免游戏原文件滞留 .GHPCMM 致游戏损坏。
+    /// </summary>
+    private async Task RollbackReplaceInstallAsync(string modId, List<string> installedPaths, List<string> backupFiles)
+    {
+        try
+        {
+            await DeleteManagedFilesAsync(installedPaths);
+            await RestoreImmediateBackupFilesAsync(modId, backupFiles);
+        }
+        catch (Exception ex)
+        {
+            // 回滚失败不掩盖原始异常,仅记录
+            _loggingService.LogError(ex, "Replace 模式安装回滚失败: {0}", modId);
+        }
+    }
+
     private void CleanupEmptyDirectories(IEnumerable<string> relativePaths)
     {
         var gameRootPath = _settingsService.Settings.GameRootPath;
@@ -675,6 +736,8 @@ public partial class ModManagerService
                 backupFiles.Add(backupRelativePath);
 
             var targetPath = Path.Combine(_settingsService.Settings.GameRootPath, targetRelativePath);
+            // 校验目标路径未越界,防止 zip-slip 路径遍历
+            targetPath = PathSecurityHelper.EnsurePathInsideDirectory(targetPath, _settingsService.Settings.GameRootPath);
             var targetDir = Path.GetDirectoryName(targetPath);
             if (!string.IsNullOrEmpty(targetDir))
                 Directory.CreateDirectory(targetDir);
@@ -729,8 +792,12 @@ public partial class ModManagerService
         if (result == MessageDialogResult.Cancel)
             return Task.FromResult(false);
 
-        foreach (var staleBackup in staleBackups)
-            File.Delete(staleBackup);
+        // 「否」:还原而非删除。这些 .GHPCMM{modId} 可能含活动安装的游戏原文件备份,
+        // 直接删除会永久丢失原文件;用 RestoreImmediateBackupFilesAsync 把原文件移回原位置并清理备份。
+        var staleBackupRelativePaths = staleBackups
+            .Select(p => Path.GetRelativePath(gameRootPath, p))
+            .ToList();
+        RestoreImmediateBackupFilesAsync(modConfig.Id, staleBackupRelativePaths).GetAwaiter().GetResult();
 
         return Task.FromResult(true);
     }
@@ -788,30 +855,39 @@ public partial class ModManagerService
         var installedPaths = new List<string>();
         var backupFiles = new List<string>();
 
-        if (IsArchiveFile(downloadedFileName))
+        try
         {
-            await ExtractReplaceArchiveAsync(modConfig.Id, baseRelativePath, downloadData, installedPaths, backupFiles);
+            if (IsArchiveFile(downloadedFileName))
+            {
+                await ExtractReplaceArchiveAsync(modConfig.Id, baseRelativePath, downloadData, installedPaths, backupFiles);
+            }
+            else
+            {
+                var targetFileName = string.IsNullOrWhiteSpace(modConfig.ReplaceFileName)
+                    ? downloadedFileName
+                    : modConfig.ReplaceFileName;
+                var targetRelativePath = CombineReplaceRelativePath(baseRelativePath, targetFileName);
+                var backupRelativePath = await BackupExistingFileAsync(modConfig.Id, targetRelativePath);
+                if (!string.IsNullOrWhiteSpace(backupRelativePath))
+                    backupFiles.Add(backupRelativePath);
+
+                var targetPath = Path.Combine(gameRootPath, targetRelativePath);
+                var targetDir = Path.GetDirectoryName(targetPath);
+                if (!string.IsNullOrEmpty(targetDir))
+                    Directory.CreateDirectory(targetDir);
+
+                await File.WriteAllBytesAsync(targetPath, downloadData);
+                installedPaths.Add(targetRelativePath);
+            }
+
+            return await BuildInstallInfoAsync(modConfig.Id, version, installedPaths, backupFiles);
         }
-        else
+        catch (Exception)
         {
-            var targetFileName = string.IsNullOrWhiteSpace(modConfig.ReplaceFileName)
-                ? downloadedFileName
-                : modConfig.ReplaceFileName;
-            var targetRelativePath = CombineReplaceRelativePath(baseRelativePath, targetFileName);
-            var backupRelativePath = await BackupExistingFileAsync(modConfig.Id, targetRelativePath);
-            if (!string.IsNullOrWhiteSpace(backupRelativePath))
-                backupFiles.Add(backupRelativePath);
-
-            var targetPath = Path.Combine(gameRootPath, targetRelativePath);
-            var targetDir = Path.GetDirectoryName(targetPath);
-            if (!string.IsNullOrEmpty(targetDir))
-                Directory.CreateDirectory(targetDir);
-
-            await File.WriteAllBytesAsync(targetPath, downloadData);
-            installedPaths.Add(targetRelativePath);
+            // 写入/解压失败时回滚:删除已写新文件,还原已备份的原游戏文件
+            await RollbackReplaceInstallAsync(modConfig.Id, installedPaths, backupFiles);
+            throw;
         }
-
-        return await BuildInstallInfoAsync(modConfig.Id, version, installedPaths, backupFiles);
     }
 
     private async Task<bool> MoveDisabledBackupToUninstalledAsync(ModInstallInfo installInfo)
@@ -905,7 +981,27 @@ public partial class ModManagerService
         if (!result)
             return false;
 
-        await RestoreImmediateBackupFilesAsync(installInfo.ModId, installInfo.BackupFiles);
+        try
+        {
+            await RestoreImmediateBackupFilesAsync(installInfo.ModId, installInfo.BackupFiles);
+        }
+        catch (Exception ex)
+        {
+            // 部分原游戏文件还原失败:此时清空 BackupFiles 会永久丢失还原信息。
+            // 回滚本次禁用(把刚移入 disabled 的 Mod 文件还原回原位=重新启用),保持 BackupFiles 不变,
+            // 返回 false 让上层不执行 Clear(),用户可稍后重试禁用
+            _loggingService.LogError(ex, "禁用 Replace Mod 时还原原游戏文件失败,已回滚重新启用: {0}", installInfo.ModId);
+            try
+            {
+                await _modBackupService.EnableModFromBackupAsync(installInfo.ModId);
+            }
+            catch (Exception rollbackEx)
+            {
+                _loggingService.LogError(rollbackEx, "禁用回滚(重新启用)失败,Mod 可能处于中间状态: {0}", installInfo.ModId);
+            }
+            return false;
+        }
+
         CleanupEmptyDirectories(modFiles);
         return true;
     }

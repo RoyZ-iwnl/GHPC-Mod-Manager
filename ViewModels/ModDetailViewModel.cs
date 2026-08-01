@@ -244,6 +244,19 @@ public partial class ModDetailViewModel : ObservableObject
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, Mod.DisplayName);
 
+            // 安装前强制刷新,用最新 release 的资产 URL(避免 7 天缓存里 asset URL 失效)。保留用户已选版本。
+            try
+            {
+                var freshReleases = await _modManagerService.GetModReleasesAsync(Mod.Id, forceRefresh: true);
+                var matched = freshReleases.FirstOrDefault(r => r.TagName == SelectedRelease?.TagName);
+                if (matched != null)
+                    SelectedRelease = matched;
+            }
+            catch
+            {
+                // 刷新失败时使用已选版本继续
+            }
+
             var progress = new Progress<DownloadProgress>(p =>
             {
                 HasDeterminateProgress = true;
@@ -450,6 +463,18 @@ public partial class ModDetailViewModel : ObservableObject
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName);
+
+            // 更新前强制刷新,取最新发布版本(源头已按 PublishedAt 倒序)
+            try
+            {
+                var freshReleases = await _modManagerService.GetModReleasesAsync(Mod.Id, forceRefresh: true);
+                if (freshReleases.Count > 0)
+                    SelectedRelease = freshReleases.FirstOrDefault() ?? SelectedRelease;
+            }
+            catch
+            {
+                // 刷新失败时使用已选版本继续
+            }
 
             var progress = new Progress<DownloadProgress>(p =>
             {

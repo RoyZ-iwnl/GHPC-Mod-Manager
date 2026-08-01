@@ -2,6 +2,7 @@ using GHPC_Mod_Manager.Models;
 using System.IO;
 using System.IO.Compression;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Helpers;
 
 namespace GHPC_Mod_Manager.Services.Mod;
 
@@ -186,6 +187,8 @@ public class MelonLoaderService : IMelonLoaderService
                         }
 
                         var destinationPath = Path.Combine(gameRootPath, entry.FullName);
+                        // 校验目标路径未越界,防止 zip-slip 路径遍历
+                        destinationPath = PathSecurityHelper.EnsurePathInsideDirectory(destinationPath, gameRootPath);
                         _loggingService.LogInfo(Strings.ExtractingFile, entry.FullName, destinationPath);
 
                         var destinationDir = Path.GetDirectoryName(destinationPath);

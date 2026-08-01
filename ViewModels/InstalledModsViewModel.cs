@@ -166,6 +166,21 @@ public partial class InstalledModsViewModel : ObservableObject
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Updating, mod.DisplayName);
 
+            // 更新前强制刷新最新版本,避免使用 7 天缓存的旧 TagName
+            try
+            {
+                var freshReleases = await _modManagerService.GetModReleasesAsync(mod.Id, forceRefresh: true);
+                var freshVersion = freshReleases.FirstOrDefault()?.TagName;
+                if (!string.IsNullOrEmpty(freshVersion) && freshVersion != mod.LatestVersion)
+                {
+                    mod.LatestVersion = freshVersion;
+                }
+            }
+            catch
+            {
+                // 刷新失败时使用已有版本继续
+            }
+
             var progress = new Progress<DownloadProgress>(p =>
             {
                 HasDeterminateProgress = true;
@@ -207,6 +222,21 @@ public partial class InstalledModsViewModel : ObservableObject
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
+
+            // 重装前强制刷新最新版本,避免使用 7 天缓存的旧 TagName
+            try
+            {
+                var freshReleases = await _modManagerService.GetModReleasesAsync(mod.Id, forceRefresh: true);
+                var freshVersion = freshReleases.FirstOrDefault()?.TagName;
+                if (!string.IsNullOrEmpty(freshVersion) && freshVersion != mod.LatestVersion)
+                {
+                    mod.LatestVersion = freshVersion;
+                }
+            }
+            catch
+            {
+                // 刷新失败时使用已有版本继续
+            }
 
             var progress = new Progress<DownloadProgress>(p =>
             {

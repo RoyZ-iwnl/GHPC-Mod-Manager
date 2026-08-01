@@ -202,6 +202,10 @@ namespace GHPC_Mod_Manager
             await settingsService.LoadSettingsAsync();
             // Ensure language setting is applied immediately on startup
             settingsService.ApplyLanguageSetting();
+
+            // 清理上次异常退出残留的下载临时文件(download_* 前缀)
+            // temp/ 目录还存放 MelonLoader/updates/version_cleanup 等其他用途文件,仅删 download_ 前缀
+            CleanupStaleDownloadTempFiles(settingsService.TempPath);
             var startupLoggingService = _host.Services.GetRequiredService<ILoggingService>();
             startupLoggingService.LogInfo(
                 "DoH startup state: enabled={0}, language={1}",
@@ -469,6 +473,24 @@ namespace GHPC_Mod_Manager
             }, IntPtr.Zero);
 
             return result;
+        }
+
+        // 清理 download_ 前缀残留的下载临时文件(InstallDirectReleaseModeAsync 异常退出时遗留)
+        private static void CleanupStaleDownloadTempFiles(string tempPath)
+        {
+            try
+            {
+                if (!Directory.Exists(tempPath))
+                    return;
+                foreach (var file in Directory.EnumerateFiles(tempPath, "download_*", SearchOption.TopDirectoryOnly))
+                {
+                    try { File.Delete(file); } catch { }
+                }
+            }
+            catch
+            {
+                // 清理失败不阻止启动
+            }
         }
 
         // 注册自定义URL协议到注册表

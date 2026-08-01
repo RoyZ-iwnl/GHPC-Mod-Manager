@@ -677,13 +677,13 @@ public partial class MainViewModel : ObservableObject
                     var releases = await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: true);
                     if (releases.Count > 0)
                     {
-                        var latestVersion = releases[0].TagName?.TrimStart('v') ?? "";
-                        var installedVersion = mod.InstalledVersion?.TrimStart('v') ?? "";
-
-                        if (!string.IsNullOrEmpty(latestVersion))
+                        // 源头已按 PublishedAt 倒序，[0] 即最新发布版本
+                        // LatestVersion 保持 TagName 原样，下载时按 TagName 精确匹配，避免匹配失败
+                        var latestRelease = releases[0];
+                        if (!string.IsNullOrEmpty(latestRelease.TagName))
                         {
-                            mod.LatestVersion = latestVersion;
-                            mod.UpdateDate = releases[0].PublishedAt;
+                            mod.LatestVersion = latestRelease.TagName;
+                            mod.UpdateDate = latestRelease.PublishedAt;
                         }
                     }
                 }
@@ -1834,10 +1834,14 @@ public partial class MainViewModel : ObservableObject
                         {
                             mod.LatestVersion = latestVersion;
 
+                            // 版本比较前归一化（去 v 前缀和空白），避免 v2.0 与 2.0 误判为有更新
+                            var normalizedInstalled = NormalizeVersion(mod.InstalledVersion);
+                            var normalizedLatest = NormalizeVersion(latestVersion);
+
                             if (mod.IsInstalled &&
                                 !string.IsNullOrEmpty(mod.InstalledVersion) &&
-                                mod.InstalledVersion != latestVersion &&
-                                mod.InstalledVersion != Strings.Manual)
+                                mod.InstalledVersion != Strings.Manual &&
+                                !string.Equals(normalizedInstalled, normalizedLatest, StringComparison.OrdinalIgnoreCase))
                             {
                                 lock (updatedMods)
                                 {

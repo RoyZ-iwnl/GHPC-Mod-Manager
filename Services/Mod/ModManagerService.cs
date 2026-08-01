@@ -51,6 +51,7 @@ public partial class ModManagerService : IModManagerService
     private readonly IModBackupService _modBackupService;
     private readonly IProcessService _processService;
     private readonly IMainConfigService _mainConfigService;
+    private readonly SemaphoreSlim _manifestLock = new(1, 1);
     private List<ModConfig> _availableMods = new();
     private ModInstallManifest _installManifest = new();
     private Dictionary<string, Dictionary<string, string>> _configComments = new(); // Store comments for each mod
@@ -116,7 +117,7 @@ public partial class ModManagerService : IModManagerService
             else
             {
                 // 无清单记录时，只有 MainBinaryFileName 非空才能检测手动安装
-                if (!string.IsNullOrEmpty(modConfig.MainBinaryFileName) && IsModInstalled(modConfig.MainBinaryFileName, modsPath))
+                if (!string.IsNullOrEmpty(modConfig.MainBinaryFileName) && await IsModInstalledAsync(modConfig.MainBinaryFileName, modsPath))
                 {
                     viewModel.IsInstalled = true;
                     viewModel.IsManuallyInstalled = true;
@@ -552,8 +553,23 @@ public partial class ModManagerService : IModManagerService
         {
             _loggingService.LogInfo(Strings.Installing, modConfig.Id, version);
 
+            // 校验游戏根目录已配置且存在,避免向程序工作目录误写 Mods/GHPCMM
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrWhiteSpace(gameRootPath) || !Directory.Exists(gameRootPath))
+            {
+                _loggingService.LogError(Strings.GamePathNotSet);
+                return false;
+            }
+
             if (!ShowReplaceInstallWarningIfNeeded(modConfig))
                 return false;
+
+            // 已安装的 Mod 走更新流程,避免 Replace 模式活动备份被误删
+            if (_installManifest.InstalledMods.ContainsKey(modConfig.Id))
+            {
+                _loggingService.LogInfo("Mod 已安装,转为更新流程: {0}", modConfig.Id);
+                return await UpdateModAsync(modConfig.Id, version, progress);
+            }
 
             // Check if we can reinstall from backup first (quick install)
             var hasBackup = await _modBackupService.CheckModBackupExistsAsync(modConfig.Id, version);
@@ -565,6 +581,10 @@ public partial class ModManagerService : IModManagerService
                 var quickInstallInfo = quickReinstallResult.InstallInfo;
                 if (quickInstallInfo != null)
                 {
+                    // 快速重装也需依赖/冲突检查(本地内存操作,不影响性能),与标准安装路径一致
+                    if (!await CheckDependenciesAndConflictsAsync(modConfig, skipDependencyCheck, skipConflictCheck))
+                        return false;
+
                     await LoadManifestAsync();
                     _installManifest.InstalledMods[modConfig.Id] = quickInstallInfo;
                     await SaveManifestAsync();
@@ -576,43 +596,13 @@ public partial class ModManagerService : IModManagerService
                 if (quickReinstallResult.ShouldAbortInstall)
                     return false;
             }
-            else if (hasBackup && !preferBackup)
-            {
-                await _modBackupService.DeleteModBackupAsync(modConfig.Id, version);
-            }
 
             // Standard installation process continues if backup installation fails or doesn't exist
-            // 依赖检查：skipDependencyCheck=true时跳过（ViewModel已在调用前处理依赖对话框）
-            if (!skipDependencyCheck)
-            {
-                var (hasMissingRequirements, missingMods) = await CheckModDependenciesAsync(modConfig);
-                if (hasMissingRequirements)
-                {
-                    var missingModNames = missingMods.Select(GetModDisplayName).ToList();
-                    var currentModName = GetModDisplayName(modConfig.Id);
-                    var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
+            // 依赖与冲突检查(快速重装未命中或失败时在此执行;快速重装命中时已在上方检查)
+            if (!await CheckDependenciesAndConflictsAsync(modConfig, skipDependencyCheck, skipConflictCheck))
+                return false;
 
-                    await MessageDialogHelper.ShowWarningAsync(message, Strings.ModDependencyMissing);
-                    return false;
-                }
-            }
-
-            // 冲突检查：skipConflictCheck=true时跳过（ViewModel已在调用前处理冲突对话框）
-            if (!skipConflictCheck)
-            {
-                var (hasConflicts, conflictingMods) = await CheckModConflictsAsync(modConfig);
-                if (hasConflicts)
-                {
-                    var conflictingModNames = conflictingMods.Select(GetModDisplayName).ToList();
-                    var currentModName = GetModDisplayName(modConfig.Id);
-                    var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
-
-                    if (!await MessageDialogHelper.ConfirmAsync(message, Strings.ModConflictDetected))
-                        return false;
-                }
-            }
-
-            // 下载完成后检查游戏是否已启动，避免写入冲突
+            // 下载前检查游戏是否已启动
             if (_processService.IsGameRunning)
             {
                 _loggingService.LogError(Strings.GameRunningCannotOperate);
@@ -622,6 +612,13 @@ public partial class ModManagerService : IModManagerService
             var downloadResult = await DownloadModPackageAsync(modConfig, version, progress);
             if (downloadResult == null)
                 return false;
+
+            // 写入前复查游戏状态,避免下载期间用户启动游戏导致 TOCTOU
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
 
             ModInstallInfo? installInfo = IsReplaceMode(modConfig)
                 ? await InstallReplaceModeAsync(modConfig, version, downloadResult.Value.Data, downloadResult.Value.FileName)
@@ -658,6 +655,14 @@ public partial class ModManagerService : IModManagerService
         {
             _loggingService.LogInfo(Strings.UpdatingMod, modId, "current", newVersion);
 
+            // 校验游戏根目录已配置且存在,避免向程序工作目录误写 Mods/GHPCMM
+            var gameRootPath = _settingsService.Settings.GameRootPath;
+            if (string.IsNullOrWhiteSpace(gameRootPath) || !Directory.Exists(gameRootPath))
+            {
+                _loggingService.LogError(Strings.GamePathNotSet);
+                return false;
+            }
+
             // Get the mod configuration
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
             if (modConfig == null)
@@ -674,11 +679,18 @@ public partial class ModManagerService : IModManagerService
             }
             previousVersion = currentInstallInfo.Version;
 
+            // 下载前检查游戏是否已启动
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
+
             var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress);
             if (downloadResult == null)
                 return false;
 
-            // 下载完成后检查游戏是否已启动，避免写入冲突
+            // 写入前复查游戏状态,避免下载期间用户启动游戏导致 TOCTOU
             if (_processService.IsGameRunning)
             {
                 _loggingService.LogError(Strings.GameRunningCannotOperate);
@@ -732,6 +744,20 @@ public partial class ModManagerService : IModManagerService
                 var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
                 if (modConfig != null)
                 {
+                    // Direct 模式更新失败时,Step5(安装新版)可能已部分写入新文件到旧文件路径。
+                    // 恢复前先清理这些残留,避免 GetDirectRestoreConflictsAsync 把"部分新版"误判为目标冲突而中止恢复。
+                    if (!IsReplaceMode(modConfig) && _installManifest.InstalledMods.TryGetValue(modId, out var failedInstallInfo))
+                    {
+                        try
+                        {
+                            await DeleteManagedFilesAsync(GetInstalledRelativePaths(failedInstallInfo));
+                        }
+                        catch (Exception cleanEx)
+                        {
+                            _loggingService.LogWarning("Failed to clean partial files before restore: {0}", cleanEx.Message);
+                        }
+                    }
+
                     var restoredInstallInfo = (await TryQuickReinstallAsync(modConfig, previousVersion)).InstallInfo;
                     if (restoredInstallInfo != null)
                     {
@@ -754,6 +780,13 @@ public partial class ModManagerService : IModManagerService
     {
         try
         {
+            // 游戏运行时禁止卸载,避免运行时修改文件导致崩溃
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
+
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var installInfo))
             {
                 _loggingService.LogError(Strings.ModNotInstalled, modId);
@@ -993,6 +1026,13 @@ public partial class ModManagerService : IModManagerService
     {
         try
         {
+            // 游戏运行时禁止启用/禁用,避免运行时修改文件导致崩溃
+            if (_processService.IsGameRunning)
+            {
+                _loggingService.LogError(Strings.GameRunningCannotOperate);
+                return false;
+            }
+
             await LoadManifestAsync();
 
             // Get mod files from install manifest
@@ -1524,32 +1564,63 @@ public partial class ModManagerService : IModManagerService
 
     private async Task LoadManifestAsync()
     {
+        await _manifestLock.WaitAsync();
         try
         {
             var manifestPath = Path.Combine(_settingsService.AppDataPath, "mod_install_manifest.json");
-            _installManifest = new ModInstallManifest();
+            ModInstallManifest? loaded = null;
             if (File.Exists(manifestPath))
             {
                 var json = await File.ReadAllTextAsync(manifestPath);
-                var manifest = JsonConvert.DeserializeObject<ModInstallManifest>(json);
-                _installManifest = manifest ?? new ModInstallManifest();
+                loaded = JsonConvert.DeserializeObject<ModInstallManifest>(json);
             }
-
+            // 反序列化成功后再替换字段,避免读异常期间字段被置空后被后续 SaveManifestAsync 覆盖磁盘为空清单
+            _installManifest = loaded ?? new ModInstallManifest();
+            // MigrateManifestIfNeededAsync 内部调 SaveManifestCoreAsync(已持锁,避免重入死锁)
             await MigrateManifestIfNeededAsync();
         }
         catch (Exception ex)
         {
+            // 读失败时保留旧引用,仅首次启动字段为 null 时才置空,防止空清单覆盖磁盘
+            _installManifest ??= new ModInstallManifest();
             _loggingService.LogError(ex, Strings.ManifestLoadError);
+        }
+        finally
+        {
+            _manifestLock.Release();
         }
     }
 
     private async Task SaveManifestAsync()
     {
+        await _manifestLock.WaitAsync();
+        try
+        {
+            await SaveManifestCoreAsync();
+        }
+        finally
+        {
+            _manifestLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// 实际保存逻辑(不持锁)。调用方必须已持有 _manifestLock。
+    /// LoadManifestAsync 持锁时通过此方法保存迁移结果,避免 SemaphoreSlim 不可重入导致的死锁。
+    /// 原子写:先写临时文件再 File.Move 替换,避免并发 Load 读到半写文件。
+    /// </summary>
+    private async Task SaveManifestCoreAsync()
+    {
         try
         {
             var manifestPath = Path.Combine(_settingsService.AppDataPath, "mod_install_manifest.json");
+            var tempPath = manifestPath + ".tmp";
             var json = JsonConvert.SerializeObject(_installManifest, Formatting.Indented);
-            await File.WriteAllTextAsync(manifestPath, json);
+            await File.WriteAllTextAsync(tempPath, json);
+            if (File.Exists(manifestPath))
+                File.Move(tempPath, manifestPath, overwrite: true);
+            else
+                File.Move(tempPath, manifestPath);
         }
         catch (Exception ex)
         {
@@ -1559,6 +1630,7 @@ public partial class ModManagerService : IModManagerService
 
     private async Task LoadAvailableModsAsync(bool forceRefresh = false)
     {
+        await _manifestLock.WaitAsync();
         try
         {
             _availableMods = await GetModConfigsWithFallbackAsync(forceRefresh);
@@ -1567,6 +1639,10 @@ public partial class ModManagerService : IModManagerService
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.AvailableModsLoadError);
+        }
+        finally
+        {
+            _manifestLock.Release();
         }
     }
 
@@ -1612,41 +1688,80 @@ public partial class ModManagerService : IModManagerService
         return File.Exists(modFile);
     }
 
-    private bool IsModInstalled(string binaryFileName, string modsPath)
+    private async Task<bool> IsModInstalledAsync(string binaryFileName, string modsPath)
     {
         var modFile = Path.Combine(modsPath, binaryFileName);
 
-        // Check if mod file exists in Mods folder
+        // 检查 Mods 根目录下是否存在该二进制文件
         if (File.Exists(modFile))
             return true;
 
-        // Check if mod exists in disabled backup folder
+        // 检查 disabled 备份目录是否存在该二进制文件
         var gameRootPath = _settingsService.Settings.GameRootPath;
         var disabledPath = Path.Combine(gameRootPath, "GHPCMM", "modbackup", "disabled");
 
-        if (Directory.Exists(disabledPath))
+        if (!Directory.Exists(disabledPath))
+            return false;
+
+        var disabledModDirs = Directory.GetDirectories(disabledPath);
+        foreach (var disabledModDir in disabledModDirs)
         {
-            var disabledModDirs = Directory.GetDirectories(disabledPath);
-            foreach (var disabledModDir in disabledModDirs)
+            // 优先读 backup_paths.json 精确匹配原始路径
+            // 备份文件名编码用 Replace('\\','_').Replace('/','_')（见 ModBackupService.DisableModWithBackupAsync），
+            // 文件名含下划线时 LastIndexOf('_') 解码会得到错误结果，必须用 manifest 还原
+            var manifestPath = Path.Combine(disabledModDir, "backup_paths.json");
+            bool manifestParsed = false;
+            if (File.Exists(manifestPath))
             {
-                // Check if any backup contains this binary file
-                var backupFiles = Directory.GetFiles(disabledModDir, "*", SearchOption.TopDirectoryOnly)
-                    .Where(f => Path.GetFileName(f) != "backup_paths.json");
-
-                foreach (var backupFile in backupFiles)
+                try
                 {
-                    // 从备份文件名提取原始文件名 (Mods_SubFolder_File.dll -> File.dll)
-                    var backupFileName = Path.GetFileName(backupFile);
-                    var lastUnderscoreIndex = backupFileName.LastIndexOf('_');
-                    var originalFileName = lastUnderscoreIndex >= 0
-                        ? backupFileName.Substring(lastUnderscoreIndex + 1)
-                        : backupFileName;
-
-                    if (originalFileName.Equals(binaryFileName, StringComparison.OrdinalIgnoreCase))
+                    var manifestJson = await File.ReadAllTextAsync(manifestPath);
+                    var backupManifest = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(manifestJson);
+                    if (backupManifest != null)
                     {
-                        return true;
+                        manifestParsed = true;
+                        // 仅检测 Mods 根目录二进制（与上方 modFile 检查一致），
+                        // 子目录资源文件不参与匹配（与 ScanManualModsAsync 过滤逻辑一致）
+                        foreach (var relativePath in backupManifest.Values)
+                        {
+                            if (!relativePath.StartsWith("Mods\\", StringComparison.OrdinalIgnoreCase) &&
+                                !relativePath.StartsWith("Mods/", StringComparison.OrdinalIgnoreCase))
+                                continue;
+
+                            var relativeToMods = relativePath.Substring(5); // 去掉 "Mods\" 或 "Mods/"
+                            if (relativeToMods.Contains('\\') || relativeToMods.Contains('/'))
+                                continue; // 跳过子目录资源文件
+
+                            if (Path.GetFileName(relativePath).Equals(binaryFileName, StringComparison.OrdinalIgnoreCase))
+                                return true;
+                        }
                     }
                 }
+                catch
+                {
+                    // manifest 解析失败，回退到旧 LastIndexOf 逻辑
+                }
+            }
+
+            // manifest 已成功解析但未命中，跳过旧逻辑避免重复解码错误
+            if (manifestParsed)
+                continue;
+
+            // 回退：无 manifest 或解析失败时用 LastIndexOf 解码（向后兼容，文件名含下划线时不准确）
+            var backupFiles = Directory.GetFiles(disabledModDir, "*", SearchOption.TopDirectoryOnly)
+                .Where(f => Path.GetFileName(f) != "backup_paths.json");
+
+            foreach (var backupFile in backupFiles)
+            {
+                // 从备份文件名提取原始文件名 (Mods_SubFolder_File.dll -> File.dll)
+                var backupFileName = Path.GetFileName(backupFile);
+                var lastUnderscoreIndex = backupFileName.LastIndexOf('_');
+                var originalFileName = lastUnderscoreIndex >= 0
+                    ? backupFileName.Substring(lastUnderscoreIndex + 1)
+                    : backupFileName;
+
+                if (originalFileName.Equals(binaryFileName, StringComparison.OrdinalIgnoreCase))
+                    return true;
             }
         }
 
@@ -1831,6 +1946,46 @@ public partial class ModManagerService : IModManagerService
     public string GetLocalizedConfigComment(string modId, string commentKey)
     {
         return _modI18nService.GetLocalizedComment(modId, commentKey, commentKey);
+    }
+
+    /// <summary>
+    /// 依赖与冲突检查(本地内存操作,不影响快速重装性能)。
+    /// 缺失依赖时弹警告返回 false;有冲突时弹确认,用户取消返回 false。全通过返回 true。
+    /// 快速重装与标准安装路径共用,确保 preferBackup 命中时不漏检。
+    /// </summary>
+    private async Task<bool> CheckDependenciesAndConflictsAsync(ModConfig modConfig, bool skipDependencyCheck, bool skipConflictCheck)
+    {
+        // 依赖检查：skipDependencyCheck=true时跳过（ViewModel已在调用前处理依赖对话框）
+        if (!skipDependencyCheck)
+        {
+            var (hasMissingRequirements, missingMods) = await CheckModDependenciesAsync(modConfig);
+            if (hasMissingRequirements)
+            {
+                var missingModNames = missingMods.Select(GetModDisplayName).ToList();
+                var currentModName = GetModDisplayName(modConfig.Id);
+                var message = string.Format(Strings.ModDependencyMessage, currentModName, string.Join(", ", missingModNames));
+
+                await MessageDialogHelper.ShowWarningAsync(message, Strings.ModDependencyMissing);
+                return false;
+            }
+        }
+
+        // 冲突检查：skipConflictCheck=true时跳过（ViewModel已在调用前处理冲突对话框）
+        if (!skipConflictCheck)
+        {
+            var (hasConflicts, conflictingMods) = await CheckModConflictsAsync(modConfig);
+            if (hasConflicts)
+            {
+                var conflictingModNames = conflictingMods.Select(GetModDisplayName).ToList();
+                var currentModName = GetModDisplayName(modConfig.Id);
+                var message = string.Format(Strings.ModConflictMessage, currentModName, string.Join(", ", conflictingModNames));
+
+                if (!await MessageDialogHelper.ConfirmAsync(message, Strings.ModConflictDetected))
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

@@ -405,8 +405,43 @@ public class ModBackupService : IModBackupService
             return false;
 
         var versionedBackupPath = Path.Combine(_uninstalledPath, $"{modId}_v{version}");
-        return Directory.Exists(versionedBackupPath) && 
-               File.Exists(Path.Combine(versionedBackupPath, "backup_manifest.json"));
+        if (!Directory.Exists(versionedBackupPath) ||
+            !File.Exists(Path.Combine(versionedBackupPath, "backup_manifest.json")))
+            return false;
+
+        // 校验 manifest 记录的文件与磁盘实际备份文件一致,避免部分丢失时报成功导致快速重装不完整
+        var manifestPath = Path.Combine(versionedBackupPath, "backup_manifest.json");
+        ModBackupManifest? manifest = null;
+        try
+        {
+            var json = await File.ReadAllTextAsync(manifestPath);
+            manifest = System.Text.Json.JsonSerializer.Deserialize<ModBackupManifest>(json);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModBackupFailed, modId);
+            return false;
+        }
+
+        var expectedKeys = manifest?.FileSha256Mapping?.Keys.ToList() ?? new List<string>();
+        if (expectedKeys.Count == 0)
+            return true; // 旧 manifest 无 sha256 映射,向后兼容仅检查目录+manifest 存在
+
+        var actualFiles = Directory.GetFiles(versionedBackupPath, "*", SearchOption.TopDirectoryOnly)
+            .Where(f => Path.GetFileName(f) != "backup_manifest.json" && Path.GetFileName(f) != "backup_paths.json")
+            .Select(f => Path.GetFileName(f) ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var key in expectedKeys)
+        {
+            if (!actualFiles.Contains(key))
+            {
+                _loggingService.LogWarning("备份不完整,缺失文件: {0} (mod={1} v={2})", key, modId, version);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public async Task<long> CleanupModBackupsAsync()
