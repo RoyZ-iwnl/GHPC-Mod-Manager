@@ -93,8 +93,8 @@ public partial class ModManagerService : IModManagerService
             var installInfo = _installManifest.InstalledMods.GetValueOrDefault(modConfig.Id);
             if (installInfo != null)
             {
-                // MainBinaryFileName 为空时依赖清单判断，否则用传统方式
-                bool useManifestState = IsReplaceMode(modConfig) || string.IsNullOrEmpty(modConfig.MainBinaryFileName);
+                // 已有安装清单时以实际记录文件为准，避免配置中的旧DLL名称导致状态误判
+                bool useManifestState = true;
                 bool modFilesExist = useManifestState
                     ? IsModActuallyInstalledFromManifest(installInfo)
                     : IsModActuallyInstalled(modConfig.MainBinaryFileName, modsPath, installInfo);

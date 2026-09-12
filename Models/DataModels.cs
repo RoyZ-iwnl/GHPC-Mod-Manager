@@ -915,9 +915,8 @@ public class ModViewModel : INotifyPropertyChanged
                                 IsSupportedManualMod &&
                                 !IsTranslationPlugin;
 
-    // Property to determine if this mod can be uninstalled
-    // Only allow uninstall when mod is installed AND enabled (since disabled mods are moved out of directory)
-    public bool CanUninstall => IsInstalled && IsEnabled && !IsTranslationPlugin;
+    // 已安装的普通Mod无论启用状态都允许卸载
+    public bool CanUninstall => IsInstalled && !IsTranslationPlugin;
 
     // Property to extract GitHub repository URL from ReleaseUrl
     public string? GitHubRepositoryUrl => ExtractGitHubRepositoryUrl();
