@@ -1013,6 +1013,18 @@
   <data name="StatusToggleFailed" xml:space="preserve">
     <value>{0} status toggle failed</value>
   </data>
+  <data name="ViewReleaseNotes" xml:space="preserve">
+    <value>View changelog</value>
+  </data>
+  <data name="ReleaseNotesTitle" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="ViewReadme" xml:space="preserve">
+    <value>View README</value>
+  </data>
+  <data name="ReadmeLoadFailed" xml:space="preserve">
+    <value>Failed to load this project's README.</value>
+  </data>
   <data name="OpenConfigWindowFailed" xml:space="preserve">
     <value>Failed to open config window: {0}</value>
   </data>
@@ -1599,7 +1611,7 @@
     <value>GHPC Mod Manager Working Directory</value>
   </data>
   <data name="ModBackupDirectoryCreated" xml:space="preserve">
-    <value>Mod backup directory created: {0}</value>
+    <value>Mod backup directory structure initialized: {0}</value>
   </data>
   <data name="ModBackupDirectoryCreateFailed" xml:space="preserve">
     <value>Failed to create mod backup directory: {0}</value>

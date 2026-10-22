@@ -238,6 +238,17 @@
                                           SelectedItem="{Binding SelectedRelease}"
                                           DisplayMemberPath="TagName"
                                           Visibility="{Binding IsLoadingReleases, Converter={StaticResource InvBoolToVis}}"/>
+                                <WrapPanel Margin="0,8,0,0">
+                                    <Button Content="{x:Static resources:Strings.ViewReleaseNotes}"
+                                            Command="{Binding ViewReleaseNotesCommand}"
+                                            Margin="0,0,8,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"/>
+                                    <Button Content="{x:Static resources:Strings.ViewReadme}"
+                                            Command="{Binding ViewReadmeCommand}"
+                                            Margin="0,0,0,8"
+                                            Style="{DynamicResource OutlinedButtonStyle}"
+                                            Visibility="{Binding Mod.GitHubRepositoryUrl, Converter={StaticResource StrToVis}}"/>
+                                </WrapPanel>
 
                                 <WrapPanel Margin="0,18,0,0"
                                            Visibility="{Binding Mod.IsInstalled, Converter={StaticResource InvBoolToVis}}">

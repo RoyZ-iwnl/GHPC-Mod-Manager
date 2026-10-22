@@ -26,6 +26,8 @@ public class ModBackupService : IModBackupService
     private string _backupRootPath = string.Empty;
     private string _disabledPath = string.Empty;
     private string _uninstalledPath = string.Empty;
+    private string _initializedGameRootPath = string.Empty;
+    private readonly SemaphoreSlim _initializationLock = new(1, 1);
 
     public ModBackupService(ISettingsService settingsService, ILoggingService loggingService)
     {
@@ -35,11 +37,21 @@ public class ModBackupService : IModBackupService
 
     public async Task<bool> InitializeBackupDirectoryAsync()
     {
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRootPath))
+            return false;
+
+        await _initializationLock.WaitAsync();
         try
         {
-            var gameRootPath = _settingsService.Settings.GameRootPath;
-            if (string.IsNullOrEmpty(gameRootPath))
-                return false;
+            // 同一游戏目录只初始化一次，避免并发检查每个Mod时重复写日志
+            if (string.Equals(_initializedGameRootPath, gameRootPath, StringComparison.OrdinalIgnoreCase) &&
+                Directory.Exists(_backupRootPath) &&
+                Directory.Exists(_disabledPath) &&
+                Directory.Exists(_uninstalledPath))
+            {
+                return true;
+            }
 
             // Create GHPCMM directory
             var ghpcmmPath = Path.Combine(gameRootPath, "GHPCMM");
@@ -63,13 +75,18 @@ public class ModBackupService : IModBackupService
             _uninstalledPath = Path.Combine(_backupRootPath, "uninstalled");
             Directory.CreateDirectory(_uninstalledPath);
 
+            _initializedGameRootPath = gameRootPath;
             _loggingService.LogInfo(Strings.ModBackupDirectoryCreated, _backupRootPath);
             return true;
         }
         catch (Exception ex)
         {
-            _loggingService.LogError(ex, Strings.ModBackupDirectoryCreateFailed, _settingsService.Settings.GameRootPath);
+            _loggingService.LogError(ex, Strings.ModBackupDirectoryCreateFailed, gameRootPath);
             return false;
+        }
+        finally
+        {
+            _initializationLock.Release();
         }
     }
 

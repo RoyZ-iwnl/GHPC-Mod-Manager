@@ -379,6 +379,7 @@ public class MainConfigProxyServer
 public class ModConfig
 {
     public string Id { get; set; } = string.Empty;
+    public string? Author { get; set; }
     public Dictionary<string, string> Name { get; set; } = new();
     public string ReleaseUrl { get; set; } = string.Empty;
     public string TargetFileNameKeyword { get; set; } = ".zip";
@@ -521,6 +522,9 @@ public class GitHubRelease
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
 
+    [JsonProperty("body")]
+    public string Body { get; set; } = string.Empty;
+
     [JsonProperty("assets")]
     public List<GitHubAsset> Assets { get; set; } = new();
 
@@ -589,6 +593,9 @@ public class ModViewModel : INotifyPropertyChanged
 
     public string Id { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
+    public string InstalledListAuthorDisplay => !IsManuallyInstalled && !string.IsNullOrWhiteSpace(Config?.Author)
+        ? Config.Author
+        : Id;
 
     private string? _installedVersion;
     public string? InstalledVersion
@@ -652,6 +659,7 @@ public class ModViewModel : INotifyPropertyChanged
             {
                 _isEnabled = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUpdate));
                 OnPropertyChanged(nameof(CanUninstall));
             }
         }
@@ -892,7 +900,6 @@ public class ModViewModel : INotifyPropertyChanged
             var latestVer = LatestVersion?.TrimStart('v') ?? "";
 
             var result = IsInstalled &&
-                        IsEnabled &&
                         !IsTranslationPlugin &&
                         !IsManuallyInstalled &&
                         !string.IsNullOrEmpty(latestVer) &&

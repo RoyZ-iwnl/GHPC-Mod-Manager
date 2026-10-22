@@ -651,6 +651,7 @@ public partial class ModManagerService : IModManagerService
     public async Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null)
     {
         string previousVersion = string.Empty;
+        var wasDisabled = false;
         try
         {
             _loggingService.LogInfo(Strings.UpdatingMod, modId, "current", newVersion);
@@ -678,6 +679,7 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
             previousVersion = currentInstallInfo.Version;
+            wasDisabled = !IsModEnabledFromManifest(currentInstallInfo);
 
             // 下载前检查游戏是否已启动
             if (_processService.IsGameRunning)
@@ -690,10 +692,21 @@ public partial class ModManagerService : IModManagerService
             if (downloadResult == null)
                 return false;
 
+            if (wasDisabled)
+            {
+                if (!await EnableModAsync(modId))
+                    return false;
+                await LoadManifestAsync();
+                if (!_installManifest.InstalledMods.TryGetValue(modId, out currentInstallInfo))
+                    throw new InvalidOperationException($"Install manifest entry disappeared for {modId}.");
+            }
+
             // 写入前复查游戏状态,避免下载期间用户启动游戏导致 TOCTOU
             if (_processService.IsGameRunning)
             {
                 _loggingService.LogError(Strings.GameRunningCannotOperate);
+                if (wasDisabled && !await DisableModAsync(modId))
+                    _loggingService.LogError(Strings.ModToggleError, modId, false);
                 return false;
             }
 
@@ -720,6 +733,17 @@ public partial class ModManagerService : IModManagerService
             if (newInstallInfo == null)
                 throw new InvalidOperationException($"No files were installed for {modId}.");
 
+            if (wasDisabled)
+            {
+                _installManifest.InstalledMods[modId] = newInstallInfo;
+                await SaveManifestAsync();
+                if (!await DisableModAsync(modId))
+                    throw new InvalidOperationException($"Failed to preserve disabled state for {modId}.");
+                await LoadManifestAsync();
+                if (!_installManifest.InstalledMods.TryGetValue(modId, out newInstallInfo))
+                    throw new InvalidOperationException($"Install manifest entry disappeared after disabling {modId}.");
+            }
+
             if (!await RefreshUninstalledBackupAsync(newInstallInfo))
             {
                 _loggingService.LogWarning("Failed to refresh uninstalled backup after update: {0} {1}", modId, newVersion);
@@ -728,7 +752,14 @@ public partial class ModManagerService : IModManagerService
             _installManifest.InstalledMods[modId] = newInstallInfo;
             await SaveManifestAsync();
 
-            await _modBackupService.DeleteModBackupAsync(modId, previousVersion);
+            try
+            {
+                await _modBackupService.DeleteModBackupAsync(modId, previousVersion);
+            }
+            catch (Exception cleanupEx)
+            {
+                _loggingService.LogWarning("Failed to clean previous mod backup after update: {0}", cleanupEx.Message);
+            }
 
             _loggingService.LogInfo(Strings.ModUpdatedSuccessfully, modId);
             return true;
@@ -763,6 +794,9 @@ public partial class ModManagerService : IModManagerService
                     {
                         _installManifest.InstalledMods[modId] = restoredInstallInfo;
                         await SaveManifestAsync();
+                        if (wasDisabled && !await DisableModAsync(modId))
+                            _loggingService.LogError(Strings.ModToggleError, modId, false);
+                        await LoadManifestAsync();
                         _loggingService.LogInfo(Strings.RestoredModFromBackupAfterFailedUpdate, modId);
                     }
                 }

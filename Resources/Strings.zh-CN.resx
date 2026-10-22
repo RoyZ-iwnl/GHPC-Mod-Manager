@@ -1013,6 +1013,18 @@
   <data name="StatusToggleFailed" xml:space="preserve">
     <value>{0} 状态切换失败</value>
   </data>
+  <data name="ViewReleaseNotes" xml:space="preserve">
+    <value>查看更新日志</value>
+  </data>
+  <data name="ReleaseNotesTitle" xml:space="preserve">
+    <value>发行说明</value>
+  </data>
+  <data name="ViewReadme" xml:space="preserve">
+    <value>查看说明</value>
+  </data>
+  <data name="ReadmeLoadFailed" xml:space="preserve">
+    <value>读取项目 README 失败。</value>
+  </data>
   <data name="OpenConfigWindowFailed" xml:space="preserve">
     <value>打开配置窗口失败: {0}</value>
   </data>
@@ -1599,7 +1611,7 @@
     <value>GHPC模组管理器工作目录</value>
   </data>
   <data name="ModBackupDirectoryCreated" xml:space="preserve">
-    <value>模组备份目录已创建: {0}</value>
+    <value>模组备份目录结构已初始化: {0}</value>
   </data>
   <data name="ModBackupDirectoryCreateFailed" xml:space="preserve">
     <value>创建模组备份目录失败: {0}</value>

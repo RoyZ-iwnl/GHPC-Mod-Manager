@@ -8148,7 +8148,43 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StatusToggleFailed", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to View changelog.
+        /// </summary>
+        public static string ViewReleaseNotes {
+            get {
+                return ResourceManager.GetString("ViewReleaseNotes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Release notes.
+        /// </summary>
+        public static string ReleaseNotesTitle {
+            get {
+                return ResourceManager.GetString("ReleaseNotesTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to View README.
+        /// </summary>
+        public static string ViewReadme {
+            get {
+                return ResourceManager.GetString("ViewReadme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load this project's README.
+        /// </summary>
+        public static string ReadmeLoadFailed {
+            get {
+                return ResourceManager.GetString("ReadmeLoadFailed", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Found Steam installation path: {0}.
         /// </summary>

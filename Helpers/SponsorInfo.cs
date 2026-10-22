@@ -13,7 +13,7 @@ public static class SponsorInfo
     /// <summary>
     /// 冠名版本名（追加到窗口标题后缀，与关于区 XXX 同源）
     /// </summary>
-    public const string SponsorTitleSuffix = "Cellinia Texas";
+    public const string SponsorTitleSuffix = "Nailoong";
 
     /// <summary>
     /// 赞助者名（显示在关于区 Sponsor by 后）

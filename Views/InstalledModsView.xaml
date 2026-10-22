@@ -55,6 +55,11 @@
 
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Style="{StaticResource PageSectionHintTextStyle}"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding StatusMessage}"
+                               Visibility="{Binding StatusMessage.Length, Converter={StaticResource BoolToVis}}"/>
                     <TextBlock Text="{Binding InstalledModCount}"
                                Style="{StaticResource PageSectionHintTextStyle}"
                                Visibility="{Binding FilteredInstalledMods.Count, Converter={StaticResource BoolToVis}}"/>
@@ -182,7 +187,7 @@
 
                                             <TextBlock Margin="8,1,0,0"
                                                        VerticalAlignment="Center"
-                                                       Text="{Binding Id}"
+                                                       Text="{Binding InstalledListAuthorDisplay}"
                                                        Style="{StaticResource MonoMetaValueTextStyle}"
                                                        Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                                         </WrapPanel>

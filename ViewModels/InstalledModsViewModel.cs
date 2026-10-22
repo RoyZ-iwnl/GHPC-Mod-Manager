@@ -42,6 +42,9 @@ public partial class InstalledModsViewModel : ObservableObject
     private bool _isDownloading;
 
     [ObservableProperty]
+    private bool _isTogglingMod;
+
+    [ObservableProperty]
     private double _progressValue;
 
     [ObservableProperty]
@@ -304,8 +307,12 @@ public partial class InstalledModsViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task ToggleModAsync(ModViewModel mod)
     {
+        if (IsTogglingMod) return;
+
+        IsTogglingMod = true;
         var wasEnabled = mod.IsEnabled;
-        mod.IsEnabled = !wasEnabled; // 乐观更新，立即触发动画
+        mod.IsEnabled = !wasEnabled;
+        StatusMessage = string.Empty;
 
         try
         {
@@ -315,13 +322,29 @@ public partial class InstalledModsViewModel : ObservableObject
 
             if (!success)
             {
-                mod.IsEnabled = wasEnabled; // 失败回滚，触发弹回动画
+                mod.IsEnabled = wasEnabled;
+                StatusMessage = wasEnabled
+                    ? string.Format(Strings.ModDisableFailed, mod.DisplayName)
+                    : string.Format(Strings.ModEnableFailed, mod.DisplayName);
+                RefreshRequested?.Invoke(this, EventArgs.Empty);
+                return;
             }
+
+            StatusMessage = wasEnabled
+                ? string.Format(Strings.ModDisabledStatus, mod.DisplayName)
+                : string.Format(Strings.ModEnabledStatus, mod.DisplayName);
+            RefreshRequested?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
-            mod.IsEnabled = wasEnabled; // 异常回滚
             _loggingService.LogError(ex, Strings.ModToggleError, mod.Id);
+            mod.IsEnabled = wasEnabled;
+            StatusMessage = string.Format(Strings.StatusToggleFailed, mod.DisplayName);
+            RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+        finally
+        {
+            IsTogglingMod = false;
         }
     }
 
@@ -374,7 +397,15 @@ public partial class InstalledModsViewModel : ObservableObject
         NavigateToModBrowserRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool CanExecuteModOps() => !IsDownloading && !IsCheckingUpdates && !IsGameRunning;
+    private bool CanExecuteModOps() => !IsDownloading && !IsTogglingMod && !IsCheckingUpdates && !IsGameRunning;
+
+    partial void OnIsTogglingModChanged(bool value)
+    {
+        UpdateModCommand.NotifyCanExecuteChanged();
+        ReinstallModCommand.NotifyCanExecuteChanged();
+        UninstallModCommand.NotifyCanExecuteChanged();
+        ToggleModCommand.NotifyCanExecuteChanged();
+    }
 
     partial void OnIsDownloadingChanged(bool value)
     {

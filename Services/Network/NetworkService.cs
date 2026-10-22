@@ -18,6 +18,7 @@ public interface INetworkService
     Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false);
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
+    Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
     void ClearCache(); // Clear all cached data (including GitHub persistent cache)
     void ClearSessionCache(); // Clear session cache for non-GitHub resources
@@ -75,6 +76,7 @@ public class NetworkService : INetworkService
             // Check if it's a supported GitHub URL
             var uri = new Uri(originalUrl);
             var isGitHubUrl = uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
+                             uri.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase) ||
                              uri.Host.Equals("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase) ||
                              uri.Host.Equals("gist.githubusercontent.com", StringComparison.OrdinalIgnoreCase);
 
@@ -97,7 +99,8 @@ public class NetworkService : INetworkService
                 "/raw/" // Raw file content (gist support)
             };
 
-            bool isSupported = supportedPatterns.Any(pattern => path.Contains(pattern, StringComparison.OrdinalIgnoreCase)) ||
+            bool isSupported = uri.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase) ||
+                              supportedPatterns.Any(pattern => path.Contains(pattern, StringComparison.OrdinalIgnoreCase)) ||
                               originalUrl.EndsWith(".git", StringComparison.OrdinalIgnoreCase); // Git clone URLs
             
             if (isSupported)
@@ -334,6 +337,69 @@ public class NetworkService : INetworkService
 
             return new ModI18nManager();
         }
+    }
+
+    public async Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName)
+    {
+        var apiUrl = $"https://api.github.com/repos/{Uri.EscapeDataString(repoOwner)}/{Uri.EscapeDataString(repoName)}/readme";
+        var hasToken = !string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken);
+        var requestUrl = _settingsService.Settings.UseGitHubProxy && !hasToken
+            ? ApplyGitHubProxy(apiUrl)
+            : apiUrl;
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+        request.Headers.Accept.ParseAdd("application/vnd.github+json");
+        if (hasToken)
+            request.Headers.Add("Authorization", $"Bearer {_settingsService.Settings.GitHubApiToken}");
+
+        using var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        var readme = JsonConvert.DeserializeObject<GitHubReadmeResponse>(json)
+                     ?? throw new InvalidDataException("GitHub returned an empty README response.");
+        var content = System.Text.RegularExpressions.Regex.Replace(readme.Content, @"\s+", string.Empty);
+
+        try
+        {
+            var markdown = Encoding.UTF8.GetString(Convert.FromBase64String(content));
+            var baseUrl = GetGitHubReadmeBaseUrl(readme, repoOwner, repoName);
+            return (markdown, baseUrl);
+        }
+        catch (FormatException ex)
+        {
+            throw new InvalidDataException("GitHub returned invalid README content.", ex);
+        }
+    }
+
+    private static string GetGitHubReadmeBaseUrl(GitHubReadmeResponse readme, string owner, string repo)
+    {
+        if (Uri.TryCreate(readme.DownloadUrl, UriKind.Absolute, out var downloadUri) &&
+            downloadUri.Host.Equals("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase))
+        {
+            var segments = downloadUri.AbsolutePath.Trim('/').Split('/');
+            if (segments.Length >= 3)
+                return $"https://raw.githubusercontent.com/{string.Join('/', segments.Take(segments.Length - 1))}/";
+        }
+
+        var branch = string.IsNullOrWhiteSpace(readme.Ref) ? "HEAD" : Uri.EscapeDataString(readme.Ref);
+        var directory = Path.GetDirectoryName(readme.Path.Replace('/', Path.DirectorySeparatorChar))?.Replace('\\', '/');
+        var path = string.IsNullOrWhiteSpace(directory) ? string.Empty : $"{directory}/";
+        return $"https://github.com/{Uri.EscapeDataString(owner)}/{Uri.EscapeDataString(repo)}/blob/{branch}/{path}";
+    }
+
+    private sealed class GitHubReadmeResponse
+    {
+        [JsonProperty("content")]
+        public string Content { get; set; } = string.Empty;
+
+        [JsonProperty("download_url")]
+        public string DownloadUrl { get; set; } = string.Empty;
+
+        [JsonProperty("path")]
+        public string Path { get; set; } = "README.md";
+
+        [JsonProperty("ref")]
+        public string Ref { get; set; } = string.Empty;
     }
 
     public async Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false)

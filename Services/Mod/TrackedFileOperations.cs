@@ -25,7 +25,7 @@ public class TrackedFileOperations
     /// <summary>
     /// 通用解压方法，支持 ZIP、RAR、7z、TAR 等格式
     /// </summary>
-    public async Task ExtractArchiveAsync(byte[] archiveData, string targetDirectory, string[]? excludePatterns = null)
+    public async Task ExtractArchiveAsync(byte[] archiveData, string targetDirectory, string[]? excludePatterns = null, bool detectDllRoot = false)
     {
         _loggingService.LogInfo(Strings.ZipExtractionStarting,
             targetDirectory, archiveData.Length, excludePatterns != null ? string.Join(", ", excludePatterns) : "none");
@@ -34,14 +34,36 @@ public class TrackedFileOperations
         using var archiveStream = new MemoryStream(archiveData);
         using var archive = ArchiveFactory.OpenArchive(archiveStream, new ReaderOptions());
 
+        var entries = archive.Entries.Where(e => !e.IsDirectory).ToList();
+        var dllRoot = detectDllRoot
+            ? entries.FirstOrDefault(e => !string.IsNullOrEmpty(e.Key) && e.Key.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))?.Key
+            : null;
+        var normalizedDllPath = dllRoot?.Replace('\\', '/');
+        var rootPrefix = normalizedDllPath?.Contains('/') == true
+            ? normalizedDllPath[..(normalizedDllPath.LastIndexOf('/') + 1)]
+            : null;
+        var commonRoot = detectDllRoot && !string.IsNullOrEmpty(rootPrefix) && entries.All(entry =>
+        {
+            var path = entry.Key?.Replace('\\', '/') ?? string.Empty;
+            return path.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase) || !path.Contains('/');
+        });
+
         _loggingService.LogInfo(Strings.ZipArchiveOpened, archive.Entries.Count());
 
         int processedCount = 0;
         int skippedCount = 0;
 
-        foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+        foreach (var entry in entries)
         {
             var entryKey = entry.Key;
+            if (commonRoot && !string.IsNullOrEmpty(rootPrefix))
+            {
+                var normalizedEntryPath = entryKey.Replace('\\', '/');
+                if (normalizedEntryPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+                    entryKey = normalizedEntryPath[rootPrefix.Length..];
+                else if (!normalizedEntryPath.Contains('/'))
+                    continue;
+            }
             if (string.IsNullOrEmpty(entryKey))
                 continue;
 

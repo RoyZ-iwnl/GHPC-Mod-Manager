@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
+using GHPC_Mod_Manager.Views;
 
 namespace GHPC_Mod_Manager.ViewModels;
 
@@ -26,6 +27,7 @@ public partial class ModDetailViewModel : ObservableObject
 {
     private readonly IModManagerService _modManagerService;
     private readonly IModBackupService _modBackupService;
+    private readonly INetworkService _networkService;
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     private readonly IMelonLoaderService _melonLoaderService;
@@ -45,6 +47,9 @@ public partial class ModDetailViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isLoadingReleases;
+
+    [ObservableProperty]
+    private bool _isLoadingReadme;
 
     [ObservableProperty]
     private bool _isGameRunning;
@@ -97,10 +102,11 @@ public partial class ModDetailViewModel : ObservableObject
 
     public string RedownloadReinstallText => Strings.ResourceManager.GetString("RedownloadReinstall", Strings.Culture) ?? "Redownload & Reinstall";
 
-    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
+    public ModDetailViewModel(IModManagerService modManagerService, IModBackupService modBackupService, INetworkService networkService, ILoggingService loggingService, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
     {
         _modManagerService = modManagerService;
         _modBackupService = modBackupService;
+        _networkService = networkService;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _melonLoaderService = melonLoaderService;
@@ -537,11 +543,74 @@ public partial class ModDetailViewModel : ObservableObject
         ConfigureCommand.NotifyCanExecuteChanged();
     }
 
+    partial void OnIsLoadingReleasesChanged(bool value)
+    {
+        ViewReleaseNotesCommand.NotifyCanExecuteChanged();
+    }
+
     partial void OnSelectedReleaseChanged(GitHubRelease? value)
     {
+        ViewReleaseNotesCommand.NotifyCanExecuteChanged();
         InstallSelectedVersionCommand.NotifyCanExecuteChanged();
         RedownloadInstallSelectedVersionCommand.NotifyCanExecuteChanged();
         _ = UpdateSelectedReleaseBackupStateAsync(value);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanViewReleaseNotes))]
+    private void ViewReleaseNotes()
+    {
+        if (SelectedRelease == null || string.IsNullOrWhiteSpace(SelectedRelease.Body))
+            return;
+
+        var repoUrl = Mod?.GitHubRepositoryUrl ?? "https://github.com/";
+        var releaseUrl = $"{repoUrl}/releases/tag/{Uri.EscapeDataString(SelectedRelease.TagName)}";
+        var window = new ReleaseNotesWindow(SelectedRelease.TagName, SelectedRelease.Body, releaseUrl)
+        {
+            Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+                    ?? Application.Current?.MainWindow
+        };
+        window.ShowDialog();
+    }
+
+    private bool CanViewReleaseNotes() => !IsLoadingReleases && !string.IsNullOrWhiteSpace(SelectedRelease?.Body);
+
+    [RelayCommand(CanExecute = nameof(CanViewReadme))]
+    private async Task ViewReadmeAsync()
+    {
+        if (Mod == null || string.IsNullOrWhiteSpace(Mod.GitHubRepositoryUrl))
+            return;
+
+        try
+        {
+            IsLoadingReadme = true;
+            var segments = new Uri(Mod.GitHubRepositoryUrl).AbsolutePath.Trim('/').Split('/');
+            if (segments.Length < 2)
+                throw new InvalidOperationException("GitHub repository URL is invalid.");
+
+            var (content, baseUrl) = await _networkService.GetGitHubReadmeAsync(segments[0], segments[1]);
+            var window = new ReleaseNotesWindow("README", content, baseUrl)
+            {
+                Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+                        ?? Application.Current?.MainWindow
+            };
+            window.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Failed to load GitHub README for mod {0}", Mod.Id);
+            StatusMessage = Strings.ReadmeLoadFailed;
+        }
+        finally
+        {
+            IsLoadingReadme = false;
+        }
+    }
+
+    private bool CanViewReadme() => !IsLoadingReadme && !string.IsNullOrWhiteSpace(Mod?.GitHubRepositoryUrl);
+
+    partial void OnIsLoadingReadmeChanged(bool value)
+    {
+        ViewReadmeCommand.NotifyCanExecuteChanged();
     }
 
     private async Task UpdateSelectedReleaseBackupStateAsync(GitHubRelease? release)
