@@ -37,6 +37,7 @@ public partial class SettingsViewModel : ObservableObject
 
     private const string BilibiliSpaceUrl = "https://space.bilibili.com/3493285595187364";
     private const string GhpcCommunityUrl = "https://qm.qq.com/q/pSriG1UocE";
+    private const string DiscordInviteUrl = "https://discord.gg/FTKVyHDzRj";
 
     // 记录原始语言，用于检测是否改变
     private string _originalLanguage = "zh-CN";
@@ -737,6 +738,23 @@ public partial class SettingsViewModel : ObservableObject
         catch (Exception ex)
         {
             _loggingService.LogError(ex, Strings.FailedToOpenGhpcCommunity);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenDiscord()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = DiscordInviteUrl,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.FailedToOpenDiscord);
         }
     }
 

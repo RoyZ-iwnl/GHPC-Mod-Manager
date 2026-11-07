@@ -177,7 +177,11 @@ public partial class ModManagerService
             }
             else if (IsArchiveFile(downloadedFileName))
             {
-                await trackedOps.ExtractArchiveAsync(downloadData, modsPath, detectDllRoot: true);
+                await trackedOps.ExtractArchiveAsync(
+                    downloadData,
+                    modsPath,
+                    detectDllRoot: true,
+                    preferredDllFileName: modConfig.MainBinaryFileName);
             }
             else
             {

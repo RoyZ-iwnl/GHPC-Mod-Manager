@@ -644,6 +644,18 @@
   <data name="StartupUpdateCheckError" xml:space="preserve">
     <value>启动时更新检查错误: {0}</value>
   </data>
+  <data name="StartupEnvironmentError" xml:space="preserve">
+    <value>启动环境错误</value>
+  </data>
+  <data name="ConflictingDllsDetected" xml:space="preserve">
+    <value>检测到程序根目录存在冲突的 DLL 文件，这会导致程序无法启动：\n\n  - {0}\n\n这通常是因为将 GHPC Mod Manager 错误地安装到了游戏根目录。\n\n解决方法：\n1. 关闭此程序\n2. 将整个 GHPC Mod Manager 文件夹移动到其他位置（如 C:\GHPC Mod Manager\）\n3. 从新位置运行 GHPC Mod Manager\n\n注意：GHPC Mod Manager 不应该安装在游戏目录内！</value>
+  </data>
+  <data name="InstallLocationWarning" xml:space="preserve">
+    <value>安装位置警告</value>
+  </data>
+  <data name="InstalledInGameDirectory" xml:space="preserve">
+    <value>检测到 GHPC Mod Manager 被安装在游戏根目录中。\n\n建议：\n• 将 GHPC Mod Manager 移动到独立文件夹（如 C:\GHPC Mod Manager\）\n• 这样可以避免文件冲突和更新问题\n\n程序将继续运行，但可能会遇到问题。</value>
+  </data>
   <data name="SilentUpdateCheckFailed" xml:space="preserve">
     <value>静默更新检查失败: {0}</value>
   </data>
@@ -2393,6 +2405,12 @@
   <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
     <value>打开GHPC交流群页面失败</value>
   </data>
+  <data name="JoinDiscord" xml:space="preserve">
+    <value>加入Discord社群</value>
+  </data>
+  <data name="FailedToOpenDiscord" xml:space="preserve">
+    <value>打开Discord失败</value>
+  </data>
   <data name="AutoSearchingGHPC" xml:space="preserve">
     <value>搜寻路径···</value>
   </data>
@@ -2743,6 +2761,9 @@
   </data>
   <data name="InstalledModsEmpty" xml:space="preserve">
     <value>尚未安装任何MOD</value>
+  </data>
+  <data name="DragToReorder" xml:space="preserve">
+    <value>拖动以调整顺序</value>
   </data>
   <data name="InstallSpecificVersion" xml:space="preserve">
     <value>安装此版本</value>

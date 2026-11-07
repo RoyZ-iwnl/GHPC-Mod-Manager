@@ -1222,6 +1222,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 检测到程序根目录存在冲突的 DLL 文件，这会导致程序无法启动：\n\n  - {0}\n\n这通常是因为将 GHPC Mod Manager 错误地安装到了游戏根目录。\n\n解决方法：\n1. 关闭此程序\n2. 将整个 GHPC Mod Manager 文件夹移动到其他位置（如 C:\GHPC Mod Manager\）\n3. 从新位置运行 GHPC Mod Manager\n\n注意：GHPC Mod Manager 不应该安装在游戏目录内！.
+        /// </summary>
+        public static string ConflictingDllsDetected {
+            get {
+                return ResourceManager.GetString("ConflictingDllsDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 是否仍要安装此MOD？.
         /// </summary>
         public static string ConflictInstallAnyway {
@@ -2004,6 +2013,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 拖动以调整顺序.
+        /// </summary>
+        public static string DragToReorder {
+            get {
+                return ResourceManager.GetString("DragToReorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to edgeone.gh-proxy.com (腾讯云 2).
         /// </summary>
         public static string EdgeOneGhProxyCom {
@@ -2297,6 +2315,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToOpenBilibili {
             get {
                 return ResourceManager.GetString("FailedToOpenBilibili", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 打开Discord失败.
+        /// </summary>
+        public static string FailedToOpenDiscord {
+            get {
+                return ResourceManager.GetString("FailedToOpenDiscord", resourceCulture);
             }
         }
         
@@ -2738,6 +2765,132 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FoundStandaloneComment {
             get {
                 return ResourceManager.GetString("FoundStandaloneComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 暂无赞助者.
+        /// </summary>
+        public static string FundingEmpty {
+            get {
+                return ResourceManager.GetString("FundingEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 全部地址失败且无缓存.
+        /// </summary>
+        public static string FundingFetchFailedEmpty {
+            get {
+                return ResourceManager.GetString("FundingFetchFailedEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在获取赞助者名单: {0}.
+        /// </summary>
+        public static string FundingFetchingFrom {
+            get {
+                return ResourceManager.GetString("FundingFetchingFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已获取赞助者名单 ({0}).
+        /// </summary>
+        public static string FundingFetchSuccess {
+            get {
+                return ResourceManager.GetString("FundingFetchSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已从 {0} 获取赞助者名单 ({1}).
+        /// </summary>
+        public static string FundingFetchSuccessUrl {
+            get {
+                return ResourceManager.GetString("FundingFetchSuccessUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 获取失败 {0}: {1}.
+        /// </summary>
+        public static string FundingFetchUrlFailed {
+            get {
+                return ResourceManager.GetString("FundingFetchUrlFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已加载 {0} 位赞助者.
+        /// </summary>
+        public static string FundingLoaded {
+            get {
+                return ResourceManager.GetString("FundingLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 加载赞助者名单失败.
+        /// </summary>
+        public static string FundingLoadFailed {
+            get {
+                return ResourceManager.GetString("FundingLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在加载赞助者名单....
+        /// </summary>
+        public static string FundingLoading {
+            get {
+                return ResourceManager.GetString("FundingLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 感谢每一位支持本项目的朋友.
+        /// </summary>
+        public static string FundingThanksIntro {
+            get {
+                return ResourceManager.GetString("FundingThanksIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 尝试回退地址....
+        /// </summary>
+        public static string FundingTriggerFallback {
+            get {
+                return ResourceManager.GetString("FundingTriggerFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 赞助者名单已从缓存加载 ({0}).
+        /// </summary>
+        public static string FundingUsingCache {
+            get {
+                return ResourceManager.GetString("FundingUsingCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 全部地址失败，使用缓存赞助者名单 ({0}).
+        /// </summary>
+        public static string FundingUsingStale {
+            get {
+                return ResourceManager.GetString("FundingUsingStale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 赞助者名单.
+        /// </summary>
+        public static string FundingWindowTitle {
+            get {
+                return ResourceManager.GetString("FundingWindowTitle", resourceCulture);
             }
         }
         
@@ -3379,6 +3532,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 检测到 GHPC Mod Manager 被安装在游戏根目录中。\n\n建议：\n• 将 GHPC Mod Manager 移动到独立文件夹（如 C:\GHPC Mod Manager\）\n• 这样可以避免文件冲突和更新问题\n\n程序将继续运行，但可能会遇到问题。.
+        /// </summary>
+        public static string InstalledInGameDirectory {
+            get {
+                return ResourceManager.GetString("InstalledInGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已安装：{0} 个MOD.
         /// </summary>
         public static string InstalledModsCount {
@@ -3447,6 +3609,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string InstallingTranslationSystem {
             get {
                 return ResourceManager.GetString("InstallingTranslationSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 安装位置警告.
+        /// </summary>
+        public static string InstallLocationWarning {
+            get {
+                return ResourceManager.GetString("InstallLocationWarning", resourceCulture);
             }
         }
         
@@ -3537,6 +3708,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ItemsCountOfTotal {
             get {
                 return ResourceManager.GetString("ItemsCountOfTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 加入Discord社群.
+        /// </summary>
+        public static string JoinDiscord {
+            get {
+                return ResourceManager.GetString("JoinDiscord", resourceCulture);
             }
         }
         
@@ -4723,7 +4903,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 模组备份目录已创建: {0}.
+        ///   Looks up a localized string similar to 模组备份目录结构已初始化: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
             get {
@@ -6662,6 +6842,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 读取项目 README 失败。.
+        /// </summary>
+        public static string ReadmeLoadFailed {
+            get {
+                return ResourceManager.GetString("ReadmeLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 就绪.
         /// </summary>
         public static string Ready {
@@ -6730,6 +6919,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ReinstallMelonLoader {
             get {
                 return ResourceManager.GetString("ReinstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 发行说明.
+        /// </summary>
+        public static string ReleaseNotesTitle {
+            get {
+                return ResourceManager.GetString("ReleaseNotesTitle", resourceCulture);
             }
         }
         
@@ -7566,6 +7764,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 赞助者名单.
+        /// </summary>
+        public static string ShowSponsorsList {
+            get {
+                return ResourceManager.GetString("ShowSponsorsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 仅显示未安装.
         /// </summary>
         public static string ShowUninstalledOnly {
@@ -7827,6 +8034,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 由{0}冠名赞助.
+        /// </summary>
+        public static string SponsorByFormat {
+            get {
+                return ResourceManager.GetString("SponsorByFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 开始游戏.
         /// </summary>
         public static string StartGame {
@@ -7886,6 +8102,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string StartingNetworkDetection {
             get {
                 return ResourceManager.GetString("StartingNetworkDetection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 启动环境错误.
+        /// </summary>
+        public static string StartupEnvironmentError {
+            get {
+                return ResourceManager.GetString("StartupEnvironmentError", resourceCulture);
             }
         }
         
@@ -9425,6 +9650,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ViewOnGitHub {
             get {
                 return ResourceManager.GetString("ViewOnGitHub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 查看说明.
+        /// </summary>
+        public static string ViewReadme {
+            get {
+                return ResourceManager.GetString("ViewReadme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 查看更新日志.
+        /// </summary>
+        public static string ViewReleaseNotes {
+            get {
+                return ResourceManager.GetString("ViewReleaseNotes", resourceCulture);
             }
         }
         

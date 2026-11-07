@@ -1222,6 +1222,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Conflicting DLL files detected in the program directory that will prevent startup:\n\n  - {0}\n\nThis usually happens when GHPC Mod Manager is incorrectly installed in the game root directory.\n\nSolution:\n1. Close this program\n2. Move the entire GHPC Mod Manager folder to a separate location (e.g., C:\GHPC Mod Manager\)\n3. Run GHPC Mod Manager from the new location\n\nNote: GHPC Mod Manager should NOT be installed in the game directory!.
+        /// </summary>
+        public static string ConflictingDllsDetected {
+            get {
+                return ResourceManager.GetString("ConflictingDllsDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you still want to install this mod?.
         /// </summary>
         public static string ConflictInstallAnyway {
@@ -2004,6 +2013,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drag to reorder.
+        /// </summary>
+        public static string DragToReorder {
+            get {
+                return ResourceManager.GetString("DragToReorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to edgeone.gh-proxy.com (Tencent Cloud 2).
         /// </summary>
         public static string EdgeOneGhProxyCom {
@@ -2297,6 +2315,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string FailedToOpenBilibili {
             get {
                 return ResourceManager.GetString("FailedToOpenBilibili", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open Discord.
+        /// </summary>
+        public static string FailedToOpenDiscord {
+            get {
+                return ResourceManager.GetString("FailedToOpenDiscord", resourceCulture);
             }
         }
         
@@ -3522,6 +3549,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GHPC Mod Manager is installed in the game root directory.\n\nRecommendation:\n• Move GHPC Mod Manager to a separate folder (e.g., C:\GHPC Mod Manager\)\n• This avoids file conflicts and update issues\n\nThe program will continue running, but you may encounter problems..
+        /// </summary>
+        public static string InstalledInGameDirectory {
+            get {
+                return ResourceManager.GetString("InstalledInGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed: {0} mods.
         /// </summary>
         public static string InstalledModsCount {
@@ -3590,6 +3626,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string InstallingTranslationSystem {
             get {
                 return ResourceManager.GetString("InstallingTranslationSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation Location Warning.
+        /// </summary>
+        public static string InstallLocationWarning {
+            get {
+                return ResourceManager.GetString("InstallLocationWarning", resourceCulture);
             }
         }
         
@@ -3680,6 +3725,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ItemsCountOfTotal {
             get {
                 return ResourceManager.GetString("ItemsCountOfTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join Discord Community.
+        /// </summary>
+        public static string JoinDiscord {
+            get {
+                return ResourceManager.GetString("JoinDiscord", resourceCulture);
             }
         }
         
@@ -4866,7 +4920,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mod backup directory created: {0}.
+        ///   Looks up a localized string similar to Mod backup directory structure initialized: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
             get {
@@ -6859,6 +6913,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load this project&apos;s README..
+        /// </summary>
+        public static string ReadmeLoadFailed {
+            get {
+                return ResourceManager.GetString("ReadmeLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready.
         /// </summary>
         public static string Ready {
@@ -6927,6 +6990,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ReinstallMelonLoader {
             get {
                 return ResourceManager.GetString("ReinstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Release notes.
+        /// </summary>
+        public static string ReleaseNotesTitle {
+            get {
+                return ResourceManager.GetString("ReleaseNotesTitle", resourceCulture);
             }
         }
         
@@ -8114,6 +8186,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Startup Environment Error.
+        /// </summary>
+        public static string StartupEnvironmentError {
+            get {
+                return ResourceManager.GetString("StartupEnvironmentError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Startup mod update check failed: {0}.
         /// </summary>
         public static string StartupModUpdateCheckFailed {
@@ -8148,43 +8229,7 @@ namespace GHPC_Mod_Manager.Resources {
                 return ResourceManager.GetString("StatusToggleFailed", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to View changelog.
-        /// </summary>
-        public static string ViewReleaseNotes {
-            get {
-                return ResourceManager.GetString("ViewReleaseNotes", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Release notes.
-        /// </summary>
-        public static string ReleaseNotesTitle {
-            get {
-                return ResourceManager.GetString("ReleaseNotesTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to View README.
-        /// </summary>
-        public static string ViewReadme {
-            get {
-                return ResourceManager.GetString("ViewReadme", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load this project's README.
-        /// </summary>
-        public static string ReadmeLoadFailed {
-            get {
-                return ResourceManager.GetString("ReadmeLoadFailed", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Found Steam installation path: {0}.
         /// </summary>
@@ -9712,6 +9757,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ViewOnGitHub {
             get {
                 return ResourceManager.GetString("ViewOnGitHub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View README.
+        /// </summary>
+        public static string ViewReadme {
+            get {
+                return ResourceManager.GetString("ViewReadme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View changelog.
+        /// </summary>
+        public static string ViewReleaseNotes {
+            get {
+                return ResourceManager.GetString("ViewReleaseNotes", resourceCulture);
             }
         }
         

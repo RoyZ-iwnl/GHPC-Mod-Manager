@@ -300,6 +300,10 @@ public class AppSettings
     /// </summary>
     public bool DoNotShowAnnouncementBeforeUpdate { get; set; } = false;
     /// <summary>
+    /// 已安装MOD列表的自定义顺序
+    /// </summary>
+    public List<string> InstalledModOrder { get; set; } = new();
+    /// <summary>
     /// MOD浏览页筛选：仅显示未安装
     /// </summary>
     public bool ShowUninstalledOnly { get; set; } = false;
@@ -384,7 +388,16 @@ public class ModConfig
     public string ReleaseUrl { get; set; } = string.Empty;
     public string TargetFileNameKeyword { get; set; } = ".zip";
     public string MainBinaryFileName { get; set; } = string.Empty;
-    public string ConfigSectionName { get; set; } = string.Empty;
+
+    // 配置段名称：支持单个字符串或字符串数组
+    // JSON 格式: "ConfigSectionName": "Section1" 或 "ConfigSectionName": ["Section1", "Section2"]
+    [JsonProperty("ConfigSectionName")]
+    [JsonConverter(typeof(ConfigSectionNameConverter))]
+    public List<string> ConfigSectionNames { get; set; } = new();
+
+    // 向后兼容：返回第一个段落名称
+    [JsonIgnore]
+    public string ConfigSectionName => ConfigSectionNames.Count > 0 ? ConfigSectionNames[0] : string.Empty;
     public InstallMethod InstallMethod { get; set; } = InstallMethod.DirectRelease;
     /// <summary>
     /// Replace 模式的目标目录（相对于 GameRoot）。
@@ -994,4 +1007,60 @@ public class MainConfigTestResult
     public string? SuccessfulUrl { get; set; }
     public List<string> FailedUrls { get; set; } = new();
     public string? ErrorMessage { get; set; }
+}
+
+/// <summary>
+/// ConfigSectionName 自定义 JSON 转换器，支持字符串或字符串数组
+/// </summary>
+public sealed class ConfigSectionNameConverter : JsonConverter<List<string>>
+{
+    public override List<string>? ReadJson(JsonReader reader, Type objectType, List<string>? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return new List<string>();
+        }
+
+        // 单个字符串：转为单元素列表
+        if (reader.TokenType == JsonToken.String)
+        {
+            var singleValue = reader.Value?.ToString();
+            return string.IsNullOrWhiteSpace(singleValue)
+                ? new List<string>()
+                : new List<string> { singleValue };
+        }
+
+        // 字符串数组：直接反序列化
+        if (reader.TokenType == JsonToken.StartArray)
+        {
+            var array = JArray.Load(reader);
+            return array.Select(t => t.ToString()).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+        }
+
+        throw new JsonSerializationException($"Unexpected token {reader.TokenType} when reading ConfigSectionName.");
+    }
+
+    public override void WriteJson(JsonWriter writer, List<string>? value, JsonSerializer serializer)
+    {
+        if (value == null || value.Count == 0)
+        {
+            writer.WriteValue(string.Empty);
+            return;
+        }
+
+        // 单个元素：写为字符串（保持向后兼容）
+        if (value.Count == 1)
+        {
+            writer.WriteValue(value[0]);
+            return;
+        }
+
+        // 多个元素：写为数组
+        writer.WriteStartArray();
+        foreach (var item in value)
+        {
+            writer.WriteValue(item);
+        }
+        writer.WriteEndArray();
+    }
 }

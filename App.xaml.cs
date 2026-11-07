@@ -39,6 +39,13 @@ namespace GHPC_Mod_Manager
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            // 启动环境检查（必须在所有初始化之前）
+            if (!StartupEnvironmentCheckService.CheckAndWarnConflictingDlls())
+            {
+                Shutdown();
+                return;
+            }
+
             // 单实例检测
             bool createdNew;
             _mutex = new Mutex(true, MutexName, out createdNew);

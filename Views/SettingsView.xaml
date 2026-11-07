@@ -143,6 +143,10 @@
                                     Command="{Binding ShowAnnouncementCommand}"
                                     Margin="0,0,12,8"
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
+                            <Button Content="{x:Static resources:Strings.JoinDiscord}"
+                                    Command="{Binding OpenDiscordCommand}"
+                                    Margin="0,0,12,8"
+                                    Style="{DynamicResource FilledButtonStyle}"/>
                             <!-- 支持作者 + 赞助者名单（彩虹流动边框） -->
                             <Button Content="{x:Static resources:Strings.SupportAuthor}"
                                     Command="{Binding OpenSupportAuthorCommand}"
@@ -162,7 +166,7 @@
                                     Margin="0,0,0,8"
                                     Style="{DynamicResource FilledButtonStyle}"
                                     Visibility="{Binding IsChineseLanguage, Converter={StaticResource BoolToVis}}"/>
-                        </WrapPanel>
+                            </WrapPanel>
                     </StackPanel>
                 </Border>
 

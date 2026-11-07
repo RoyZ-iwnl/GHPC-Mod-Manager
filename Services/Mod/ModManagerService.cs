@@ -1191,11 +1191,11 @@ public partial class ModManagerService : IModManagerService
         var result = new Dictionary<string, object>();
         var comments = new Dictionary<string, string>();
         var standaloneComments = new List<string>();
-        
+
         try
         {
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+            if (modConfig == null || modConfig.ConfigSectionNames.Count == 0)
             {
                 _loggingService.LogInfo(Strings.ModConfigReadFailedNoSection, modId);
                 return result;
@@ -1203,7 +1203,7 @@ public partial class ModManagerService : IModManagerService
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
             var configPath = Path.Combine(gameRootPath, "UserData", "MelonPreferences.cfg");
-            
+
             _loggingService.LogInfo(Strings.TryingToReadConfigFile, configPath);
 
             if (!File.Exists(configPath))
@@ -1214,20 +1214,21 @@ public partial class ModManagerService : IModManagerService
 
             var lines = await File.ReadAllLinesAsync(configPath);
             var inTargetSection = false;
-            var targetSectionName = $"[{modConfig.ConfigSectionName}]";
-            
-            _loggingService.LogInfo(Strings.SearchingForConfigSection, targetSectionName);
+            // 支持多个配置段落
+            var targetSectionNames = modConfig.ConfigSectionNames.Select(s => $"[{s}]").ToHashSet();
+
+            _loggingService.LogInfo(Strings.SearchingForConfigSection, string.Join(", ", targetSectionNames));
 
             foreach (var line in lines)
             {
                 var trimmed = line.Trim();
-                
+
                 if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
                 {
-                    inTargetSection = trimmed == targetSectionName;
+                    inTargetSection = targetSectionNames.Contains(trimmed);
                     if (inTargetSection)
                     {
-                        _loggingService.LogInfo(Strings.FoundConfigSection, targetSectionName);
+                        _loggingService.LogInfo(Strings.FoundConfigSection, trimmed);
                     }
                     continue;
                 }
@@ -1326,11 +1327,11 @@ public partial class ModManagerService : IModManagerService
     public async Task<List<ConfigurationItemViewModel>> GetModConfigurationOrderedAsync(string modId)
     {
         var result = new List<ConfigurationItemViewModel>();
-        
+
         try
         {
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+            if (modConfig == null || modConfig.ConfigSectionNames.Count == 0)
             {
                 _loggingService.LogInfo(Strings.ModConfigReadFailedNoSection, modId);
                 return result;
@@ -1338,7 +1339,7 @@ public partial class ModManagerService : IModManagerService
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
             var configPath = Path.Combine(gameRootPath, "UserData", "MelonPreferences.cfg");
-            
+
             if (!File.Exists(configPath))
             {
                 _loggingService.LogInfo(Strings.ConfigFileNotExists, configPath);
@@ -1347,20 +1348,23 @@ public partial class ModManagerService : IModManagerService
 
             var lines = await File.ReadAllLinesAsync(configPath);
             var inTargetSection = false;
-            var targetSectionName = $"[{modConfig.ConfigSectionName}]";
-            
-            _loggingService.LogInfo(Strings.SearchingForConfigSection, targetSectionName);
+            var currentSectionName = string.Empty;
+            // 支持多个配置段落
+            var targetSectionNames = modConfig.ConfigSectionNames.Select(s => $"[{s}]").ToHashSet();
+
+            _loggingService.LogInfo(Strings.SearchingForConfigSection, string.Join(", ", targetSectionNames));
 
             foreach (var line in lines)
             {
                 var trimmed = line.Trim();
-                
+
                 if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
                 {
-                    inTargetSection = trimmed == targetSectionName;
+                    currentSectionName = trimmed[1..^1];
+                    inTargetSection = targetSectionNames.Contains(trimmed);
                     if (inTargetSection)
                     {
-                        _loggingService.LogInfo(Strings.FoundConfigSection, targetSectionName);
+                        _loggingService.LogInfo(Strings.FoundConfigSection, trimmed);
                     }
                     continue;
                 }
@@ -1427,7 +1431,10 @@ public partial class ModManagerService : IModManagerService
                             var localizedComment = string.IsNullOrEmpty(comment) ? "" :
                                 GetLocalizedConfigComment(modId, comment);
 
-                            var configItem = new ConfigurationItemViewModel(key, localizedLabel, typedValue, "", localizedComment);
+                            var configItem = new ConfigurationItemViewModel(key, localizedLabel, typedValue, "", localizedComment)
+                            {
+                                SectionName = currentSectionName
+                            };
 
                             // 检查是否为多选类型
                             var multipleChoiceOptions = _modI18nService.GetMultipleChoiceOptions(modId, key);
@@ -1490,7 +1497,7 @@ public partial class ModManagerService : IModManagerService
         try
         {
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+            if (modConfig == null || modConfig.ConfigSectionNames.Count == 0)
                 return false;
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
@@ -1502,14 +1509,18 @@ public partial class ModManagerService : IModManagerService
             var lines = await File.ReadAllLinesAsync(configPath);
             var newLines = new List<string>();
             var inTargetSection = false;
+            var currentSectionName = string.Empty;
+            // 支持多个配置段落
+            var targetSectionNames = modConfig.ConfigSectionNames.Select(s => $"[{s}]").ToHashSet();
 
             foreach (var line in lines)
             {
                 var trimmed = line.Trim();
-                
+
                 if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
                 {
-                    inTargetSection = trimmed == $"[{modConfig.ConfigSectionName}]";
+                    currentSectionName = trimmed[1..^1];
+                    inTargetSection = targetSectionNames.Contains(trimmed);
                     newLines.Add(line);
                     continue;
                 }
@@ -1520,8 +1531,10 @@ public partial class ModManagerService : IModManagerService
                     if (parts.Length == 2)
                     {
                         var key = parts[0].Trim().Trim('"');
-                        
-                        if (configuration.TryGetValue(key, out var newValue))
+                        var configurationKey = ConfigurationItemViewModel.CreateConfigurationKey(currentSectionName, key);
+
+                        if (configuration.TryGetValue(configurationKey, out var newValue) ||
+                            configuration.TryGetValue(key, out newValue))
                         {
                             var comment = "";
                             var valuePart = parts[1];
@@ -2304,7 +2317,7 @@ public partial class ModManagerService : IModManagerService
         try
         {
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+            if (modConfig == null || modConfig.ConfigSectionNames.Count == 0)
                 return false;
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
@@ -2314,9 +2327,10 @@ public partial class ModManagerService : IModManagerService
                 return false;
 
             var lines = await File.ReadAllLinesAsync(configPath);
-            var targetSection = $"[{modConfig.ConfigSectionName}]";
+            // 支持多个配置段落，只要存在任意一个即返回 true
+            var targetSections = modConfig.ConfigSectionNames.Select(s => $"[{s}]").ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            return lines.Any(line => line.Trim().Equals(targetSection, StringComparison.OrdinalIgnoreCase));
+            return lines.Any(line => targetSections.Contains(line.Trim()));
         }
         catch (Exception ex)
         {
@@ -2330,7 +2344,7 @@ public partial class ModManagerService : IModManagerService
         try
         {
             var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
-            if (modConfig == null || string.IsNullOrEmpty(modConfig.ConfigSectionName))
+            if (modConfig == null || modConfig.ConfigSectionNames.Count == 0)
                 return false;
 
             var gameRootPath = _settingsService.Settings.GameRootPath;
@@ -2341,7 +2355,8 @@ public partial class ModManagerService : IModManagerService
 
             var lines = await File.ReadAllLinesAsync(configPath);
             var newLines = new List<string>();
-            var targetSection = $"[{modConfig.ConfigSectionName}]";
+            // 支持多个配置段落
+            var targetSections = modConfig.ConfigSectionNames.Select(s => $"[{s}]").ToHashSet(StringComparer.OrdinalIgnoreCase);
             var inTargetSection = false;
 
             foreach (var line in lines)
@@ -2349,7 +2364,7 @@ public partial class ModManagerService : IModManagerService
                 var trimmed = line.Trim();
 
                 // 检测到目标配置段开始
-                if (trimmed.Equals(targetSection, StringComparison.OrdinalIgnoreCase))
+                if (targetSections.Contains(trimmed))
                 {
                     inTargetSection = true;
                     continue; // 跳过配置段标题行
@@ -2369,7 +2384,7 @@ public partial class ModManagerService : IModManagerService
             }
 
             await File.WriteAllLinesAsync(configPath, newLines);
-            _loggingService.LogInfo(Strings.ConfigurationReset, modConfig.ConfigSectionName);
+            _loggingService.LogInfo(Strings.ConfigurationReset, string.Join(", ", modConfig.ConfigSectionNames));
             return true;
         }
         catch (Exception ex)

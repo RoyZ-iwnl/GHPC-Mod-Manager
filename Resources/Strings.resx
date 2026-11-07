@@ -644,6 +644,18 @@
   <data name="StartupUpdateCheckError" xml:space="preserve">
     <value>Startup update check error: {0}</value>
   </data>
+  <data name="StartupEnvironmentError" xml:space="preserve">
+    <value>Startup Environment Error</value>
+  </data>
+  <data name="ConflictingDllsDetected" xml:space="preserve">
+    <value>Conflicting DLL files detected in the program directory that will prevent startup:\n\n  - {0}\n\nThis usually happens when GHPC Mod Manager is incorrectly installed in the game root directory.\n\nSolution:\n1. Close this program\n2. Move the entire GHPC Mod Manager folder to a separate location (e.g., C:\GHPC Mod Manager\)\n3. Run GHPC Mod Manager from the new location\n\nNote: GHPC Mod Manager should NOT be installed in the game directory!</value>
+  </data>
+  <data name="InstallLocationWarning" xml:space="preserve">
+    <value>Installation Location Warning</value>
+  </data>
+  <data name="InstalledInGameDirectory" xml:space="preserve">
+    <value>GHPC Mod Manager is installed in the game root directory.\n\nRecommendation:\n• Move GHPC Mod Manager to a separate folder (e.g., C:\GHPC Mod Manager\)\n• This avoids file conflicts and update issues\n\nThe program will continue running, but you may encounter problems.</value>
+  </data>
   <data name="SilentUpdateCheckFailed" xml:space="preserve">
     <value>Silent update check failed: {0}</value>
   </data>
@@ -2393,6 +2405,12 @@
   <data name="FailedToOpenGhpcCommunity" xml:space="preserve">
     <value>Failed to open GHPC community page</value>
   </data>
+  <data name="JoinDiscord" xml:space="preserve">
+    <value>Join Discord Community</value>
+  </data>
+  <data name="FailedToOpenDiscord" xml:space="preserve">
+    <value>Failed to open Discord</value>
+  </data>
   <data name="AutoSearchingGHPC" xml:space="preserve">
     <value>Searching for GHPC game directory...</value>
   </data>
@@ -2778,6 +2796,9 @@ Do you want to restart now?</value>
   </data>
   <data name="InstalledModsEmpty" xml:space="preserve">
     <value>No mods installed yet.</value>
+  </data>
+  <data name="DragToReorder" xml:space="preserve">
+    <value>Drag to reorder</value>
   </data>
   <data name="InstallSpecificVersion" xml:space="preserve">
     <value>Install This Version</value>

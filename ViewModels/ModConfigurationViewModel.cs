@@ -37,7 +37,15 @@ public partial class ConfigurationItemViewModel : ObservableObject
     
     [ObservableProperty]
     private string _originalKey = string.Empty; // 存储原始键值用于配置文件
-    
+
+    [ObservableProperty]
+    private string _sectionName = string.Empty; // 配置项所属段名
+
+    public string ConfigurationKey => CreateConfigurationKey(SectionName, OriginalKey);
+
+    public static string CreateConfigurationKey(string sectionName, string key)
+        => $"{sectionName.Length}:{sectionName}{key}";
+
     [ObservableProperty]
     private string _displayName = string.Empty; // 存储本地化显示名称
     
@@ -392,7 +400,8 @@ public partial class ModConfigurationViewModel : ObservableObject
                 foreach (var configItem in Configuration)
                 {
                     // 使用原始键值查找预设配置
-                    if (SelectedPreset.Configuration.TryGetValue(configItem.OriginalKey, out var value))
+                    if (SelectedPreset.Configuration.TryGetValue(configItem.ConfigurationKey, out var value) ||
+                        SelectedPreset.Configuration.TryGetValue(configItem.OriginalKey, out value))
                     {
                         if (configItem.IsBooleanType && value is bool boolVal)
                         {
@@ -428,8 +437,8 @@ public partial class ModConfigurationViewModel : ObservableObject
                 // 跳过单独注释行，只处理配置项
                 if (!item.IsStandaloneComment)
                 {
-                    // 使用原始键值而不是本地化名称
-                    config[item.OriginalKey] = item.GetCurrentValue();
+                    // 使用段名和原始键区分不同配置段的同名选项
+                    config[item.ConfigurationKey] = item.GetCurrentValue();
                 }
             }
             
@@ -462,8 +471,8 @@ public partial class ModConfigurationViewModel : ObservableObject
                 // 跳过单独注释行，只处理配置项
                 if (!item.IsStandaloneComment)
                 {
-                    // 使用原始键值而不是本地化名称
-                    config[item.OriginalKey] = item.GetCurrentValue();
+                    // 使用段名和原始键区分不同配置段的同名选项
+                    config[item.ConfigurationKey] = item.GetCurrentValue();
                 }
             }
             
@@ -557,7 +566,9 @@ public partial class ModConfigurationViewModel : ObservableObject
 
             // 获取配置段名称用于显示
             var modConfig = (await _modManagerService.GetModListAsync()).FirstOrDefault(m => m.Id == ModId);
-            var sectionName = modConfig?.Config.ConfigSectionName ?? ModId;
+            var sectionName = modConfig?.Config.ConfigSectionNames is { Count: > 0 } sectionNames
+                ? string.Join(", ", sectionNames)
+                : ModId;
 
             if (!await MessageDialogHelper.ConfirmAsync(
                 string.Format(Strings.ConfirmResetConfiguration, sectionName).Replace("\\n", Environment.NewLine),
@@ -599,8 +610,8 @@ public partial class ModConfigurationViewModel : ObservableObject
                 // 跳过单独注释行，只保存配置项
                 if (!item.IsStandaloneComment)
                 {
-                    // 使用原始键值而不是本地化名称
-                    config[item.OriginalKey] = item.GetCurrentValue();
+                    // 使用段名和原始键区分不同配置段的同名选项
+                    config[item.ConfigurationKey] = item.GetCurrentValue();
                 }
             }
             

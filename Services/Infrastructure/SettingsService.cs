@@ -112,6 +112,7 @@ public class SettingsService : ISettingsService
                 CleanupDoneForVersion = _settings.CleanupDoneForVersion,
                 LastAnnouncementMd5 = _settings.LastAnnouncementMd5,
                 DoNotShowAnnouncementBeforeUpdate = _settings.DoNotShowAnnouncementBeforeUpdate,
+                InstalledModOrder = _settings.InstalledModOrder,
                 ShowUninstalledOnly = _settings.ShowUninstalledOnly,
                 SkipConflictCheck = _settings.SkipConflictCheck,
                 SkipIntegrityCheck = _settings.SkipIntegrityCheck,

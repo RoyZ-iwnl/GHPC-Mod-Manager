@@ -103,7 +103,36 @@ public partial class InstalledModsViewModel : ObservableObject
     /// </summary>
     public void SetModsSource(IEnumerable<ModViewModel> allMods)
     {
-        _allInstalledMods = allMods.Where(m => m.IsInstalled).ToList();
+        var installedMods = allMods.Where(m => m.IsInstalled).ToList();
+        var savedOrder = _settingsService.Settings.InstalledModOrder ?? new List<string>();
+        var orderById = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < savedOrder.Count; i++)
+            orderById.TryAdd(savedOrder[i], i);
+
+        if (orderById.Count > 0)
+        {
+            installedMods = installedMods
+                .Select((mod, sourceIndex) => new { Mod = mod, SourceIndex = sourceIndex })
+                .OrderBy(item => orderById.TryGetValue(item.Mod.Id, out var order) ? order : int.MaxValue)
+                .ThenBy(item => item.SourceIndex)
+                .Select(item => item.Mod)
+                .ToList();
+        }
+
+        var updatedOrder = savedOrder.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        foreach (var mod in installedMods)
+        {
+            if (!updatedOrder.Contains(mod.Id, StringComparer.OrdinalIgnoreCase))
+                updatedOrder.Add(mod.Id);
+        }
+
+        if (!savedOrder.SequenceEqual(updatedOrder, StringComparer.OrdinalIgnoreCase))
+        {
+            _settingsService.Settings.InstalledModOrder = updatedOrder;
+            _ = SaveInstalledModOrderAsync();
+        }
+
+        _allInstalledMods = installedMods;
         FilterMods();
 
         // 用settings中的语言，避免异步上下文中CultureInfo不可靠
@@ -113,6 +142,39 @@ public partial class InstalledModsViewModel : ObservableObject
 
         UpdateDependencyStatusAsync();
     }
+
+    public bool ReorderInstalledMod(ModViewModel source, ModViewModel target, bool insertAfter)
+    {
+        if (ReferenceEquals(source, target))
+            return false;
+
+        var filteredSourceIndex = FilteredInstalledMods.IndexOf(source);
+        var filteredTargetIndex = FilteredInstalledMods.IndexOf(target);
+        if (filteredSourceIndex < 0 || filteredTargetIndex < 0)
+            return false;
+
+        var filteredDestinationIndex = filteredTargetIndex + (insertAfter ? 1 : 0);
+        if (filteredSourceIndex < filteredDestinationIndex)
+            filteredDestinationIndex--;
+        if (filteredDestinationIndex == filteredSourceIndex)
+            return false;
+
+        var visibleMods = FilteredInstalledMods.ToHashSet();
+        var visibleSlots = _allInstalledMods
+            .Select((mod, index) => new { Mod = mod, Index = index })
+            .Where(item => visibleMods.Contains(item.Mod))
+            .Select(item => item.Index)
+            .ToList();
+
+        FilteredInstalledMods.Move(filteredSourceIndex, filteredDestinationIndex);
+        for (var i = 0; i < visibleSlots.Count; i++)
+            _allInstalledMods[visibleSlots[i]] = FilteredInstalledMods[i];
+
+        _settingsService.Settings.InstalledModOrder = _allInstalledMods.Select(mod => mod.Id).ToList();
+        return true;
+    }
+
+    public Task SaveInstalledModOrderAsync() => _settingsService.SaveSettingsAsync();
 
     private void FilterMods()
     {

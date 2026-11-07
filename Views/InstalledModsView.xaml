@@ -156,19 +156,47 @@
             <ScrollViewer Style="{StaticResource AppScrollViewerStyle}"
                           VerticalScrollBarVisibility="Auto"
                           Visibility="{Binding FilteredInstalledMods.Count, Converter={StaticResource BoolToVis}}">
-                <ItemsControl ItemsSource="{Binding FilteredInstalledMods}">
+                <ItemsControl x:Name="InstalledModsItems"
+                              ItemsSource="{Binding FilteredInstalledMods}"
+                              PreviewMouseMove="InstalledModsItems_PreviewMouseMove"
+                              PreviewMouseLeftButtonUp="InstalledModsItems_PreviewMouseLeftButtonUp">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,10"
+                                    AllowDrop="True"
+                                    DragOver="ModCard_DragOver"
+                                    DragLeave="ModCard_DragLeave"
+                                    Drop="ModCard_Drop"
                                     Style="{StaticResource DenseSectionCardStyle}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="28"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="372"/>
                                         <ColumnDefinition Width="232"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <StackPanel Grid.Column="0"
+                                    <Border x:Name="DragHandle"
+                                            Grid.Column="0"
+                                            Width="24"
+                                            Height="32"
+                                            Margin="0,0,10,0"
+                                            Padding="4"
+                                            VerticalAlignment="Top"
+                                            Cursor="SizeAll"
+                                            Background="Transparent"
+                                            Tag="{Binding}"
+                                            ToolTip="{x:Static resources:Strings.DragToReorder}"
+                                            PreviewMouseLeftButtonDown="DragHandle_PreviewMouseLeftButtonDown">
+                                        <Path Data="{StaticResource IconDragHandle}"
+                                              Width="16"
+                                              Height="18"
+                                              Stretch="Fill"
+                                              Stroke="{DynamicResource OnSurfaceVariantBrush}"
+                                              StrokeThickness="2"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1"
                                                 Margin="0,0,18,0">
                                         <WrapPanel>
                                             <Button Padding="0"
@@ -254,7 +282,7 @@
                                         </WrapPanel>
                                     </StackPanel>
 
-                                    <Grid Grid.Column="1"
+                                    <Grid Grid.Column="2"
                                           Margin="0,2,18,0"
                                           VerticalAlignment="Top">
                                         <Grid.ColumnDefinitions>
@@ -287,7 +315,7 @@
                                                    Style="{StaticResource FieldValueTextStyle}"/>
                                     </Grid>
 
-                                    <Grid Grid.Column="2"
+                                    <Grid Grid.Column="3"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>

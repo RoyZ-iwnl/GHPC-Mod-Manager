@@ -45,7 +45,7 @@
                     <TextBlock Margin="0,6,0,8"
                                Text="{Binding Mod.DisplayName}"
                                Style="{StaticResource PageTitleTextStyle}"/>
-                    <TextBlock Text="{Binding Mod.Id}"
+                    <TextBlock Text="{Binding Mod.InstalledListAuthorDisplay}"
                                Style="{StaticResource MonoMetaValueTextStyle}"
                                Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
 
