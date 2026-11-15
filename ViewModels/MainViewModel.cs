@@ -27,7 +27,8 @@ public enum NavigationPage
     InstalledMods,
     ModBrowser,
     Translation,
-    SaveEditor
+    SaveEditor,
+    Downloads
 }
 
 internal static class ModInstallCompatibilityHelper
@@ -97,18 +98,23 @@ public partial class MainViewModel : ObservableObject
     private readonly IAnnouncementService _announcementService;
     private readonly IModCatalogStateService _modCatalogStateService;
     private readonly IMainConfigService _mainConfigService;
+    private readonly IDownloadQueueService _downloadQueueService;
 
     // 子ViewModel（导航页面）
     private InstalledModsViewModel? _installedModsViewModel;
     private ModBrowserViewModel? _modBrowserViewModel;
     private ModDetailViewModel? _modDetailViewModel;
     private SaveEditorViewModel? _saveEditorViewModel;
+    private DownloadManagerViewModel? _downloadManagerViewModel;
 
     // 子View（导航页面）
     private UserControl? _installedModsView;
     private UserControl? _modBrowserView;
     private UserControl? _translationView;
     private UserControl? _saveEditorView;
+    private UserControl? _downloadManagerView;
+
+    public string DownloadsLabel => Strings.ResourceManager.GetString("NavDownloads", Strings.Culture) ?? "Downloads";
 
     [ObservableProperty]
     private UserControl? _currentPageView;
@@ -134,10 +140,20 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private NavigationItem? _selectedNavigationItem;
 
+    [ObservableProperty]
+    private string _currentPageTitle = string.Empty;
+
+    [ObservableProperty]
+    private bool _showToast;
+
+    [ObservableProperty]
+    private string _toastMessage = string.Empty;
+
     partial void OnSelectedNavigationItemChanged(NavigationItem? value)
     {
         if (value != null)
         {
+            CurrentPageTitle = value.Label;
             System.Diagnostics.Debug.WriteLine($"[Navigation] Selected: {value.Label}, Page: {value.Page}");
             NavigateToPage(value.Page);
         }
@@ -293,7 +309,8 @@ public partial class MainViewModel : ObservableObject
         IMelonLoaderService melonLoaderService,
         IAnnouncementService announcementService,
         IModCatalogStateService modCatalogStateService,
-        IMainConfigService mainConfigService)
+        IMainConfigService mainConfigService,
+        IDownloadQueueService downloadQueueService)
     {
         _modManagerService = modManagerService;
         _translationManagerService = translationManagerService;
@@ -308,8 +325,10 @@ public partial class MainViewModel : ObservableObject
         _announcementService = announcementService;
         _modCatalogStateService = modCatalogStateService;
         _mainConfigService = mainConfigService;
+        _downloadQueueService = downloadQueueService;
 
         _processService.GameRunningStateChanged += OnGameRunningStateChanged;
+        _downloadQueueService.TaskEnqueued += OnTaskEnqueued;
         IsGameRunning = _processService.IsGameRunning;
         if (IsGameRunning)
         {
@@ -320,6 +339,7 @@ public partial class MainViewModel : ObservableObject
         _installedModsViewModel = _serviceProvider.GetRequiredService<InstalledModsViewModel>();
         _modBrowserViewModel = _serviceProvider.GetRequiredService<ModBrowserViewModel>();
         _modDetailViewModel = _serviceProvider.GetRequiredService<ModDetailViewModel>();
+        _downloadManagerViewModel = _serviceProvider.GetRequiredService<DownloadManagerViewModel>();
 
         // 订阅子VM事件
         _installedModsViewModel.NavigateToDetailRequested += OnNavigateToDetail;
@@ -393,6 +413,11 @@ public partial class MainViewModel : ObservableObject
                 _saveEditorView.DataContext = _saveEditorViewModel;
                 CurrentPageView = _saveEditorView;
                 break;
+            case NavigationPage.Downloads:
+                _downloadManagerView ??= (UserControl)_serviceProvider.GetRequiredService<DownloadManagerView>();
+                _downloadManagerView.DataContext = _downloadManagerViewModel;
+                CurrentPageView = _downloadManagerView;
+                break;
         }
     }
 
@@ -407,6 +432,7 @@ public partial class MainViewModel : ObservableObject
             "InstalledMods" => NavigationPage.InstalledMods,
             "Translation" => NavigationPage.Translation,
             "SaveEditor" => NavigationPage.SaveEditor,
+            "Downloads" => NavigationPage.Downloads,
             _ => NavigationPage.InstalledMods
         };
 
@@ -415,6 +441,11 @@ public partial class MainViewModel : ObservableObject
         var navItem = NavigationItems.FirstOrDefault(n => n.Page == page);
         if (navItem != null && SelectedNavigationItem != navItem)
             SelectedNavigationItem = navItem;
+        else if (page == NavigationPage.Downloads)
+        {
+            SelectedNavigationItem = null;
+            CurrentPageTitle = DownloadsLabel;
+        }
     }
 
     // 导航到MOD详情页（来自已安装或浏览页）
@@ -1156,7 +1187,8 @@ public partial class MainViewModel : ObservableObject
 
             // Reinstall the mod using the regular installation method
             // This will convert it from manually installed to managed
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true);
+            var operationText = string.Format(Strings.Reinstalling, mod.DisplayName);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, operationText: operationText);
 
             if (success)
             {
@@ -1686,6 +1718,12 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenDownloads()
+    {
+        _navigationService.NavigateToPage("Downloads");
+    }
+
+    [RelayCommand]
     private void OpenModGitHubPage(ModViewModel mod)
     {
         if (mod?.GitHubRepositoryUrl == null)
@@ -2061,6 +2099,25 @@ public partial class MainViewModel : ObservableObject
         StatusMessage = isRunning ? Strings.GameRunningCannotOperate : Strings.Ready;
     }
 
+    private System.Threading.Timer? _toastTimer;
+
+    private void OnTaskEnqueued(object? sender, string displayName)
+    {
+        var message = $"{Strings.DownloadEnqueued}: {displayName}";
+
+        Application.Current?.Dispatcher.BeginInvoke(() =>
+        {
+            ToastMessage = message;
+            ShowToast = true;
+
+            _toastTimer?.Dispose();
+            _toastTimer = new System.Threading.Timer(_ =>
+            {
+                Application.Current?.Dispatcher.BeginInvoke(() => ShowToast = false);
+            }, null, 3000, System.Threading.Timeout.Infinite);
+        });
+    }
+
     private bool CanExecuteWhenNotDownloading()
     {
         return !IsDownloading && !IsTranslationUpdating;
@@ -2145,12 +2202,10 @@ public partial class MainViewModel : ObservableObject
 
     private void OnChildViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(InstalledModsViewModel.IsDownloading)
-            or nameof(InstalledModsViewModel.ProgressValue)
+        if (e.PropertyName is nameof(InstalledModsViewModel.ProgressValue)
             or nameof(InstalledModsViewModel.HasDeterminateProgress)
             or nameof(InstalledModsViewModel.StatusMessage)
             or nameof(InstalledModsViewModel.IsCheckingUpdates)
-            or nameof(ModBrowserViewModel.IsDownloading)
             or nameof(ModBrowserViewModel.ProgressValue)
             or nameof(ModBrowserViewModel.HasDeterminateProgress)
             or nameof(ModBrowserViewModel.StatusMessage)
@@ -2196,32 +2251,12 @@ public partial class MainViewModel : ObservableObject
 
         if (_installedModsViewModel != null && ReferenceEquals(CurrentPageView, _installedModsView))
         {
-            if (_installedModsViewModel.IsDownloading)
-            {
-                ApplyShellStatus(
-                    _installedModsViewModel.StatusMessage,
-                    true,
-                    !_installedModsViewModel.HasDeterminateProgress,
-                    _installedModsViewModel.ProgressValue);
-                return;
-            }
-
             ApplyShellStatus(_installedModsViewModel.StatusMessage, false, false, 0);
             return;
         }
 
         if (_modBrowserViewModel != null && ReferenceEquals(CurrentPageView, _modBrowserView))
         {
-            if (_modBrowserViewModel.IsDownloading)
-            {
-                ApplyShellStatus(
-                    _modBrowserViewModel.StatusMessage,
-                    true,
-                    !_modBrowserViewModel.HasDeterminateProgress,
-                    _modBrowserViewModel.ProgressValue);
-                return;
-            }
-
             ApplyShellStatus(_modBrowserViewModel.StatusMessage, false, false, 0);
             return;
         }

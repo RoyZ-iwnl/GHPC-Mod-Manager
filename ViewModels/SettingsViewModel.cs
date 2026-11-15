@@ -96,6 +96,59 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _useDnsOverHttps;
 
+    [ObservableProperty]
+    private bool _useCustomProxy;
+
+    [ObservableProperty]
+    private string _proxyProtocol = "HTTP";
+
+    [ObservableProperty]
+    private string _proxyAddress = string.Empty;
+
+    [ObservableProperty]
+    private bool _isTestingCustomProxy;
+
+    [ObservableProperty]
+    private string _customProxyTestStatus = string.Empty;
+
+    public IReadOnlyList<string> ProxyProtocols { get; } = new[] { "HTTP", "SOCKS5" };
+
+    [RelayCommand]
+    private async Task TestCustomProxyAsync()
+    {
+        if (IsTestingCustomProxy)
+            return;
+
+        if (!ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyProtocol;
+            return;
+        }
+
+        if (!ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyAddress;
+            return;
+        }
+
+        IsTestingCustomProxy = true;
+        CustomProxyTestStatus = Strings.TestingCustomProxy;
+        try
+        {
+            var latency = await ProxyConnectionTester.TestAsync(ProxyProtocol, ProxyAddress);
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestSucceeded, latency);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Custom proxy connection test failed");
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestFailed, ex.Message);
+        }
+        finally
+        {
+            IsTestingCustomProxy = false;
+        }
+    }
+
     partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
         // 配置token时禁用代理，token清空时重新启用代理选项
@@ -398,6 +451,11 @@ public partial class SettingsViewModel : ObservableObject
         MainConfigUrl = CommandLineArgs.DevConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
         UseDnsOverHttps = settings.UseDnsOverHttps;
+        UseCustomProxy = settings.UseCustomProxy;
+        ProxyProtocol = string.Equals(settings.ProxyProtocol, "SOCKS5", StringComparison.OrdinalIgnoreCase)
+            ? "SOCKS5"
+            : "HTTP";
+        ProxyAddress = settings.ProxyAddress;
         // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
         GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
@@ -455,11 +513,29 @@ public partial class SettingsViewModel : ObservableObject
             // 检测语言是否改变
             bool languageChanged = SelectedLanguage != _originalLanguage;
 
+            if (UseCustomProxy)
+            {
+                if (!ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+                {
+                    MessageDialogHelper.ShowError(Strings.InvalidProxyProtocol, Strings.Error);
+                    return;
+                }
+
+                if (!ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+                {
+                    MessageDialogHelper.ShowError(Strings.InvalidProxyAddress, Strings.Error);
+                    return;
+                }
+            }
+
             var settings = _settingsService.Settings;
             settings.Language = SelectedLanguage;
             settings.GameRootPath = GameRootPath;
             // dev模式下写入 CommandLineArgs override（不持久化到 settings.json）
             CommandLineArgs.DevConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
+            settings.UseCustomProxy = UseCustomProxy;
+            settings.ProxyProtocol = ProxyProtocol;
+            settings.ProxyAddress = ProxyAddress.Trim();
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
             settings.GitHubProxyServerId = SelectedProxyServer?.ServerId ?? string.Empty;

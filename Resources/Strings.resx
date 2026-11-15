@@ -383,6 +383,27 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="AssetSelectionTitle" xml:space="preserve">
+    <value>Select download file</value>
+  </data>
+  <data name="AssetSelectionMessage" xml:space="preserve">
+    <value>Multiple matching files were found for {0} version {1}. Please choose one to download.</value>
+  </data>
+  <data name="AssetSelectionHint" xml:space="preserve">
+    <value>Recommendation: choose a larger file without &quot;source&quot; or &quot;src&quot; in its name.</value>
+  </data>
+  <data name="AssetSelectionRecommended" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="AssetSelectionSource" xml:space="preserve">
+    <value>May be source code</value>
+  </data>
+  <data name="AssetSelectionAlternative" xml:space="preserve">
+    <value>Alternative</value>
+  </data>
+  <data name="AssetSelectionUnknownSize" xml:space="preserve">
+    <value>Unknown size</value>
+  </data>
   <data name="PresetNameRequired" xml:space="preserve">
     <value>Please enter preset name</value>
   </data>
@@ -3417,4 +3438,77 @@ Please update the Mod Manager first to install this mod.</value>
   <data name="SponsorByFormat" xml:space="preserve">
     <value>Sponsor by {0}</value>
   </data>
+  <data name="CustomProxy" xml:space="preserve">
+    <value>Enable application proxy</value>
+  </data>
+  <data name="CustomProxyDescription" xml:space="preserve">
+    <value>Route application network requests through your HTTP or SOCKS5 proxy.</value>
+  </data>
+  <data name="ProxyProtocol" xml:space="preserve">
+    <value>Protocol</value>
+  </data>
+  <data name="ProxyAddress" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ProxyAddressHint" xml:space="preserve">
+    <value>Enter host:port, for example 127.0.0.1:7897.</value>
+  </data>
+  <data name="InvalidProxyAddress" xml:space="preserve">
+    <value>Enter a valid proxy address in host:port format.</value>
+  </data>
+  <data name="InvalidProxyProtocol" xml:space="preserve">
+    <value>Select HTTP or SOCKS5 as the proxy protocol.</value>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>Test connection</value>
+  </data>
+  <data name="TestingCustomProxy" xml:space="preserve">
+    <value>Testing proxy connection...</value>
+  </data>
+  <data name="CustomProxyTestSucceeded" xml:space="preserve">
+    <value>Proxy connection succeeded ({0} ms).</value>
+  </data>
+  <data name="CustomProxyTestFailed" xml:space="preserve">
+    <value>Proxy connection failed: {0}</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="NavDownloads" xml:space="preserve"><value>Downloads</value></data>
+  <data name="DownloadManager" xml:space="preserve"><value>Download Manager</value></data>
+  <data name="DownloadQueue" xml:space="preserve"><value>Download queue</value></data>
+  <data name="DownloadSpeed" xml:space="preserve"><value>Current speed</value></data>
+  <data name="DownloadEmpty" xml:space="preserve"><value>No downloads</value></data>
+  <data name="Pause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Resume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>Move up</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>Move down</value></data>
+  <data name="Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="PauseAll" xml:space="preserve"><value>Pause all</value></data>
+  <data name="ResumeAll" xml:space="preserve"><value>Resume all</value></data>
+  <data name="CancelAll" xml:space="preserve"><value>Cancel all</value></data>
+  <data name="ConcurrentDownloads" xml:space="preserve"><value>Concurrent downloads</value></data>
+  <data name="ProxyQuickActions" xml:space="preserve"><value>Proxy quick actions</value></data>
+  <data name="EnableGitHubProxy" xml:space="preserve"><value>Enable GitHub proxy</value></data>
+  <data name="SelectProxy" xml:space="preserve"><value>Proxy server</value></data>
+  <data name="OpenTokenSettings" xml:space="preserve"><value>Token settings</value></data>
+  <data name="OpenProxySettings" xml:space="preserve"><value>Proxy settings</value></data>
+  <data name="DownloadPending" xml:space="preserve"><value>Pending</value></data>
+  <data name="DownloadRunning" xml:space="preserve"><value>Downloading</value></data>
+  <data name="DownloadPaused" xml:space="preserve"><value>Paused</value></data>
+  <data name="DownloadCompletedStatus" xml:space="preserve"><value>Completed</value></data>
+  <data name="DownloadFailed" xml:space="preserve"><value>Failed</value></data>
+  <data name="DownloadCancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="DownloadRetryUnavailable" xml:space="preserve"><value>Retry unavailable</value></data>
+  <data name="ApplicationRestartInterrupted" xml:space="preserve"><value>Interrupted by application restart</value></data>
+  <data name="DownloadSourceMod" xml:space="preserve"><value>MOD</value></data>
+  <data name="DownloadSourceTranslation" xml:space="preserve"><value>Translation</value></data>
+  <data name="DownloadSourceMelonLoader" xml:space="preserve"><value>MelonLoader</value></data>
+  <data name="DownloadSourceUpdate" xml:space="preserve"><value>Application update</value></data>
+  <data name="DownloadSourceMaintenance" xml:space="preserve"><value>Background maintenance</value></data>
+  <data name="DownloadSourceResource" xml:space="preserve"><value>Resource</value></data>
+  <data name="NoDownloads" xml:space="preserve"><value>No downloads</value></data>
+  <data name="Reinstalling" xml:space="preserve"><value>Reinstalling {0}...</value></data>
+  <data name="DownloadEnqueued" xml:space="preserve"><value>Added to download queue</value></data>
 </root>

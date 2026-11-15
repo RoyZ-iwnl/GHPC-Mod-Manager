@@ -55,5 +55,11 @@ namespace GHPC_Mod_Manager.Services.Infrastructure
         {
             return MessageDialogHelper.Show(message, title, button, icon);
         }
+
+        /// <inheritdoc />
+        public GitHubAsset? SelectAsset(IReadOnlyList<GitHubAsset> assets, string modName, string version)
+        {
+            return MessageDialogHelper.SelectAsset(assets, modName, version);
+        }
     }
 }

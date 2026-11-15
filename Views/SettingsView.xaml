@@ -367,6 +367,71 @@
                             </TextBlock.Text>
                         </TextBlock>
 
+                        <CheckBox Margin="0,16,0,8"
+                                  IsChecked="{Binding UseCustomProxy}">
+                            <CheckBox.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{x:Static resources:Strings.CustomProxy}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Margin="0,2,0,0"
+                                               Text="{x:Static resources:Strings.CustomProxyDescription}"
+                                               Style="{StaticResource PageSectionHintTextStyle}"/>
+                                </StackPanel>
+                            </CheckBox.Content>
+                        </CheckBox>
+
+                        <Grid Margin="24,0,0,16"
+                              Visibility="{Binding UseCustomProxy, Converter={StaticResource BoolToVis}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.ProxyProtocol}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding ProxyProtocols}"
+                                      SelectedItem="{Binding ProxyProtocol, UpdateSourceTrigger=PropertyChanged}"
+                                      Margin="0,0,16,0"/>
+                            <TextBlock Grid.Column="2"
+                                       Text="{x:Static resources:Strings.ProxyAddress}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3"
+                                     Text="{Binding ProxyAddress, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="127.0.0.1:7897"
+                                     Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Grid.ColumnSpan="3"
+                                       Margin="0,6,0,0"
+                                       Text="{x:Static resources:Strings.ProxyAddressHint}"
+                                       Style="{StaticResource PageSectionHintTextStyle}"/>
+                            <StackPanel Grid.Row="2"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="3"
+                                        Orientation="Horizontal"
+                                        Margin="0,8,0,0">
+                                <Button Content="{x:Static resources:Strings.TestConnection}"
+                                        Command="{Binding TestCustomProxyCommand}"
+                                        IsEnabled="{Binding IsTestingCustomProxy, Converter={StaticResource InvBool}}"
+                                        Style="{DynamicResource OutlinedButtonStyle}"
+                                        Margin="0,0,10,0"/>
+                                <TextBlock Text="{Binding CustomProxyTestStatus}"
+                                           Style="{StaticResource PageSectionHintTextStyle}"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+
                         <TextBlock Margin="0,16,0,0"
                                    Text="{x:Static resources:Strings.GitHubApiToken}"
                                    Style="{StaticResource FieldLabelTextStyle}"/>

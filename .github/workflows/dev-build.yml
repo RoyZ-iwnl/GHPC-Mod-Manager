@@ -1,0 +1,107 @@
+name: Dev Build and Test
+
+on:
+  push:
+    branches: [ "dev" ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.gif'
+      - '**/*.svg'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+  pull_request:
+    branches: [ "dev" ]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Verify .NET SDK version
+      run: dotnet --version
+
+    - name: Extract version from project file
+      id: extract_version
+      shell: pwsh
+      run: |
+        $projectFile = "GHPC Mod Manager.csproj"
+        [xml]$xml = Get-Content $projectFile
+        $version = $xml.Project.PropertyGroup.Version
+
+        Write-Host "Extracted version: $version"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
+        # Add dev suffix with commit SHA
+        $commitSha = "${{ github.sha }}"
+        $shortSha = $commitSha.Substring(0, 7)
+        $devVersion = "$version-dev-$shortSha"
+        echo "dev_version=$devVersion" >> $env:GITHUB_OUTPUT
+
+        Write-Host "Dev build version: $devVersion"
+
+    - name: Restore dependencies
+      run: dotnet restore "GHPC Mod Manager.csproj" -r win-x64
+
+    - name: Build project
+      run: dotnet build "GHPC Mod Manager.csproj" --configuration Release --no-restore -r win-x64
+
+    - name: Publish application
+      run: dotnet publish "GHPC Mod Manager.csproj" --configuration Release --output ./publish --no-build --framework net8.0-windows -r win-x64 --self-contained false -p:PublishSingleFile=true
+
+    - name: Create build package
+      shell: pwsh
+      run: |
+        $devVersion = "${{ steps.extract_version.outputs.dev_version }}"
+        $packageName = "GHPC-Mod-Manager-$devVersion"
+
+        # Create build directory
+        New-Item -ItemType Directory -Force -Path "./build"
+
+        # Copy published files
+        Copy-Item -Path "./publish/*" -Destination "./build/" -Recurse -Force
+
+        # Create ZIP package
+        Compress-Archive -Path "./build/*" -DestinationPath "./$packageName.zip" -Force
+
+        Write-Host "Created package: $packageName.zip"
+        echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
+        echo "package_file=$packageName.zip" >> $env:GITHUB_OUTPUT
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: GHPC-Mod-Manager-${{ steps.extract_version.outputs.dev_version }}
+        path: |
+          ${{ steps.extract_version.outputs.package_name }}.zip
+          ./build/
+        retention-days: 7
+
+    - name: Build summary
+      shell: pwsh
+      run: |
+        $devVersion = "${{ steps.extract_version.outputs.dev_version }}"
+        $commitSha = "${{ github.sha }}"
+        $shortSha = $commitSha.Substring(0, 7)
+
+        Write-Host "=========================================="
+        Write-Host "✅ Dev Build Completed Successfully"
+        Write-Host "=========================================="
+        Write-Host "Version: $devVersion"
+        Write-Host "Commit: $shortSha"
+        Write-Host "Branch: ${{ github.ref_name }}"
+        Write-Host "Artifacts are available for download in the Actions tab"
+        Write-Host "Retention: 7 days"
+        Write-Host "=========================================="

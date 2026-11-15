@@ -98,7 +98,7 @@ public partial class ModManagerService
         return Strings.ResourceManager.GetString(resourceKey, Strings.Culture) ?? fallback;
     }
 
-    private async Task<(byte[] Data, string FileName)?> DownloadModPackageAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress)
+    private async Task<(byte[] Data, string FileName)?> DownloadModPackageAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress, string? operationTextOverride = null)
     {
         if (IsGitHubApiUrl(modConfig.ReleaseUrl))
         {
@@ -114,18 +114,39 @@ public partial class ModManagerService
                 return null;
             }
 
-            var asset = targetRelease.Assets.FirstOrDefault(a => a.Name.Contains(modConfig.TargetFileNameKeyword, StringComparison.OrdinalIgnoreCase));
-            if (asset == null)
+            var keyword = modConfig.TargetFileNameKeyword ?? string.Empty;
+            var matchingAssets = targetRelease.Assets
+                .Where(a => a.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (matchingAssets.Count == 0)
             {
-                _loggingService.LogError(Strings.ModAssetNotFound, modConfig.Id, modConfig.TargetFileNameKeyword);
+                _loggingService.LogError(Strings.ModAssetNotFound, modConfig.Id, keyword);
                 return null;
             }
 
-            var data = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
+            var asset = matchingAssets.Count == 1
+                ? matchingAssets[0]
+                : _dialogService.SelectAsset(matchingAssets, GetLocalizedName(modConfig), version);
+            if (asset == null)
+                return null;
+
+            var displayName = $"{GetLocalizedName(modConfig)} {version}";
+            var sourceText = operationTextOverride ?? string.Format(
+                _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+                    ? "正在更新 {0}"
+                    : "Updating {0}",
+                GetLocalizedName(modConfig));
+            var data = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name, displayName: displayName, sourceText: sourceText);
             return (data, asset.Name);
         }
 
-        var directData = await _networkService.DownloadFileAsync(modConfig.ReleaseUrl, progress);
+        var directDisplayName = $"{GetLocalizedName(modConfig)} {version}";
+        var directSourceText = operationTextOverride ?? string.Format(
+            _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+                ? "正在更新 {0}"
+                : "Updating {0}",
+            GetLocalizedName(modConfig));
+        var directData = await _networkService.DownloadFileAsync(modConfig.ReleaseUrl, progress, displayName: directDisplayName, sourceText: directSourceText);
         return (directData, GetFileNameFromUrl(modConfig.ReleaseUrl));
     }
 

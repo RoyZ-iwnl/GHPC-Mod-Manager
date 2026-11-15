@@ -19,7 +19,9 @@ public interface INetworkService
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
     Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName);
-    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
+    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null);
+    /// <summary>直接下载，不进入全局下载队列，仅用于 SetupWizard 初始化流程。</summary>
+    Task<byte[]> DownloadFileDirectAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
     void ClearCache(); // Clear all cached data (including GitHub persistent cache)
     void ClearSessionCache(); // Clear session cache for non-GitHub resources
     void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
@@ -34,6 +36,7 @@ public class NetworkService : INetworkService
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     private readonly IMainConfigService _mainConfigService;
+    private readonly IDownloadQueueService _downloadQueueService;
 
 
     // Rate limit tracking
@@ -49,12 +52,22 @@ public class NetworkService : INetworkService
     // 本次启动的内存缓存（非GitHub资源）
     private readonly ConcurrentDictionary<string, object> _sessionCache = new();
 
-    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
+    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService, IDownloadQueueService downloadQueueService)
     {
         _httpClient = httpClient;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _mainConfigService = mainConfigService;
+        _downloadQueueService = downloadQueueService;
+
+        _downloadQueueService.RegisterDefaultDownloader(
+            (request, queuedProgress, queuedToken) => DownloadFileCoreAsync(
+                request.Url,
+                queuedProgress,
+                queuedToken,
+                request.ExpectedSize,
+                request.ExpectedDigest,
+                request.AssetName));
 
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
         _httpClient.Timeout = TimeSpan.FromMinutes(10);
@@ -506,7 +519,42 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null)
+    public Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null)
+    {
+        var fileName = string.IsNullOrWhiteSpace(assetName) ? GetDownloadTargetName(url) : assetName;
+        return _downloadQueueService.EnqueueAsync(
+            new DownloadRequest
+            {
+                Url = url,
+                FileName = fileName,
+                Source = InferDownloadSource(url, fileName),
+                DisplayName = displayName,
+                SourceText = sourceText,
+                ExpectedSize = expectedSize,
+                ExpectedDigest = expectedDigest,
+                AssetName = assetName
+            },
+            (queuedProgress, queuedToken) => DownloadFileCoreAsync(url, queuedProgress, queuedToken, expectedSize, expectedDigest, assetName),
+            progress,
+            cancellationToken);
+    }
+
+    public Task<byte[]> DownloadFileDirectAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null)
+    {
+        return DownloadFileCoreAsync(url, progress, cancellationToken, expectedSize, expectedDigest, assetName);
+    }
+
+    private static string InferDownloadSource(string url, string fileName)
+    {
+        var value = $"{url} {fileName}".ToLowerInvariant();
+        if (value.Contains("melonloader")) return "MelonLoader";
+        if (value.Contains("translation") || value.Contains("xunity") || value.Contains("translator")) return "Translation";
+        if (value.EndsWith(".exe") || value.Contains("manager-update")) return "Application update";
+        if (value.Contains("cleanup") || value.Contains("version")) return "Background maintenance";
+        return "MOD / resource";
+    }
+
+    private async Task<byte[]> DownloadFileCoreAsync(string url, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken, long? expectedSize, string? expectedDigest, string? assetName)
     {
         var finalUrl = ApplyGitHubProxy(url);
         var candidateUrls = finalUrl != url

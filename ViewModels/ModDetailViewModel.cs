@@ -320,7 +320,8 @@ public partial class ModDetailViewModel : ObservableObject
             }
 
             var success = await _modManagerService.InstallModAsync(
-                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, skipConflictCheck: true, preferBackup: preferBackup);
+                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, skipConflictCheck: true, preferBackup: preferBackup,
+                operationText: preferBackup ? null : string.Format(Strings.Reinstalling, Mod.DisplayName));
 
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, Mod.DisplayName)

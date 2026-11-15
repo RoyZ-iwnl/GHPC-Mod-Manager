@@ -125,6 +125,23 @@ public partial class SetupWizardViewModel : ObservableObject
     [ObservableProperty]
     private bool _useGitHubProxy = false;
 
+    [ObservableProperty]
+    private bool _useCustomProxy;
+
+    [ObservableProperty]
+    private string _proxyProtocol = "HTTP";
+
+    [ObservableProperty]
+    private string _proxyAddress = string.Empty;
+
+    [ObservableProperty]
+    private bool _isTestingCustomProxy;
+
+    [ObservableProperty]
+    private string _customProxyTestStatus = string.Empty;
+
+    public IReadOnlyList<string> ProxyProtocols { get; } = new[] { "HTTP", "SOCKS5" };
+
     public bool ShowMelonLoaderReleaseLoadWarning => CurrentStep == 5 && MelonLoaderReleasesLoadFailed && !IsLoadingMelonLoaderReleases;
 
     public string MelonLoaderReleaseLoadWarningMessage =>
@@ -329,6 +346,9 @@ public partial class SetupWizardViewModel : ObservableObject
         // Load existing proxy settings
         UseGitHubProxy = _settingsService.Settings.UseGitHubProxy;
         GitHubApiToken = _settingsService.Settings.GitHubApiToken;
+        UseCustomProxy = _settingsService.Settings.UseCustomProxy;
+        ProxyProtocol = _settingsService.Settings.ProxyProtocol;
+        ProxyAddress = _settingsService.Settings.ProxyAddress;
 
         // 代理列表在进入步骤2时通过 RefreshProxyServersAsync 拉取，这里先用兜底列表
         var fallback = ProxyServerItem.BuildFallback();
@@ -342,6 +362,54 @@ public partial class SetupWizardViewModel : ObservableObject
 
         // Mark initialization as complete after setting all values
         _isInitializing = false;
+    }
+
+    [RelayCommand]
+    private async Task TestCustomProxyAsync()
+    {
+        if (IsTestingCustomProxy)
+            return;
+
+        if (!ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyProtocol;
+            return;
+        }
+
+        if (!ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyAddress;
+            return;
+        }
+
+        IsTestingCustomProxy = true;
+        CustomProxyTestStatus = Strings.TestingCustomProxy;
+        try
+        {
+            await SaveCustomProxySettingsAsync();
+            var latency = await ProxyConnectionTester.TestAsync(ProxyProtocol, ProxyAddress);
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestSucceeded, latency);
+            AddToNetworkLog(CustomProxyTestStatus);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Custom proxy connection test failed");
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestFailed, ex.Message);
+            AddToNetworkLog(CustomProxyTestStatus);
+        }
+        finally
+        {
+            IsTestingCustomProxy = false;
+        }
+    }
+
+    private async Task SaveCustomProxySettingsAsync()
+    {
+        var settings = _settingsService.Settings;
+        settings.UseCustomProxy = UseCustomProxy;
+        settings.ProxyProtocol = ProxyProtocol;
+        settings.ProxyAddress = ProxyAddress.Trim();
+        await _settingsService.SaveSettingsAsync();
     }
 
     [RelayCommand]
@@ -605,6 +673,26 @@ public partial class SetupWizardViewModel : ObservableObject
         await PerformNetworkDetectionAsync();
     }
 
+    private async Task<bool> ValidateAndSaveCustomProxySettingsAsync()
+    {
+        if (UseCustomProxy && !ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyProtocol;
+            AddToNetworkLog(CustomProxyTestStatus);
+            return false;
+        }
+
+        if (UseCustomProxy && !ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyAddress;
+            AddToNetworkLog(CustomProxyTestStatus);
+            return false;
+        }
+
+        await SaveCustomProxySettingsAsync();
+        return true;
+    }
+
     private void AddToNetworkLog(string message)
     {
         var timestamp = DateTime.Now.ToString("HH:mm:ss");
@@ -620,6 +708,9 @@ public partial class SetupWizardViewModel : ObservableObject
 
     private async Task PerformNetworkDetectionAsync()
     {
+        if (!await ValidateAndSaveCustomProxySettingsAsync())
+            return;
+
         IsCheckingNetwork = true;
         ShowNetworkFailed = false;
         ClearNetworkLog();
@@ -963,7 +1054,8 @@ public partial class SetupWizardViewModel : ObservableObject
             var success = await _melonLoaderService.InstallMelonLoaderAsync(
                 GameRootPath, 
                 SelectedMelonLoaderVersion.TagName, 
-                progress);
+                progress,
+                useDownloadQueue: false);
 
             if (success)
             {

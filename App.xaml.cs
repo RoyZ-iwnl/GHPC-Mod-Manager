@@ -1,4 +1,4 @@
-﻿using GHPC_Mod_Manager.Services;
+using GHPC_Mod_Manager.Services;
 using GHPC_Mod_Manager.ViewModels;
 using GHPC_Mod_Manager.Views;
 using GHPC_Mod_Manager.Models;
@@ -121,6 +121,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<IProtocolActivationService, ProtocolActivationService>();
                     services.AddSingleton<IProtocolIpcServer, NamedPipeProtocolIpcServer>();
                     services.AddSingleton<ISaveEditorService, SaveEditorService>();
+                    services.AddSingleton<IDownloadQueueService, DownloadQueueService>();
                     services.ConfigureHttpClientDefaults(builder =>
                     {
                         builder.ConfigureHttpClient(client =>
@@ -148,13 +149,28 @@ namespace GHPC_Mod_Manager
                                 }
                             };
 
+                            handler.UseProxy = true;
+                            handler.Proxy = new SettingsWebProxy(settingsService);
+
                             handler.ConnectCallback = (context, cancellationToken) =>
-                                DnsOverHttpsConnector.ConnectAsync(
+                            {
+                                var settings = settingsService.Settings;
+                                if (settings.UseCustomProxy &&
+                                    string.Equals(settings.ProxyProtocol, "SOCKS5", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    return ProxyConnector.ConnectSocks5Async(
+                                        context,
+                                        settings.ProxyAddress,
+                                        cancellationToken);
+                                }
+
+                                return DnsOverHttpsConnector.ConnectAsync(
                                     context,
-                                    settingsService.Settings.UseDnsOverHttps &&
-                                    string.Equals(settingsService.Settings.Language, "zh-CN", StringComparison.OrdinalIgnoreCase),
+                                    settings.UseDnsOverHttps &&
+                                    string.Equals(settings.Language, "zh-CN", StringComparison.OrdinalIgnoreCase),
                                     loggingService,
                                     cancellationToken);
+                            };
 
                             return handler;
                         });
@@ -178,6 +194,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<ModBrowserViewModel>();
                     services.AddSingleton<ModDetailViewModel>();
                     services.AddSingleton<SaveEditorViewModel>();
+                    services.AddSingleton<DownloadManagerViewModel>();
 
                     // Views
                     services.AddTransient<MainWindow>();
@@ -191,6 +208,7 @@ namespace GHPC_Mod_Manager
                     services.AddSingleton<TranslationView>();
                     services.AddTransient<ModDetailView>();
                     services.AddTransient<SaveEditorView>();
+                    services.AddSingleton<DownloadManagerView>();
                 })
                 .ConfigureLogging(logging =>
                 {
@@ -342,6 +360,12 @@ namespace GHPC_Mod_Manager
                     if (networkService is IDisposable disposableNetwork)
                     {
                         disposableNetwork.Dispose();
+                    }
+
+                    var downloadQueue = _host.Services.GetService<IDownloadQueueService>();
+                    if (downloadQueue is IDisposable disposableDownloadQueue)
+                    {
+                        disposableDownloadQueue.Dispose();
                     }
 
                     // Stop mod manager service

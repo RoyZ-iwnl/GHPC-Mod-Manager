@@ -11,7 +11,7 @@ public interface IMelonLoaderService
     Task<bool> IsMelonLoaderInstalledAsync(string gameRootPath);
     Task<bool> AreMelonLoaderDirectoriesCreatedAsync(string gameRootPath);
     Task<List<GitHubRelease>> GetMelonLoaderReleasesAsync();
-    Task<bool> InstallMelonLoaderAsync(string gameRootPath, string version, IProgress<DownloadProgress>? progress = null);
+    Task<bool> InstallMelonLoaderAsync(string gameRootPath, string version, IProgress<DownloadProgress>? progress = null, bool useDownloadQueue = true);
     /// <summary>从 MelonLoader/Latest.log 解析当前安装版本号</summary>
     Task<string?> GetInstalledVersionAsync(string gameRootPath);
     /// <summary>禁用 MelonLoader（重命名 version.dll）</summary>
@@ -99,7 +99,7 @@ public class MelonLoaderService : IMelonLoaderService
         }
     }
 
-    public async Task<bool> InstallMelonLoaderAsync(string gameRootPath, string version, IProgress<DownloadProgress>? progress = null)
+    public async Task<bool> InstallMelonLoaderAsync(string gameRootPath, string version, IProgress<DownloadProgress>? progress = null, bool useDownloadQueue = true)
     {
         try
         {
@@ -128,7 +128,9 @@ public class MelonLoaderService : IMelonLoaderService
             // 确保临时目录存在
             Directory.CreateDirectory(_settingsService.TempPath);
             
-            var downloadData = await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
+            var downloadData = useDownloadQueue
+                ? await _networkService.DownloadFileAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name)
+                : await _networkService.DownloadFileDirectAsync(asset.DownloadUrl, progress, expectedSize: asset.Size, expectedDigest: asset.Digest, assetName: asset.Name);
             _loggingService.LogInfo(Strings.FileDownloadCompleted, downloadData.Length);
             
             // 验证下载的数据不为空

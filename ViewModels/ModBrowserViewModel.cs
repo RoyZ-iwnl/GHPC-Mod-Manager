@@ -63,9 +63,6 @@ public partial class ModBrowserViewModel : ObservableObject
     private bool _isGameRunning;
 
     [ObservableProperty]
-    private bool _isDownloading;
-
-    [ObservableProperty]
     private double _progressValue;
 
     [ObservableProperty]
@@ -272,11 +269,11 @@ public partial class ModBrowserViewModel : ObservableObject
         RefreshRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task InstallModAsync(ModViewModel mod)
         => await InstallModCoreAsync(mod, preferBackup: true);
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task RedownloadInstallAsync(ModViewModel mod)
         => await InstallModCoreAsync(mod, preferBackup: false);
 
@@ -310,7 +307,6 @@ public partial class ModBrowserViewModel : ObservableObject
 
         try
         {
-            IsDownloading = true;
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
@@ -340,7 +336,6 @@ public partial class ModBrowserViewModel : ObservableObject
 
                 if (conflictingInstalled.Count > 0)
                 {
-                    IsDownloading = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
                     var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDetectedOnLaunch);
@@ -350,8 +345,6 @@ public partial class ModBrowserViewModel : ObservableObject
                         Strings.ConflictInstallConfirm,
                         Strings.ConflictDetectedOnLaunch);
                     if (!secondResult) return;
-
-                    IsDownloading = true;
                 }
             }
 
@@ -361,7 +354,6 @@ public partial class ModBrowserViewModel : ObservableObject
                 var (allSatisfied, missingIds) = await _modManagerService.CheckSingleModDependenciesAsync(mod.Id);
                 if (!allSatisfied && missingIds.Count > 0)
                 {
-                    IsDownloading = false;
                     // 用DisplayName替换modId，找不到则保留id
                     var missingNames = string.Join("\n• ", missingIds.Select(id =>
                         _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
@@ -376,7 +368,6 @@ public partial class ModBrowserViewModel : ObservableObject
                         NavigateToDetailRequested?.Invoke(this, firstMissingMod);
                         return;
                     }
-                    IsDownloading = true;
                 }
             }
 
@@ -387,7 +378,25 @@ public partial class ModBrowserViewModel : ObservableObject
                 StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, skipConflictCheck: true, preferBackup: preferBackup);
+            // 根据操作类型生成队列文本
+            string? operationText = null;
+            if (mod.IsInstalled && mod.CanUpdate)
+            {
+                // 已安装且能更新 → 更新
+                operationText = string.Format(Strings.Updating, mod.DisplayName);
+            }
+            else if (!preferBackup)
+            {
+                // 强制重新下载 → 重装
+                operationText = string.Format(Strings.Reinstalling, mod.DisplayName);
+            }
+            else
+            {
+                // 新安装
+                operationText = string.Format(Strings.Installing, mod.DisplayName);
+            }
+
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, skipConflictCheck: true, preferBackup: preferBackup, operationText: operationText);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);
@@ -403,11 +412,10 @@ public partial class ModBrowserViewModel : ObservableObject
         {
             HasDeterminateProgress = false;
             ProgressValue = 0;
-            IsDownloading = false;
         }
     }
 
-    private bool CanExecuteModOps() => !IsDownloading && !IsGameRunning;
+    private bool CanExecuteModOps() => !IsGameRunning;
 
     /// <summary>
     /// 由MainViewModel调用，推送检测到的新增MOD
@@ -447,12 +455,6 @@ public partial class ModBrowserViewModel : ObservableObject
     }
 
     partial void OnIsGameRunningChanged(bool value)
-    {
-        InstallModCommand.NotifyCanExecuteChanged();
-        RedownloadInstallCommand.NotifyCanExecuteChanged();
-    }
-
-    partial void OnIsDownloadingChanged(bool value)
     {
         InstallModCommand.NotifyCanExecuteChanged();
         RedownloadInstallCommand.NotifyCanExecuteChanged();

@@ -5,13 +5,14 @@ using System.IO;
 using System.Windows;
 using GHPC_Mod_Manager.Resources;
 using GHPC_Mod_Manager.Helpers;
+using GHPC_Mod_Manager.Services.Infrastructure;
 
 namespace GHPC_Mod_Manager.Services.Mod;
 
 public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
-    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true);
+    Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true, string? operationText = null);
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
@@ -51,13 +52,14 @@ public partial class ModManagerService : IModManagerService
     private readonly IModBackupService _modBackupService;
     private readonly IProcessService _processService;
     private readonly IMainConfigService _mainConfigService;
+    private readonly IDialogService _dialogService;
     private readonly SemaphoreSlim _manifestLock = new(1, 1);
     private List<ModConfig> _availableMods = new();
     private ModInstallManifest _installManifest = new();
     private Dictionary<string, Dictionary<string, string>> _configComments = new(); // Store comments for each mod
     private Dictionary<string, List<string>> _standaloneComments = new(); // Store standalone comments for each mod
 
-    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService, IProcessService processService, IMainConfigService mainConfigService)
+    public ModManagerService(ISettingsService settingsService, INetworkService networkService, ILoggingService loggingService, IModI18nService modI18nService, IModBackupService modBackupService, IProcessService processService, IMainConfigService mainConfigService, IDialogService dialogService)
     {
         _settingsService = settingsService;
         _networkService = networkService;
@@ -66,6 +68,7 @@ public partial class ModManagerService : IModManagerService
         _modBackupService = modBackupService;
         _processService = processService;
         _mainConfigService = mainConfigService;
+        _dialogService = dialogService;
     }
 
     public async Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false)
@@ -547,7 +550,7 @@ public partial class ModManagerService : IModManagerService
         return !_installManifest.InstalledMods.ContainsKey(modId);
     }
 
-    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true)
+    public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true, string? operationText = null)
     {
         try
         {
@@ -609,7 +612,7 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
 
-            var downloadResult = await DownloadModPackageAsync(modConfig, version, progress);
+            var downloadResult = await DownloadModPackageAsync(modConfig, version, progress, operationText);
             if (downloadResult == null)
                 return false;
 
@@ -688,7 +691,12 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
 
-            var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress);
+            var operationText = string.Format(
+                _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
+                    ? "正在更新 {0}"
+                    : "Updating {0}",
+                GetLocalizedName(modConfig));
+            var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress, operationText);
             if (downloadResult == null)
                 return false;
 

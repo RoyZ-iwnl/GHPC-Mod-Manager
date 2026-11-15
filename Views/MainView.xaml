@@ -111,12 +111,21 @@
                         BorderThickness="1"
                         CornerRadius="{DynamicResource RadiusMedium}"
                         Padding="14">
-                    <Button Content="{x:Static resources:Strings.Settings}"
-                            Command="{Binding OpenSettingsCommand}"
-                            Style="{DynamicResource OutlinedButtonStyle}"
-                            Background="#12000000"
-                            Foreground="{DynamicResource NavRailTextBrush}"
-                            BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                    <StackPanel>
+                        <Button Content="{Binding DownloadsLabel}"
+                                Command="{Binding OpenDownloadsCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"
+                                Margin="0,0,0,8"/>
+                        <Button Content="{x:Static resources:Strings.Settings}"
+                                Command="{Binding OpenSettingsCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Grid>
@@ -142,7 +151,7 @@
                                Style="{StaticResource PageTitleTextStyle}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource BracketTextConverter}">
-                                <Binding Path="SelectedNavigationItem.Label"/>
+                                <Binding Path="CurrentPageTitle"/>
                                 <Binding Source="{x:Static helpers:ThemeTracker.Instance}" Path="CurrentTheme"/>
                             </MultiBinding>
                         </TextBlock.Text>
@@ -341,7 +350,7 @@
                     </StatusBarItem>
                     <Separator/>
                     <StatusBarItem>
-                        <TextBlock Text="{Binding SelectedNavigationItem.Label}"
+                        <TextBlock Text="{Binding CurrentPageTitle}"
                                    FontSize="{DynamicResource LabelLarge}"
                                    VerticalAlignment="Center"/>
                     </StatusBarItem>
@@ -416,6 +425,27 @@
                 </StackPanel>
             </Border>
         </Grid>
+
+        <!-- Toast 通知 -->
+        <Border Grid.ColumnSpan="2"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,24"
+                Padding="16,12"
+                Background="{DynamicResource SurfaceContainerHighBrush}"
+                BorderBrush="{DynamicResource OutlineBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Visibility="{Binding ShowToast, Converter={StaticResource BoolToVis}}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="16" ShadowDepth="4" Opacity="0.3" Color="#000000"/>
+            </Border.Effect>
+            <TextBlock Text="{Binding ToastMessage}"
+                       Foreground="{DynamicResource OnSurfaceBrush}"
+                       FontSize="{DynamicResource BodyMedium}"
+                       TextWrapping="Wrap"
+                       MaxWidth="400"/>
+        </Border>
 
     </Grid>
 </UserControl>

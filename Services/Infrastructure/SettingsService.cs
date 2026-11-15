@@ -101,6 +101,9 @@ public class SettingsService : ISettingsService
                 GameRootPath = _settings.GameRootPath,
                 IsFirstRun = _settings.IsFirstRun,
                 Theme = _settings.Theme,
+                UseCustomProxy = _settings.UseCustomProxy,
+                ProxyProtocol = _settings.ProxyProtocol,
+                ProxyAddress = _settings.ProxyAddress,
                 UseGitHubProxy = _settings.UseGitHubProxy,
                 GitHubProxyServer = _settings.GitHubProxyServer,
                 GitHubProxyServerId = _settings.GitHubProxyServerId,
@@ -121,6 +124,7 @@ public class SettingsService : ISettingsService
                 SkipManagerVersionCheck = _settings.SkipManagerVersionCheck,
                 OnlineCheckOnLaunch = _settings.OnlineCheckOnLaunch,
                 OpenWebsiteOnStartup = _settings.OpenWebsiteOnStartup,
+                MaxConcurrentDownloads = Math.Clamp(_settings.MaxConcurrentDownloads, 1, 3),
                 IsEndfieldThemeUnlocked = _settings.IsEndfieldThemeUnlocked
             };
 

@@ -100,6 +100,19 @@ namespace GHPC_Mod_Manager.Helpers
             return dialog.Result;
         }
 
+        /// <summary>
+        /// 显示GitHub资产选择对话框
+        /// </summary>
+        public static GitHubAsset? SelectAsset(IReadOnlyList<GitHubAsset> assets, string modName, string version)
+        {
+            var dialog = new AssetSelectionDialog(assets, modName, version)
+            {
+                Owner = Application.Current.MainWindow
+            };
+            dialog.ShowDialog();
+            return dialog.SelectedAsset;
+        }
+
         #region 异步方法
 
         /// <summary>
