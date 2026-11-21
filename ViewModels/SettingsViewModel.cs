@@ -240,9 +240,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
 
-    // Token 默认隐藏，点击眼睛图标临时查看
+    // Token 有内容时默认隐藏，空时直接显示输入框
     [ObservableProperty]
-    private bool _isGitHubTokenVisible = false;
+    private bool _isGitHubTokenVisible = true;
 
     // 隐藏状态下的掩码显示（用 • 替换每个字符）
     public string GitHubApiTokenMasked => string.IsNullOrEmpty(GitHubApiToken)
@@ -484,6 +484,8 @@ public partial class SettingsViewModel : ObservableObject
         ProxyAddress = settings.ProxyAddress;
         // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
         GitHubApiToken = settings.GitHubApiToken;
+        // 有token时默认隐藏，空token直接显示输入框
+        IsGitHubTokenVisible = string.IsNullOrEmpty(settings.GitHubApiToken);
         SelectedTheme = settings.Theme; // 加载主题设置
         SelectedUpdateChannel = settings.UpdateChannel; // 加载更新通道设置
         SkipConflictCheck = settings.SkipConflictCheck;

@@ -1733,7 +1733,8 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteWhenNotDownloading))]
+    // 设置页不依赖网络，不受离线模式和下载状态限制
+    [RelayCommand]
     private void OpenSettings()
     {
         _navigationService.NavigateToSettings();

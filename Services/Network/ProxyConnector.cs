@@ -156,12 +156,10 @@ internal static class ProxyConnector
 internal sealed class SettingsWebProxy : IWebProxy
 {
     private readonly ISettingsService _settingsService;
-    private readonly IWebProxy? _systemProxy;
 
     public SettingsWebProxy(ISettingsService settingsService)
     {
         _settingsService = settingsService;
-        _systemProxy = HttpClient.DefaultProxy;
     }
 
     public ICredentials? Credentials { get; set; }
@@ -169,8 +167,9 @@ internal sealed class SettingsWebProxy : IWebProxy
     public Uri GetProxy(Uri destination)
     {
         var settings = _settingsService.Settings;
+        // 未启用自定义代理时走直连，不继承系统代理（避免系统代理拦截导致 400）
         if (!settings.UseCustomProxy)
-            return _systemProxy?.GetProxy(destination) ?? destination;
+            return destination;
 
         if (string.Equals(settings.ProxyProtocol, "SOCKS5", StringComparison.OrdinalIgnoreCase))
             return destination;
@@ -187,8 +186,9 @@ internal sealed class SettingsWebProxy : IWebProxy
     public bool IsBypassed(Uri host)
     {
         var settings = _settingsService.Settings;
+        // 未启用自定义代理时全部直连
         if (!settings.UseCustomProxy)
-            return _systemProxy?.IsBypassed(host) ?? true;
+            return true;
 
         if (string.Equals(settings.ProxyProtocol, "SOCKS5", StringComparison.OrdinalIgnoreCase))
             return true;
