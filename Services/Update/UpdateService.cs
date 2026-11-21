@@ -427,6 +427,11 @@ public class UpdateService : IUpdateService
         }
     }
 
+    private static string QuotePowerShellLiteral(string value)
+    {
+        return "'" + value.Replace("'", "''", StringComparison.Ordinal) + "'";
+    }
+
     private string CreateUpdatePowerShellScript(string updateFilePath, string fileName)
     {
         var currentExe = Process.GetCurrentProcess().MainModule?.FileName ?? "";
@@ -452,14 +457,14 @@ chcp 65001 > $null
 Clear-Host
 
 # Set window title
-$Host.UI.RawUI.WindowTitle = '{title}'
+$Host.UI.RawUI.WindowTitle = {QuotePowerShellLiteral(title)}
 
 # Display header
 Write-Host '========================================' -ForegroundColor Cyan
-Write-Host '{title}' -ForegroundColor Cyan
+Write-Host {QuotePowerShellLiteral(title)} -ForegroundColor Cyan
 Write-Host '========================================' -ForegroundColor Cyan
 Write-Host ''
-Write-Host '{waiting}' -ForegroundColor Yellow
+Write-Host {QuotePowerShellLiteral(waiting)} -ForegroundColor Yellow
 Start-Sleep -Seconds 2
 Write-Host ''
 
@@ -468,22 +473,22 @@ Write-Host ''
         if (isZip)
         {
             script += $@"
-Write-Host '{extracting}' -ForegroundColor Yellow
+Write-Host {QuotePowerShellLiteral(extracting)} -ForegroundColor Yellow
 try {{
-    Expand-Archive -Path '{updateFilePath}' -DestinationPath '{currentDir}' -Force -ErrorAction Stop
+    Expand-Archive -LiteralPath {QuotePowerShellLiteral(updateFilePath)} -DestinationPath {QuotePowerShellLiteral(currentDir)} -Force -ErrorAction Stop
     Clear-Host
     Write-Host '========================================' -ForegroundColor Cyan
-    Write-Host '{title}' -ForegroundColor Cyan
+    Write-Host {QuotePowerShellLiteral(title)} -ForegroundColor Cyan
     Write-Host '========================================' -ForegroundColor Cyan
     Write-Host ''
-    Write-Host '{completed}' -ForegroundColor Green
+    Write-Host {QuotePowerShellLiteral(completed)} -ForegroundColor Green
 }} catch {{
     Clear-Host
     Write-Host '========================================' -ForegroundColor Red
-    Write-Host '{title}' -ForegroundColor Red
+    Write-Host {QuotePowerShellLiteral(title)} -ForegroundColor Red
     Write-Host '========================================' -ForegroundColor Red
     Write-Host ''
-    Write-Host '{extractFailed}' -ForegroundColor Red
+    Write-Host {QuotePowerShellLiteral(extractFailed)} -ForegroundColor Red
     Write-Host ('Error: ' + $_.Exception.Message) -ForegroundColor Red
     Write-Host ''
     Write-Host 'Press any key to exit...' -ForegroundColor Yellow
@@ -495,22 +500,22 @@ try {{
         else
         {
             script += $@"
-Write-Host '{installing}' -ForegroundColor Yellow
+Write-Host {QuotePowerShellLiteral(installing)} -ForegroundColor Yellow
 try {{
-    Copy-Item -Path '{updateFilePath}' -Destination '{currentExe}' -Force -ErrorAction Stop
+    Copy-Item -Path {QuotePowerShellLiteral(updateFilePath)} -Destination {QuotePowerShellLiteral(currentExe)} -Force -ErrorAction Stop
     Clear-Host
     Write-Host '========================================' -ForegroundColor Cyan
-    Write-Host '{title}' -ForegroundColor Cyan
+    Write-Host {QuotePowerShellLiteral(title)} -ForegroundColor Cyan
     Write-Host '========================================' -ForegroundColor Cyan
     Write-Host ''
-    Write-Host '{completed}' -ForegroundColor Green
+    Write-Host {QuotePowerShellLiteral(completed)} -ForegroundColor Green
 }} catch {{
     Clear-Host
     Write-Host '========================================' -ForegroundColor Red
-    Write-Host '{title}' -ForegroundColor Red
+    Write-Host {QuotePowerShellLiteral(title)} -ForegroundColor Red
     Write-Host '========================================' -ForegroundColor Red
     Write-Host ''
-    Write-Host '{copyFailed}' -ForegroundColor Red
+    Write-Host {QuotePowerShellLiteral(copyFailed)} -ForegroundColor Red
     Write-Host ('Error: ' + $_.Exception.Message) -ForegroundColor Red
     Write-Host ''
     Write-Host 'Press any key to exit...' -ForegroundColor Yellow
@@ -522,16 +527,16 @@ try {{
 
         script += $@"
 Write-Host ''
-Write-Host '{restarting}' -ForegroundColor Green
+Write-Host {QuotePowerShellLiteral(restarting)} -ForegroundColor Green
 Start-Sleep -Seconds 2
 
 # Start the application
-Start-Process -FilePath '{currentExe}'
+Start-Process -FilePath {QuotePowerShellLiteral(currentExe)}
 
 # Cleanup
-Write-Host '{cleanup}' -ForegroundColor Gray
+Write-Host {QuotePowerShellLiteral(cleanup)} -ForegroundColor Gray
 Start-Sleep -Seconds 1
-Remove-Item -Path '{updateFilePath}' -Force -ErrorAction SilentlyContinue
+Remove-Item -Path {QuotePowerShellLiteral(updateFilePath)} -Force -ErrorAction SilentlyContinue
 Start-Sleep -Milliseconds 500
 Remove-Item -Path $PSCommandPath -Force -ErrorAction SilentlyContinue
 ";

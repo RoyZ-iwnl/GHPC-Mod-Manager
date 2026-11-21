@@ -267,7 +267,7 @@ public partial class ModDetailViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, Mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, Mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             // 检查冲突
@@ -320,7 +320,8 @@ public partial class ModDetailViewModel : ObservableObject
             }
 
             var success = await _modManagerService.InstallModAsync(
-                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, skipConflictCheck: true, preferBackup: preferBackup);
+                Mod.Config!, SelectedRelease.TagName, progress, skipDependencyCheck: skipDepCheck, skipConflictCheck: true, preferBackup: preferBackup,
+                operationText: preferBackup ? null : string.Format(Strings.Reinstalling, Mod.DisplayName));
 
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, Mod.DisplayName)
@@ -486,7 +487,7 @@ public partial class ModDetailViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName)} - {p.GetProgressSuffix()}";
             });
 
             var success = await _modManagerService.UpdateModAsync(Mod.Id, SelectedRelease.TagName, progress);

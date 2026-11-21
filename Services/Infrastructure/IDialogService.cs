@@ -59,5 +59,10 @@ namespace GHPC_Mod_Manager.Services.Infrastructure
         /// <param name="icon">图标类型</param>
         /// <returns>对话框返回结果</returns>
         MessageDialogResult Show(string message, string title, MessageDialogButton button, MessageDialogImage icon);
+
+        /// <summary>
+        /// 从多个匹配的GitHub资产中选择一个下载
+        /// </summary>
+        GitHubAsset? SelectAsset(IReadOnlyList<GitHubAsset> assets, string modName, string version);
     }
 }

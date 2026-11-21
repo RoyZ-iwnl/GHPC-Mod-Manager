@@ -57,4 +57,30 @@
     <!-- 返回/左箭头 -->
     <Geometry x:Key="IconArrowLeft">M 18,12 L 5,12 M 11,5 L 5,12 L 11,19</Geometry>
 
+    <!-- ========== 下载队列图标 ========== -->
+
+    <!-- 上移箭头 -->
+    <Geometry x:Key="IconMoveUp">M 12,4 L 12,20 M 6,10 L 12,4 L 18,10</Geometry>
+
+    <!-- 下移箭头 -->
+    <Geometry x:Key="IconMoveDown">M 12,20 L 12,4 M 18,14 L 12,20 L 6,14</Geometry>
+
+    <!-- 暂停 (两竖条) -->
+    <Geometry x:Key="IconPause">M 6,4 L 6,20 L 10,20 L 10,4 Z M 14,4 L 14,20 L 18,20 L 18,4 Z</Geometry>
+
+    <!-- 播放/继续 (三角) -->
+    <Geometry x:Key="IconPlay">M 6,4 L 6,20 L 18,12 Z</Geometry>
+
+    <!-- 重试/刷新 (圆形箭头) -->
+    <Geometry x:Key="IconRetry">M 4,12 A 8,8 0 1,1 12,4 M 12,4 L 12,8 M 12,4 L 8,4</Geometry>
+
+    <!-- 删除/垃圾桶 -->
+    <Geometry x:Key="IconDelete">M 5,6 L 5,20 Q 5,21 6,21 L 18,21 Q 19,21 19,20 L 19,6 M 8,6 L 8,3 L 16,3 L 16,6 M 3,6 L 21,6 M 10,10 L 10,17 M 14,10 L 14,17</Geometry>
+
+    <!-- 眼睛睁开（查看密码/token） -->
+    <Geometry x:Key="IconEyeOpen">M 2,12 Q 7,5 12,5 Q 17,5 22,12 Q 17,19 12,19 Q 7,19 2,12 M 9,12 A 3,3 0 1,1 15,12 A 3,3 0 1,1 9,12</Geometry>
+
+    <!-- 眼睛关闭/划线（隐藏密码/token） -->
+    <Geometry x:Key="IconEyeOff">M 2,12 Q 7,5 12,5 Q 17,5 22,12 Q 17,19 12,19 Q 7,19 2,12 M 9,12 A 3,3 0 1,1 15,12 A 3,3 0 1,1 9,12 M 3,3 L 21,21</Geometry>
+
 </ResourceDictionary>

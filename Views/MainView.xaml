@@ -111,12 +111,21 @@
                         BorderThickness="1"
                         CornerRadius="{DynamicResource RadiusMedium}"
                         Padding="14">
-                    <Button Content="{x:Static resources:Strings.Settings}"
-                            Command="{Binding OpenSettingsCommand}"
-                            Style="{DynamicResource OutlinedButtonStyle}"
-                            Background="#12000000"
-                            Foreground="{DynamicResource NavRailTextBrush}"
-                            BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                    <StackPanel>
+                        <Button Content="{Binding DownloadsLabel}"
+                                Command="{Binding OpenDownloadsCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"
+                                Margin="0,0,0,8"/>
+                        <Button Content="{x:Static resources:Strings.Settings}"
+                                Command="{Binding OpenSettingsCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Grid>
@@ -142,7 +151,7 @@
                                Style="{StaticResource PageTitleTextStyle}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource BracketTextConverter}">
-                                <Binding Path="SelectedNavigationItem.Label"/>
+                                <Binding Path="CurrentPageTitle"/>
                                 <Binding Source="{x:Static helpers:ThemeTracker.Instance}" Path="CurrentTheme"/>
                             </MultiBinding>
                         </TextBlock.Text>
@@ -192,9 +201,32 @@
             </Border>
 
             <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                <!-- 离线模式横幅 -->
+                <Border Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource WarningContainerBrush}"
+                        BorderBrush="{DynamicResource WarningBrush}"
+                        Visibility="{Binding IsOfflineMode, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconWarning}"
+                              Width="20" Height="20"
+                              Margin="0,0,12,0"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource OnWarningContainerBrush}"
+                              StrokeThickness="2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resources:Strings.OfflineModeActive}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   Foreground="{DynamicResource OnWarningContainerBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
                 <Border Style="{StaticResource PageBannerCardStyle}"
                         Background="{DynamicResource ErrorContainerBrush}"
                         BorderBrush="{DynamicResource ErrorBrush}"
+                        Margin="0,12,0,0"
                         Visibility="{Binding HasDelistedMods, Converter={StaticResource BoolToVis}}">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="{StaticResource IconRemove}"
@@ -341,7 +373,7 @@
                     </StatusBarItem>
                     <Separator/>
                     <StatusBarItem>
-                        <TextBlock Text="{Binding SelectedNavigationItem.Label}"
+                        <TextBlock Text="{Binding CurrentPageTitle}"
                                    FontSize="{DynamicResource LabelLarge}"
                                    VerticalAlignment="Center"/>
                     </StatusBarItem>
@@ -367,7 +399,7 @@
                   Grid.RowSpan="3"
                   Background="{DynamicResource ScrimBrush}"
                   Opacity="0.92"
-                  Visibility="{Binding IsMelonLoaderNotInstalled, Converter={StaticResource BoolToVis}}">
+                  Visibility="{Binding ShowMelonLoaderNotInstalledOverlay, Converter={StaticResource BoolToVis}}">
                 <Border Background="{DynamicResource SurfaceBrush}"
                         BorderBrush="{DynamicResource OutlineVariantBrush}"
                         BorderThickness="1"
@@ -416,6 +448,27 @@
                 </StackPanel>
             </Border>
         </Grid>
+
+        <!-- Toast 通知 -->
+        <Border Grid.Column="1"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,80"
+                Padding="16,12"
+                Background="{DynamicResource InverseSurfaceBrush}"
+                BorderThickness="0"
+                CornerRadius="{DynamicResource RadiusMedium}"
+                Panel.ZIndex="100"
+                Visibility="{Binding ShowToast, Converter={StaticResource BoolToVis}}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="16" ShadowDepth="4" Opacity="0.3" Color="#000000"/>
+            </Border.Effect>
+            <TextBlock Text="{Binding ToastMessage}"
+                       Foreground="{DynamicResource InverseOnSurfaceBrush}"
+                       FontSize="{DynamicResource BodyMedium}"
+                       TextWrapping="Wrap"
+                       MaxWidth="400"/>
+        </Border>
 
     </Grid>
 </UserControl>

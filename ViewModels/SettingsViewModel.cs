@@ -96,6 +96,59 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _useDnsOverHttps;
 
+    [ObservableProperty]
+    private bool _useCustomProxy;
+
+    [ObservableProperty]
+    private string _proxyProtocol = "HTTP";
+
+    [ObservableProperty]
+    private string _proxyAddress = string.Empty;
+
+    [ObservableProperty]
+    private bool _isTestingCustomProxy;
+
+    [ObservableProperty]
+    private string _customProxyTestStatus = string.Empty;
+
+    public IReadOnlyList<string> ProxyProtocols { get; } = new[] { "HTTP", "SOCKS5" };
+
+    [RelayCommand]
+    private async Task TestCustomProxyAsync()
+    {
+        if (IsTestingCustomProxy)
+            return;
+
+        if (!ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyProtocol;
+            return;
+        }
+
+        if (!ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+        {
+            CustomProxyTestStatus = Strings.InvalidProxyAddress;
+            return;
+        }
+
+        IsTestingCustomProxy = true;
+        CustomProxyTestStatus = Strings.TestingCustomProxy;
+        try
+        {
+            var latency = await ProxyConnectionTester.TestAsync(ProxyProtocol, ProxyAddress);
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestSucceeded, latency);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Custom proxy connection test failed");
+            CustomProxyTestStatus = string.Format(Strings.CustomProxyTestFailed, ex.Message);
+        }
+        finally
+        {
+            IsTestingCustomProxy = false;
+        }
+    }
+
     partial void OnSelectedProxyServerChanged(ProxyServerItem? value)
     {
         // 配置token时禁用代理，token清空时重新启用代理选项
@@ -187,6 +240,21 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
 
+    // Token 默认隐藏，点击眼睛图标临时查看
+    [ObservableProperty]
+    private bool _isGitHubTokenVisible = false;
+
+    // 隐藏状态下的掩码显示（用 • 替换每个字符）
+    public string GitHubApiTokenMasked => string.IsNullOrEmpty(GitHubApiToken)
+        ? string.Empty
+        : new string('•', GitHubApiToken.Length);
+
+    [RelayCommand]
+    private void ToggleGitHubTokenVisibility()
+    {
+        IsGitHubTokenVisible = !IsGitHubTokenVisible;
+    }
+
     partial void OnGitHubApiTokenChanged(string value)
     {
         // 配置token时禁用代理
@@ -195,6 +263,8 @@ public partial class SettingsViewModel : ObservableObject
             UseGitHubProxy = false;
         }
         OnPropertyChanged(nameof(IsGitHubProxyEnabled));
+        // 掩码随token变化刷新
+        OnPropertyChanged(nameof(GitHubApiTokenMasked));
     }
 
     [ObservableProperty]
@@ -289,6 +359,15 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isMelonLoaderOperating;
+
+    // 已安装或已禁用时显示卸载按钮
+    public bool CanShowUninstallMelonLoader => IsMelonLoaderInstalled || IsMelonLoaderDisabled;
+
+    partial void OnIsMelonLoaderInstalledChanged(bool value)
+        => OnPropertyChanged(nameof(CanShowUninstallMelonLoader));
+
+    partial void OnIsMelonLoaderDisabledChanged(bool value)
+        => OnPropertyChanged(nameof(CanShowUninstallMelonLoader));
 
     // 版本号点击彩蛋
     private int _versionClickCount = 0; // 记录点击次数
@@ -398,6 +477,11 @@ public partial class SettingsViewModel : ObservableObject
         MainConfigUrl = CommandLineArgs.DevConfigUrlOverride ?? string.Empty;
         UseGitHubProxy = settings.UseGitHubProxy;
         UseDnsOverHttps = settings.UseDnsOverHttps;
+        UseCustomProxy = settings.UseCustomProxy;
+        ProxyProtocol = string.Equals(settings.ProxyProtocol, "SOCKS5", StringComparison.OrdinalIgnoreCase)
+            ? "SOCKS5"
+            : "HTTP";
+        ProxyAddress = settings.ProxyAddress;
         // SelectedProxyServer 由 RefreshProxyServerList() 在 LoadSettings 之后设置
         GitHubApiToken = settings.GitHubApiToken;
         SelectedTheme = settings.Theme; // 加载主题设置
@@ -455,11 +539,29 @@ public partial class SettingsViewModel : ObservableObject
             // 检测语言是否改变
             bool languageChanged = SelectedLanguage != _originalLanguage;
 
+            if (UseCustomProxy)
+            {
+                if (!ProxyProtocols.Contains(ProxyProtocol, StringComparer.OrdinalIgnoreCase))
+                {
+                    MessageDialogHelper.ShowError(Strings.InvalidProxyProtocol, Strings.Error);
+                    return;
+                }
+
+                if (!ProxyConnector.TryParseEndpoint(ProxyAddress, out _, out _))
+                {
+                    MessageDialogHelper.ShowError(Strings.InvalidProxyAddress, Strings.Error);
+                    return;
+                }
+            }
+
             var settings = _settingsService.Settings;
             settings.Language = SelectedLanguage;
             settings.GameRootPath = GameRootPath;
             // dev模式下写入 CommandLineArgs override（不持久化到 settings.json）
             CommandLineArgs.DevConfigUrlOverride = string.IsNullOrWhiteSpace(MainConfigUrl) ? null : MainConfigUrl;
+            settings.UseCustomProxy = UseCustomProxy;
+            settings.ProxyProtocol = ProxyProtocol;
+            settings.ProxyAddress = ProxyAddress.Trim();
             settings.UseGitHubProxy = UseGitHubProxy;
             settings.GitHubProxyServer = SelectedProxyServer?.EnumValue ?? GitHubProxyServer.GhDmrGg;
             settings.GitHubProxyServerId = SelectedProxyServer?.ServerId ?? string.Empty;
@@ -1134,6 +1236,52 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanExecuteMelonLoaderOps))]
+    private async Task UninstallMelonLoaderAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        // 未安装时无需卸载
+        if (!IsMelonLoaderInstalled && !IsMelonLoaderDisabled)
+        {
+            MessageDialogHelper.ShowInformation(Strings.MelonLoaderNotDetected, Strings.MelonLoaderManagement);
+            return;
+        }
+
+        var confirmed = MessageDialogHelper.Confirm(
+            Strings.ConfirmUninstallMelonLoader, Strings.ConfirmUninstall);
+        if (!confirmed) return;
+
+        IsMelonLoaderOperating = true;
+        try
+        {
+            var progress = new Progress<DownloadProgress>(p =>
+                _loggingService.LogInfo(Strings.MelonLoaderUninstallingCurrentVersion + $" {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}"));
+
+            var success = await _melonLoaderService.UninstallMelonLoaderAsync(gameRoot, progress);
+            if (success)
+            {
+                await LoadMelonLoaderStatusAsync();
+                await _mainViewModel.Value.RecheckMelonLoaderStateAsync();
+                MessageDialogHelper.ShowSuccess(Strings.MelonLoaderUninstallSuccess, Strings.Success);
+            }
+            else
+            {
+                MessageDialogHelper.ShowError(Strings.MelonLoaderUninstallFailed, Strings.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderUninstallFailed);
+            MessageDialogHelper.ShowError(Strings.MelonLoaderUninstallFailed, Strings.Error);
+        }
+        finally
+        {
+            IsMelonLoaderOperating = false;
+        }
+    }
+
     private bool CanExecuteMelonLoaderOps() => !IsGameRunning && !IsMelonLoaderOperating;
 
     private bool CanBrowseGameDirectory() => !IsGameRunning;
@@ -1142,6 +1290,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
         ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
+        UninstallMelonLoaderCommand.NotifyCanExecuteChanged();
         BrowseGameDirectoryCommand.NotifyCanExecuteChanged();
     }
 
@@ -1149,6 +1298,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
         ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
+        UninstallMelonLoaderCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]

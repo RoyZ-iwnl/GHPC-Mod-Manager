@@ -9,9 +9,9 @@ public partial class MainView : UserControl
     {
         InitializeComponent();
         DataContext = viewModel;
-        IsVisibleChanged += (_, _) =>
+        IsVisibleChanged += async (_, _) =>
         {
-            if (IsVisible) viewModel.RefreshMelonLoaderState();
+            if (IsVisible) await viewModel.RecheckMelonLoaderStateAsync();
         };
     }
 }

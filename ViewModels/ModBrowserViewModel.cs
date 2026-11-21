@@ -63,9 +63,6 @@ public partial class ModBrowserViewModel : ObservableObject
     private bool _isGameRunning;
 
     [ObservableProperty]
-    private bool _isDownloading;
-
-    [ObservableProperty]
     private double _progressValue;
 
     [ObservableProperty]
@@ -94,8 +91,11 @@ public partial class ModBrowserViewModel : ObservableObject
     // 横幅可见性：有新增且未被关闭时显示
     public bool CanShowNewModsBanner => HasNewMods && !IsNewModsBannerDismissed;
 
-    // 内部存储检测到的新增MOD
+    // 内部存储检测到的新增MOD（用于横幅可点击跳转）
     private List<ModViewModel> _detectedNewMods = new();
+
+    // 横幅展示的新增MOD列表（可点击跳转详情页）
+    public ObservableCollection<ModViewModel> NewModsList { get; } = new();
 
     // 通知MainViewModel导航到详情页
     public event EventHandler<ModViewModel>? NavigateToDetailRequested;
@@ -272,11 +272,11 @@ public partial class ModBrowserViewModel : ObservableObject
         RefreshRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task InstallModAsync(ModViewModel mod)
         => await InstallModCoreAsync(mod, preferBackup: true);
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task RedownloadInstallAsync(ModViewModel mod)
         => await InstallModCoreAsync(mod, preferBackup: false);
 
@@ -310,7 +310,6 @@ public partial class ModBrowserViewModel : ObservableObject
 
         try
         {
-            IsDownloading = true;
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
@@ -340,7 +339,6 @@ public partial class ModBrowserViewModel : ObservableObject
 
                 if (conflictingInstalled.Count > 0)
                 {
-                    IsDownloading = false;
                     var conflictNames = string.Join("\n• ", conflictingInstalled);
                     var msg = $"{Strings.ConflictDialogMessage}\n• {conflictNames}\n\n{Strings.ConflictInstallAnyway}";
                     var firstResult = MessageDialogHelper.Confirm(msg, Strings.ConflictDetectedOnLaunch);
@@ -350,8 +348,6 @@ public partial class ModBrowserViewModel : ObservableObject
                         Strings.ConflictInstallConfirm,
                         Strings.ConflictDetectedOnLaunch);
                     if (!secondResult) return;
-
-                    IsDownloading = true;
                 }
             }
 
@@ -361,7 +357,6 @@ public partial class ModBrowserViewModel : ObservableObject
                 var (allSatisfied, missingIds) = await _modManagerService.CheckSingleModDependenciesAsync(mod.Id);
                 if (!allSatisfied && missingIds.Count > 0)
                 {
-                    IsDownloading = false;
                     // 用DisplayName替换modId，找不到则保留id
                     var missingNames = string.Join("\n• ", missingIds.Select(id =>
                         _allMods.FirstOrDefault(m => m.Id == id)?.DisplayName ?? id));
@@ -376,7 +371,6 @@ public partial class ModBrowserViewModel : ObservableObject
                         NavigateToDetailRequested?.Invoke(this, firstMissingMod);
                         return;
                     }
-                    IsDownloading = true;
                 }
             }
 
@@ -384,10 +378,28 @@ public partial class ModBrowserViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, skipConflictCheck: true, preferBackup: preferBackup);
+            // 根据操作类型生成队列文本
+            string? operationText = null;
+            if (mod.IsInstalled && mod.CanUpdate)
+            {
+                // 已安装且能更新 → 更新
+                operationText = string.Format(Strings.Updating, mod.DisplayName);
+            }
+            else if (!preferBackup)
+            {
+                // 强制重新下载 → 重装
+                operationText = string.Format(Strings.Reinstalling, mod.DisplayName);
+            }
+            else
+            {
+                // 新安装
+                operationText = string.Format(Strings.Installing, mod.DisplayName);
+            }
+
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion, progress, skipDependencyCheck: true, skipConflictCheck: true, preferBackup: preferBackup, operationText: operationText);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);
@@ -403,11 +415,10 @@ public partial class ModBrowserViewModel : ObservableObject
         {
             HasDeterminateProgress = false;
             ProgressValue = 0;
-            IsDownloading = false;
         }
     }
 
-    private bool CanExecuteModOps() => !IsDownloading && !IsGameRunning;
+    private bool CanExecuteModOps() => !IsGameRunning;
 
     /// <summary>
     /// 由MainViewModel调用，推送检测到的新增MOD
@@ -419,6 +430,11 @@ public partial class ModBrowserViewModel : ObservableObject
         HasNewMods = _detectedNewMods.Count > 0;
         NewModsCount = _detectedNewMods.Count;
         NewModsPreview = _detectedNewMods.Select(m => m.DisplayName).ToList();
+
+        // 同步到可观察集合，供横幅点击跳转使用
+        NewModsList.Clear();
+        foreach (var mod in _detectedNewMods)
+            NewModsList.Add(mod);
     }
 
     /// <summary>
@@ -430,6 +446,7 @@ public partial class ModBrowserViewModel : ObservableObject
         HasNewMods = false;
         NewModsCount = 0;
         NewModsPreview.Clear();
+        NewModsList.Clear();
     }
 
     /// <summary>
@@ -446,13 +463,13 @@ public partial class ModBrowserViewModel : ObservableObject
         IsNewModsBannerDismissed = true;
     }
 
-    partial void OnIsGameRunningChanged(bool value)
+    [RelayCommand]
+    private void NavigateToNewMod(ModViewModel mod)
     {
-        InstallModCommand.NotifyCanExecuteChanged();
-        RedownloadInstallCommand.NotifyCanExecuteChanged();
+        NavigateToDetailRequested?.Invoke(this, mod);
     }
 
-    partial void OnIsDownloadingChanged(bool value)
+    partial void OnIsGameRunningChanged(bool value)
     {
         InstallModCommand.NotifyCanExecuteChanged();
         RedownloadInstallCommand.NotifyCanExecuteChanged();

@@ -383,6 +383,27 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="AssetSelectionTitle" xml:space="preserve">
+    <value>选择下载文件</value>
+  </data>
+  <data name="AssetSelectionMessage" xml:space="preserve">
+    <value>为 {0} 版本 {1} 找到多个匹配文件，请选择要下载的文件。</value>
+  </data>
+  <data name="AssetSelectionHint" xml:space="preserve">
+    <value>建议优先选择体积较大且文件名不含 &quot;source&quot; 或 &quot;src&quot; 的文件。</value>
+  </data>
+  <data name="AssetSelectionRecommended" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="AssetSelectionSource" xml:space="preserve">
+    <value>可能是源代码</value>
+  </data>
+  <data name="AssetSelectionAlternative" xml:space="preserve">
+    <value>备选项</value>
+  </data>
+  <data name="AssetSelectionUnknownSize" xml:space="preserve">
+    <value>未知大小</value>
+  </data>
   <data name="PresetNameRequired" xml:space="preserve">
     <value>请输入预设名称</value>
   </data>
@@ -1337,6 +1358,12 @@
   <data name="RestartApplicationError" xml:space="preserve">
     <value>重启应用程序失败</value>
   </data>
+  <data name="RestartNow" xml:space="preserve">
+    <value>立即重启</value>
+  </data>
+  <data name="RestartLater" xml:space="preserve">
+    <value>稍后</value>
+  </data>
   <data name="FailedToRestartApplication" xml:space="preserve">
     <value>重启应用程序失败。请手动重启</value>
   </data>
@@ -1378,6 +1405,18 @@
   </data>
   <data name="MelonLoaderEnableFailed" xml:space="preserve">
     <value>启用 MelonLoader 失败</value>
+  </data>
+  <data name="UninstallMelonLoader" xml:space="preserve">
+    <value>卸载 MelonLoader</value>
+  </data>
+  <data name="ConfirmUninstallMelonLoader" xml:space="preserve">
+    <value>确定要卸载 MelonLoader 吗？将按原版文件清单删除框架文件，不会影响 Mods、UserData 等用户数据。</value>
+  </data>
+  <data name="MelonLoaderUninstallSuccess" xml:space="preserve">
+    <value>MelonLoader 已成功卸载</value>
+  </data>
+  <data name="MelonLoaderUninstallVersionUndetected" xml:space="preserve">
+    <value>无法识别当前 MelonLoader 版本且无本地清单，无法自动卸载，请手动删除游戏目录下的 MelonLoader 文件夹和 version.dll</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
     <value>MelonLoader已临时禁用</value>
@@ -3382,4 +3421,81 @@
   <data name="SponsorByFormat" xml:space="preserve">
     <value>由{0}冠名赞助</value>
   </data>
+  <data name="CustomProxy" xml:space="preserve">
+    <value>启用应用代理</value>
+  </data>
+  <data name="CustomProxyDescription" xml:space="preserve">
+    <value>应用网络请求通过指定的 HTTP 或 SOCKS5 代理连接。</value>
+  </data>
+  <data name="ProxyProtocol" xml:space="preserve">
+    <value>代理协议</value>
+  </data>
+  <data name="ProxyAddress" xml:space="preserve">
+    <value>代理地址</value>
+  </data>
+  <data name="ProxyAddressHint" xml:space="preserve">
+    <value>请输入 主机:端口，例如 127.0.0.1:7897。</value>
+  </data>
+  <data name="InvalidProxyAddress" xml:space="preserve">
+    <value>请输入有效的代理地址，格式为 主机:端口。</value>
+  </data>
+  <data name="InvalidProxyProtocol" xml:space="preserve">
+    <value>请选择 HTTP 或 SOCKS5 代理协议。</value>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>测试连接</value>
+  </data>
+  <data name="TestingCustomProxy" xml:space="preserve">
+    <value>正在测试代理连接...</value>
+  </data>
+  <data name="CustomProxyTestSucceeded" xml:space="preserve">
+    <value>代理连接成功（{0} 毫秒）。</value>
+  </data>
+  <data name="CustomProxyTestFailed" xml:space="preserve">
+    <value>代理连接失败：{0}</value>
+  </data>
+  <data name="Downloads" xml:space="preserve"><value>下载</value></data>
+  <data name="NavDownloads" xml:space="preserve"><value>下载</value></data>
+  <data name="DownloadManager" xml:space="preserve"><value>下载管理</value></data>
+  <data name="DownloadQueue" xml:space="preserve"><value>下载队列</value></data>
+  <data name="DownloadSpeed" xml:space="preserve"><value>当前速度</value></data>
+  <data name="DownloadEmpty" xml:space="preserve"><value>暂无下载任务</value></data>
+  <data name="Pause" xml:space="preserve"><value>暂停</value></data>
+  <data name="Resume" xml:space="preserve"><value>继续</value></data>
+  <data name="Retry" xml:space="preserve"><value>重试</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>上移</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>下移</value></data>
+  <data name="Remove" xml:space="preserve"><value>移除</value></data>
+  <data name="PauseAll" xml:space="preserve"><value>全部暂停</value></data>
+  <data name="ResumeAll" xml:space="preserve"><value>全部继续</value></data>
+  <data name="CancelAll" xml:space="preserve"><value>全部取消</value></data>
+  <data name="ConcurrentDownloads" xml:space="preserve"><value>并发下载数</value></data>
+  <data name="ProxyQuickActions" xml:space="preserve"><value>代理快捷操作</value></data>
+  <data name="EnableGitHubProxy" xml:space="preserve"><value>启用 GitHub 加速</value></data>
+  <data name="SelectProxy" xml:space="preserve"><value>代理节点</value></data>
+  <data name="OpenTokenSettings" xml:space="preserve"><value>填写 Token</value></data>
+  <data name="OpenProxySettings" xml:space="preserve"><value>打开代理设置</value></data>
+  <data name="DownloadPending" xml:space="preserve"><value>等待中</value></data>
+  <data name="DownloadRunning" xml:space="preserve"><value>下载中</value></data>
+  <data name="DownloadPaused" xml:space="preserve"><value>已暂停</value></data>
+  <data name="DownloadCompletedStatus" xml:space="preserve"><value>已完成</value></data>
+  <data name="DownloadFailed" xml:space="preserve"><value>失败</value></data>
+  <data name="DownloadCancelled" xml:space="preserve"><value>已取消</value></data>
+  <data name="DownloadRetryUnavailable" xml:space="preserve"><value>无法重试</value></data>
+  <data name="ApplicationRestartInterrupted" xml:space="preserve"><value>应用重启中断</value></data>
+  <data name="DownloadSourceMod" xml:space="preserve"><value>MOD</value></data>
+  <data name="DownloadSourceTranslation" xml:space="preserve"><value>翻译</value></data>
+  <data name="DownloadSourceMelonLoader" xml:space="preserve"><value>MelonLoader</value></data>
+  <data name="DownloadSourceUpdate" xml:space="preserve"><value>应用更新</value></data>
+  <data name="DownloadSourceMaintenance" xml:space="preserve"><value>后台维护</value></data>
+  <data name="DownloadSourceResource" xml:space="preserve"><value>资源</value></data>
+  <data name="NoDownloads" xml:space="preserve"><value>暂无下载任务</value></data>
+  <data name="Reinstalling" xml:space="preserve"><value>正在重装 {0}...</value></data>
+  <data name="DownloadEnqueued" xml:space="preserve"><value>已添加到下载队列</value></data>
+  <data name="ModUpdateDialogTitle" xml:space="preserve"><value>发现可用更新</value></data>
+  <data name="ModUpdateDialogHeader" xml:space="preserve"><value>以下 {0} 个MOD有可用更新，请选择要更新的：</value></data>
+  <data name="UpdateAllMods" xml:space="preserve"><value>全部更新</value></data>
+  <data name="UpdateSelectedMods" xml:space="preserve"><value>更新所选 ({0})</value></data>
+  <data name="ModUpdateQueued" xml:space="preserve"><value>已将 {0} 个MOD的更新添加至下载队列</value></data>
+  <data name="SelectAll" xml:space="preserve"><value>全选</value></data>
 </root>

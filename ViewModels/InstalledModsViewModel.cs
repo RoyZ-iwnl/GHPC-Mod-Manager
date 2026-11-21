@@ -80,6 +80,9 @@ public partial class InstalledModsViewModel : ObservableObject
     // 横幅可见性：有新增MOD时显示
     public bool CanShowNewModsBanner => HasNewMods && NewModsCount > 0;
 
+    // 横幅展示的新增MOD列表（可点击跳转详情页）
+    public ObservableCollection<ModViewModel> NewModsList { get; } = new();
+
     public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
     {
         _modManagerService = modManagerService;
@@ -212,21 +215,30 @@ public partial class InstalledModsViewModel : ObservableObject
     /// <summary>
     /// 由MainViewModel调用，同步新上架MOD横幅数据
     /// </summary>
-    public void SetNewModsInfo(bool hasNewMods, int newModsCount, List<string> newModsPreview)
+    public void SetNewModsInfo(bool hasNewMods, int newModsCount, List<string> newModsPreview, IEnumerable<ModViewModel>? newModsList = null)
     {
         HasNewMods = hasNewMods;
         NewModsCount = newModsCount;
         NewModsPreview = newModsPreview;
+        NewModsList.Clear();
+        if (newModsList != null)
+            foreach (var mod in newModsList)
+                NewModsList.Add(mod);
         OnPropertyChanged(nameof(CanShowNewModsBanner));
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand]
+    private void NavigateToNewMod(ModViewModel mod)
+    {
+        NavigateToDetailRequested?.Invoke(this, mod);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task UpdateModAsync(ModViewModel mod)
     {
         if (mod.LatestVersion == null) return;
         try
         {
-            IsDownloading = true;
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Updating, mod.DisplayName);
@@ -250,7 +262,7 @@ public partial class InstalledModsViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Updating, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Updating, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             var success = await _modManagerService.UpdateModAsync(mod.Id, mod.LatestVersion, progress);
@@ -269,11 +281,10 @@ public partial class InstalledModsViewModel : ObservableObject
         {
             HasDeterminateProgress = false;
             ProgressValue = 0;
-            IsDownloading = false;
         }
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
+    [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
     private async Task ReinstallModAsync(ModViewModel mod)
     {
         if (mod.Config == null) return;
@@ -283,7 +294,6 @@ public partial class InstalledModsViewModel : ObservableObject
 
         try
         {
-            IsDownloading = true;
             HasDeterminateProgress = false;
             ProgressValue = 0;
             StatusMessage = string.Format(Strings.Installing, mod.DisplayName);
@@ -307,10 +317,11 @@ public partial class InstalledModsViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
-            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion ?? mod.InstalledVersion ?? "", progress, skipDependencyCheck: true, skipConflictCheck: true);
+            var operationText = string.Format(Strings.Reinstalling, mod.DisplayName);
+            var success = await _modManagerService.InstallModAsync(mod.Config, mod.LatestVersion ?? mod.InstalledVersion ?? "", progress, skipDependencyCheck: true, skipConflictCheck: true, operationText: operationText);
             StatusMessage = success
                 ? string.Format(Strings.InstallSuccessful, mod.DisplayName)
                 : string.Format(Strings.InstallFailed, mod.DisplayName);
@@ -326,7 +337,6 @@ public partial class InstalledModsViewModel : ObservableObject
         {
             HasDeterminateProgress = false;
             ProgressValue = 0;
-            IsDownloading = false;
         }
     }
 
@@ -340,7 +350,6 @@ public partial class InstalledModsViewModel : ObservableObject
 
         try
         {
-            IsDownloading = true;
             StatusMessage = string.Format(Strings.Uninstalling, mod.DisplayName);
 
             var success = mod.IsManuallyInstalled && mod.IsUnsupportedManualMod
@@ -362,7 +371,6 @@ public partial class InstalledModsViewModel : ObservableObject
         {
             HasDeterminateProgress = false;
             ProgressValue = 0;
-            IsDownloading = false;
         }
     }
 
@@ -445,7 +453,7 @@ public partial class InstalledModsViewModel : ObservableObject
         CheckForUpdatesRequested?.Invoke(this, true);
     }
 
-    private bool CanExecuteCheckUpdates() => !IsCheckingUpdates && !IsDownloading;
+    private bool CanExecuteCheckUpdates() => !IsCheckingUpdates;
 
     [RelayCommand]
     private void Refresh()
@@ -459,17 +467,9 @@ public partial class InstalledModsViewModel : ObservableObject
         NavigateToModBrowserRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool CanExecuteModOps() => !IsDownloading && !IsTogglingMod && !IsCheckingUpdates && !IsGameRunning;
+    private bool CanExecuteModOps() => !IsTogglingMod && !IsCheckingUpdates && !IsGameRunning;
 
     partial void OnIsTogglingModChanged(bool value)
-    {
-        UpdateModCommand.NotifyCanExecuteChanged();
-        ReinstallModCommand.NotifyCanExecuteChanged();
-        UninstallModCommand.NotifyCanExecuteChanged();
-        ToggleModCommand.NotifyCanExecuteChanged();
-    }
-
-    partial void OnIsDownloadingChanged(bool value)
     {
         UpdateModCommand.NotifyCanExecuteChanged();
         ReinstallModCommand.NotifyCanExecuteChanged();

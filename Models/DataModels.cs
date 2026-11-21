@@ -277,6 +277,9 @@ public class AppSettings
     public string GameRootPath { get; set; } = string.Empty;
     public bool IsFirstRun { get; set; } = true;
     public AppTheme Theme { get; set; } = AppTheme.Light;
+    public bool UseCustomProxy { get; set; } = false;
+    public string ProxyProtocol { get; set; } = "HTTP";
+    public string ProxyAddress { get; set; } = string.Empty;
     public bool UseGitHubProxy { get; set; } = false;
     public GitHubProxyServer GitHubProxyServer { get; set; } = GitHubProxyServer.GhDmrGg;
     /// <summary>
@@ -341,6 +344,242 @@ public class AppSettings
     /// 启动时打开官网（默认 true）
     /// </summary>
     public bool OpenWebsiteOnStartup { get; set; } = true;
+    public int MaxConcurrentDownloads { get; set; } = 1;
+}
+
+public sealed class DownloadRequest
+{
+    public string Url { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;
+    public string Source { get; set; } = string.Empty;
+    /// <summary>队列 UI 显示名称（如 "Mod名称 v1.0.0"），为空时回退到 FileName</summary>
+    public string? DisplayName { get; set; }
+    /// <summary>队列 UI 副标题（如 "正在更新 Mod..."），为空时回退到 SourceText</summary>
+    public string? SourceText { get; set; }
+    public long? ExpectedSize { get; set; }
+    public string? ExpectedDigest { get; set; }
+    public string? AssetName { get; set; }
+}
+
+public enum DownloadTaskStatus
+{
+    Pending,
+    Downloading,
+    Paused,
+    Completed,
+    Failed,
+    Cancelled
+}
+
+public enum ChunkSegmentStatus
+{
+    Pending,
+    Downloading,
+    Completed
+}
+
+public sealed class ChunkSegmentInfo
+{
+    public long StartByte { get; set; }
+    public long EndByte { get; set; }
+    public long BytesDownloaded { get; set; }
+    public ChunkSegmentStatus SegmentStatus { get; set; }
+    public long TotalSize => EndByte - StartByte + 1;
+    public double Progress => TotalSize > 0 ? (double)BytesDownloaded / TotalSize : 0;
+}
+
+public sealed class DownloadTaskItem : ObservableObject
+{
+    private static string Text(string key) =>
+        Strings.ResourceManager.GetString(key, Strings.Culture) ?? key;
+
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Url { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;
+    public string Source { get; set; } = string.Empty;
+
+    private string? _displayName;
+    /// <summary>队列显示标题，为空时回退到 FileName</summary>
+    public string? DisplayName
+    {
+        get => _displayName;
+        set
+        {
+            if (SetProperty(ref _displayName, value))
+                OnPropertyChanged(nameof(DisplayTitle));
+        }
+    }
+
+    /// <summary>实际显示的标题：DisplayName 不为空时使用 DisplayName，否则使用 FileName</summary>
+    public string DisplayTitle => string.IsNullOrWhiteSpace(DisplayName) ? FileName : DisplayName;
+
+    private string? _sourceTextOverride;
+    /// <summary>队列显示副标题，为空时回退到默认 Source 映射</summary>
+    public string? SourceTextOverride
+    {
+        get => _sourceTextOverride;
+        set => SetProperty(ref _sourceTextOverride, value);
+    }
+
+    public string SourceText => !string.IsNullOrWhiteSpace(SourceTextOverride) ? SourceTextOverride : Source switch
+    {
+        "MOD" => Text("DownloadSourceMod"),
+        "MelonLoader" => Text("DownloadSourceMelonLoader"),
+        "Translation" => Text("DownloadSourceTranslation"),
+        "Application update" => Text("DownloadSourceUpdate"),
+        "Background maintenance" => Text("DownloadSourceMaintenance"),
+        "Resource" => Text("DownloadSourceResource"),
+        "MOD / resource" => Text("DownloadSourceResource"),
+        _ => Source
+    };
+    public long? ExpectedSize { get; set; }
+    public string? ExpectedDigest { get; set; }
+    public string? AssetName { get; set; }
+    public DateTime EnqueuedAt { get; set; } = DateTime.UtcNow;
+
+    private DownloadTaskStatus _status;
+    public DownloadTaskStatus Status
+    {
+        get => _status;
+        set
+        {
+            if (SetProperty(ref _status, value))
+            {
+                OnPropertyChanged(nameof(StatusText));
+                OnPropertyChanged(nameof(SpeedText));
+                OnPropertyChanged(nameof(CanPause));
+                OnPropertyChanged(nameof(CanResume));
+                OnPropertyChanged(nameof(CanRetry));
+                OnPropertyChanged(nameof(CanMove));
+                OnPropertyChanged(nameof(CanRemove));
+            }
+        }
+    }
+
+    private double _progress;
+    public double Progress
+    {
+        get => _progress;
+        set
+        {
+            if (SetProperty(ref _progress, value))
+                OnPropertyChanged(nameof(ProgressText));
+        }
+    }
+
+    private long _bytesReceived;
+    public long BytesReceived
+    {
+        get => _bytesReceived;
+        set
+        {
+            if (SetProperty(ref _bytesReceived, value))
+                OnPropertyChanged(nameof(ProgressText));
+        }
+    }
+
+    private long _totalBytes;
+    public long TotalBytes
+    {
+        get => _totalBytes;
+        set
+        {
+            if (SetProperty(ref _totalBytes, value))
+                OnPropertyChanged(nameof(ProgressText));
+        }
+    }
+
+    private double _speedBytesPerSecond;
+    public double SpeedBytesPerSecond
+    {
+        get => _speedBytesPerSecond;
+        set
+        {
+            if (SetProperty(ref _speedBytesPerSecond, value))
+                OnPropertyChanged(nameof(SpeedText));
+        }
+    }
+
+    private string _errorMessage = string.Empty;
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (SetProperty(ref _errorMessage, value))
+                OnPropertyChanged(nameof(HasError));
+        }
+    }
+
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    private int _priority;
+    public int Priority
+    {
+        get => _priority;
+        set => SetProperty(ref _priority, value);
+    }
+
+    public string StatusText => Status switch
+    {
+        DownloadTaskStatus.Pending => Text("DownloadPending"),
+        DownloadTaskStatus.Downloading => Text("DownloadRunning"),
+        DownloadTaskStatus.Paused => Text("DownloadPaused"),
+        DownloadTaskStatus.Completed => Text("DownloadCompletedStatus"),
+        DownloadTaskStatus.Failed => Text("DownloadFailed"),
+        DownloadTaskStatus.Cancelled => Text("DownloadCancelled"),
+        _ => string.Empty
+    };
+
+    public string ProgressText => TotalBytes > 0
+        ? $"{FormatBytes(BytesReceived)} / {FormatBytes(TotalBytes)}"
+        : BytesReceived > 0 ? FormatBytes(BytesReceived) : string.Empty;
+
+    private static string FormatBytes(long bytes)
+    {
+        if (bytes >= 1024L * 1024 * 1024)
+            return $"{bytes / (1024d * 1024 * 1024):0.0} GB";
+        if (bytes >= 1024 * 1024)
+            return $"{bytes / (1024d * 1024):0.0} MB";
+        if (bytes >= 1024)
+            return $"{bytes / 1024d:0} KB";
+        return $"{bytes} B";
+    }
+
+    public string SpeedText
+    {
+        get
+        {
+            // 仅下载中时显示速度，其他状态不显示
+            if (Status != DownloadTaskStatus.Downloading) return string.Empty;
+            if (SpeedBytesPerSecond <= 0) return string.Empty;
+            if (SpeedBytesPerSecond >= 1024 * 1024)
+                return $"{SpeedBytesPerSecond / (1024 * 1024):0.0} MB/s";
+            if (SpeedBytesPerSecond >= 1024)
+                return $"{SpeedBytesPerSecond / 1024:0} KB/s";
+            return $"{SpeedBytesPerSecond:0} B/s";
+        }
+    }
+
+    public bool CanPause => Status == DownloadTaskStatus.Pending || Status == DownloadTaskStatus.Downloading;
+    public bool CanResume => Status == DownloadTaskStatus.Paused;
+    public bool CanRetry => Status == DownloadTaskStatus.Failed || Status == DownloadTaskStatus.Cancelled;
+    public bool CanMove => Status != DownloadTaskStatus.Completed && Status != DownloadTaskStatus.Cancelled;
+    public bool CanRemove => Status == DownloadTaskStatus.Completed || Status == DownloadTaskStatus.Cancelled || Status == DownloadTaskStatus.Failed;
+
+    private IReadOnlyList<ChunkSegmentInfo>? _chunkSegments;
+    public IReadOnlyList<ChunkSegmentInfo>? ChunkSegments
+    {
+        get => _chunkSegments;
+        set
+        {
+            if (SetProperty(ref _chunkSegments, value))
+                OnPropertyChanged(nameof(HasChunkSegments));
+        }
+    }
+
+    // 多线程下载时有多个分块，显示IDM风格进度条
+    public bool HasChunkSegments => _chunkSegments?.Count > 1;
 }
 
 /// <summary>

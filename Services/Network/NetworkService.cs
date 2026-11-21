@@ -19,7 +19,9 @@ public interface INetworkService
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
     Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName);
-    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
+    Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null);
+    /// <summary>直接下载，不进入全局下载队列，仅用于 SetupWizard 初始化流程。</summary>
+    Task<byte[]> DownloadFileDirectAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null);
     void ClearCache(); // Clear all cached data (including GitHub persistent cache)
     void ClearSessionCache(); // Clear session cache for non-GitHub resources
     void ClearRateLimitBlocks(); // Clear rate limit blocks to allow manual refresh
@@ -34,6 +36,7 @@ public class NetworkService : INetworkService
     private readonly ILoggingService _loggingService;
     private readonly ISettingsService _settingsService;
     private readonly IMainConfigService _mainConfigService;
+    private readonly IDownloadQueueService _downloadQueueService;
 
 
     // Rate limit tracking
@@ -49,12 +52,22 @@ public class NetworkService : INetworkService
     // 本次启动的内存缓存（非GitHub资源）
     private readonly ConcurrentDictionary<string, object> _sessionCache = new();
 
-    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService)
+    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService, IDownloadQueueService downloadQueueService)
     {
         _httpClient = httpClient;
         _loggingService = loggingService;
         _settingsService = settingsService;
         _mainConfigService = mainConfigService;
+        _downloadQueueService = downloadQueueService;
+
+        _downloadQueueService.RegisterDefaultDownloader(
+            (request, queuedProgress, queuedToken) => DownloadFileCoreAsync(
+                request.Url,
+                queuedProgress,
+                queuedToken,
+                request.ExpectedSize,
+                request.ExpectedDigest,
+                request.AssetName));
 
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0");
         _httpClient.Timeout = TimeSpan.FromMinutes(10);
@@ -506,7 +519,42 @@ public class NetworkService : INetworkService
         }
     }
 
-    public async Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null)
+    public Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null)
+    {
+        var fileName = string.IsNullOrWhiteSpace(assetName) ? GetDownloadTargetName(url) : assetName;
+        return _downloadQueueService.EnqueueAsync(
+            new DownloadRequest
+            {
+                Url = url,
+                FileName = fileName,
+                Source = InferDownloadSource(url, fileName),
+                DisplayName = displayName,
+                SourceText = sourceText,
+                ExpectedSize = expectedSize,
+                ExpectedDigest = expectedDigest,
+                AssetName = assetName
+            },
+            (queuedProgress, queuedToken) => DownloadFileCoreAsync(url, queuedProgress, queuedToken, expectedSize, expectedDigest, assetName),
+            progress,
+            cancellationToken);
+    }
+
+    public Task<byte[]> DownloadFileDirectAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null)
+    {
+        return DownloadFileCoreAsync(url, progress, cancellationToken, expectedSize, expectedDigest, assetName);
+    }
+
+    private static string InferDownloadSource(string url, string fileName)
+    {
+        var value = $"{url} {fileName}".ToLowerInvariant();
+        if (value.Contains("melonloader")) return "MelonLoader";
+        if (value.Contains("translation") || value.Contains("xunity") || value.Contains("translator")) return "Translation";
+        if (value.EndsWith(".exe") || value.Contains("manager-update")) return "Application update";
+        if (value.Contains("cleanup") || value.Contains("version")) return "Background maintenance";
+        return "MOD / resource";
+    }
+
+    private async Task<byte[]> DownloadFileCoreAsync(string url, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken, long? expectedSize, string? expectedDigest, string? assetName)
     {
         var finalUrl = ApplyGitHubProxy(url);
         var candidateUrls = finalUrl != url
@@ -535,6 +583,14 @@ public class NetworkService : INetworkService
 
                     var downloadData = await DownloadFromUrlAsync(candidateUrl, progress, cancellationToken);
                     ValidateDownloadIntegrity(downloadData, expectedSize, expectedDigest, downloadTargetName);
+                    // 下载完成后明确上报100%，消除进度条因最后一次上报偏差留下的缺口
+                    progress?.Report(new DownloadProgress
+                    {
+                        BytesReceived = downloadData.LongLength,
+                        TotalBytes = downloadData.LongLength,
+                        ProgressPercentage = 100.0,
+                        SpeedBytesPerSecond = 0
+                    });
                     return downloadData;
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
@@ -794,6 +850,8 @@ public class NetworkService : INetworkService
         var startTime = DateTime.Now;
         var lastUpdateTime = startTime;
         var lastCompletedBytes = 0L;
+        // 分块快照（100ms更新一次），供IDM风格进度条渲染
+        var lastSegmentSnapshot = (IReadOnlyList<ChunkSegmentInfo>?)null;
 
         // Helper: Calculate global average speed
         double CalculateGlobalAvgSpeed()
@@ -979,6 +1037,24 @@ public class NetworkService : INetworkService
                                             }
                                             lastUpdateTime = currentTime;
                                             lastCompletedBytes = completedBytes;
+
+                                            // 快照当前分块状态，跳过已取消且无数据的分块
+                                            lastSegmentSnapshot = chunkStates.Values
+                                                .Where(cs => cs.Status != ChunkStatus.Cancelled)
+                                                .OrderBy(cs => cs.StartByte)
+                                                .Select(cs => new ChunkSegmentInfo
+                                                {
+                                                    StartByte = cs.StartByte,
+                                                    EndByte = cs.EndByte,
+                                                    BytesDownloaded = cs.BytesDownloaded,
+                                                    SegmentStatus = cs.Status switch
+                                                    {
+                                                        ChunkStatus.Completed => ChunkSegmentStatus.Completed,
+                                                        ChunkStatus.Downloading => ChunkSegmentStatus.Downloading,
+                                                        _ => ChunkSegmentStatus.Pending
+                                                    }
+                                                })
+                                                .ToList();
                                         }
                                         else
                                         {
@@ -1002,7 +1078,8 @@ public class NetworkService : INetworkService
                                         ProgressPercentage = percentage,
                                         SpeedBytesPerSecond = speedBytesPerSecond,
                                         ElapsedTime = elapsedTime,
-                                        EstimatedTimeRemaining = estimatedTimeRemaining
+                                        EstimatedTimeRemaining = estimatedTimeRemaining,
+                                        ChunkSegments = lastSegmentSnapshot
                                     });
                                 }
                             }
@@ -1596,10 +1673,21 @@ public class DownloadProgress
     public double SpeedBytesPerSecond { get; set; }
     public TimeSpan ElapsedTime { get; set; }
     public TimeSpan EstimatedTimeRemaining { get; set; }
+    public IReadOnlyList<ChunkSegmentInfo>? ChunkSegments { get; set; }
     
     public string GetFormattedSpeed()
     {
         return FormatBytes(SpeedBytesPerSecond) + "/s";
+    }
+
+    /// <summary>
+    /// 状态文字后缀：速度>0时显示百分比+速度，否则只显示百分比
+    /// </summary>
+    public string GetProgressSuffix()
+    {
+        return SpeedBytesPerSecond > 0
+            ? $"{ProgressPercentage:F1}% - {GetFormattedSpeed()}"
+            : $"{ProgressPercentage:F1}%";
     }
     
     public string GetFormattedProgress()

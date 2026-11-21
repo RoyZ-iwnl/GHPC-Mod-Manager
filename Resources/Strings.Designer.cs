@@ -160,6 +160,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Interrupted by application restart.
+        /// </summary>
+        public static string ApplicationRestartInterrupted {
+            get {
+                return ResourceManager.GetString("ApplicationRestartInterrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application update available: {0}.
         /// </summary>
         public static string ApplicationUpdateAvailable {
@@ -255,6 +264,69 @@ namespace GHPC_Mod_Manager.Resources {
         public static string AppTheme {
             get {
                 return ResourceManager.GetString("AppTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alternative.
+        /// </summary>
+        public static string AssetSelectionAlternative {
+            get {
+                return ResourceManager.GetString("AssetSelectionAlternative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommendation: choose a larger file without &quot;source&quot; or &quot;src&quot; in its name..
+        /// </summary>
+        public static string AssetSelectionHint {
+            get {
+                return ResourceManager.GetString("AssetSelectionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple matching files were found for {0} version {1}. Please choose one to download..
+        /// </summary>
+        public static string AssetSelectionMessage {
+            get {
+                return ResourceManager.GetString("AssetSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended.
+        /// </summary>
+        public static string AssetSelectionRecommended {
+            get {
+                return ResourceManager.GetString("AssetSelectionRecommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May be source code.
+        /// </summary>
+        public static string AssetSelectionSource {
+            get {
+                return ResourceManager.GetString("AssetSelectionSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select download file.
+        /// </summary>
+        public static string AssetSelectionTitle {
+            get {
+                return ResourceManager.GetString("AssetSelectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown size.
+        /// </summary>
+        public static string AssetSelectionUnknownSize {
+            get {
+                return ResourceManager.GetString("AssetSelectionUnknownSize", resourceCulture);
             }
         }
         
@@ -498,6 +570,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel all.
+        /// </summary>
+        public static string CancelAll {
+            get {
+                return ResourceManager.GetString("CancelAll", resourceCulture);
             }
         }
         
@@ -952,6 +1033,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Concurrent downloads.
+        /// </summary>
+        public static string ConcurrentDownloads {
+            get {
+                return ResourceManager.GetString("ConcurrentDownloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configuration file does not exist: {0}.
         /// </summary>
         public static string ConfigFileNotExists {
@@ -1177,6 +1267,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to uninstall MelonLoader? Framework files will be removed based on the original file manifest. Your Mods, UserData and other user data will not be affected..
+        /// </summary>
+        public static string ConfirmUninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("ConfirmUninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to uninstall {0}?.
         /// </summary>
         public static string ConfirmUninstallMod {
@@ -1393,6 +1492,42 @@ namespace GHPC_Mod_Manager.Resources {
         public static string CurrentLanguageError {
             get {
                 return ResourceManager.GetString("CurrentLanguageError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable application proxy.
+        /// </summary>
+        public static string CustomProxy {
+            get {
+                return ResourceManager.GetString("CustomProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Route application network requests through your HTTP or SOCKS5 proxy..
+        /// </summary>
+        public static string CustomProxyDescription {
+            get {
+                return ResourceManager.GetString("CustomProxyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy connection failed: {0}.
+        /// </summary>
+        public static string CustomProxyTestFailed {
+            get {
+                return ResourceManager.GetString("CustomProxyTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy connection succeeded ({0} ms)..
+        /// </summary>
+        public static string CustomProxyTestSucceeded {
+            get {
+                return ResourceManager.GetString("CustomProxyTestSucceeded", resourceCulture);
             }
         }
         
@@ -1842,11 +1977,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string DownloadCancelled {
+            get {
+                return ResourceManager.GetString("DownloadCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download completed: {0}.
         /// </summary>
         public static string DownloadCompleted {
             get {
                 return ResourceManager.GetString("DownloadCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        public static string DownloadCompletedStatus {
+            get {
+                return ResourceManager.GetString("DownloadCompletedStatus", resourceCulture);
             }
         }
         
@@ -1887,11 +2040,38 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No downloads.
+        /// </summary>
+        public static string DownloadEmpty {
+            get {
+                return ResourceManager.GetString("DownloadEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added to download queue.
+        /// </summary>
+        public static string DownloadEnqueued {
+            get {
+                return ResourceManager.GetString("DownloadEnqueued", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download error: {0}.
         /// </summary>
         public static string DownloadError {
             get {
                 return ResourceManager.GetString("DownloadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string DownloadFailed {
+            get {
+                return ResourceManager.GetString("DownloadFailed", resourceCulture);
             }
         }
         
@@ -1941,11 +2121,74 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download Manager.
+        /// </summary>
+        public static string DownloadManager {
+            get {
+                return ResourceManager.GetString("DownloadManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No download progress for {1} seconds while downloading {0}..
         /// </summary>
         public static string DownloadNoProgressTimeout {
             get {
                 return ResourceManager.GetString("DownloadNoProgressTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paused.
+        /// </summary>
+        public static string DownloadPaused {
+            get {
+                return ResourceManager.GetString("DownloadPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string DownloadPending {
+            get {
+                return ResourceManager.GetString("DownloadPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download queue.
+        /// </summary>
+        public static string DownloadQueue {
+            get {
+                return ResourceManager.GetString("DownloadQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry unavailable.
+        /// </summary>
+        public static string DownloadRetryUnavailable {
+            get {
+                return ResourceManager.GetString("DownloadRetryUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading.
+        /// </summary>
+        public static string DownloadRunning {
+            get {
+                return ResourceManager.GetString("DownloadRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string Downloads {
+            get {
+                return ResourceManager.GetString("Downloads", resourceCulture);
             }
         }
         
@@ -1973,6 +2216,69 @@ namespace GHPC_Mod_Manager.Resources {
         public static string DownloadSizeVerified {
             get {
                 return ResourceManager.GetString("DownloadSizeVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background maintenance.
+        /// </summary>
+        public static string DownloadSourceMaintenance {
+            get {
+                return ResourceManager.GetString("DownloadSourceMaintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MelonLoader.
+        /// </summary>
+        public static string DownloadSourceMelonLoader {
+            get {
+                return ResourceManager.GetString("DownloadSourceMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MOD.
+        /// </summary>
+        public static string DownloadSourceMod {
+            get {
+                return ResourceManager.GetString("DownloadSourceMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource.
+        /// </summary>
+        public static string DownloadSourceResource {
+            get {
+                return ResourceManager.GetString("DownloadSourceResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation.
+        /// </summary>
+        public static string DownloadSourceTranslation {
+            get {
+                return ResourceManager.GetString("DownloadSourceTranslation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application update.
+        /// </summary>
+        public static string DownloadSourceUpdate {
+            get {
+                return ResourceManager.GetString("DownloadSourceUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current speed.
+        /// </summary>
+        public static string DownloadSpeed {
+            get {
+                return ResourceManager.GetString("DownloadSpeed", resourceCulture);
             }
         }
         
@@ -2036,6 +2342,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Enabled {
             get {
                 return ResourceManager.GetString("Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable GitHub proxy.
+        /// </summary>
+        public static string EnableGitHubProxy {
+            get {
+                return ResourceManager.GetString("EnableGitHubProxy", resourceCulture);
             }
         }
         
@@ -3693,6 +4008,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter a valid proxy address in host:port format..
+        /// </summary>
+        public static string InvalidProxyAddress {
+            get {
+                return ResourceManager.GetString("InvalidProxyAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select HTTP or SOCKS5 as the proxy protocol..
+        /// </summary>
+        public static string InvalidProxyProtocol {
+            get {
+                return ResourceManager.GetString("InvalidProxyProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod {0} has an invalid ReplaceTargetPath..
         /// </summary>
         public static string InvalidReplaceTargetPathMessage {
@@ -4848,6 +5181,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MelonLoader uninstalled successfully.
+        /// </summary>
+        public static string MelonLoaderUninstallSuccess {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot detect the installed MelonLoader version and no local manifest found. Please manually delete the MelonLoader folder and version.dll from the game directory..
+        /// </summary>
+        public static string MelonLoaderUninstallVersionUndetected {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallVersionUndetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MelonLoader version detected from {0}: {1}.
         /// </summary>
         public static string MelonLoaderVersionDetected {
@@ -5595,6 +5946,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} mod(s) have updates available. Select which to update:.
+        /// </summary>
+        public static string ModUpdateDialogHeader {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates Available.
+        /// </summary>
+        public static string ModUpdateDialogTitle {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod updated successfully: {0}.
         /// </summary>
         public static string ModUpdatedSuccessfully {
@@ -5618,6 +5987,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModUpdateFailed {
             get {
                 return ResourceManager.GetString("ModUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} mod update(s) added to download queue.
+        /// </summary>
+        public static string ModUpdateQueued {
+            get {
+                return ResourceManager.GetString("ModUpdateQueued", resourceCulture);
             }
         }
         
@@ -5667,11 +6045,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string MoveDown {
+            get {
+                return ResourceManager.GetString("MoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moved translation file to backup: {0} -&gt; {1}.
         /// </summary>
         public static string MovedTranslationFileToBackup {
             get {
                 return ResourceManager.GetString("MovedTranslationFileToBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string MoveUp {
+            get {
+                return ResourceManager.GetString("MoveUp", resourceCulture);
             }
         }
         
@@ -5699,6 +6095,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string NavDownloads {
+            get {
+                return ResourceManager.GetString("NavDownloads", resourceCulture);
             }
         }
         
@@ -5996,6 +6401,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string NoDownloadableAsset {
             get {
                 return ResourceManager.GetString("NoDownloadableAsset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No downloads.
+        /// </summary>
+        public static string NoDownloads {
+            get {
+                return ResourceManager.GetString("NoDownloads", resourceCulture);
             }
         }
         
@@ -6337,6 +6751,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proxy settings.
+        /// </summary>
+        public static string OpenProxySettings {
+            get {
+                return ResourceManager.GetString("OpenProxySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token settings.
+        /// </summary>
+        public static string OpenTokenSettings {
+            get {
+                return ResourceManager.GetString("OpenTokenSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open website on startup.
         /// </summary>
         public static string OpenWebsiteOnStartup {
@@ -6414,6 +6846,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ParsingSteamManifestFailed {
             get {
                 return ResourceManager.GetString("ParsingSteamManifestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string Pause {
+            get {
+                return ResourceManager.GetString("Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause all.
+        /// </summary>
+        public static string PauseAll {
+            get {
+                return ResourceManager.GetString("PauseAll", resourceCulture);
             }
         }
         
@@ -6769,6 +7219,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        public static string ProxyAddress {
+            get {
+                return ResourceManager.GetString("ProxyAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter host:port, for example 127.0.0.1:7897..
+        /// </summary>
+        public static string ProxyAddressHint {
+            get {
+                return ResourceManager.GetString("ProxyAddressHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proxy connectivity test failed for {0}: {1}.
         /// </summary>
         public static string ProxyConnectivityTestFailed {
@@ -6783,6 +7251,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ProxyConnectivityTestSuccessful {
             get {
                 return ResourceManager.GetString("ProxyConnectivityTestSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol.
+        /// </summary>
+        public static string ProxyProtocol {
+            get {
+                return ResourceManager.GetString("ProxyProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy quick actions.
+        /// </summary>
+        public static string ProxyQuickActions {
+            get {
+                return ResourceManager.GetString("ProxyQuickActions", resourceCulture);
             }
         }
         
@@ -6985,6 +7471,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reinstalling {0}....
+        /// </summary>
+        public static string Reinstalling {
+            get {
+                return ResourceManager.GetString("Reinstalling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reinstall / Update Version.
         /// </summary>
         public static string ReinstallMelonLoader {
@@ -6999,6 +7494,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ReleaseNotesTitle {
             get {
                 return ResourceManager.GetString("ReleaseNotesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
             }
         }
         
@@ -7124,6 +7628,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Later.
+        /// </summary>
+        public static string RestartLater {
+            get {
+                return ResourceManager.GetString("RestartLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart Now.
+        /// </summary>
+        public static string RestartNow {
+            get {
+                return ResourceManager.GetString("RestartNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart Required.
         /// </summary>
         public static string RestartRequired {
@@ -7165,6 +7687,33 @@ namespace GHPC_Mod_Manager.Resources {
         public static string RestoredTranslationFile {
             get {
                 return ResourceManager.GetString("RestoredTranslationFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string Resume {
+            get {
+                return ResourceManager.GetString("Resume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume all.
+        /// </summary>
+        public static string ResumeAll {
+            get {
+                return ResourceManager.GetString("ResumeAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        public static string Retry {
+            get {
+                return ResourceManager.GetString("Retry", resourceCulture);
             }
         }
         
@@ -7655,6 +8204,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select GHPC.exe file.
         /// </summary>
         public static string SelectGHPCExeFile {
@@ -7678,6 +8236,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SelectLogsToCompany {
             get {
                 return ResourceManager.GetString("SelectLogsToCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy server.
+        /// </summary>
+        public static string SelectProxy {
+            get {
+                return ResourceManager.GetString("SelectProxy", resourceCulture);
             }
         }
         
@@ -8447,6 +9014,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test connection.
+        /// </summary>
+        public static string TestConnection {
+            get {
+                return ResourceManager.GetString("TestConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing proxy connection....
+        /// </summary>
+        public static string TestingCustomProxy {
+            get {
+                return ResourceManager.GetString("TestingCustomProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Testing direct network connection to: {0}.
         /// </summary>
         public static string TestingDirectNetworkConnection {
@@ -9149,6 +9734,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall MelonLoader.
+        /// </summary>
+        public static string UninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstalled {0} successfully.
         /// </summary>
         public static string UninstallSuccessful {
@@ -9235,6 +9829,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update All.
+        /// </summary>
+        public static string UpdateAllMods {
+            get {
+                return ResourceManager.GetString("UpdateAllMods", resourceCulture);
             }
         }
         
@@ -9388,6 +9991,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UpdateInstallFailed {
             get {
                 return ResourceManager.GetString("UpdateInstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Selected ({0}).
+        /// </summary>
+        public static string UpdateSelectedMods {
+            get {
+                return ResourceManager.GetString("UpdateSelectedMods", resourceCulture);
             }
         }
         
