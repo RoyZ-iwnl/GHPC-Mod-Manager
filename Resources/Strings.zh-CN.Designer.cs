@@ -1267,6 +1267,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 确定要卸载 MelonLoader 吗？将按原版文件清单删除框架文件，不会影响 Mods、UserData 等用户数据。.
+        /// </summary>
+        public static string ConfirmUninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("ConfirmUninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 确定要卸载 {0} 吗？.
         /// </summary>
         public static string ConfirmUninstallMod {
@@ -5155,6 +5164,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MelonLoader 已成功卸载.
+        /// </summary>
+        public static string MelonLoaderUninstallSuccess {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 无法识别当前 MelonLoader 版本且无本地清单，无法自动卸载，请手动删除游戏目录下的 MelonLoader 文件夹和 version.dll.
+        /// </summary>
+        public static string MelonLoaderUninstallVersionUndetected {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallVersionUndetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 从 {0} 检测到MelonLoader版本：{1}.
         /// </summary>
         public static string MelonLoaderVersionDetected {
@@ -5902,6 +5929,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 以下 {0} 个MOD有可用更新，请选择要更新的：.
+        /// </summary>
+        public static string ModUpdateDialogHeader {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 发现可用更新.
+        /// </summary>
+        public static string ModUpdateDialogTitle {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MOD更新成功: {0}.
         /// </summary>
         public static string ModUpdatedSuccessfully {
@@ -5925,6 +5970,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModUpdateFailed {
             get {
                 return ResourceManager.GetString("ModUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已将 {0} 个MOD的更新添加至下载队列.
+        /// </summary>
+        public static string ModUpdateQueued {
+            get {
+                return ResourceManager.GetString("ModUpdateQueued", resourceCulture);
             }
         }
         
@@ -7503,6 +7557,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 稍后.
+        /// </summary>
+        public static string RestartLater {
+            get {
+                return ResourceManager.GetString("RestartLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 立即重启.
+        /// </summary>
+        public static string RestartNow {
+            get {
+                return ResourceManager.GetString("RestartNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 需要重启.
         /// </summary>
         public static string RestartRequired {
@@ -8048,6 +8120,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SecurityWarningTitle {
             get {
                 return ResourceManager.GetString("SecurityWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 全选.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
             }
         }
         
@@ -9546,6 +9627,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 卸载 MelonLoader.
+        /// </summary>
+        public static string UninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} 卸载成功.
         /// </summary>
         public static string UninstallSuccessful {
@@ -9632,6 +9722,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 全部更新.
+        /// </summary>
+        public static string UpdateAllMods {
+            get {
+                return ResourceManager.GetString("UpdateAllMods", resourceCulture);
             }
         }
         
@@ -9785,6 +9884,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UpdateInstallFailed {
             get {
                 return ResourceManager.GetString("UpdateInstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 更新所选 ({0}).
+        /// </summary>
+        public static string UpdateSelectedMods {
+            get {
+                return ResourceManager.GetString("UpdateSelectedMods", resourceCulture);
             }
         }
         

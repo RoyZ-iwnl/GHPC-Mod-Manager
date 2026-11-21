@@ -18,7 +18,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>显示"启动旧应用"和"忽略"按钮</summary>
         LaunchAppIgnore,
         /// <summary>显示"去设置更新"和"取消"按钮</summary>
-        GoToSettingsCancel
+        GoToSettingsCancel,
+        /// <summary>显示"立即重启"和"稍后"按钮</summary>
+        RestartLater
     }
 
     /// <summary>
@@ -43,7 +45,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>用户点击了"去设置更新"按钮</summary>
         GoToSettings,
         /// <summary>用户点击了"启动旧应用"按钮</summary>
-        LaunchApp
+        LaunchApp,
+        /// <summary>用户点击了"立即重启"按钮</summary>
+        Restart
     }
 
     /// <summary>

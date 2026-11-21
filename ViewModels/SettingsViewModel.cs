@@ -240,6 +240,21 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gitHubApiToken = string.Empty;
 
+    // Token 默认隐藏，点击眼睛图标临时查看
+    [ObservableProperty]
+    private bool _isGitHubTokenVisible = false;
+
+    // 隐藏状态下的掩码显示（用 • 替换每个字符）
+    public string GitHubApiTokenMasked => string.IsNullOrEmpty(GitHubApiToken)
+        ? string.Empty
+        : new string('•', GitHubApiToken.Length);
+
+    [RelayCommand]
+    private void ToggleGitHubTokenVisibility()
+    {
+        IsGitHubTokenVisible = !IsGitHubTokenVisible;
+    }
+
     partial void OnGitHubApiTokenChanged(string value)
     {
         // 配置token时禁用代理
@@ -248,6 +263,8 @@ public partial class SettingsViewModel : ObservableObject
             UseGitHubProxy = false;
         }
         OnPropertyChanged(nameof(IsGitHubProxyEnabled));
+        // 掩码随token变化刷新
+        OnPropertyChanged(nameof(GitHubApiTokenMasked));
     }
 
     [ObservableProperty]
@@ -342,6 +359,15 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isMelonLoaderOperating;
+
+    // 已安装或已禁用时显示卸载按钮
+    public bool CanShowUninstallMelonLoader => IsMelonLoaderInstalled || IsMelonLoaderDisabled;
+
+    partial void OnIsMelonLoaderInstalledChanged(bool value)
+        => OnPropertyChanged(nameof(CanShowUninstallMelonLoader));
+
+    partial void OnIsMelonLoaderDisabledChanged(bool value)
+        => OnPropertyChanged(nameof(CanShowUninstallMelonLoader));
 
     // 版本号点击彩蛋
     private int _versionClickCount = 0; // 记录点击次数
@@ -1210,6 +1236,52 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanExecuteMelonLoaderOps))]
+    private async Task UninstallMelonLoaderAsync()
+    {
+        var gameRoot = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrEmpty(gameRoot)) return;
+
+        // 未安装时无需卸载
+        if (!IsMelonLoaderInstalled && !IsMelonLoaderDisabled)
+        {
+            MessageDialogHelper.ShowInformation(Strings.MelonLoaderNotDetected, Strings.MelonLoaderManagement);
+            return;
+        }
+
+        var confirmed = MessageDialogHelper.Confirm(
+            Strings.ConfirmUninstallMelonLoader, Strings.ConfirmUninstall);
+        if (!confirmed) return;
+
+        IsMelonLoaderOperating = true;
+        try
+        {
+            var progress = new Progress<DownloadProgress>(p =>
+                _loggingService.LogInfo(Strings.MelonLoaderUninstallingCurrentVersion + $" {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}"));
+
+            var success = await _melonLoaderService.UninstallMelonLoaderAsync(gameRoot, progress);
+            if (success)
+            {
+                await LoadMelonLoaderStatusAsync();
+                await _mainViewModel.Value.RecheckMelonLoaderStateAsync();
+                MessageDialogHelper.ShowSuccess(Strings.MelonLoaderUninstallSuccess, Strings.Success);
+            }
+            else
+            {
+                MessageDialogHelper.ShowError(Strings.MelonLoaderUninstallFailed, Strings.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderUninstallFailed);
+            MessageDialogHelper.ShowError(Strings.MelonLoaderUninstallFailed, Strings.Error);
+        }
+        finally
+        {
+            IsMelonLoaderOperating = false;
+        }
+    }
+
     private bool CanExecuteMelonLoaderOps() => !IsGameRunning && !IsMelonLoaderOperating;
 
     private bool CanBrowseGameDirectory() => !IsGameRunning;
@@ -1218,6 +1290,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
         ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
+        UninstallMelonLoaderCommand.NotifyCanExecuteChanged();
         BrowseGameDirectoryCommand.NotifyCanExecuteChanged();
     }
 
@@ -1225,6 +1298,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         ToggleMelonLoaderCommand.NotifyCanExecuteChanged();
         ReinstallMelonLoaderCommand.NotifyCanExecuteChanged();
+        UninstallMelonLoaderCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]

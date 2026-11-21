@@ -1358,6 +1358,12 @@
   <data name="RestartApplicationError" xml:space="preserve">
     <value>Failed to restart application</value>
   </data>
+  <data name="RestartNow" xml:space="preserve">
+    <value>Restart Now</value>
+  </data>
+  <data name="RestartLater" xml:space="preserve">
+    <value>Later</value>
+  </data>
   <data name="FailedToRestartApplication" xml:space="preserve">
     <value>Failed to restart application. Please restart manually</value>
   </data>
@@ -1399,6 +1405,18 @@
   </data>
   <data name="MelonLoaderEnableFailed" xml:space="preserve">
     <value>Failed to enable MelonLoader</value>
+  </data>
+  <data name="UninstallMelonLoader" xml:space="preserve">
+    <value>Uninstall MelonLoader</value>
+  </data>
+  <data name="ConfirmUninstallMelonLoader" xml:space="preserve">
+    <value>Are you sure you want to uninstall MelonLoader? Framework files will be removed based on the original file manifest. Your Mods, UserData and other user data will not be affected.</value>
+  </data>
+  <data name="MelonLoaderUninstallSuccess" xml:space="preserve">
+    <value>MelonLoader uninstalled successfully</value>
+  </data>
+  <data name="MelonLoaderUninstallVersionUndetected" xml:space="preserve">
+    <value>Cannot detect the installed MelonLoader version and no local manifest found. Please manually delete the MelonLoader folder and version.dll from the game directory.</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
     <value>MelonLoader disabled</value>
@@ -3511,4 +3529,10 @@ Please update the Mod Manager first to install this mod.</value>
   <data name="NoDownloads" xml:space="preserve"><value>No downloads</value></data>
   <data name="Reinstalling" xml:space="preserve"><value>Reinstalling {0}...</value></data>
   <data name="DownloadEnqueued" xml:space="preserve"><value>Added to download queue</value></data>
+  <data name="ModUpdateDialogTitle" xml:space="preserve"><value>Updates Available</value></data>
+  <data name="ModUpdateDialogHeader" xml:space="preserve"><value>{0} mod(s) have updates available. Select which to update:</value></data>
+  <data name="UpdateAllMods" xml:space="preserve"><value>Update All</value></data>
+  <data name="UpdateSelectedMods" xml:space="preserve"><value>Update Selected ({0})</value></data>
+  <data name="ModUpdateQueued" xml:space="preserve"><value>{0} mod update(s) added to download queue</value></data>
+  <data name="SelectAll" xml:space="preserve"><value>Select All</value></data>
 </root>

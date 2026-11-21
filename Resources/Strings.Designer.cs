@@ -1267,6 +1267,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to uninstall MelonLoader? Framework files will be removed based on the original file manifest. Your Mods, UserData and other user data will not be affected..
+        /// </summary>
+        public static string ConfirmUninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("ConfirmUninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to uninstall {0}?.
         /// </summary>
         public static string ConfirmUninstallMod {
@@ -5172,6 +5181,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MelonLoader uninstalled successfully.
+        /// </summary>
+        public static string MelonLoaderUninstallSuccess {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot detect the installed MelonLoader version and no local manifest found. Please manually delete the MelonLoader folder and version.dll from the game directory..
+        /// </summary>
+        public static string MelonLoaderUninstallVersionUndetected {
+            get {
+                return ResourceManager.GetString("MelonLoaderUninstallVersionUndetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MelonLoader version detected from {0}: {1}.
         /// </summary>
         public static string MelonLoaderVersionDetected {
@@ -5919,6 +5946,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} mod(s) have updates available. Select which to update:.
+        /// </summary>
+        public static string ModUpdateDialogHeader {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates Available.
+        /// </summary>
+        public static string ModUpdateDialogTitle {
+            get {
+                return ResourceManager.GetString("ModUpdateDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod updated successfully: {0}.
         /// </summary>
         public static string ModUpdatedSuccessfully {
@@ -5942,6 +5987,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModUpdateFailed {
             get {
                 return ResourceManager.GetString("ModUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} mod update(s) added to download queue.
+        /// </summary>
+        public static string ModUpdateQueued {
+            get {
+                return ResourceManager.GetString("ModUpdateQueued", resourceCulture);
             }
         }
         
@@ -7574,6 +7628,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Later.
+        /// </summary>
+        public static string RestartLater {
+            get {
+                return ResourceManager.GetString("RestartLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart Now.
+        /// </summary>
+        public static string RestartNow {
+            get {
+                return ResourceManager.GetString("RestartNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart Required.
         /// </summary>
         public static string RestartRequired {
@@ -8128,6 +8200,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string SecurityWarningTitle {
             get {
                 return ResourceManager.GetString("SecurityWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
             }
         }
         
@@ -9653,6 +9734,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall MelonLoader.
+        /// </summary>
+        public static string UninstallMelonLoader {
+            get {
+                return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstalled {0} successfully.
         /// </summary>
         public static string UninstallSuccessful {
@@ -9739,6 +9829,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update All.
+        /// </summary>
+        public static string UpdateAllMods {
+            get {
+                return ResourceManager.GetString("UpdateAllMods", resourceCulture);
             }
         }
         
@@ -9892,6 +9991,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string UpdateInstallFailed {
             get {
                 return ResourceManager.GetString("UpdateInstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Selected ({0}).
+        /// </summary>
+        public static string UpdateSelectedMods {
+            get {
+                return ResourceManager.GetString("UpdateSelectedMods", resourceCulture);
             }
         }
         

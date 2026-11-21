@@ -583,6 +583,14 @@ public class NetworkService : INetworkService
 
                     var downloadData = await DownloadFromUrlAsync(candidateUrl, progress, cancellationToken);
                     ValidateDownloadIntegrity(downloadData, expectedSize, expectedDigest, downloadTargetName);
+                    // 下载完成后明确上报100%，消除进度条因最后一次上报偏差留下的缺口
+                    progress?.Report(new DownloadProgress
+                    {
+                        BytesReceived = downloadData.LongLength,
+                        TotalBytes = downloadData.LongLength,
+                        ProgressPercentage = 100.0,
+                        SpeedBytesPerSecond = 0
+                    });
                     return downloadData;
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
@@ -842,6 +850,8 @@ public class NetworkService : INetworkService
         var startTime = DateTime.Now;
         var lastUpdateTime = startTime;
         var lastCompletedBytes = 0L;
+        // 分块快照（100ms更新一次），供IDM风格进度条渲染
+        var lastSegmentSnapshot = (IReadOnlyList<ChunkSegmentInfo>?)null;
 
         // Helper: Calculate global average speed
         double CalculateGlobalAvgSpeed()
@@ -1027,6 +1037,24 @@ public class NetworkService : INetworkService
                                             }
                                             lastUpdateTime = currentTime;
                                             lastCompletedBytes = completedBytes;
+
+                                            // 快照当前分块状态，跳过已取消且无数据的分块
+                                            lastSegmentSnapshot = chunkStates.Values
+                                                .Where(cs => cs.Status != ChunkStatus.Cancelled)
+                                                .OrderBy(cs => cs.StartByte)
+                                                .Select(cs => new ChunkSegmentInfo
+                                                {
+                                                    StartByte = cs.StartByte,
+                                                    EndByte = cs.EndByte,
+                                                    BytesDownloaded = cs.BytesDownloaded,
+                                                    SegmentStatus = cs.Status switch
+                                                    {
+                                                        ChunkStatus.Completed => ChunkSegmentStatus.Completed,
+                                                        ChunkStatus.Downloading => ChunkSegmentStatus.Downloading,
+                                                        _ => ChunkSegmentStatus.Pending
+                                                    }
+                                                })
+                                                .ToList();
                                         }
                                         else
                                         {
@@ -1050,7 +1078,8 @@ public class NetworkService : INetworkService
                                         ProgressPercentage = percentage,
                                         SpeedBytesPerSecond = speedBytesPerSecond,
                                         ElapsedTime = elapsedTime,
-                                        EstimatedTimeRemaining = estimatedTimeRemaining
+                                        EstimatedTimeRemaining = estimatedTimeRemaining,
+                                        ChunkSegments = lastSegmentSnapshot
                                     });
                                 }
                             }
@@ -1644,10 +1673,21 @@ public class DownloadProgress
     public double SpeedBytesPerSecond { get; set; }
     public TimeSpan ElapsedTime { get; set; }
     public TimeSpan EstimatedTimeRemaining { get; set; }
+    public IReadOnlyList<ChunkSegmentInfo>? ChunkSegments { get; set; }
     
     public string GetFormattedSpeed()
     {
         return FormatBytes(SpeedBytesPerSecond) + "/s";
+    }
+
+    /// <summary>
+    /// 状态文字后缀：速度>0时显示百分比+速度，否则只显示百分比
+    /// </summary>
+    public string GetProgressSuffix()
+    {
+        return SpeedBytesPerSecond > 0
+            ? $"{ProgressPercentage:F1}% - {GetFormattedSpeed()}"
+            : $"{ProgressPercentage:F1}%";
     }
     
     public string GetFormattedProgress()

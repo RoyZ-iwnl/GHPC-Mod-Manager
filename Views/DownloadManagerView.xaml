@@ -82,87 +82,112 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" MinWidth="160"/>
-                                        <ColumnDefinition Width="170"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,14,0">
-                                        <TextBlock Text="{Binding DisplayTitle}" Foreground="{DynamicResource OnSurfaceBrush}"
-                                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis">
-                                            <TextBlock.ToolTip>
-                                                <TextBlock Text="{Binding DisplayTitle}"/>
-                                            </TextBlock.ToolTip>
-                                        </TextBlock>
-                                        <TextBlock Text="{Binding SourceText}" Style="{StaticResource QueueMetaText}" Margin="0,3,0,0"/>
-                                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource ErrorBrush}"
-                                                   TextWrapping="Wrap" Margin="0,3,0,0"
-                                                   Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,10,0">
-                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding Progress}" Height="6"/>
-                                        <DockPanel Margin="0,5,0,0">
-                                            <TextBlock Text="{Binding StatusText}" Style="{StaticResource QueueMetaText}"/>
-                                            <TextBlock Text="{Binding ProgressText}" Style="{StaticResource QueueMetaText}" DockPanel.Dock="Right"/>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <!-- 行1：标题 + 操作按钮 -->
+                                        <DockPanel Grid.Row="0" Margin="0,0,0,4">
+                                            <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right">
+                                                <Button ToolTip="{Binding DataContext.MoveUpLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanMove, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
+                                                    <Path Data="{StaticResource IconMoveUp}" Stroke="{DynamicResource OnSurfaceBrush}"
+                                                          StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.MoveDownLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanMove, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
+                                                    <Path Data="{StaticResource IconMoveDown}" Stroke="{DynamicResource OnSurfaceBrush}"
+                                                          StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.PauseLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.PauseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanPause, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
+                                                    <Path Data="{StaticResource IconPause}" Fill="{DynamicResource OnSurfaceBrush}"
+                                                          Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.ResumeLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.ResumeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanResume, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
+                                                    <Path Data="{StaticResource IconPlay}" Fill="{DynamicResource OnSurfaceBrush}"
+                                                          Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.RetryLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.RetryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanRetry, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
+                                                    <Path Data="{StaticResource IconRetry}" Stroke="{DynamicResource OnSurfaceBrush}"
+                                                          StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.RemoveLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanRemove, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28" Margin="0">
+                                                    <Path Data="{StaticResource IconDelete}" Stroke="{DynamicResource OnSurfaceBrush}"
+                                                          StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button ToolTip="{Binding DataContext.CancelLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Visibility="{Binding CanPause, Converter={StaticResource BoolToVis}}"
+                                                        Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28" Margin="0">
+                                                    <Path Data="{StaticResource IconClose}" Stroke="{DynamicResource OnSurfaceBrush}"
+                                                          StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                                </Button>
+                                            </WrapPanel>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding DisplayTitle}" Foreground="{DynamicResource OnSurfaceBrush}"
+                                                           FontWeight="SemiBold" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.ToolTip>
+                                                        <TextBlock Text="{Binding DisplayTitle}"/>
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding SourceText}" Style="{StaticResource QueueMetaText}" Margin="0,2,0,0"/>
+                                            </StackPanel>
                                         </DockPanel>
-                                        <TextBlock Text="{Binding SpeedText}" Style="{StaticResource QueueMetaText}"/>
-                                    </StackPanel>
-                                    <WrapPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <Button ToolTip="{Binding DataContext.MoveUpLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanMove, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
-                                            <Path Data="{StaticResource IconMoveUp}" Stroke="{DynamicResource OnSurfaceBrush}"
-                                                  StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.MoveDownLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanMove, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
-                                            <Path Data="{StaticResource IconMoveDown}" Stroke="{DynamicResource OnSurfaceBrush}"
-                                                  StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.PauseLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.PauseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanPause, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
-                                            <Path Data="{StaticResource IconPause}" Fill="{DynamicResource OnSurfaceBrush}"
-                                                  Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.ResumeLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.ResumeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanResume, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
-                                            <Path Data="{StaticResource IconPlay}" Fill="{DynamicResource OnSurfaceBrush}"
-                                                  Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.RetryLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.RetryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanRetry, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28">
-                                            <Path Data="{StaticResource IconRetry}" Stroke="{DynamicResource OnSurfaceBrush}"
-                                                  StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.RemoveLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanRemove, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28" Margin="0">
-                                            <Path Data="{StaticResource IconDelete}" Stroke="{DynamicResource OnSurfaceBrush}"
-                                                  StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                        <Button ToolTip="{Binding DataContext.CancelLabel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="{Binding CanPause, Converter={StaticResource BoolToVis}}"
-                                                Style="{StaticResource QueueActionButton}" Padding="6,5" MinWidth="28" Margin="0">
-                                            <Path Data="{StaticResource IconClose}" Stroke="{DynamicResource OnSurfaceBrush}"
-                                                  StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
-                                        </Button>
-                                    </WrapPanel>
+
+                                        <!-- 行2：进度条（放大居中，突出显示） -->
+                                        <controls:ChunkProgressBar Grid.Row="1"
+                                                                    Height="12"
+                                                                    Margin="0,2,0,4"
+                                                                    Segments="{Binding ChunkSegments}"
+                                                                    TotalBytes="{Binding TotalBytes}"
+                                                                    SimpleProgress="{Binding Progress}"
+                                                                    CompletedBrush="{DynamicResource AccentBrush}"
+                                                                    DownloadingBrush="{DynamicResource SecondaryContainerBrush}"
+                                                                    TrackBrush="{DynamicResource SurfaceContainerBrush}"
+                                                                    CornerRadius="4"/>
+
+                                        <!-- 行3：状态文字 -->
+                                        <DockPanel Grid.Row="2">
+                                            <TextBlock Text="{Binding StatusText}" Style="{StaticResource QueueMetaText}"/>
+                                            <TextBlock Text="{Binding SpeedText}" Style="{StaticResource QueueMetaText}"
+                                                       HorizontalAlignment="Center" TextAlignment="Center"/>
+                                            <TextBlock Text="{Binding ProgressText}" Style="{StaticResource QueueMetaText}"
+                                                       DockPanel.Dock="Right" TextAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <!-- 错误信息 -->
+                                        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="{DynamicResource ErrorBrush}"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0"
+                                                   Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}"/>
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>

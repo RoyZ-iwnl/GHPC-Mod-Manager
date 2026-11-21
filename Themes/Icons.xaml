@@ -77,4 +77,10 @@
     <!-- 删除/垃圾桶 -->
     <Geometry x:Key="IconDelete">M 5,6 L 5,20 Q 5,21 6,21 L 18,21 Q 19,21 19,20 L 19,6 M 8,6 L 8,3 L 16,3 L 16,6 M 3,6 L 21,6 M 10,10 L 10,17 M 14,10 L 14,17</Geometry>
 
+    <!-- 眼睛睁开（查看密码/token） -->
+    <Geometry x:Key="IconEyeOpen">M 2,12 Q 7,5 12,5 Q 17,5 22,12 Q 17,19 12,19 Q 7,19 2,12 M 9,12 A 3,3 0 1,1 15,12 A 3,3 0 1,1 9,12</Geometry>
+
+    <!-- 眼睛关闭/划线（隐藏密码/token） -->
+    <Geometry x:Key="IconEyeOff">M 2,12 Q 7,5 12,5 Q 17,5 22,12 Q 17,19 12,19 Q 7,19 2,12 M 9,12 A 3,3 0 1,1 15,12 A 3,3 0 1,1 9,12 M 3,3 L 21,21</Geometry>
+
 </ResourceDictionary>

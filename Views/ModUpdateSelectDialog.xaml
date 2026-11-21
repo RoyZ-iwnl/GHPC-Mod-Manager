@@ -1,0 +1,140 @@
+<Window x:Class="GHPC_Mod_Manager.Views.ModUpdateSelectDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+        Title=""
+        Width="520"
+        MinHeight="200"
+        MaxHeight="680"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+
+    <Border Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource OutlineVariantBrush}"
+            BorderThickness="1"
+            CornerRadius="16"
+            Margin="12">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.25" Color="Black"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" MaxHeight="400"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 标题栏 -->
+            <Border Grid.Row="0"
+                    Padding="20,16,20,12"
+                    Background="{DynamicResource SurfaceContainerBrush}"
+                    CornerRadius="16,16,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <DockPanel>
+                    <Path DockPanel.Dock="Left"
+                          Data="{StaticResource IconDownload}"
+                          Stroke="{DynamicResource AccentBrush}"
+                          StrokeThickness="1.5"
+                          Fill="{DynamicResource AccentBrush}"
+                          Stretch="Uniform"
+                          Width="20" Height="20"
+                          Margin="0,0,10,0"
+                          VerticalAlignment="Center"/>
+                    <TextBlock Text="{x:Static resources:Strings.ModUpdateDialogTitle}"
+                               FontSize="{DynamicResource TitleSmall}"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource OnSurfaceBrush}"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+
+            <!-- 表头：说明文字 + 全选 -->
+            <Border Grid.Row="1"
+                    Padding="20,14,20,10"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                    BorderThickness="0,0,0,1">
+                <DockPanel>
+                    <CheckBox DockPanel.Dock="Right"
+                              IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                              VerticalAlignment="Center"
+                              Margin="12,0,0,0">
+                        <TextBlock Text="{x:Static resources:Strings.SelectAll}"
+                                   Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                   FontSize="{DynamicResource LabelMedium}"/>
+                    </CheckBox>
+                    <TextBlock Text="{Binding Header}"
+                               FontSize="{DynamicResource BodyMedium}"
+                               Foreground="{DynamicResource OnSurfaceBrush}"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </DockPanel>
+            </Border>
+
+            <!-- MOD 列表 -->
+            <ScrollViewer Grid.Row="2"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding Items}" Margin="8,4">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="12,8"
+                                    Margin="0,2"
+                                    Background="{DynamicResource SurfaceContainerBrush}"
+                                    CornerRadius="{DynamicResource RadiusSmall}">
+                                <DockPanel>
+                                    <CheckBox DockPanel.Dock="Left"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,12,0"/>
+                                    <TextBlock DockPanel.Dock="Right"
+                                               Text="{Binding VersionLabel}"
+                                               Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                                               FontSize="{DynamicResource LabelMedium}"
+                                               VerticalAlignment="Center"
+                                               FontFamily="Consolas, Courier New"/>
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               Foreground="{DynamicResource OnSurfaceBrush}"
+                                               FontWeight="SemiBold"
+                                               FontSize="{DynamicResource BodyMedium}"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- 按钮区 -->
+            <Border Grid.Row="3"
+                    Padding="20,12,20,16"
+                    Background="{DynamicResource SurfaceBrush}"
+                    CornerRadius="0,0,16,16"
+                    BorderBrush="{DynamicResource OutlineVariantBrush}"
+                    BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="{x:Static resources:Strings.Cancel}"
+                            Style="{StaticResource OutlinedButtonStyle}"
+                            MinWidth="80"
+                            Click="Cancel_Click"/>
+                    <Button x:Name="ConfirmButton"
+                            Style="{StaticResource FilledButtonStyle}"
+                            MinWidth="140"
+                            Margin="8,0,0,0"
+                            IsEnabled="{Binding CanConfirm}"
+                            Click="Confirm_Click">
+                        <TextBlock Text="{Binding ConfirmButtonText}"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

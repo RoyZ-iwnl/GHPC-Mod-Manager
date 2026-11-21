@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:GHPC_Mod_Manager.Converters"
              xmlns:resources="clr-namespace:GHPC_Mod_Manager.Resources"
+             xmlns:viewmodels="clr-namespace:GHPC_Mod_Manager.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="720"
              d:DesignWidth="1180">
@@ -112,22 +113,38 @@
                             <Run Text="{x:Static resources:Strings.NewModsBannerText}"/>
                         </TextBlock>
                     </StackPanel>
-                    <!-- MOD名称预览 -->
-                    <ItemsControl ItemsSource="{Binding NewModsPreview}">
+                    <!-- MOD名称预览（可点击跳转详情页） -->
+                    <ItemsControl ItemsSource="{Binding NewModsList}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="{DynamicResource SecondaryContainerBrush}"
-                                        BorderBrush="{DynamicResource SecondaryBrush}"                                        Padding="8,4"
-                                        Margin="0,0,8,4">
-                                    <TextBlock Text="{Binding}"
+                            <DataTemplate DataType="viewmodels:ModViewModel">
+                                <Button Style="{x:Null}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        Margin="0,0,8,4"
+                                        MinHeight="0"
+                                        Cursor="Hand"
+                                        Command="{Binding DataContext.NavigateToNewModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{DynamicResource SecondaryContainerBrush}"
+                                                    BorderBrush="{DynamicResource SecondaryBrush}"
+                                                    Padding="8,4"
+                                                    CornerRadius="4">
+                                                <ContentPresenter/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <TextBlock Text="{Binding DisplayName}"
                                                FontSize="{DynamicResource LabelMedium}"
                                                Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
-                                </Border>
+                                </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

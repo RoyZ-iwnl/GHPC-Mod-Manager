@@ -13,7 +13,7 @@ public interface IModManagerService
 {
     Task<List<ModViewModel>> GetModListAsync(bool forceRefresh = false);
     Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true, string? operationText = null);
-    Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null);
+    Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null, string? operationText = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
     Task<bool> EnableModAsync(string modId);
@@ -651,7 +651,7 @@ public partial class ModManagerService : IModManagerService
         }
     }
 
-    public async Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null)
+    public async Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null, string? operationText = null)
     {
         string previousVersion = string.Empty;
         var wasDisabled = false;
@@ -691,12 +691,12 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
 
-            var operationText = string.Format(
+            var resolvedOperationText = operationText ?? string.Format(
                 _settingsService.Settings.Language.StartsWith("zh", StringComparison.OrdinalIgnoreCase)
                     ? "正在更新 {0}"
                     : "Updating {0}",
                 GetLocalizedName(modConfig));
-            var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress, operationText);
+            var downloadResult = await DownloadModPackageAsync(modConfig, newVersion, progress, resolvedOperationText);
             if (downloadResult == null)
                 return false;
 

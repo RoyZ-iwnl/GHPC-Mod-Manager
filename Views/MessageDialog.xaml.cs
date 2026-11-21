@@ -73,6 +73,7 @@ namespace GHPC_Mod_Manager.Views
             IgnoreButton.Visibility = Visibility.Collapsed;
             GoToSettingsButton.Visibility = Visibility.Collapsed;
             LaunchAppButton.Visibility = Visibility.Collapsed;
+            RestartButton.Visibility = Visibility.Collapsed;
 
             // 根据类型显示按钮
             switch (button)
@@ -125,6 +126,13 @@ namespace GHPC_Mod_Manager.Views
                     LaunchAppButton.Visibility = Visibility.Visible;
                     LaunchAppButton.Content = Strings.PreviousInstallationLaunchApp;
                     LaunchAppButton.Margin = new Thickness(8, 0, 0, 0);
+                    break;
+                case MessageDialogButton.RestartLater:
+                    IgnoreButton.Visibility = Visibility.Visible;
+                    IgnoreButton.Content = Strings.RestartLater;
+                    RestartButton.Visibility = Visibility.Visible;
+                    RestartButton.Content = Strings.RestartNow;
+                    RestartButton.Margin = new Thickness(8, 0, 0, 0);
                     break;
             }
         }
@@ -182,6 +190,7 @@ namespace GHPC_Mod_Manager.Views
                 MessageDialogButton.OpenFolderIgnore => OpenFolderButton,
                 MessageDialogButton.LaunchAppIgnore => LaunchAppButton,
                 MessageDialogButton.GoToSettingsCancel => GoToSettingsButton,
+                MessageDialogButton.RestartLater => RestartButton,
                 _ => null
             };
         }
@@ -259,6 +268,15 @@ namespace GHPC_Mod_Manager.Views
         }
 
         /// <summary>
+        /// 立即重启按钮点击
+        /// </summary>
+        private void Restart_Click(object sender, RoutedEventArgs e)
+        {
+            _result = MessageDialogResult.Restart;
+            Close();
+        }
+
+        /// <summary>
         /// 标题栏拖拽移动窗口
         /// </summary>
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -312,6 +330,10 @@ namespace GHPC_Mod_Manager.Views
                 else if (_buttons == MessageDialogButton.GoToSettingsCancel)
                 {
                     _result = MessageDialogResult.GoToSettings;
+                }
+                else if (_buttons == MessageDialogButton.RestartLater)
+                {
+                    _result = MessageDialogResult.Restart;
                 }
                 Close();
             }

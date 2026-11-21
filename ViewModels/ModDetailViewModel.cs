@@ -267,7 +267,7 @@ public partial class ModDetailViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, Mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, Mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             // 检查冲突
@@ -487,7 +487,7 @@ public partial class ModDetailViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.UpdatingMod, Mod.DisplayName, Mod.InstalledVersion, SelectedRelease.TagName)} - {p.GetProgressSuffix()}";
             });
 
             var success = await _modManagerService.UpdateModAsync(Mod.Id, SelectedRelease.TagName, progress);

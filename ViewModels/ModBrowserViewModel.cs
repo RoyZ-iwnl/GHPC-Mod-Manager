@@ -91,8 +91,11 @@ public partial class ModBrowserViewModel : ObservableObject
     // 横幅可见性：有新增且未被关闭时显示
     public bool CanShowNewModsBanner => HasNewMods && !IsNewModsBannerDismissed;
 
-    // 内部存储检测到的新增MOD
+    // 内部存储检测到的新增MOD（用于横幅可点击跳转）
     private List<ModViewModel> _detectedNewMods = new();
+
+    // 横幅展示的新增MOD列表（可点击跳转详情页）
+    public ObservableCollection<ModViewModel> NewModsList { get; } = new();
 
     // 通知MainViewModel导航到详情页
     public event EventHandler<ModViewModel>? NavigateToDetailRequested;
@@ -375,7 +378,7 @@ public partial class ModBrowserViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             // 根据操作类型生成队列文本
@@ -427,6 +430,11 @@ public partial class ModBrowserViewModel : ObservableObject
         HasNewMods = _detectedNewMods.Count > 0;
         NewModsCount = _detectedNewMods.Count;
         NewModsPreview = _detectedNewMods.Select(m => m.DisplayName).ToList();
+
+        // 同步到可观察集合，供横幅点击跳转使用
+        NewModsList.Clear();
+        foreach (var mod in _detectedNewMods)
+            NewModsList.Add(mod);
     }
 
     /// <summary>
@@ -438,6 +446,7 @@ public partial class ModBrowserViewModel : ObservableObject
         HasNewMods = false;
         NewModsCount = 0;
         NewModsPreview.Clear();
+        NewModsList.Clear();
     }
 
     /// <summary>
@@ -452,6 +461,12 @@ public partial class ModBrowserViewModel : ObservableObject
     private void DismissNewModsBanner()
     {
         IsNewModsBannerDismissed = true;
+    }
+
+    [RelayCommand]
+    private void NavigateToNewMod(ModViewModel mod)
+    {
+        NavigateToDetailRequested?.Invoke(this, mod);
     }
 
     partial void OnIsGameRunningChanged(bool value)

@@ -22,6 +22,8 @@ public interface IMelonLoaderService
     bool IsMelonLoaderDisabled(string gameRootPath);
     /// <summary>通过下载当前版本ZIP建立索引，删除旧版本文件</summary>
     Task<bool> UninstallCurrentVersionAsync(string gameRootPath, string currentVersion, IProgress<DownloadProgress>? progress = null);
+    /// <summary>完整卸载：按清单/原版ZIP索引删除文件，清理空目录，删除清单</summary>
+    Task<bool> UninstallMelonLoaderAsync(string gameRootPath, IProgress<DownloadProgress>? progress = null);
     /// <summary>从 sharedassets0.assets 读取游戏版本号，匹配格式如 20260618 或 20260618.1</summary>
     Task<string?> GetCurrentGameVersionAsync(string gameRootPath);
 }
@@ -463,6 +465,108 @@ public class MelonLoaderService : IMelonLoaderService
     }
 
     private const string DisabledDllName = "version.dllGHPCMM";
+
+    public async Task<bool> UninstallMelonLoaderAsync(string gameRootPath, IProgress<DownloadProgress>? progress = null)
+    {
+        try
+        {
+            // 优先读本地清单以获取版本，无清单则检测已安装版本
+            var manifest = await LoadManifestAsync();
+            var currentVersion = await GetInstalledVersionAsync(gameRootPath);
+
+            if (manifest == null && string.IsNullOrEmpty(currentVersion))
+            {
+                // 无清单且无法识别版本，不知道要删哪些文件
+                _loggingService.LogError(Strings.MelonLoaderUninstallVersionUndetected);
+                return false;
+            }
+
+            // 用已识别版本（优先）或清单记录版本作为下载索引依据
+            var version = currentVersion ?? manifest!.Version;
+            var ok = await UninstallCurrentVersionAsync(gameRootPath, version, progress);
+            if (!ok) return false;
+
+            // 清理入口DLL（禁用状态下被重命名的也要一并删除）
+            foreach (var dll in new[] { "version.dll", DisabledDllName, "dobby.dll" })
+            {
+                var dllPath = Path.Combine(gameRootPath, dll);
+                try
+                {
+                    if (File.Exists(dllPath))
+                    {
+                        File.Delete(dllPath);
+                        _loggingService.LogInfo(Strings.MelonLoaderDeletingFile, dll);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogWarning(Strings.FileExtractionFailed, dllPath, ex.Message);
+                }
+            }
+
+            // 自底向上清理因文件删除而产生的空目录
+            CleanupEmptyDirectories(gameRootPath);
+
+            // 卸载完成后删除本地清单
+            try
+            {
+                if (File.Exists(ManifestPath))
+                    File.Delete(ManifestPath);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogWarning(Strings.MelonLoaderManifestSaveError, ex.Message);
+            }
+
+            _loggingService.LogInfo(Strings.MelonLoaderUninstallSuccess);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.MelonLoaderUninstallFailed);
+            return false;
+        }
+    }
+
+    private void CleanupEmptyDirectories(string gameRootPath)
+    {
+        try
+        {
+            // 受保护目录不删除（即使为空）
+            var protectedTopDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Mods", "UserData", "Plugins", "Translation", "GHPCMM", "AutoTranslator", "GHPC_Data"
+            };
+
+            // 自底向上遍历（路径越长越靠前），仅删除空目录
+            var dirs = Directory.GetDirectories(gameRootPath, "*", SearchOption.AllDirectories)
+                .OrderByDescending(d => d.Length);
+
+            foreach (var dir in dirs)
+            {
+                var rel = Path.GetRelativePath(gameRootPath, dir);
+                var topSegment = rel.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)[0];
+                if (protectedTopDirs.Contains(topSegment))
+                    continue;
+
+                try
+                {
+                    if (Directory.GetFiles(dir).Length == 0 && Directory.GetDirectories(dir).Length == 0)
+                    {
+                        Directory.Delete(dir);
+                        _loggingService.LogInfo(Strings.MelonLoaderDeletingFile, rel);
+                    }
+                }
+                catch { /* 有文件锁或无权限时跳过 */ }
+            }
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning(Strings.MelonLoaderManifestSaveError, ex.Message);
+        }
+    }
+
+
 
     public bool IsMelonLoaderDisabled(string gameRootPath)
     {

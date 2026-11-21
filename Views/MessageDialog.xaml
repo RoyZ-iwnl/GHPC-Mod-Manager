@@ -201,6 +201,12 @@
                             Style="{StaticResource DialogPrimaryButtonStyle}"
                             Click="GoToSettings_Click"
                             Visibility="Collapsed"/>
+                    <!-- 立即重启按钮 -->
+                    <Button x:Name="RestartButton"
+                            Content="立即重启"
+                            Style="{StaticResource DialogPrimaryButtonStyle}"
+                            Click="Restart_Click"
+                            Visibility="Collapsed"/>
                 </StackPanel>
             </Border>
         </Grid>

@@ -80,6 +80,9 @@ public partial class InstalledModsViewModel : ObservableObject
     // 横幅可见性：有新增MOD时显示
     public bool CanShowNewModsBanner => HasNewMods && NewModsCount > 0;
 
+    // 横幅展示的新增MOD列表（可点击跳转详情页）
+    public ObservableCollection<ModViewModel> NewModsList { get; } = new();
+
     public InstalledModsViewModel(IModManagerService modManagerService, ILoggingService loggingService, IServiceProvider serviceProvider, ISettingsService settingsService, IMelonLoaderService melonLoaderService, IProcessService processService)
     {
         _modManagerService = modManagerService;
@@ -212,12 +215,22 @@ public partial class InstalledModsViewModel : ObservableObject
     /// <summary>
     /// 由MainViewModel调用，同步新上架MOD横幅数据
     /// </summary>
-    public void SetNewModsInfo(bool hasNewMods, int newModsCount, List<string> newModsPreview)
+    public void SetNewModsInfo(bool hasNewMods, int newModsCount, List<string> newModsPreview, IEnumerable<ModViewModel>? newModsList = null)
     {
         HasNewMods = hasNewMods;
         NewModsCount = newModsCount;
         NewModsPreview = newModsPreview;
+        NewModsList.Clear();
+        if (newModsList != null)
+            foreach (var mod in newModsList)
+                NewModsList.Add(mod);
         OnPropertyChanged(nameof(CanShowNewModsBanner));
+    }
+
+    [RelayCommand]
+    private void NavigateToNewMod(ModViewModel mod)
+    {
+        NavigateToDetailRequested?.Invoke(this, mod);
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteModOps), AllowConcurrentExecutions = true)]
@@ -249,7 +262,7 @@ public partial class InstalledModsViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Updating, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Updating, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             var success = await _modManagerService.UpdateModAsync(mod.Id, mod.LatestVersion, progress);
@@ -304,7 +317,7 @@ public partial class InstalledModsViewModel : ObservableObject
             {
                 HasDeterminateProgress = true;
                 ProgressValue = p.ProgressPercentage;
-                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.ProgressPercentage:F1}% - {p.GetFormattedSpeed()}";
+                StatusMessage = $"{string.Format(Strings.Installing, mod.DisplayName)} - {p.GetProgressSuffix()}";
             });
 
             var operationText = string.Format(Strings.Reinstalling, mod.DisplayName);

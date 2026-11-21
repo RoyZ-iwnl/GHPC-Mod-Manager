@@ -402,6 +402,19 @@ public sealed class DownloadQueueService : IDownloadQueueService
                     entry.Item.Status = DownloadTaskStatus.Completed;
                     entry.Item.Progress = 100;
                     entry.Item.SpeedBytesPerSecond = 0;
+                    // 把所有分块标为已完成，确保IDM进度条完整闭合
+                    if (entry.Item.ChunkSegments?.Count > 0)
+                    {
+                        entry.Item.ChunkSegments = entry.Item.ChunkSegments
+                            .Select(s => new ChunkSegmentInfo
+                            {
+                                StartByte = s.StartByte,
+                                EndByte = s.EndByte,
+                                BytesDownloaded = s.TotalSize,
+                                SegmentStatus = ChunkSegmentStatus.Completed
+                            })
+                            .ToList();
+                    }
                     entry.Completion.TrySetResult(data);
                 }
             }
@@ -451,6 +464,9 @@ public sealed class DownloadQueueService : IDownloadQueueService
             entry.Item.TotalBytes = progress.TotalBytes > 0 ? progress.TotalBytes : entry.Item.TotalBytes;
             entry.Item.Progress = progress.ProgressPercentage;
             entry.Item.SpeedBytesPerSecond = progress.SpeedBytesPerSecond;
+            // 传递分块快照，触发IDM风格进度条更新
+            if (progress.ChunkSegments != null)
+                entry.Item.ChunkSegments = progress.ChunkSegments;
             _currentSpeedBytesPerSecond = _taskList
                 .Where(t => t.Status == DownloadTaskStatus.Downloading)
                 .Sum(t => t.SpeedBytesPerSecond);
@@ -507,6 +523,10 @@ public sealed class DownloadQueueService : IDownloadQueueService
             var records = JsonConvert.DeserializeObject<List<PersistedDownload>>(json) ?? new();
             foreach (var record in records)
             {
+                // 重启时跳过已完成/已取消项目，自动清理
+                if (record.Status is DownloadTaskStatus.Completed or DownloadTaskStatus.Cancelled)
+                    continue;
+
                 var item = new DownloadTaskItem
                 {
                     Id = record.Id == Guid.Empty ? Guid.NewGuid() : record.Id,

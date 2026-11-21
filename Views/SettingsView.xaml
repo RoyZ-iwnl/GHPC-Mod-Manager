@@ -112,6 +112,29 @@
                             </Grid>
                         </Border>
 
+                        <!-- 更新通道：移至版本号下方 -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:Strings.UpdateChannel}"
+                                       Style="{StaticResource FieldLabelTextStyle}"
+                                       VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableUpdateChannels}"
+                                      SelectedItem="{Binding SelectedUpdateChannel, Mode=TwoWay}"
+                                      MaxWidth="320"
+                                      HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource UpdateChannelDisplayConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
                         <Grid Margin="0,0,0,14">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="220"/>
@@ -236,28 +259,6 @@
                                     Style="{DynamicResource OutlinedButtonStyle}"/>
                                 </StackPanel>
                              
-                        </Grid>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0"
-                                       Text="{x:Static resources:Strings.UpdateChannel}"
-                                       Style="{StaticResource FieldLabelTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding AvailableUpdateChannels}"
-                                      SelectedItem="{Binding SelectedUpdateChannel, Mode=TwoWay}"
-                                      MaxWidth="320"
-                                      HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource UpdateChannelDisplayConverter}}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
                         </Grid>
 
                         <CheckBox Margin="0,16,0,8"
@@ -435,9 +436,50 @@
                         <TextBlock Margin="0,16,0,0"
                                    Text="{x:Static resources:Strings.GitHubApiToken}"
                                    Style="{StaticResource FieldLabelTextStyle}"/>
-                        <TextBox Margin="0,0,0,8"
-                                 Text="{Binding GitHubApiToken}"
-                                 Style="{DynamicResource OutlinedTextBoxStyle}"/>
+                        <!-- Token 输入区域：默认隐藏，眼睛图标切换显示 -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- 明文输入框（token可见状态） -->
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding GitHubApiToken}"
+                                     Style="{DynamicResource OutlinedTextBoxStyle}"
+                                     Visibility="{Binding IsGitHubTokenVisible, Converter={StaticResource BoolToVis}}"/>
+                            <!-- 掩码显示框（token隐藏状态，只读） -->
+                            <TextBox Grid.Column="0"
+                                     IsReadOnly="True"
+                                     Text="{Binding GitHubApiTokenMasked, Mode=OneWay}"
+                                     Style="{DynamicResource OutlinedTextBoxStyle}"
+                                     Visibility="{Binding IsGitHubTokenVisible, Converter={StaticResource InvBoolToVis}}"/>
+                            <!-- 眼睛切换按钮 -->
+                            <Button Grid.Column="1"
+                                    Command="{Binding ToggleGitHubTokenVisibilityCommand}"
+                                    Margin="8,0,0,0"
+                                    Style="{DynamicResource OutlinedButtonStyle}"
+                                    Padding="10,0"
+                                    Width="42">
+                                <Grid>
+                                    <!-- 眼睛睁开：token隐藏时显示，点击可查看 -->
+                                    <Path Data="{StaticResource IconEyeOpen}"
+                                          Stroke="{DynamicResource OnSurfaceBrush}"
+                                          StrokeThickness="1.5"
+                                          Fill="Transparent"
+                                          Stretch="Uniform"
+                                          Width="16" Height="16"
+                                          Visibility="{Binding IsGitHubTokenVisible, Converter={StaticResource InvBoolToVis}}"/>
+                                    <!-- 眼睛关闭/划线：token可见时显示，点击可隐藏 -->
+                                    <Path Data="{StaticResource IconEyeOff}"
+                                          Stroke="{DynamicResource OnSurfaceBrush}"
+                                          StrokeThickness="1.5"
+                                          Fill="Transparent"
+                                          Stretch="Uniform"
+                                          Width="16" Height="16"
+                                          Visibility="{Binding IsGitHubTokenVisible, Converter={StaticResource BoolToVis}}"/>
+                                </Grid>
+                            </Button>
+                        </Grid>
                         <TextBlock Margin="0,4,0,16"
                                    Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
                                    Style="{StaticResource PageSectionHintTextStyle}"/>
@@ -708,6 +750,11 @@
                                         </TextBlock>
                                     </Button.Content>
                                 </Button>
+                                <Button Command="{Binding UninstallMelonLoaderCommand}"
+                                        Margin="0,0,12,8"
+                                        Style="{DynamicResource OutlinedButtonStyle}"
+                                        Content="{x:Static resources:Strings.UninstallMelonLoader}"
+                                        Visibility="{Binding CanShowUninstallMelonLoader, Converter={StaticResource BoolToVis}}"/>
                             </WrapPanel>
 
                             <Grid>

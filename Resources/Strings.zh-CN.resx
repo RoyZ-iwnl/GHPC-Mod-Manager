@@ -1358,6 +1358,12 @@
   <data name="RestartApplicationError" xml:space="preserve">
     <value>重启应用程序失败</value>
   </data>
+  <data name="RestartNow" xml:space="preserve">
+    <value>立即重启</value>
+  </data>
+  <data name="RestartLater" xml:space="preserve">
+    <value>稍后</value>
+  </data>
   <data name="FailedToRestartApplication" xml:space="preserve">
     <value>重启应用程序失败。请手动重启</value>
   </data>
@@ -1399,6 +1405,18 @@
   </data>
   <data name="MelonLoaderEnableFailed" xml:space="preserve">
     <value>启用 MelonLoader 失败</value>
+  </data>
+  <data name="UninstallMelonLoader" xml:space="preserve">
+    <value>卸载 MelonLoader</value>
+  </data>
+  <data name="ConfirmUninstallMelonLoader" xml:space="preserve">
+    <value>确定要卸载 MelonLoader 吗？将按原版文件清单删除框架文件，不会影响 Mods、UserData 等用户数据。</value>
+  </data>
+  <data name="MelonLoaderUninstallSuccess" xml:space="preserve">
+    <value>MelonLoader 已成功卸载</value>
+  </data>
+  <data name="MelonLoaderUninstallVersionUndetected" xml:space="preserve">
+    <value>无法识别当前 MelonLoader 版本且无本地清单，无法自动卸载，请手动删除游戏目录下的 MelonLoader 文件夹和 version.dll</value>
   </data>
   <data name="MelonLoaderDisabledOverlayHint" xml:space="preserve">
     <value>MelonLoader已临时禁用</value>
@@ -3474,4 +3492,10 @@
   <data name="NoDownloads" xml:space="preserve"><value>暂无下载任务</value></data>
   <data name="Reinstalling" xml:space="preserve"><value>正在重装 {0}...</value></data>
   <data name="DownloadEnqueued" xml:space="preserve"><value>已添加到下载队列</value></data>
+  <data name="ModUpdateDialogTitle" xml:space="preserve"><value>发现可用更新</value></data>
+  <data name="ModUpdateDialogHeader" xml:space="preserve"><value>以下 {0} 个MOD有可用更新，请选择要更新的：</value></data>
+  <data name="UpdateAllMods" xml:space="preserve"><value>全部更新</value></data>
+  <data name="UpdateSelectedMods" xml:space="preserve"><value>更新所选 ({0})</value></data>
+  <data name="ModUpdateQueued" xml:space="preserve"><value>已将 {0} 个MOD的更新添加至下载队列</value></data>
+  <data name="SelectAll" xml:space="preserve"><value>全选</value></data>
 </root>

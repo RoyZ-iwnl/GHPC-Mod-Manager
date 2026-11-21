@@ -371,6 +371,23 @@ public enum DownloadTaskStatus
     Cancelled
 }
 
+public enum ChunkSegmentStatus
+{
+    Pending,
+    Downloading,
+    Completed
+}
+
+public sealed class ChunkSegmentInfo
+{
+    public long StartByte { get; set; }
+    public long EndByte { get; set; }
+    public long BytesDownloaded { get; set; }
+    public ChunkSegmentStatus SegmentStatus { get; set; }
+    public long TotalSize => EndByte - StartByte + 1;
+    public double Progress => TotalSize > 0 ? (double)BytesDownloaded / TotalSize : 0;
+}
+
 public sealed class DownloadTaskItem : ObservableObject
 {
     private static string Text(string key) =>
@@ -429,6 +446,7 @@ public sealed class DownloadTaskItem : ObservableObject
             if (SetProperty(ref _status, value))
             {
                 OnPropertyChanged(nameof(StatusText));
+                OnPropertyChanged(nameof(SpeedText));
                 OnPropertyChanged(nameof(CanPause));
                 OnPropertyChanged(nameof(CanResume));
                 OnPropertyChanged(nameof(CanRetry));
@@ -514,13 +532,27 @@ public sealed class DownloadTaskItem : ObservableObject
     };
 
     public string ProgressText => TotalBytes > 0
-        ? $"{Progress:0}%"
-        : $"{BytesReceived / (1024d * 1024d):0.0} MB";
+        ? $"{FormatBytes(BytesReceived)} / {FormatBytes(TotalBytes)}"
+        : BytesReceived > 0 ? FormatBytes(BytesReceived) : string.Empty;
+
+    private static string FormatBytes(long bytes)
+    {
+        if (bytes >= 1024L * 1024 * 1024)
+            return $"{bytes / (1024d * 1024 * 1024):0.0} GB";
+        if (bytes >= 1024 * 1024)
+            return $"{bytes / (1024d * 1024):0.0} MB";
+        if (bytes >= 1024)
+            return $"{bytes / 1024d:0} KB";
+        return $"{bytes} B";
+    }
 
     public string SpeedText
     {
         get
         {
+            // 仅下载中时显示速度，其他状态不显示
+            if (Status != DownloadTaskStatus.Downloading) return string.Empty;
+            if (SpeedBytesPerSecond <= 0) return string.Empty;
             if (SpeedBytesPerSecond >= 1024 * 1024)
                 return $"{SpeedBytesPerSecond / (1024 * 1024):0.0} MB/s";
             if (SpeedBytesPerSecond >= 1024)
@@ -534,6 +566,20 @@ public sealed class DownloadTaskItem : ObservableObject
     public bool CanRetry => Status == DownloadTaskStatus.Failed || Status == DownloadTaskStatus.Cancelled;
     public bool CanMove => Status != DownloadTaskStatus.Completed && Status != DownloadTaskStatus.Cancelled;
     public bool CanRemove => Status == DownloadTaskStatus.Completed || Status == DownloadTaskStatus.Cancelled || Status == DownloadTaskStatus.Failed;
+
+    private IReadOnlyList<ChunkSegmentInfo>? _chunkSegments;
+    public IReadOnlyList<ChunkSegmentInfo>? ChunkSegments
+    {
+        get => _chunkSegments;
+        set
+        {
+            if (SetProperty(ref _chunkSegments, value))
+                OnPropertyChanged(nameof(HasChunkSegments));
+        }
+    }
+
+    // 多线程下载时有多个分块，显示IDM风格进度条
+    public bool HasChunkSegments => _chunkSegments?.Count > 1;
 }
 
 /// <summary>
