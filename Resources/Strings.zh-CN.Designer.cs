@@ -7723,6 +7723,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 作者推荐搭配.
+        /// </summary>
+        public static string RecommendedWithSection {
+            get {
+                return ResourceManager.GetString("RecommendedWithSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 重下并重装.
         /// </summary>
         public static string RedownloadReinstall {

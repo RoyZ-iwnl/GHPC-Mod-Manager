@@ -321,6 +321,70 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- 作者推荐搭配的Mod：点名称跳到该Mod详情页安装 -->
+                    <Border Margin="0,16,0,0"
+                            Style="{StaticResource PageSidebarCardStyle}"
+                            Visibility="{Binding HasRecommendations, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resources:Strings.RecommendedWithSection}"
+                                       Style="{StaticResource PageSectionTitleTextStyle}"/>
+                            <ItemsControl Margin="0,14,0,0"
+                                          ItemsSource="{Binding Recommendations}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource DetailItemCardStyle}">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Button Grid.Column="0"
+                                                            Padding="0"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            HorizontalAlignment="Left"
+                                                            Style="{DynamicResource TextButtonStyle}"
+                                                            Command="{Binding DataContext.NavigateToDependencyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding ModId}">
+                                                        <TextBlock Text="{Binding DisplayName}"
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="{DynamicResource OnSurfaceBrush}"/>
+                                                    </Button>
+
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                                Background="{DynamicResource SuccessContainerBrush}"
+                                                                BorderBrush="{DynamicResource SuccessBrush}"
+                                                                Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVis}}">
+                                                            <TextBlock Text="{x:Static resources:Strings.Installed}"
+                                                                       Style="{StaticResource BadgeTextStyle}"
+                                                                       Foreground="{DynamicResource OnSuccessBrush}"/>
+                                                        </Border>
+                                                        <!-- 推荐不是依赖，未安装用中性样式 -->
+                                                        <Border Style="{DynamicResource BadgeBorderStyle}"
+                                                                Visibility="{Binding IsInstalled, Converter={StaticResource InvBoolToVis}}">
+                                                            <TextBlock Text="{x:Static resources:Strings.NotInstalled}"
+                                                                       Style="{StaticResource BadgeTextStyle}"
+                                                                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <TextBlock Margin="0,6,0,0"
+                                                           Text="{Binding Note}"
+                                                           TextWrapping="Wrap"
+                                                           Style="{StaticResource PageSubtitleTextStyle}"
+                                                           Visibility="{Binding HasNote, Converter={StaticResource BoolToVis}}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
                     <Border Margin="0,16,0,0"
                             Style="{StaticResource PageSidebarCardStyle}"
                             Visibility="{Binding HasDependencies, Converter={StaticResource BoolToVis}}">

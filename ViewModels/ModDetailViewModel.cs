@@ -21,6 +21,10 @@ public class RelatedModInfo
     public bool IsInstalled { get; set; }
     public bool IsEnabled { get; set; }
     public bool IsDelisted { get; set; }
+
+    // 作者推荐理由（仅推荐列表使用）
+    public string? Note { get; set; }
+    public bool HasNote => !string.IsNullOrWhiteSpace(Note);
 }
 
 public partial class ModDetailViewModel : ObservableObject
@@ -82,6 +86,13 @@ public partial class ModDetailViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _hasConflicts;
+
+    // 作者推荐搭配的Mod
+    [ObservableProperty]
+    private ObservableCollection<RelatedModInfo> _recommendations = new();
+
+    [ObservableProperty]
+    private bool _hasRecommendations;
 
     // 记录来源页面（依赖跳转时用于返回）
     public string? ReturnToModId { get; set; }
@@ -180,8 +191,48 @@ public partial class ModDetailViewModel : ObservableObject
             });
         }
 
+        // 构建推荐列表：只显示Mod列表里存在且未下架的Mod
+        Recommendations.Clear();
+        foreach (var rec in Mod.Config.Recommends ?? new List<ModRecommendation>())
+        {
+            var relatedMod = _allMods.FirstOrDefault(m => string.Equals(m.Id, rec.Id, StringComparison.OrdinalIgnoreCase));
+            if (relatedMod == null || relatedMod.IsDelisted || relatedMod.Id == Mod.Id)
+                continue;
+
+            Recommendations.Add(new RelatedModInfo
+            {
+                ModId = relatedMod.Id,
+                DisplayName = relatedMod.DisplayName,
+                IsInstalled = relatedMod.IsInstalled,
+                IsEnabled = relatedMod.IsEnabled,
+                Note = GetLocalizedNote(rec.Note)
+            });
+        }
+
         HasDependencies = Dependencies.Count > 0;
         HasConflicts = Conflicts.Count > 0;
+        HasRecommendations = Recommendations.Count > 0;
+    }
+
+    // 按当前语言取推荐理由：完全匹配 → 语言前缀 → en-US → 任意
+    private string? GetLocalizedNote(Dictionary<string, string>? notes)
+    {
+        if (notes == null || notes.Count == 0)
+            return null;
+
+        var lang = _settingsService.Settings.Language;
+        if (notes.TryGetValue(lang, out var exact) && !string.IsNullOrWhiteSpace(exact))
+            return exact;
+
+        var prefix = lang.Length >= 2 ? lang.Substring(0, 2) : lang;
+        var prefixMatch = notes.FirstOrDefault(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(kv.Value));
+        if (prefixMatch.Value != null)
+            return prefixMatch.Value;
+
+        if (notes.TryGetValue("en-US", out var en) && !string.IsNullOrWhiteSpace(en))
+            return en;
+
+        return notes.Values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
     }
 
     private string GetRelatedModDisplayName(string modId, ModViewModel? relatedMod)
