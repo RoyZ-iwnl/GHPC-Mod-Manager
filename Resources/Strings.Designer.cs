@@ -3603,7 +3603,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Increase API rate limit from 60 to 5000 requests/hour.
+        ///   Looks up a localized string similar to Optional. Checking for new versions doesn&apos;t use the GitHub API any more. A token helps when you install or update a lot of mods in one go: it raises the limit from 60 to 5,000 requests per hour..
         /// </summary>
         public static string GitHubApiTokenDescription {
             get {
@@ -3612,7 +3612,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get token at: https://github.com/settings/tokens.
+        ///   Looks up a localized string similar to Create a token on GitHub.
         /// </summary>
         public static string GitHubApiTokenGetUrl {
             get {
@@ -3635,6 +3635,19 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubApiTokenPermissionHint {
             get {
                 return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to get one (free, about a minute):
+        ///1. Sign in to GitHub (or make a free account), then open the link below.
+        ///2. Token name: anything, e.g. GHPC Mod Manager. Expiration: your choice; when it runs out, make a new one.
+        ///3. Repository access: Public repositories. Don&apos;t add any permissions.
+        ///4. Click Generate token, copy it (it starts with github_pat_), paste it above, press Test, then Save..
+        /// </summary>
+        public static string GitHubApiTokenSteps {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenSteps", resourceCulture);
             }
         }
         
@@ -3720,11 +3733,42 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GitHub allows 60 requests per hour without a token, and they&apos;re used up. {0}
+        ///
+        ///Until then, installing and the version lists on mod pages may not work.
+        ///
+        ///A free GitHub token raises the limit to 5,000 per hour. Open Settings to add one?.
+        /// </summary>
+        public static string GitHubRateLimitNoTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitNoTokenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It resets at {0} (in about {1} min)..
+        /// </summary>
+        public static string GitHubRateLimitResetsAt {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitResetsAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GitHub API Rate Limit.
         /// </summary>
         public static string GitHubRateLimitTitle {
             get {
                 return ResourceManager.GetString("GitHubRateLimitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your GitHub token&apos;s limit (5,000 requests per hour) is used up. {0}.
+        /// </summary>
+        public static string GitHubRateLimitTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitTokenMessage", resourceCulture);
             }
         }
         
@@ -3761,6 +3805,89 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubTokenMigratedToEncrypted {
             get {
                 return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected the API token (401), retrying without it.
+        /// </summary>
+        public static string GitHubTokenRejectedLog {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected your API token. It may have expired or been mistyped.
+        ///
+        ///The manager keeps working without it for now (60 requests per hour). Open Settings to fix the token?.
+        /// </summary>
+        public static string GitHubTokenRejectedMessage {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string GitHubTokenTest {
+            get {
+                return ResourceManager.GetString("GitHubTokenTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t reach GitHub: {0}.
+        /// </summary>
+        public static string GitHubTokenTestFailed {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking….
+        /// </summary>
+        public static string GitHubTokenTesting {
+            get {
+                return ResourceManager.GetString("GitHubTokenTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No token: {0} of {1} requests left this hour (resets at {2})..
+        /// </summary>
+        public static string GitHubTokenTestNoToken {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestNoToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token works: {0} of {1} requests left this hour (resets at {2})..
+        /// </summary>
+        public static string GitHubTokenTestOk {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected this token. It may have expired or been mistyped..
+        /// </summary>
+        public static string GitHubTokenTestRejected {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub API token.
+        /// </summary>
+        public static string GitHubTokenTitle {
+            get {
+                return ResourceManager.GetString("GitHubTokenTitle", resourceCulture);
             }
         }
         

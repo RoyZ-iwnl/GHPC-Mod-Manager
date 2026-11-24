@@ -88,8 +88,9 @@ public class LaunchCheckService : ILaunchCheckService
                     {
                         var owner = GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl);
                         var repo = GetRepoNameFromApiUrl(mod.Config.ReleaseUrl);
-                        var releases = await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: true);
-                        var latestVersion = releases.FirstOrDefault()?.TagName;
+                        // 只取最新版本，优先走不占API额度的订阅源
+                        var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(owner, repo, forceRefresh: true);
+                        var latestVersion = latestRelease?.TagName;
 
                         var normalizedLatestVersion = NormalizeVersion(latestVersion);
                         var normalizedInstalledVersion = NormalizeVersion(mod.InstalledVersion);

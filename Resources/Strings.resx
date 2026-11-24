@@ -2732,13 +2732,13 @@ Do you want to restart now?</value>
     <value>GitHub API Token (Optional)</value>
   </data>
   <data name="GitHubApiTokenDescription" xml:space="preserve">
-    <value>Increase API rate limit from 60 to 5000 requests/hour</value>
+    <value>Optional. Checking for new versions doesn't use the GitHub API any more. A token helps when you install or update a lot of mods in one go: it raises the limit from 60 to 5,000 requests per hour.</value>
   </data>
   <data name="GitHubApiTokenHint" xml:space="preserve">
     <value>Note: Configuring a token will disable proxy acceleration and use direct connection to GitHub</value>
   </data>
   <data name="GitHubApiTokenGetUrl" xml:space="preserve">
-    <value>Get token at: https://github.com/settings/tokens</value>
+    <value>Create a token on GitHub</value>
   </data>
   <data name="GitHubApiTokenPermissionHint" xml:space="preserve">
     <value>Need Github account, only "public_repo" permission is required</value>
@@ -3557,4 +3557,27 @@ The current version is backed up first.</value></data>
 
 Replace it with {1}? The current file is backed up first.</value></data>
   <data name="ProtocolAlreadyUpToDate" xml:space="preserve"><value>{0} {1} is already installed and up to date.</value></data>
+  <data name="GitHubRateLimitResetsAt" xml:space="preserve"><value>It resets at {0} (in about {1} min).</value></data>
+  <data name="GitHubRateLimitNoTokenMessage" xml:space="preserve"><value>GitHub allows 60 requests per hour without a token, and they're used up. {0}
+
+Until then, installing and the version lists on mod pages may not work.
+
+A free GitHub token raises the limit to 5,000 per hour. Open Settings to add one?</value></data>
+  <data name="GitHubRateLimitTokenMessage" xml:space="preserve"><value>Your GitHub token's limit (5,000 requests per hour) is used up. {0}</value></data>
+  <data name="GitHubTokenRejectedLog" xml:space="preserve"><value>GitHub rejected the API token (401), retrying without it</value></data>
+  <data name="GitHubTokenRejectedMessage" xml:space="preserve"><value>GitHub rejected your API token. It may have expired or been mistyped.
+
+The manager keeps working without it for now (60 requests per hour). Open Settings to fix the token?</value></data>
+  <data name="GitHubTokenTest" xml:space="preserve"><value>Test</value></data>
+  <data name="GitHubTokenTesting" xml:space="preserve"><value>Checking…</value></data>
+  <data name="GitHubTokenTestOk" xml:space="preserve"><value>Token works: {0} of {1} requests left this hour (resets at {2}).</value></data>
+  <data name="GitHubTokenTestNoToken" xml:space="preserve"><value>No token: {0} of {1} requests left this hour (resets at {2}).</value></data>
+  <data name="GitHubTokenTestRejected" xml:space="preserve"><value>GitHub rejected this token. It may have expired or been mistyped.</value></data>
+  <data name="GitHubTokenTestFailed" xml:space="preserve"><value>Couldn't reach GitHub: {0}</value></data>
+  <data name="GitHubApiTokenSteps" xml:space="preserve"><value>How to get one (free, about a minute):
+1. Sign in to GitHub (or make a free account), then open the link below.
+2. Token name: anything, e.g. GHPC Mod Manager. Expiration: your choice; when it runs out, make a new one.
+3. Repository access: Public repositories. Don't add any permissions.
+4. Click Generate token, copy it (it starts with github_pat_), paste it above, press Test, then Save.</value></data>
+  <data name="GitHubTokenTitle" xml:space="preserve"><value>GitHub API token</value></data>
 </root>
