@@ -2358,6 +2358,41 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mod管理器无法在自己的文件夹中保存设置：
+        ///{0}
+        ///
+        ///该文件夹受Windows保护（例如 Program Files）。是否以管理员身份重启？
+        ///
+        ///提示：把Mod管理器放到普通文件夹（例如“文档”），就完全不需要管理员权限。.
+        /// </summary>
+        public static string ElevationAppFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationAppFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 没有管理员权限，无法向游戏目录安装Mod：
+        ///{0}
+        ///
+        ///是否以管理员身份重启Mod管理器？选择“否”则只能浏览Mod。.
+        /// </summary>
+        public static string ElevationGameFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationGameFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 需要管理员权限.
+        /// </summary>
+        public static string ElevationTitle {
+            get {
+                return ResourceManager.GetString("ElevationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已启用.
         /// </summary>
         public static string Enabled {

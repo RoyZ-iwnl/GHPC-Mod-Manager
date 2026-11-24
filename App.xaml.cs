@@ -28,6 +28,9 @@ namespace GHPC_Mod_Manager
         // 待处理的协议激活参数
         private static string[]? _pendingProtocolArgs;
 
+        // 启动参数（以管理员身份重启时原样带上）
+        private static string[] _startupArgs = Array.Empty<string>();
+
         // Windows API 用于激活已运行的实例
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -46,9 +49,20 @@ namespace GHPC_Mod_Manager
                 return;
             }
 
+            _startupArgs = e.Args;
+
             // 单实例检测
             bool createdNew;
-            _mutex = new Mutex(true, MutexName, out createdNew);
+            try
+            {
+                _mutex = new Mutex(true, MutexName, out createdNew);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // 已运行的实例是管理员权限，普通权限打不开它的Mutex，同样视为已有实例
+                _mutex = null;
+                createdNew = false;
+            }
 
             // 如果命令行有参数，说明可能是协议激活
             bool hasProtocolArgs = e.Args.Length > 0 && e.Args.Any(arg => arg.StartsWith("ghpcmm://", StringComparison.OrdinalIgnoreCase));
@@ -87,6 +101,21 @@ namespace GHPC_Mod_Manager
 
             // 解析命令行参数
             CommandLineArgs.Parse(e.Args);
+
+            // 程序目录写不进去（例如放在 Program Files）：设置、日志、缓存都存不了，只能以管理员身份运行
+            if (!ElevationHelper.IsElevated() && !ElevationHelper.CanWriteTo(AppContext.BaseDirectory))
+            {
+                if (ConfirmBeforeMainWindow(
+                        string.Format(Strings.ElevationAppFolderMessage, AppContext.BaseDirectory),
+                        Strings.ElevationTitle) &&
+                    RestartElevated())
+                {
+                    return;
+                }
+
+                Shutdown();
+                return;
+            }
 
             // 保存协议参数（在服务初始化完成后处理）
             if (hasProtocolArgs)
@@ -227,6 +256,12 @@ namespace GHPC_Mod_Manager
             await settingsService.LoadSettingsAsync();
             // Ensure language setting is applied immediately on startup
             settingsService.ApplyLanguageSetting();
+
+            // 游戏目录写不进去时才申请管理员权限（Steam默认库对普通用户可写，绝大多数情况不需要）
+            if (!settingsService.Settings.IsFirstRun && OfferElevationForGameFolder(settingsService.Settings.GameRootPath))
+            {
+                return;
+            }
 
             // 清理上次异常退出残留的下载临时文件(download_* 前缀)
             // temp/ 目录还存放 MelonLoader/updates/version_cleanup 等其他用途文件,仅删 download_ 前缀
@@ -504,6 +539,92 @@ namespace GHPC_Mod_Manager
             }, IntPtr.Zero);
 
             return result;
+        }
+
+        /// <summary>
+        /// 游戏目录普通权限写不进去时，询问是否以管理员身份重启
+        /// </summary>
+        /// <returns>已重启（当前实例即将退出）返回true</returns>
+        public static bool OfferElevationForGameFolder(string? gameRootPath)
+        {
+            if (ElevationHelper.IsElevated())
+                return false;
+
+            var blocked = ElevationHelper.GetUnwritableGameFolders(gameRootPath);
+            if (blocked.Count == 0)
+                return false;
+
+            return ConfirmBeforeMainWindow(
+                       string.Format(Strings.ElevationGameFolderMessage, blocked[0]),
+                       Strings.ElevationTitle) &&
+                   RestartElevated();
+        }
+
+        /// <summary>
+        /// 主窗口出现前也能安全弹出的确认框：默认"最后一个窗口关闭就退出"，关掉这个对话框会把程序一起关掉
+        /// </summary>
+        private static bool ConfirmBeforeMainWindow(string message, string title)
+        {
+            var app = Current;
+            var previousMode = app.ShutdownMode;
+            app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            try
+            {
+                return MessageDialogHelper.Confirm(message, title);
+            }
+            finally
+            {
+                app.ShutdownMode = previousMode;
+                // 对话框可能被WPF临时当作MainWindow，关闭后清掉，等真正的主窗口设置
+                if (app.MainWindow is MessageDialog)
+                    app.MainWindow = null;
+            }
+        }
+
+        /// <summary>
+        /// 以管理员身份重启，原样带上启动参数（含 ghpcmm:// 链接和 -dev）
+        /// </summary>
+        /// <returns>新实例已启动返回true；用户在UAC里取消返回false，当前实例继续运行</returns>
+        public static bool RestartElevated()
+        {
+            var exePath = Environment.ProcessPath;
+            if (string.IsNullOrEmpty(exePath))
+                return false;
+
+            // 先释放Mutex，否则新实例会以为已有实例在运行而退出
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
+            _mutex = null;
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = string.Join(" ", _startupArgs.Select(QuoteArgument)),
+                    WorkingDirectory = Path.GetDirectoryName(exePath),
+                    UseShellExecute = true,
+                    Verb = "runas"
+                });
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // 用户在UAC对话框点了"否"：重新占用Mutex，当前实例继续
+                _mutex = new Mutex(true, MutexName, out _);
+                return false;
+            }
+
+            Current.Shutdown();
+            System.Environment.Exit(0);
+            return true;
+        }
+
+        // 含空格或引号的参数加引号，保证原样传给新实例
+        private static string QuoteArgument(string arg)
+        {
+            if (arg.Length > 0 && !arg.Any(c => char.IsWhiteSpace(c) || c == '"'))
+                return arg;
+            return "\"" + arg.Replace("\"", "\\\"") + "\"";
         }
 
         // 清理 download_ 前缀残留的下载临时文件(InstallDirectReleaseModeAsync 异常退出时遗留)

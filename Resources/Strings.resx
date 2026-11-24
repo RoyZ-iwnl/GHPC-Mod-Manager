@@ -3591,4 +3591,15 @@ The manager keeps working without it for now (60 requests per hour). Open Settin
   <data name="UninstallKeepBackupButton" xml:space="preserve"><value>Uninstall</value></data>
   <data name="UninstallRemoveCompletelyButton" xml:space="preserve"><value>Remove completely</value></data>
   <data name="ModBackupDeletedCompletely" xml:space="preserve"><value>Removed backup of {0}: {1}</value></data>
+  <data name="ElevationTitle" xml:space="preserve"><value>Administrator rights needed</value></data>
+  <data name="ElevationAppFolderMessage" xml:space="preserve"><value>The Mod Manager can't save its settings in its own folder:
+{0}
+
+Windows protects this folder (for example Program Files). Restart as administrator?
+
+Tip: move the Mod Manager to a normal folder, like Documents, and it won't need administrator rights at all.</value></data>
+  <data name="ElevationGameFolderMessage" xml:space="preserve"><value>Mods can't be installed into the game folder without administrator rights:
+{0}
+
+Restart the Mod Manager as administrator? Choose No to just browse mods.</value></data>
 </root>

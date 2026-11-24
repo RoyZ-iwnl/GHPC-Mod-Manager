@@ -2358,6 +2358,41 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Mod Manager can&apos;t save its settings in its own folder:
+        ///{0}
+        ///
+        ///Windows protects this folder (for example Program Files). Restart as administrator?
+        ///
+        ///Tip: move the Mod Manager to a normal folder, like Documents, and it won&apos;t need administrator rights at all..
+        /// </summary>
+        public static string ElevationAppFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationAppFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods can&apos;t be installed into the game folder without administrator rights:
+        ///{0}
+        ///
+        ///Restart the Mod Manager as administrator? Choose No to just browse mods..
+        /// </summary>
+        public static string ElevationGameFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationGameFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Administrator rights needed.
+        /// </summary>
+        public static string ElevationTitle {
+            get {
+                return ResourceManager.GetString("ElevationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enabled.
         /// </summary>
         public static string Enabled {
