@@ -656,7 +656,7 @@ public class ModConfig
     public List<string> Conflicts { get; set; } = new();
     public List<string> Requirements { get; set; } = new();
 
-    // 作者推荐搭配的Mod（可选，不是依赖）："Recommends": ["ModId", {"Id": "ModId", "Note": {"en-US": "...", "zh-CN": "..."}}]
+    // 作者推荐搭配的Mod（可选，不是依赖）："Recommends": ["ModId 或 GitHub链接", {"Id": "...", "Note": {"en-US": "...", "zh-CN": "..."}}]
     [JsonProperty("Recommends")]
     [JsonConverter(typeof(ModRecommendationListConverter))]
     public List<ModRecommendation> Recommends { get; set; } = new();
@@ -1276,6 +1276,7 @@ public class MainConfigTestResult
 /// </summary>
 public class ModRecommendation
 {
+    // 指向被推荐的Mod：Mod列表ID、GitHub仓库链接（或 owner/repo）、或Mod名称
     public string Id { get; set; } = string.Empty;
     public Dictionary<string, string>? Note { get; set; }
 }
@@ -1308,7 +1309,8 @@ public sealed class ModRecommendationListConverter : JsonConverter<List<ModRecom
             if (item is not JObject obj)
                 continue;
 
-            var modId = obj["Id"]?.ToString();
+            // 作者文件里可以用 "Mod" 或 "Repo" 写GitHub链接，含义同 Id
+            var modId = (obj["Id"] ?? obj["Mod"] ?? obj["Repo"])?.ToString();
             if (string.IsNullOrWhiteSpace(modId))
                 continue;
 
