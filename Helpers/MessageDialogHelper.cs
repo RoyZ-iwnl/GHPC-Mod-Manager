@@ -95,7 +95,12 @@ namespace GHPC_Mod_Manager.Helpers
         {
             var dialog = new MessageDialog();
             dialog.Setup(message, title, button, icon);
-            dialog.Owner = Application.Current.MainWindow;
+            // 主窗口还没创建时，WPF会把第一个窗口（就是这个对话框）当作MainWindow，不能设自己为Owner
+            var owner = Application.Current.MainWindow;
+            if (owner != null && !ReferenceEquals(owner, dialog) && owner.IsLoaded)
+                dialog.Owner = owner;
+            else
+                dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             dialog.ShowDialog();
             return dialog.Result;
         }

@@ -620,6 +620,10 @@ public partial class SettingsViewModel : ObservableObject
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);
 
+            // 换到普通权限写不进去的游戏目录时，询问以管理员身份重启
+            if (gamePathChanged && App.OfferElevationForGameFolder(GameRootPath))
+                return;
+
             if (_themeService.CurrentTheme != SelectedTheme)
             {
                 _themeService.SetTheme(SelectedTheme);

@@ -622,6 +622,9 @@ public partial class SetupWizardViewModel : ObservableObject
                 _hasShownSteamWarning = false; // 重置Steam版本警告状态
                 _settingsService.Settings.GameRootPath = GameRootPath;
                 await _settingsService.SaveSettingsAsync();
+                // 游戏目录普通权限写不进去时才询问以管理员身份重启（路径已保存）
+                if (App.OfferElevationForGameFolder(GameRootPath))
+                    return;
                 UpdateNavigationButtons();
             }
             else
@@ -1177,6 +1180,9 @@ public partial class SetupWizardViewModel : ObservableObject
                 GameRootPath = foundPaths[0];
                 _settingsService.Settings.GameRootPath = GameRootPath;
                 await _settingsService.SaveSettingsAsync();
+                // 游戏目录普通权限写不进去时才询问以管理员身份重启（路径已保存）
+                if (App.OfferElevationForGameFolder(GameRootPath))
+                    return;
                 UpdateNavigationButtons();
 
                 _loggingService.LogInfo(string.Format(Strings.MultiplePathsFound, foundPaths.Count));
