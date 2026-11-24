@@ -3535,4 +3535,26 @@ Please update the Mod Manager first to install this mod.</value>
   <data name="UpdateSelectedMods" xml:space="preserve"><value>Update Selected ({0})</value></data>
   <data name="ModUpdateQueued" xml:space="preserve"><value>{0} mod update(s) added to download queue</value></data>
   <data name="SelectAll" xml:space="preserve"><value>Select All</value></data>
+  <data name="InstalledManuallyBadge" xml:space="preserve"><value>Installed manually</value></data>
+  <data name="ManualModAdopted" xml:space="preserve"><value>Registered manually installed mod {0} (version {1}) in the install manifest</value></data>
+  <data name="ManualModBackupKept" xml:space="preserve"><value>Kept the backup of manually installed {0} {1}</value></data>
+  <data name="ProtocolDialogTitle" xml:space="preserve"><value>Mod link</value></data>
+  <data name="ProtocolModRouteReceived" xml:space="preserve"><value>Protocol link: {0} {1}</value></data>
+  <data name="ProtocolInvalidLink" xml:space="preserve"><value>This link is not valid:
+{0}</value></data>
+  <data name="ProtocolBusy" xml:space="preserve"><value>Another install or update is running. Wait for it to finish, then open the link again.</value></data>
+  <data name="ProtocolFinishSetupFirst" xml:space="preserve"><value>Finish the first-run setup, then open the link again.</value></data>
+  <data name="ProtocolModListNotLoaded" xml:space="preserve"><value>The mod list could not be loaded, so the link can't be opened. Check your connection, press Refresh and try again.</value></data>
+  <data name="ProtocolUnknownMod" xml:space="preserve"><value>There is no mod with the ID "{0}" in the mod list. Nothing was changed.</value></data>
+  <data name="ProtocolUnknownModLog" xml:space="preserve"><value>Protocol link: unknown mod ID {0}</value></data>
+  <data name="ProtocolGameRunning" xml:space="preserve"><value>GHPC is running. Close the game first, then use the buttons on this page.</value></data>
+  <data name="ProtocolNoRelease" xml:space="preserve"><value>No release of {0} was found to install.</value></data>
+  <data name="ProtocolConfirmInstall" xml:space="preserve"><value>Install {0} {1}?</value></data>
+  <data name="ProtocolConfirmUpdate" xml:space="preserve"><value>Update {0} from {1} to {2}?
+
+The current version is backed up first.</value></data>
+  <data name="ProtocolConfirmReplaceManual" xml:space="preserve"><value>{0} was copied into the Mods folder by hand and its version can't be read.
+
+Replace it with {1}? The current file is backed up first.</value></data>
+  <data name="ProtocolAlreadyUpToDate" xml:space="preserve"><value>{0} {1} is already installed and up to date.</value></data>
 </root>

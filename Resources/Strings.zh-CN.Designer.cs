@@ -3856,6 +3856,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 手动安装.
+        /// </summary>
+        public static string InstalledManuallyBadge {
+            get {
+                return ResourceManager.GetString("InstalledManuallyBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已安装：{0} 个MOD.
         /// </summary>
         public static string InstalledModsCount {
@@ -4764,6 +4773,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Manual {
             get {
                 return ResourceManager.GetString("Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已将手动安装的Mod {0}（版本 {1}）登记到安装清单.
+        /// </summary>
+        public static string ManualModAdopted {
+            get {
+                return ResourceManager.GetString("ManualModAdopted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已保留手动安装的 {0} {1} 的备份.
+        /// </summary>
+        public static string ManualModBackupKept {
+            get {
+                return ResourceManager.GetString("ManualModBackupKept", resourceCulture);
             }
         }
         
@@ -7153,6 +7180,137 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ProjectUrl {
             get {
                 return ResourceManager.GetString("ProjectUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} 已安装且是最新版本。.
+        /// </summary>
+        public static string ProtocolAlreadyUpToDate {
+            get {
+                return ResourceManager.GetString("ProtocolAlreadyUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 另一个安装或更新正在进行，请等它完成后再打开链接。.
+        /// </summary>
+        public static string ProtocolBusy {
+            get {
+                return ResourceManager.GetString("ProtocolBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 安装 {0} {1}？.
+        /// </summary>
+        public static string ProtocolConfirmInstall {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 是手动放入Mods文件夹的，无法读取其版本。
+        ///
+        ///用 {1} 替换吗？替换前会先备份当前文件。.
+        /// </summary>
+        public static string ProtocolConfirmReplaceManual {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmReplaceManual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 将 {0} 从 {1} 更新到 {2}？
+        ///
+        ///更新前会先备份当前版本。.
+        /// </summary>
+        public static string ProtocolConfirmUpdate {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod 链接.
+        /// </summary>
+        public static string ProtocolDialogTitle {
+            get {
+                return ResourceManager.GetString("ProtocolDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请先完成首次设置，然后再打开链接。.
+        /// </summary>
+        public static string ProtocolFinishSetupFirst {
+            get {
+                return ResourceManager.GetString("ProtocolFinishSetupFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC 正在运行。请先关闭游戏，再使用本页面的按钮。.
+        /// </summary>
+        public static string ProtocolGameRunning {
+            get {
+                return ResourceManager.GetString("ProtocolGameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 链接无效：
+        ///{0}.
+        /// </summary>
+        public static string ProtocolInvalidLink {
+            get {
+                return ResourceManager.GetString("ProtocolInvalidLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod列表未能加载，无法打开该链接。请检查网络，点击刷新后重试。.
+        /// </summary>
+        public static string ProtocolModListNotLoaded {
+            get {
+                return ResourceManager.GetString("ProtocolModListNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 协议链接：{0} {1}.
+        /// </summary>
+        public static string ProtocolModRouteReceived {
+            get {
+                return ResourceManager.GetString("ProtocolModRouteReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 没有找到可安装的 {0} 版本。.
+        /// </summary>
+        public static string ProtocolNoRelease {
+            get {
+                return ResourceManager.GetString("ProtocolNoRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod列表中没有ID为“{0}”的Mod，未做任何更改。.
+        /// </summary>
+        public static string ProtocolUnknownMod {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 协议链接：未知的Mod ID {0}.
+        /// </summary>
+        public static string ProtocolUnknownModLog {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownModLog", resourceCulture);
             }
         }
         

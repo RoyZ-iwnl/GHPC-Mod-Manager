@@ -3873,6 +3873,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installed manually.
+        /// </summary>
+        public static string InstalledManuallyBadge {
+            get {
+                return ResourceManager.GetString("InstalledManuallyBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installed: {0} mods.
         /// </summary>
         public static string InstalledModsCount {
@@ -4781,6 +4790,24 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Manual {
             get {
                 return ResourceManager.GetString("Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registered manually installed mod {0} (version {1}) in the install manifest.
+        /// </summary>
+        public static string ManualModAdopted {
+            get {
+                return ResourceManager.GetString("ManualModAdopted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kept the backup of manually installed {0} {1}.
+        /// </summary>
+        public static string ManualModBackupKept {
+            get {
+                return ResourceManager.GetString("ManualModBackupKept", resourceCulture);
             }
         }
         
@@ -7215,6 +7242,137 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ProjectUrl {
             get {
                 return ResourceManager.GetString("ProjectUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} is already installed and up to date..
+        /// </summary>
+        public static string ProtocolAlreadyUpToDate {
+            get {
+                return ResourceManager.GetString("ProtocolAlreadyUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another install or update is running. Wait for it to finish, then open the link again..
+        /// </summary>
+        public static string ProtocolBusy {
+            get {
+                return ResourceManager.GetString("ProtocolBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install {0} {1}?.
+        /// </summary>
+        public static string ProtocolConfirmInstall {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was copied into the Mods folder by hand and its version can&apos;t be read.
+        ///
+        ///Replace it with {1}? The current file is backed up first..
+        /// </summary>
+        public static string ProtocolConfirmReplaceManual {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmReplaceManual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update {0} from {1} to {2}?
+        ///
+        ///The current version is backed up first..
+        /// </summary>
+        public static string ProtocolConfirmUpdate {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod link.
+        /// </summary>
+        public static string ProtocolDialogTitle {
+            get {
+                return ResourceManager.GetString("ProtocolDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish the first-run setup, then open the link again..
+        /// </summary>
+        public static string ProtocolFinishSetupFirst {
+            get {
+                return ResourceManager.GetString("ProtocolFinishSetupFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC is running. Close the game first, then use the buttons on this page..
+        /// </summary>
+        public static string ProtocolGameRunning {
+            get {
+                return ResourceManager.GetString("ProtocolGameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This link is not valid:
+        ///{0}.
+        /// </summary>
+        public static string ProtocolInvalidLink {
+            get {
+                return ResourceManager.GetString("ProtocolInvalidLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mod list could not be loaded, so the link can&apos;t be opened. Check your connection, press Refresh and try again..
+        /// </summary>
+        public static string ProtocolModListNotLoaded {
+            get {
+                return ResourceManager.GetString("ProtocolModListNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol link: {0} {1}.
+        /// </summary>
+        public static string ProtocolModRouteReceived {
+            get {
+                return ResourceManager.GetString("ProtocolModRouteReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No release of {0} was found to install..
+        /// </summary>
+        public static string ProtocolNoRelease {
+            get {
+                return ResourceManager.GetString("ProtocolNoRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no mod with the ID &quot;{0}&quot; in the mod list. Nothing was changed..
+        /// </summary>
+        public static string ProtocolUnknownMod {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol link: unknown mod ID {0}.
+        /// </summary>
+        public static string ProtocolUnknownModLog {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownModLog", resourceCulture);
             }
         }
         

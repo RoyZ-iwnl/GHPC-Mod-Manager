@@ -3498,4 +3498,26 @@
   <data name="UpdateSelectedMods" xml:space="preserve"><value>更新所选 ({0})</value></data>
   <data name="ModUpdateQueued" xml:space="preserve"><value>已将 {0} 个MOD的更新添加至下载队列</value></data>
   <data name="SelectAll" xml:space="preserve"><value>全选</value></data>
+  <data name="InstalledManuallyBadge" xml:space="preserve"><value>手动安装</value></data>
+  <data name="ManualModAdopted" xml:space="preserve"><value>已将手动安装的Mod {0}（版本 {1}）登记到安装清单</value></data>
+  <data name="ManualModBackupKept" xml:space="preserve"><value>已保留手动安装的 {0} {1} 的备份</value></data>
+  <data name="ProtocolDialogTitle" xml:space="preserve"><value>Mod 链接</value></data>
+  <data name="ProtocolModRouteReceived" xml:space="preserve"><value>协议链接：{0} {1}</value></data>
+  <data name="ProtocolInvalidLink" xml:space="preserve"><value>链接无效：
+{0}</value></data>
+  <data name="ProtocolBusy" xml:space="preserve"><value>另一个安装或更新正在进行，请等它完成后再打开链接。</value></data>
+  <data name="ProtocolFinishSetupFirst" xml:space="preserve"><value>请先完成首次设置，然后再打开链接。</value></data>
+  <data name="ProtocolModListNotLoaded" xml:space="preserve"><value>Mod列表未能加载，无法打开该链接。请检查网络，点击刷新后重试。</value></data>
+  <data name="ProtocolUnknownMod" xml:space="preserve"><value>Mod列表中没有ID为“{0}”的Mod，未做任何更改。</value></data>
+  <data name="ProtocolUnknownModLog" xml:space="preserve"><value>协议链接：未知的Mod ID {0}</value></data>
+  <data name="ProtocolGameRunning" xml:space="preserve"><value>GHPC 正在运行。请先关闭游戏，再使用本页面的按钮。</value></data>
+  <data name="ProtocolNoRelease" xml:space="preserve"><value>没有找到可安装的 {0} 版本。</value></data>
+  <data name="ProtocolConfirmInstall" xml:space="preserve"><value>安装 {0} {1}？</value></data>
+  <data name="ProtocolConfirmUpdate" xml:space="preserve"><value>将 {0} 从 {1} 更新到 {2}？
+
+更新前会先备份当前版本。</value></data>
+  <data name="ProtocolConfirmReplaceManual" xml:space="preserve"><value>{0} 是手动放入Mods文件夹的，无法读取其版本。
+
+用 {1} 替换吗？替换前会先备份当前文件。</value></data>
+  <data name="ProtocolAlreadyUpToDate" xml:space="preserve"><value>{0} {1} 已安装且是最新版本。</value></data>
 </root>

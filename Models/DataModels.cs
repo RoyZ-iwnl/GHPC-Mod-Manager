@@ -737,6 +737,9 @@ public class ModInstallInfo
     public List<string> BackupFiles { get; set; } = new();
     public DateTime InstallDate { get; set; } = DateTime.Now;
 
+    // 由手动安装登记而来：更新后保留旧文件备份，不自动删除
+    public bool IsAdoptedManualInstall { get; set; }
+
     [JsonIgnore]
     public bool HasStructuredInstalledFiles => InstalledFiles.Any(f => !string.IsNullOrWhiteSpace(f.Sha256) || f.FileSize > 0);
 }
@@ -860,6 +863,7 @@ public class ModViewModel : INotifyPropertyChanged
                 _installedVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
             }
         }
     }
@@ -875,6 +879,7 @@ public class ModViewModel : INotifyPropertyChanged
                 _latestVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
                 OnPropertyChanged(nameof(LatestVersionWithDate));
             }
         }
@@ -1151,9 +1156,10 @@ public class ModViewModel : INotifyPropertyChanged
             var installedVer = InstalledVersion?.TrimStart('v') ?? "";
             var latestVer = LatestVersion?.TrimStart('v') ?? "";
 
+            // 列表内的手动安装Mod读到版本号后也可以更新（会先登记到清单并备份旧文件）
             var result = IsInstalled &&
                         !IsTranslationPlugin &&
-                        !IsManuallyInstalled &&
+                        (!IsManuallyInstalled || IsSupportedManualMod) &&
                         !string.IsNullOrEmpty(latestVer) &&
                         latestVer != GHPC_Mod_Manager.Resources.Strings.Unknown &&
                         installedVer != latestVer &&
@@ -1169,10 +1175,12 @@ public class ModViewModel : INotifyPropertyChanged
     }
     
     // Property to determine if this mod can be reinstalled (for supported manual mods)
+    // 已显示"更新"时不再显示"重新安装"，两者做的是同一件事
     public bool CanReinstall => IsInstalled &&
                                 IsManuallyInstalled &&
                                 IsSupportedManualMod &&
-                                !IsTranslationPlugin;
+                                !IsTranslationPlugin &&
+                                !CanUpdate;
 
     // 已安装的普通Mod无论启用状态都允许卸载
     public bool CanUninstall => IsInstalled && !IsTranslationPlugin;
