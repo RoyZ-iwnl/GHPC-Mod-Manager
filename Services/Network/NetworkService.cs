@@ -55,11 +55,15 @@ public class NetworkService : INetworkService
     // 最新版本缓存有效期：订阅源不占API额度，可以比完整Releases缓存短
     private static readonly TimeSpan LatestReleaseCacheExpiry = TimeSpan.FromHours(24);
 
-    // github.com 网页来源（订阅源/跳转）连续失败次数，键 = 来源|代理域名
-    // 被墙或代理不放行时，连续失败3次后本次启动不再尝试，直接走API，避免每个Mod都白等
+    // github.com 网页来源（订阅源/跳转）每条线路的连续失败次数，键 = 来源|线路（direct 或代理域名）
+    // 被墙或代理不放行时，连续失败3次后本次启动跳过这条线路，换下一条，避免每个Mod都白等
     private static readonly ConcurrentDictionary<string, int> _webSourceFailures = new();
+    private static readonly ConcurrentDictionary<string, bool> _webSourceLogged = new();
     private const int WebSourceMaxFailures = 3;
     private static readonly TimeSpan WebSourceTimeout = TimeSpan.FromSeconds(8);
+    // 同时最多8个订阅源/跳转请求，100多个Mod一起刷新时不压垮代理
+    private static readonly SemaphoreSlim _webSourceGate = new(8, 8);
+    private List<string>? _builtinProxyDomains;
 
     // Rate limit tracking
     private static readonly ConcurrentDictionary<string, DateTime> _rateLimitBlocks = new();
@@ -1620,27 +1624,42 @@ public class NetworkService : INetworkService
                 return cached.Release;
         }
 
+        var routes = GetWebSourceRoutes();
+
         // 1. Releases 订阅源（releases.atom）：不占API额度，带发布时间
-        if (IsWebSourceUsable("feed"))
+        //    按线路依次尝试（所选代理 → 其他代理 → 直连，或 直连 → 代理），某条线路被墙/被代理拦截就换下一条
+        if (IsWebSourceEnabled("feed"))
         {
-            var fromFeed = await TryGetLatestReleaseFromFeedAsync(repoOwner, repoName);
-            RecordWebSourceResult("feed", fromFeed.Success);
-            if (fromFeed.Success)
+            foreach (var route in routes.Where(r => IsWebSourceRouteUsable("feed", r)))
             {
-                await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromFeed.Release);
-                return fromFeed.Release;
+                (bool Success, GitHubRelease? Release) fromFeed;
+                await _webSourceGate.WaitAsync();
+                try { fromFeed = await TryGetLatestReleaseFromFeedAsync(repoOwner, repoName, route); }
+                finally { _webSourceGate.Release(); }
+                RecordWebSourceResult("feed", route, fromFeed.Success);
+                if (fromFeed.Success)
+                {
+                    await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromFeed.Release);
+                    return fromFeed.Release;
+                }
             }
         }
 
         // 2. releases/latest 跳转：同样不占额度，但只有Tag（不含预发布版和日期）
-        if (IsWebSourceUsable("latest"))
+        if (IsWebSourceEnabled("latest"))
         {
-            var fromRedirect = await TryGetLatestReleaseFromRedirectAsync(repoOwner, repoName);
-            RecordWebSourceResult("latest", fromRedirect != null);
-            if (fromRedirect != null)
+            foreach (var route in routes.Where(r => IsWebSourceRouteUsable("latest", r)))
             {
-                await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromRedirect);
-                return fromRedirect;
+                GitHubRelease? fromRedirect;
+                await _webSourceGate.WaitAsync();
+                try { fromRedirect = await TryGetLatestReleaseFromRedirectAsync(repoOwner, repoName, route); }
+                finally { _webSourceGate.Release(); }
+                RecordWebSourceResult("latest", route, fromRedirect != null);
+                if (fromRedirect != null)
+                {
+                    await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromRedirect);
+                    return fromRedirect;
+                }
             }
         }
 
@@ -1649,56 +1668,87 @@ public class NetworkService : INetworkService
         return releases.FirstOrDefault();
     }
 
-    // 当前 github.com 请求走哪条线路（直连或代理域名），失败计数按线路分开
-    private string GetWebSourceRoute()
+    /// <summary>
+    /// 访问 github.com 公开页面（订阅源/跳转）的线路顺序，"direct" = 直连，其余为代理域名
+    /// 只读取公开的版本信息，所以可以借用列表里的其他代理
+    /// </summary>
+    private List<string> GetWebSourceRoutes()
     {
-        if (_settingsService.Settings.UseGitHubProxy && string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken))
-            return GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
-        return "direct";
+        var settings = _settingsService.Settings;
+
+        // 有token时其他请求都直连，这里保持一致
+        if (!string.IsNullOrWhiteSpace(settings.GitHubApiToken))
+            return new List<string> { "direct" };
+
+        // 只用内置的几个代理（域名可被下发配置按同名Id覆盖），不轮询下发列表里的其他第三方代理
+        // 只算一次：GetProxyDomain 每次都会写日志，100多个Mod会刷屏
+        var proxies = _builtinProxyDomains ??= Enum.GetValues<GitHubProxyServer>().Select(GetProxyDomain).ToList();
+
+        var routes = new List<string>();
+        if (settings.UseGitHubProxy)
+        {
+            // 所选代理 → 其他代理 → 直连（被墙时直连最慢，放最后）
+            routes.Add(GetProxyDomain(settings.GitHubProxyServer));
+            routes.AddRange(proxies);
+            routes.Add("direct");
+        }
+        else
+        {
+            // 没开代理：直连 → 代理（直连在国内可能不通）
+            routes.Add("direct");
+            routes.AddRange(proxies);
+        }
+
+        return routes.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
     }
 
-    // 主配置可远程关闭某个来源；本线路连续失败太多次也跳过
-    private bool IsWebSourceUsable(string source)
+    // 主配置可远程关闭某个来源（LatestVersionSources）
+    private bool IsWebSourceEnabled(string source)
     {
         var allowed = _mainConfigService.Config?.LatestVersionSources;
-        if (allowed != null && !allowed.Contains(source, StringComparer.OrdinalIgnoreCase))
-            return false;
-
-        return _webSourceFailures.GetValueOrDefault($"{source}|{GetWebSourceRoute()}") < WebSourceMaxFailures;
+        return allowed == null || allowed.Contains(source, StringComparer.OrdinalIgnoreCase);
     }
 
-    private void RecordWebSourceResult(string source, bool success)
+    // 某来源在某线路上连续失败太多次，本次启动就不再走这条线路
+    private bool IsWebSourceRouteUsable(string source, string route)
     {
-        var key = $"{source}|{GetWebSourceRoute()}";
+        return _webSourceFailures.GetValueOrDefault($"{source}|{route}") < WebSourceMaxFailures;
+    }
+
+    private void RecordWebSourceResult(string source, string route, bool success)
+    {
+        var key = $"{source}|{route}";
         if (success)
         {
-            _webSourceFailures[key] = 0;
+            // 每条线路只记一次，避免100多个Mod刷屏
+            if (_webSourceLogged.TryAdd($"ok|{key}", true))
+                _loggingService.LogInfo("Latest version source '{0}' works via {1}", source, route);
+            // 成功只抵消一次失败：时好时坏的线路（如 gh1.dmr.gg）不会被反复重试
+            _webSourceFailures.AddOrUpdate(key, 0, (_, n) => Math.Max(0, n - 1));
             return;
         }
 
         var failures = _webSourceFailures.AddOrUpdate(key, 1, (_, n) => n + 1);
-        if (failures == WebSourceMaxFailures)
-            _loggingService.LogWarning("Latest version source '{0}' failed {1} times via {2}, using the API for the rest of this session", source, failures, GetWebSourceRoute());
+        if (failures >= WebSourceMaxFailures && _webSourceLogged.TryAdd($"skip|{key}", true))
+            _loggingService.LogWarning("Latest version source '{0}' failed {1} times via {2}, skipping that route for the rest of this session", source, failures, route);
     }
 
-    // 开了代理且没配token时，github.com 的请求也走代理
-    private string BuildGitHubWebUrl(string path)
+    // github.com 公开页面地址，route 为代理域名时走 https://代理/https://github.com/...
+    private static string BuildGitHubWebUrl(string path, string route)
     {
         var url = $"https://github.com/{path}";
-        if (_settingsService.Settings.UseGitHubProxy && string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken))
-            return $"https://{GetProxyDomain(_settingsService.Settings.GitHubProxyServer)}/{url}";
-        return url;
+        return route == "direct" ? url : $"https://{route}/{url}";
     }
 
     /// <summary>
-    /// 从 releases.atom 读最新一条Release，Success=false 表示订阅源不可用
+    /// 从 releases.atom 读最新一条Release，Success=false 表示这条线路不可用
     /// </summary>
-    private async Task<(bool Success, GitHubRelease? Release)> TryGetLatestReleaseFromFeedAsync(string repoOwner, string repoName)
+    private async Task<(bool Success, GitHubRelease? Release)> TryGetLatestReleaseFromFeedAsync(string repoOwner, string repoName, string route)
     {
         try
         {
             using var cts = new CancellationTokenSource(WebSourceTimeout);
-            var url = BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases.atom");
+            var url = BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases.atom", route);
             using var response = await _httpClient.GetAsync(url, cts.Token);
             if (!response.IsSuccessStatusCode)
                 return (false, null);
@@ -1716,14 +1766,15 @@ public class NetworkService : INetworkService
                 return (true, null);
 
             // href = https://github.com/owner/repo/releases/tag/v1.2.3
-            const string tagMarker = "/releases/tag/";
+            // 必须是这个仓库自己的Tag链接，防止代理返回别的内容
+            var tagMarker = $"/{repoOwner}/{repoName}/releases/tag/";
             var href = entry.Elements(atom + "link")
                 .Select(l => (string?)l.Attribute("href"))
-                .FirstOrDefault(h => h != null && h.Contains(tagMarker));
+                .FirstOrDefault(h => h != null && h.Contains(tagMarker, StringComparison.OrdinalIgnoreCase));
             if (href == null)
                 return (false, null);
 
-            var tag = Uri.UnescapeDataString(href.Substring(href.IndexOf(tagMarker, StringComparison.Ordinal) + tagMarker.Length));
+            var tag = Uri.UnescapeDataString(href.Substring(href.IndexOf(tagMarker, StringComparison.OrdinalIgnoreCase) + tagMarker.Length));
             DateTime.TryParse((string?)entry.Element(atom + "updated"), CultureInfo.InvariantCulture,
                 DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out var updated);
 
@@ -1736,7 +1787,7 @@ public class NetworkService : INetworkService
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning("Releases feed failed for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            _loggingService.LogWarning("Releases feed failed for {0}/{1} via {2}: {3}", repoOwner, repoName, route, ex.Message);
             return (false, null);
         }
     }
@@ -1744,18 +1795,19 @@ public class NetworkService : INetworkService
     /// <summary>
     /// 读 releases/latest 跳转后的地址拿Tag（订阅源失败时的备用）
     /// </summary>
-    private async Task<GitHubRelease?> TryGetLatestReleaseFromRedirectAsync(string repoOwner, string repoName)
+    private async Task<GitHubRelease?> TryGetLatestReleaseFromRedirectAsync(string repoOwner, string repoName, string route)
     {
         try
         {
             using var cts = new CancellationTokenSource(WebSourceTimeout);
-            using var request = new HttpRequestMessage(HttpMethod.Head, BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases/latest"));
+            using var request = new HttpRequestMessage(HttpMethod.Head, BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases/latest", route));
             using var response = await _httpClient.SendAsync(request, cts.Token);
 
-            // 自动跟随跳转后，最终地址形如 .../releases/tag/v1.2.3
-            const string tagMarker = "/releases/tag/";
+            // 自动跟随跳转后，最终地址形如 .../owner/repo/releases/tag/v1.2.3
+            // 代理若在服务端跟随跳转，最终地址里没有Tag，按失败处理
+            var tagMarker = $"/{repoOwner}/{repoName}/releases/tag/";
             var finalUrl = response.RequestMessage?.RequestUri?.AbsoluteUri ?? string.Empty;
-            var index = finalUrl.IndexOf(tagMarker, StringComparison.Ordinal);
+            var index = finalUrl.IndexOf(tagMarker, StringComparison.OrdinalIgnoreCase);
             if (!response.IsSuccessStatusCode || index < 0)
                 return null;
 
@@ -1764,7 +1816,7 @@ public class NetworkService : INetworkService
         }
         catch (Exception ex)
         {
-            _loggingService.LogWarning("Releases latest redirect failed for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            _loggingService.LogWarning("Releases latest redirect failed for {0}/{1} via {2}: {3}", repoOwner, repoName, route, ex.Message);
             return null;
         }
     }
