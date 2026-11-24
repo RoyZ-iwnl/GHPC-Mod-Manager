@@ -7794,6 +7794,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recommended with this mod.
+        /// </summary>
+        public static string RecommendedWithSection {
+            get {
+                return ResourceManager.GetString("RecommendedWithSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Redownload&amp;install.
         /// </summary>
         public static string RedownloadReinstall {

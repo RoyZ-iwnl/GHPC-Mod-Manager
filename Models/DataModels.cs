@@ -656,6 +656,11 @@ public class ModConfig
     public List<string> Conflicts { get; set; } = new();
     public List<string> Requirements { get; set; } = new();
 
+    // 作者推荐搭配的Mod（可选，不是依赖）："Recommends": ["ModId 或 GitHub链接", {"Id": "...", "Note": {"en-US": "...", "zh-CN": "..."}}]
+    [JsonProperty("Recommends")]
+    [JsonConverter(typeof(ModRecommendationListConverter))]
+    public List<ModRecommendation> Recommends { get; set; } = new();
+
     // 可选扩展字段（向后兼容，缺失时为null/空集合）
     [JsonProperty("Description")]
     public Dictionary<string, string>? Description { get; set; }
@@ -1266,6 +1271,81 @@ public class MainConfigTestResult
 /// <summary>
 /// ConfigSectionName 自定义 JSON 转换器，支持字符串或字符串数组
 /// </summary>
+/// <summary>
+/// 作者推荐搭配的Mod：Id + 可选的多语言说明
+/// </summary>
+public class ModRecommendation
+{
+    // 指向被推荐的Mod：Mod列表ID、GitHub仓库链接（或 owner/repo）、或Mod名称
+    public string Id { get; set; } = string.Empty;
+    public Dictionary<string, string>? Note { get; set; }
+}
+
+/// <summary>
+/// Recommends 字段兼容两种写法：纯ID字符串，或 {"Id": "...", "Note": "..." 或 {"en-US": "..."}}
+/// </summary>
+public sealed class ModRecommendationListConverter : JsonConverter<List<ModRecommendation>>
+{
+    public override List<ModRecommendation>? ReadJson(JsonReader reader, Type objectType, List<ModRecommendation>? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        var result = new List<ModRecommendation>();
+        if (reader.TokenType != JsonToken.StartArray)
+        {
+            // 写错格式时忽略，不影响整个Mod列表加载
+            JToken.Load(reader);
+            return result;
+        }
+
+        foreach (var item in JArray.Load(reader))
+        {
+            if (item.Type == JTokenType.String)
+            {
+                var id = item.ToString();
+                if (!string.IsNullOrWhiteSpace(id))
+                    result.Add(new ModRecommendation { Id = id });
+                continue;
+            }
+
+            if (item is not JObject obj)
+                continue;
+
+            // 作者文件里可以用 "Mod" 或 "Repo" 写GitHub链接，含义同 Id
+            var modId = (obj["Id"] ?? obj["Mod"] ?? obj["Repo"])?.ToString();
+            if (string.IsNullOrWhiteSpace(modId))
+                continue;
+
+            // Note 可以是单个字符串（所有语言共用）或按语言的字典
+            Dictionary<string, string>? note = obj["Note"] switch
+            {
+                JValue v when v.Type == JTokenType.String => new Dictionary<string, string> { ["en-US"] = v.ToString() },
+                JObject n => n.Properties().ToDictionary(p => p.Name, p => p.Value.ToString()),
+                _ => null
+            };
+            result.Add(new ModRecommendation { Id = modId, Note = note });
+        }
+
+        return result;
+    }
+
+    public override void WriteJson(JsonWriter writer, List<ModRecommendation>? value, JsonSerializer serializer)
+    {
+        writer.WriteStartArray();
+        foreach (var rec in value ?? new List<ModRecommendation>())
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Id");
+            writer.WriteValue(rec.Id);
+            if (rec.Note != null)
+            {
+                writer.WritePropertyName("Note");
+                serializer.Serialize(writer, rec.Note);
+            }
+            writer.WriteEndObject();
+        }
+        writer.WriteEndArray();
+    }
+}
+
 public sealed class ConfigSectionNameConverter : JsonConverter<List<string>>
 {
     public override List<string>? ReadJson(JsonReader reader, Type objectType, List<string>? existingValue, bool hasExistingValue, JsonSerializer serializer)

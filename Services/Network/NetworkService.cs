@@ -29,6 +29,10 @@ public interface INetworkService
     /// 查询GitHub API剩余额度（rate_limit接口本身不计入额度），token为空时查匿名额度
     /// </summary>
     Task<GitHubRateLimitStatus> GetGitHubRateLimitAsync(string? token);
+    /// <summary>
+    /// 读取Mod作者仓库里的 ghpcmm.json（作者自己维护的推荐等信息），没有该文件或读取失败返回null
+    /// </summary>
+    Task<CreatorModFile?> GetCreatorModFileAsync(string repoOwner, string repoName);
     Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null);
     /// <summary>直接下载，不进入全局下载队列，仅用于 SetupWizard 初始化流程。</summary>
@@ -60,6 +64,8 @@ public class NetworkService : INetworkService
     private static readonly ConcurrentDictionary<string, int> _webSourceFailures = new();
     private static readonly ConcurrentDictionary<string, bool> _webSourceLogged = new();
     private const int WebSourceMaxFailures = 3;
+    // Mod作者放在自己仓库根目录的信息文件
+    private const string CreatorFileName = "ghpcmm.json";
     private static readonly TimeSpan WebSourceTimeout = TimeSpan.FromSeconds(8);
     // 同时最多8个订阅源/跳转请求，100多个Mod一起刷新时不压垮代理
     private static readonly SemaphoreSlim _webSourceGate = new(8, 8);
@@ -1821,6 +1827,119 @@ public class NetworkService : INetworkService
         }
     }
 
+    public async Task<CreatorModFile?> GetCreatorModFileAsync(string repoOwner, string repoName)
+    {
+        var cachePath = GetCreatorFileCachePath(repoOwner, repoName);
+
+        // 24小时缓存，包括"仓库里没有这个文件"的结果，避免每次打开详情页都请求
+        try
+        {
+            if (File.Exists(cachePath))
+            {
+                var cached = JsonConvert.DeserializeObject<CreatorFileCacheEntry>(await File.ReadAllTextAsync(cachePath));
+                if (cached != null && DateTime.Now - cached.CachedAt <= LatestReleaseCacheExpiry)
+                    return ParseCreatorModFile(cached.Content, repoOwner, repoName);
+            }
+        }
+        catch
+        {
+            // 缓存损坏时重新获取
+        }
+
+        // 和订阅源一样按线路尝试：raw.githubusercontent.com 在国内也可能被墙
+        var rawUrl = $"https://raw.githubusercontent.com/{repoOwner}/{repoName}/HEAD/{CreatorFileName}";
+        foreach (var route in GetWebSourceRoutes().Where(r => IsWebSourceRouteUsable("creator", r)))
+        {
+            var url = route == "direct" ? rawUrl : $"https://{route}/{rawUrl}";
+            string? content;
+            bool reached;
+
+            await _webSourceGate.WaitAsync();
+            try
+            {
+                using var cts = new CancellationTokenSource(WebSourceTimeout);
+                using var response = await _httpClient.GetAsync(url, cts.Token);
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // 仓库没有这个文件：确定结果，同样缓存
+                    reached = true;
+                    content = null;
+                }
+                else if (response.IsSuccessStatusCode)
+                {
+                    reached = true;
+                    content = await response.Content.ReadAsStringAsync(cts.Token);
+                    // 太大的文件不处理（正常只有几百字节）
+                    if (content.Length > 64 * 1024)
+                        content = null;
+                }
+                else
+                {
+                    reached = false;
+                    content = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogWarning("Creator file request failed for {0}/{1} via {2}: {3}", repoOwner, repoName, route, ex.Message);
+                reached = false;
+                content = null;
+            }
+            finally
+            {
+                _webSourceGate.Release();
+            }
+
+            RecordWebSourceResult("creator", route, reached);
+            if (!reached)
+                continue;
+
+            try
+            {
+                await File.WriteAllTextAsync(cachePath, JsonConvert.SerializeObject(new CreatorFileCacheEntry { CachedAt = DateTime.Now, Content = content }));
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogWarning("Failed to cache creator file for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+            }
+
+            return ParseCreatorModFile(content, repoOwner, repoName);
+        }
+
+        return null;
+    }
+
+    private CreatorModFile? ParseCreatorModFile(string? content, string repoOwner, string repoName)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return null;
+
+        try
+        {
+            return JsonConvert.DeserializeObject<CreatorModFile>(content);
+        }
+        catch (Exception ex)
+        {
+            // 作者写错格式时忽略整个文件，不影响详情页
+            _loggingService.LogWarning("Invalid {0} in {1}/{2}: {3}", CreatorFileName, repoOwner, repoName, ex.Message);
+            return null;
+        }
+    }
+
+    private string GetCreatorFileCachePath(string repoOwner, string repoName)
+    {
+        var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache", "creator_files");
+        Directory.CreateDirectory(cacheDir);
+        return Path.Combine(cacheDir, $"{SanitizeFileName(repoOwner)}_{SanitizeFileName(repoName)}.json");
+    }
+
+    // 缓存格式: {"CachedAt": "...", "Content": 原始文件内容 或 null(仓库没有该文件)}
+    private sealed class CreatorFileCacheEntry
+    {
+        public DateTime CachedAt { get; set; }
+        public string? Content { get; set; }
+    }
+
     private string GetLatestReleaseCachePath(string repoOwner, string repoName)
     {
         var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache", "github_latest");
@@ -2155,4 +2274,14 @@ public class GitHubRateLimitStatus
     public int Limit { get; set; }
     public int Remaining { get; set; }
     public DateTime? ResetAt { get; set; }
+}
+
+/// <summary>
+/// Mod作者仓库里的 ghpcmm.json：只允许安全的展示信息（推荐搭配等），不能包含下载地址
+/// </summary>
+public class CreatorModFile
+{
+    [JsonProperty("Recommends")]
+    [JsonConverter(typeof(ModRecommendationListConverter))]
+    public List<ModRecommendation> Recommends { get; set; } = new();
 }

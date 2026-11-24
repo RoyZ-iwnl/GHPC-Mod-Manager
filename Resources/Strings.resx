@@ -3602,4 +3602,5 @@ Tip: move the Mod Manager to a normal folder, like Documents, and it won't need 
 {0}
 
 Restart the Mod Manager as administrator? Choose No to just browse mods.</value></data>
+  <data name="RecommendedWithSection" xml:space="preserve"><value>Recommended with this mod</value></data>
 </root>

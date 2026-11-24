@@ -3565,4 +3565,5 @@
 {0}
 
 是否以管理员身份重启Mod管理器？选择“否”则只能浏览Mod。</value></data>
+  <data name="RecommendedWithSection" xml:space="preserve"><value>作者推荐搭配</value></data>
 </root>
