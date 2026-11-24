@@ -56,7 +56,8 @@ jobs:
         } else {
           Write-Host "Detected stable release version"
         }
-        echo "is_prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+        # lowercase: softprops/action-gh-release and the make_latest check expect "true"/"false", PowerShell prints "True"
+        echo "is_prerelease=$($isPrerelease.ToString().ToLower())" >> $env:GITHUB_OUTPUT
         
         # Set release name
         $releaseName = "GHPC Mod Manager v$version"
