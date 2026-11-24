@@ -125,13 +125,13 @@ jobs:
         
         - Windows 10/11
         - .NET 8.0 Runtime (automatically installed if missing)
-        - Administrator privileges (required for mod installation)
+        - Administrator rights only when the Mod Manager or the game is in a protected folder (it asks when needed)
         
         ## 📝 Installation
         
         1. Download ``GHPC-Mod-Manager-v$version.zip``
         2. Extract to your preferred location
-        3. Run ``GHPC Mod Manager.exe`` as Administrator
+        3. Run ``GHPC Mod Manager.exe``
         4. Follow the setup wizard on first launch
         
         ---
