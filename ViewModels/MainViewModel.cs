@@ -107,6 +107,9 @@ public partial class MainViewModel : ObservableObject
     private SaveEditorViewModel? _saveEditorViewModel;
     private DownloadManagerViewModel? _downloadManagerViewModel;
 
+    // 首次加载Mod列表完成的信号，协议链接要等列表加载完才能找到Mod
+    private readonly TaskCompletionSource _initialLoadCompleted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
     // 子View（导航页面）
     private UserControl? _installedModsView;
     private UserControl? _modBrowserView;
@@ -492,6 +495,57 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 处理 ghpcmm://mod/... 链接：打开Mod详情页，安装/更新前一定先让用户确认
+    /// </summary>
+    /// <param name="action">链接操作</param>
+    /// <param name="modId">Mod列表中的ID（不区分大小写）</param>
+    public async Task HandleModProtocolAsync(ProtocolModAction action, string modId)
+    {
+        await _initialLoadCompleted.Task;
+
+        // 列表正在刷新时等它结束，避免拿到旧的Mod对象
+        while (IsLoading)
+            await Task.Delay(200);
+
+        if (Mods.Count == 0)
+        {
+            MessageDialogHelper.ShowWarning(Strings.ProtocolModListNotLoaded, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 不受支持的手动Mod（manual_xxx）不在Mod列表里，不能通过链接操作
+        var mod = Mods.FirstOrDefault(m =>
+            string.Equals(m.Id, modId, StringComparison.OrdinalIgnoreCase) && !m.IsUnsupportedManualMod);
+        if (mod == null)
+        {
+            _loggingService.LogWarning(Strings.ProtocolUnknownModLog, modId);
+            MessageDialogHelper.ShowInformation(string.Format(Strings.ProtocolUnknownMod, modId), Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        if (_modDetailViewModel == null)
+            return;
+
+        if (_modDetailViewModel.IsInstalling || IsDownloading)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolBusy, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 打开详情页，返回时回到左侧导航当前选中的页面
+        _modDetailViewModel.ReturnToPage = SelectedNavigationItem?.Page ?? NavigationPage.InstalledMods;
+        var detailView = _serviceProvider.GetRequiredService<ModDetailView>();
+        detailView.DataContext = _modDetailViewModel;
+        CurrentPageView = detailView;
+        await _modDetailViewModel.InitializeAsync(mod, Mods.ToList());
+
+        if (action == ProtocolModAction.Open)
+            return;
+
+        await _modDetailViewModel.RunProtocolInstallOrUpdateAsync();
+    }
+
     // 从详情页返回
     private void OnDetailGoBack(object? sender, EventArgs e)
     {
@@ -545,8 +599,19 @@ public partial class MainViewModel : ObservableObject
         // 只在非首次运行时自动加载数据（首次运行用户还在配置网络）
         if (!_settingsService.Settings.IsFirstRun)
         {
-            await RefreshDataAsync();
+            try
+            {
+                await RefreshDataAsync();
+            }
+            finally
+            {
+                _initialLoadCompleted.TrySetResult();
+            }
             await CheckManagedModIntegrityAsync(promptOnMismatch: false);
+        }
+        else
+        {
+            _initialLoadCompleted.TrySetResult();
         }
 
         // 检测 MelonLoader 是否已安装（可能在软件关闭期间被用户删除）

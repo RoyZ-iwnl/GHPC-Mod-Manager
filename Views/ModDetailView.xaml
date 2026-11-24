@@ -61,7 +61,7 @@
 
                         <Border Style="{DynamicResource BadgeBorderStyle}"
                                 Visibility="{Binding Mod.IsManuallyInstalled, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Text="{x:Static resources:Strings.Manual}"
+                            <TextBlock Text="{x:Static resources:Strings.InstalledManuallyBadge}"
                                        Style="{StaticResource BadgeTextStyle}"
                                        Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
                         </Border>

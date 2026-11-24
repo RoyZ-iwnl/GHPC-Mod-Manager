@@ -509,6 +509,78 @@ public partial class ModDetailViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 协议链接触发的安装/更新：先确认，再走详情页的正常安装或更新流程
+    /// </summary>
+    public async Task RunProtocolInstallOrUpdateAsync()
+    {
+        if (Mod == null) return;
+
+        if (IsInstalling)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolBusy, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        var latestRelease = AvailableReleases.FirstOrDefault(r => r.TagName == Mod.LatestVersion)
+                            ?? AvailableReleases.FirstOrDefault();
+        if (latestRelease == null)
+        {
+            MessageDialogHelper.ShowWarning(string.Format(Strings.ProtocolNoRelease, Mod.DisplayName), Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        var isUpToDate = Mod.IsInstalled && !Mod.CanUpdate &&
+                         !(Mod.IsManuallyInstalled && Mod.InstalledVersion == Strings.Manual);
+        if (isUpToDate)
+        {
+            MessageDialogHelper.ShowInformation(
+                string.Format(Strings.ProtocolAlreadyUpToDate, Mod.DisplayName, Mod.InstalledVersion),
+                Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 游戏运行中不能改文件，只打开页面，关游戏后按钮会自动可用
+        if (IsGameRunning)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolGameRunning, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        if (Mod.IsInstalled)
+        {
+            if (Mod.CanUpdate)
+            {
+                if (!MessageDialogHelper.Confirm(
+                        string.Format(Strings.ProtocolConfirmUpdate, Mod.DisplayName, Mod.InstalledVersion, latestRelease.TagName),
+                        Strings.ProtocolDialogTitle))
+                    return;
+
+                SelectedRelease = latestRelease;
+                await UpdateAsync();
+                return;
+            }
+
+            // 手动安装且读不到版本号：无法判断新旧，问用户是否用最新版替换（旧文件会备份）
+            if (!MessageDialogHelper.Confirm(
+                    string.Format(Strings.ProtocolConfirmReplaceManual, Mod.DisplayName, latestRelease.TagName),
+                    Strings.ProtocolDialogTitle))
+                return;
+
+            SelectedRelease = latestRelease;
+            await InstallSelectedVersionCoreAsync(preferBackup: true);
+            return;
+        }
+
+        if (!MessageDialogHelper.Confirm(
+                string.Format(Strings.ProtocolConfirmInstall, Mod.DisplayName, latestRelease.TagName),
+                Strings.ProtocolDialogTitle))
+            return;
+
+        SelectedRelease = latestRelease;
+        await InstallSelectedVersionCoreAsync(preferBackup: true);
+    }
+
     // 通知MainViewModel打开配置窗口
     public event EventHandler<string>? ConfigureModRequested;
 
