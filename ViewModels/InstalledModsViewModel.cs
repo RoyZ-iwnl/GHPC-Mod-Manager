@@ -343,10 +343,13 @@ public partial class InstalledModsViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteModOps))]
     private async Task UninstallModAsync(ModViewModel mod)
     {
-        if (!await MessageDialogHelper.ConfirmAsync(
+        // Yes = 卸载并保留备份，No = 彻底删除，其他 = 取消
+        var choice = MessageDialogHelper.ShowUninstallChoice(
             string.Format(Strings.ConfirmUninstallMod, mod.DisplayName),
-            Strings.ConfirmUninstall))
+            Strings.ConfirmUninstall);
+        if (choice != MessageDialogResult.Yes && choice != MessageDialogResult.No)
             return;
+        var removeCompletely = choice == MessageDialogResult.No;
 
         try
         {
@@ -355,6 +358,10 @@ public partial class InstalledModsViewModel : ObservableObject
             var success = mod.IsManuallyInstalled && mod.IsUnsupportedManualMod
                 ? await _modManagerService.UninstallManualModAsync(mod.Id)
                 : await _modManagerService.UninstallModAsync(mod.Id);
+
+            // 先正常卸载（失败时还有备份可回退），成功后再删除全部备份
+            if (success && removeCompletely)
+                success = await _modManagerService.DeleteAllModBackupsAsync(mod.Id);
 
             StatusMessage = success
                 ? string.Format(Strings.UninstallSuccessful, mod.DisplayName)

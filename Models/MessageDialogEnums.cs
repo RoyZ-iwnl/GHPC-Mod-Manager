@@ -20,7 +20,9 @@ namespace GHPC_Mod_Manager.Models
         /// <summary>显示"去设置更新"和"取消"按钮</summary>
         GoToSettingsCancel,
         /// <summary>显示"立即重启"和"稍后"按钮</summary>
-        RestartLater
+        RestartLater,
+        /// <summary>卸载确认："卸载"(保留备份，返回Yes)、"彻底删除"(返回No)、"取消"</summary>
+        UninstallKeepRemoveCancel
     }
 
     /// <summary>

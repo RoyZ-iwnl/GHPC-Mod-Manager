@@ -16,6 +16,10 @@ public interface IModManagerService
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null, string? operationText = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
+    /// <summary>
+    /// 删除某个Mod的全部卸载/禁用备份（"彻底删除"时在卸载成功后调用）
+    /// </summary>
+    Task<bool> DeleteAllModBackupsAsync(string modId);
     Task<bool> EnableModAsync(string modId);
     Task<bool> DisableModAsync(string modId);
     Task<Dictionary<string, object>> GetModConfigurationAsync(string modId);
@@ -125,7 +129,10 @@ public partial class ModManagerService : IModManagerService
                     viewModel.IsInstalled = true;
                     viewModel.IsManuallyInstalled = true;
                     viewModel.IsSupportedManualMod = true;
-                    viewModel.InstalledVersion = GHPC_Mod_Manager.Resources.Strings.Manual;
+                    // 从DLL读取实际版本，读不到时仍显示"手动"
+                    var manualMainFile = FindManualModMainFile(modConfig);
+                    viewModel.InstalledVersion = (manualMainFile != null ? ModAssemblyVersionReader.TryReadVersion(manualMainFile) : null)
+                        ?? GHPC_Mod_Manager.Resources.Strings.Manual;
                     viewModel.IsEnabled = IsModEnabled(modConfig.MainBinaryFileName, modsPath);
                 }
             }
@@ -148,15 +155,15 @@ public partial class ModManagerService : IModManagerService
                 // 区分 GitHub 源和直接下载源
                 if (IsGitHubApiUrl(vm.Config.ReleaseUrl))
                 {
-                    // GitHub 模式：调用 API 获取版本
-                    var releases = await _networkService.GetGitHubReleasesAsync(
+                    // GitHub 模式：只取最新版本，优先走不占API额度的订阅源
+                    var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                         GetRepoOwner(vm.Config.ReleaseUrl),
                         GetRepoName(vm.Config.ReleaseUrl),
                         forceRefresh
                     );
-                    var latestRelease = releases.FirstOrDefault();
                     vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
-                    vm.UpdateDate = latestRelease?.PublishedAt;
+                    // 备用跳转方式拿不到发布时间
+                    vm.UpdateDate = latestRelease != null && latestRelease.PublishedAt != default ? latestRelease.PublishedAt : null;
                 }
                 else
                 {
@@ -285,7 +292,8 @@ public partial class ModManagerService : IModManagerService
                 var fileName = Path.GetFileName(modFile);
                 
                 // Skip if already in available mods list
-                if (modList.Any(m => m.Config.MainBinaryFileName == fileName))
+                // 文件名大小写不一致时也要匹配，否则会重复显示为不受支持的手动Mod
+                if (modList.Any(m => string.Equals(m.Config.MainBinaryFileName, fileName, StringComparison.OrdinalIgnoreCase)))
                     continue;
 
                 // Skip if already in install manifest
@@ -302,7 +310,7 @@ public partial class ModManagerService : IModManagerService
                     continue;
 
                 // Check if this manual mod matches any supported mod configuration
-                var matchingConfig = _availableMods.FirstOrDefault(m => m.MainBinaryFileName == fileName);
+                var matchingConfig = _availableMods.FirstOrDefault(m => string.Equals(m.MainBinaryFileName, fileName, StringComparison.OrdinalIgnoreCase));
                 
                 // Determine if mod is currently enabled (exists in Mods folder)
                 var isEnabled = uniqueModFiles.Contains(modFile);
@@ -329,11 +337,11 @@ public partial class ModManagerService : IModManagerService
                     {
                         if (IsGitHubApiUrl(matchingConfig.ReleaseUrl))
                         {
-                            var releases = await _networkService.GetGitHubReleasesAsync(
+                            var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                                 GetRepoOwner(matchingConfig.ReleaseUrl),
                                 GetRepoName(matchingConfig.ReleaseUrl)
                             );
-                            supportedManualMod.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                            supportedManualMod.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
                         }
                         else
                         {
@@ -550,6 +558,101 @@ public partial class ModManagerService : IModManagerService
         return !_installManifest.InstalledMods.ContainsKey(modId);
     }
 
+    /// <summary>
+    /// 找到手动安装Mod的主DLL：启用时在Mods根目录，禁用时在disabled备份目录
+    /// </summary>
+    private string? FindManualModMainFile(ModConfig modConfig)
+    {
+        if (string.IsNullOrEmpty(modConfig.MainBinaryFileName))
+            return null;
+
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        var modFile = Path.Combine(gameRootPath, "Mods", modConfig.MainBinaryFileName);
+        if (File.Exists(modFile))
+            return modFile;
+
+        // 禁用备份文件名是编码后的相对路径，例如 Mods_XXX.dll
+        var disabledDir = GetDisabledBackupPath(modConfig.Id);
+        if (!Directory.Exists(disabledDir))
+            return null;
+
+        return Directory.GetFiles(disabledDir, "*", SearchOption.TopDirectoryOnly)
+            .FirstOrDefault(f => Path.GetFileName(f).EndsWith(modConfig.MainBinaryFileName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// 把手动放进Mods的列表内Mod登记到安装清单，之后更新/卸载走普通流程（先备份，失败回滚）
+    /// </summary>
+    /// <param name="modId">Mod ID</param>
+    /// <returns>本次登记成功返回true；已在清单中或找不到文件返回false</returns>
+    private async Task<bool> AdoptManualModAsync(string modId)
+    {
+        if (_installManifest.InstalledMods.ContainsKey(modId))
+            return false;
+
+        var modConfig = _availableMods.FirstOrDefault(m => m.Id == modId);
+        // Replace 模式会覆盖游戏原文件，无法判断哪些是原文件，不登记
+        if (modConfig == null || string.IsNullOrEmpty(modConfig.MainBinaryFileName) || IsReplaceMode(modConfig))
+            return false;
+
+        var gameRootPath = _settingsService.Settings.GameRootPath;
+        if (string.IsNullOrWhiteSpace(gameRootPath))
+            return false;
+
+        var modsPath = Path.Combine(gameRootPath, "Mods");
+        var mainFile = Path.Combine(modsPath, modConfig.MainBinaryFileName);
+        var wasDisabled = false;
+
+        if (!File.Exists(mainFile))
+        {
+            // 禁用中的手动Mod：先按手动方式启用，登记后再禁用回去，保持用户原来的状态
+            if (!await IsModInstalledAsync(modConfig.MainBinaryFileName, modsPath))
+                return false;
+            if (!await ToggleModAsync(modId, true) || !File.Exists(mainFile))
+                return false;
+            wasDisabled = true;
+        }
+
+        var version = await ResolveManualModVersionAsync(modConfig, mainFile);
+        var installInfo = await BuildInstallInfoAsync(modId, version, new[] { Path.GetRelativePath(gameRootPath, mainFile) });
+        if (installInfo == null)
+            return false;
+        installInfo.IsAdoptedManualInstall = true;
+
+        await LoadManifestAsync();
+        _installManifest.InstalledMods[modId] = installInfo;
+        await SaveManifestAsync();
+        _loggingService.LogInfo(Strings.ManualModAdopted, modId, version);
+
+        if (wasDisabled && !await DisableModAsync(modId))
+            _loggingService.LogError(Strings.ModToggleError, modId, false);
+
+        return true;
+    }
+
+    // 读DLL版本并尽量对上GitHub的TagName（如 1.2.3 -> v1.2.3），这样备份能按Tag找到
+    private async Task<string> ResolveManualModVersionAsync(ModConfig modConfig, string mainFile)
+    {
+        var detected = ModAssemblyVersionReader.TryReadVersion(mainFile);
+        if (string.IsNullOrWhiteSpace(detected))
+            return "manual";
+
+        try
+        {
+            var releases = await GetModReleasesAsync(modConfig.Id);
+            var match = releases.FirstOrDefault(r =>
+                string.Equals(r.TagName.Trim().TrimStart('v', 'V'), detected.TrimStart('v', 'V'), StringComparison.OrdinalIgnoreCase));
+            if (match != null)
+                return match.TagName;
+        }
+        catch
+        {
+            // 离线时直接用DLL里的版本
+        }
+
+        return detected;
+    }
+
     public async Task<bool> InstallModAsync(ModConfig modConfig, string version, IProgress<DownloadProgress>? progress = null, bool skipDependencyCheck = false, bool skipConflictCheck = false, bool preferBackup = true, string? operationText = null)
     {
         try
@@ -566,6 +669,9 @@ public partial class ModManagerService : IModManagerService
 
             if (!ShowReplaceInstallWarningIfNeeded(modConfig))
                 return false;
+
+            // 手动放入 Mods 的同一 Mod 先登记到清单,再走更新流程(旧文件先备份,失败可回滚)
+            await AdoptManualModAsync(modConfig.Id);
 
             // 已安装的 Mod 走更新流程,避免 Replace 模式活动备份被误删
             if (_installManifest.InstalledMods.ContainsKey(modConfig.Id))
@@ -675,6 +781,9 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
 
+            // 手动安装的 Mod 先登记到清单,之后与普通 Mod 一样更新
+            await AdoptManualModAsync(modId);
+
             // Check if mod is currently installed
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var currentInstallInfo))
             {
@@ -760,13 +869,21 @@ public partial class ModManagerService : IModManagerService
             _installManifest.InstalledMods[modId] = newInstallInfo;
             await SaveManifestAsync();
 
-            try
+            // 手动安装的旧文件可能是自编译版本，GitHub上不一定能重新下载，保留其备份
+            if (currentInstallInfo.IsAdoptedManualInstall)
             {
-                await _modBackupService.DeleteModBackupAsync(modId, previousVersion);
+                _loggingService.LogInfo(Strings.ManualModBackupKept, modId, previousVersion);
             }
-            catch (Exception cleanupEx)
+            else
             {
-                _loggingService.LogWarning("Failed to clean previous mod backup after update: {0}", cleanupEx.Message);
+                try
+                {
+                    await _modBackupService.DeleteModBackupAsync(modId, previousVersion);
+                }
+                catch (Exception cleanupEx)
+                {
+                    _loggingService.LogWarning("Failed to clean previous mod backup after update: {0}", cleanupEx.Message);
+                }
             }
 
             _loggingService.LogInfo(Strings.ModUpdatedSuccessfully, modId);
@@ -829,6 +946,9 @@ public partial class ModManagerService : IModManagerService
                 return false;
             }
 
+            // 手动安装的 Mod 先登记到清单,卸载时同样留备份
+            await AdoptManualModAsync(modId);
+
             if (!_installManifest.InstalledMods.TryGetValue(modId, out var installInfo))
             {
                 _loggingService.LogError(Strings.ModNotInstalled, modId);
@@ -885,6 +1005,10 @@ public partial class ModManagerService : IModManagerService
 
     public async Task<bool> UninstallManualModAsync(string modId)
     {
+        // 列表内的 Mod 能登记到清单时走普通卸载流程（按版本备份，可快速重装）
+        if (!modId.StartsWith("manual_") && await AdoptManualModAsync(modId))
+            return await UninstallModAsync(modId);
+
         try
         {
             _loggingService.LogInfo(Strings.UninstallingMod, modId);
@@ -1051,6 +1175,46 @@ public partial class ModManagerService : IModManagerService
         {
             _loggingService.LogError(ex, Strings.ModUninstallError, modId);
             return false;
+        }
+    }
+
+    public Task<bool> DeleteAllModBackupsAsync(string modId)
+    {
+        try
+        {
+            var backupRoot = Path.Combine(_settingsService.Settings.GameRootPath, "GHPCMM", "modbackup");
+            var uninstalledPath = Path.Combine(backupRoot, "uninstalled");
+            var targets = new List<string>();
+
+            // 卸载备份目录名: {modId}_v{version} 或 {modId}_manual
+            // 带上 "_v" 前缀匹配，避免 GHPCCO 误删 GHPCCOOP 的备份
+            if (Directory.Exists(uninstalledPath))
+            {
+                targets.AddRange(Directory.GetDirectories(uninstalledPath).Where(dir =>
+                {
+                    var name = Path.GetFileName(dir);
+                    return name.StartsWith($"{modId}_v", StringComparison.OrdinalIgnoreCase) ||
+                           name.Equals($"{modId}_manual", StringComparison.OrdinalIgnoreCase);
+                }));
+            }
+
+            var disabledPath = Path.Combine(backupRoot, "disabled", modId);
+            if (Directory.Exists(disabledPath))
+                targets.Add(disabledPath);
+
+            foreach (var dir in targets)
+            {
+                PathSecurityHelper.EnsurePathInsideDirectory(dir, backupRoot);
+                Directory.Delete(dir, true);
+                _loggingService.LogInfo(Strings.ModBackupDeletedCompletely, modId, Path.GetFileName(dir));
+            }
+
+            return Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUninstallError, modId);
+            return Task.FromResult(false);
         }
     }
 

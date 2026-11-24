@@ -1276,7 +1276,10 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 确定要卸载 {0} 吗？.
+        ///   Looks up a localized string similar to 确定要卸载 {0} 吗？
+        ///
+        ///“卸载”会在游戏目录保留备份（GHPCMM\modbackup\uninstalled），之后可以快速重装。
+        ///“彻底删除”会连同所有备份一起删除。.
         /// </summary>
         public static string ConfirmUninstallMod {
             get {
@@ -1941,6 +1944,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string DiscordButton {
+            get {
+                return ResourceManager.GetString("DiscordButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 加入GHPC Mod社区Discord.
+        /// </summary>
+        public static string DiscordButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiscordButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to - DNS解析问题.
         /// </summary>
         public static string DNSResolutionProblem {
@@ -1959,7 +1980,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 更新前不再显示公告.
+        ///   Looks up a localized string similar to 不自动弹出新公告.
         /// </summary>
         public static string DoNotShowAnnouncementBeforeUpdate {
             get {
@@ -2333,6 +2354,41 @@ namespace GHPC_Mod_Manager.Resources {
         public static string EdgeOneGhProxyCom {
             get {
                 return ResourceManager.GetString("EdgeOneGhProxyCom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod管理器无法在自己的文件夹中保存设置：
+        ///{0}
+        ///
+        ///该文件夹受Windows保护（例如 Program Files）。是否以管理员身份重启？
+        ///
+        ///提示：把Mod管理器放到普通文件夹（例如“文档”），就完全不需要管理员权限。.
+        /// </summary>
+        public static string ElevationAppFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationAppFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 没有管理员权限，无法向游戏目录安装Mod：
+        ///{0}
+        ///
+        ///是否以管理员身份重启Mod管理器？选择“否”则只能浏览Mod。.
+        /// </summary>
+        public static string ElevationGameFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationGameFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 需要管理员权限.
+        /// </summary>
+        public static string ElevationTitle {
+            get {
+                return ResourceManager.GetString("ElevationTitle", resourceCulture);
             }
         }
         
@@ -3318,6 +3374,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GHPC 正在运行。关闭游戏后才能安装、更新、启用/禁用或卸载Mod。.
+        /// </summary>
+        public static string GameRunningModsLockedBanner {
+            get {
+                return ResourceManager.GetString("GameRunningModsLockedBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 请复现模组故障后关闭游戏再打包。.
         /// </summary>
         public static string GameRunningWarningMessage {
@@ -3586,7 +3651,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 提高API访问限制（60→5000次/小时）.
+        ///   Looks up a localized string similar to 可选。检查新版本已不再使用GitHub API。一次安装或更新大量Mod时，Token可将上限从每小时60次提高到5000次。.
         /// </summary>
         public static string GitHubApiTokenDescription {
             get {
@@ -3595,7 +3660,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 获取地址：https://github.com/settings/tokens.
+        ///   Looks up a localized string similar to 在GitHub上创建Token.
         /// </summary>
         public static string GitHubApiTokenGetUrl {
             get {
@@ -3618,6 +3683,19 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubApiTokenPermissionHint {
             get {
                 return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 获取方法（免费，约一分钟）：
+        ///1. 登录GitHub（没有账号可免费注册），然后打开下方链接。
+        ///2. Token名称随意，例如 GHPC Mod Manager。过期时间自选，过期后重新创建即可。
+        ///3. Repository access 选择 Public repositories，不需要添加任何权限。
+        ///4. 点击 Generate token，复制（以 github_pat_ 开头），粘贴到上方，点击测试，然后保存。.
+        /// </summary>
+        public static string GitHubApiTokenSteps {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenSteps", resourceCulture);
             }
         }
         
@@ -3703,11 +3781,42 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 未配置Token时，GitHub每小时只允许60次请求，现已用完。{0}
+        ///
+        ///在此之前，安装和详情页的版本列表可能无法使用。
+        ///
+        ///配置免费的GitHub Token可将上限提高到每小时5000次。现在打开设置添加吗？.
+        /// </summary>
+        public static string GitHubRateLimitNoTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitNoTokenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 将于 {0} 恢复（约 {1} 分钟后）。.
+        /// </summary>
+        public static string GitHubRateLimitResetsAt {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitResetsAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GitHub API 访问限制.
         /// </summary>
         public static string GitHubRateLimitTitle {
             get {
                 return ResourceManager.GetString("GitHubRateLimitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 你的GitHub Token额度（每小时5000次）已用完。{0}.
+        /// </summary>
+        public static string GitHubRateLimitTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitTokenMessage", resourceCulture);
             }
         }
         
@@ -3744,6 +3853,89 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubTokenMigratedToEncrypted {
             get {
                 return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了API Token（401），改用匿名请求.
+        /// </summary>
+        public static string GitHubTokenRejectedLog {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了你的API Token，可能已过期或填写错误。
+        ///
+        ///管理器暂时不使用Token继续工作（每小时60次请求）。现在打开设置修改吗？.
+        /// </summary>
+        public static string GitHubTokenRejectedMessage {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测试.
+        /// </summary>
+        public static string GitHubTokenTest {
+            get {
+                return ResourceManager.GetString("GitHubTokenTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 无法连接GitHub：{0}.
+        /// </summary>
+        public static string GitHubTokenTestFailed {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在检查….
+        /// </summary>
+        public static string GitHubTokenTesting {
+            get {
+                return ResourceManager.GetString("GitHubTokenTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 未配置Token：本小时剩余 {0}/{1} 次请求（{2} 重置）。.
+        /// </summary>
+        public static string GitHubTokenTestNoToken {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestNoToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token可用：本小时剩余 {0}/{1} 次请求（{2} 重置）。.
+        /// </summary>
+        public static string GitHubTokenTestOk {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了此Token，可能已过期或填写错误。.
+        /// </summary>
+        public static string GitHubTokenTestRejected {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub API Token.
+        /// </summary>
+        public static string GitHubTokenTitle {
+            get {
+                return ResourceManager.GetString("GitHubTokenTitle", resourceCulture);
             }
         }
         
@@ -3852,6 +4044,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string InstalledInGameDirectory {
             get {
                 return ResourceManager.GetString("InstalledInGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 手动安装.
+        /// </summary>
+        public static string InstalledManuallyBadge {
+            get {
+                return ResourceManager.GetString("InstalledManuallyBadge", resourceCulture);
             }
         }
         
@@ -4768,6 +4969,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 已将手动安装的Mod {0}（版本 {1}）登记到安装清单.
+        /// </summary>
+        public static string ManualModAdopted {
+            get {
+                return ResourceManager.GetString("ManualModAdopted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 已保留手动安装的 {0} {1} 的备份.
+        /// </summary>
+        public static string ManualModBackupKept {
+            get {
+                return ResourceManager.GetString("ManualModBackupKept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 已删除手动MOD文件: {0}.
         /// </summary>
         public static string ManualModDeleted {
@@ -5254,6 +5473,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 已删除 {0} 的备份：{1}.
+        /// </summary>
+        public static string ModBackupDeletedCompletely {
+            get {
+                return ResourceManager.GetString("ModBackupDeletedCompletely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 模组备份目录结构已初始化: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
@@ -5439,6 +5667,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModDescription {
             get {
                 return ResourceManager.GetString("ModDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod详情.
+        /// </summary>
+        public static string ModDetailsPageTitle {
+            get {
+                return ResourceManager.GetString("ModDetailsPageTitle", resourceCulture);
             }
         }
         
@@ -6069,6 +6306,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 公告.
+        /// </summary>
+        public static string NavAnnouncement {
+            get {
+                return ResourceManager.GetString("NavAnnouncement", resourceCulture);
             }
         }
         
@@ -7157,6 +7403,137 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} 已安装且是最新版本。.
+        /// </summary>
+        public static string ProtocolAlreadyUpToDate {
+            get {
+                return ResourceManager.GetString("ProtocolAlreadyUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 另一个安装或更新正在进行，请等它完成后再打开链接。.
+        /// </summary>
+        public static string ProtocolBusy {
+            get {
+                return ResourceManager.GetString("ProtocolBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 安装 {0} {1}？.
+        /// </summary>
+        public static string ProtocolConfirmInstall {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 是手动放入Mods文件夹的，无法读取其版本。
+        ///
+        ///用 {1} 替换吗？替换前会先备份当前文件。.
+        /// </summary>
+        public static string ProtocolConfirmReplaceManual {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmReplaceManual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 将 {0} 从 {1} 更新到 {2}？
+        ///
+        ///更新前会先备份当前版本。.
+        /// </summary>
+        public static string ProtocolConfirmUpdate {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod 链接.
+        /// </summary>
+        public static string ProtocolDialogTitle {
+            get {
+                return ResourceManager.GetString("ProtocolDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请先完成首次设置，然后再打开链接。.
+        /// </summary>
+        public static string ProtocolFinishSetupFirst {
+            get {
+                return ResourceManager.GetString("ProtocolFinishSetupFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC 正在运行。请先关闭游戏，再使用本页面的按钮。.
+        /// </summary>
+        public static string ProtocolGameRunning {
+            get {
+                return ResourceManager.GetString("ProtocolGameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 链接无效：
+        ///{0}.
+        /// </summary>
+        public static string ProtocolInvalidLink {
+            get {
+                return ResourceManager.GetString("ProtocolInvalidLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod列表未能加载，无法打开该链接。请检查网络，点击刷新后重试。.
+        /// </summary>
+        public static string ProtocolModListNotLoaded {
+            get {
+                return ResourceManager.GetString("ProtocolModListNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 协议链接：{0} {1}.
+        /// </summary>
+        public static string ProtocolModRouteReceived {
+            get {
+                return ResourceManager.GetString("ProtocolModRouteReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 没有找到可安装的 {0} 版本。.
+        /// </summary>
+        public static string ProtocolNoRelease {
+            get {
+                return ResourceManager.GetString("ProtocolNoRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod列表中没有ID为“{0}”的Mod，未做任何更改。.
+        /// </summary>
+        public static string ProtocolUnknownMod {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 协议链接：未知的Mod ID {0}.
+        /// </summary>
+        public static string ProtocolUnknownModLog {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownModLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 代理地址.
         /// </summary>
         public static string ProxyAddress {
@@ -7342,6 +7719,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Ready {
             get {
                 return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 作者推荐搭配.
+        /// </summary>
+        public static string RecommendedWithSection {
+            get {
+                return ResourceManager.GetString("RecommendedWithSection", resourceCulture);
             }
         }
         
@@ -9627,11 +10013,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 卸载.
+        /// </summary>
+        public static string UninstallKeepBackupButton {
+            get {
+                return ResourceManager.GetString("UninstallKeepBackupButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 卸载 MelonLoader.
         /// </summary>
         public static string UninstallMelonLoader {
             get {
                 return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 彻底删除.
+        /// </summary>
+        public static string UninstallRemoveCompletelyButton {
+            get {
+                return ResourceManager.GetString("UninstallRemoveCompletelyButton", resourceCulture);
             }
         }
         

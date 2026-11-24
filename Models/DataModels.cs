@@ -599,6 +599,10 @@ public class MainConfig
     [JsonProperty("ModI18nUrlfallback2")]
     public string? ModI18nUrlFallback2 { get; set; }
 
+    // 获取最新版本的来源及顺序（可选）："feed"(releases.atom)、"latest"(releases/latest跳转)
+    // 例如 ["latest"] 或 [] 可远程关闭订阅源；API 始终作为最后的回退；未下发时两者都用
+    public List<string>? LatestVersionSources { get; set; }
+
     // 赞助者ID列表地址（纯文本，每行一个ID），三级回退同 ModConfig
     public string? FundingIdsUrl { get; set; }
     [JsonProperty("FundingIdsUrlfallback")]
@@ -607,6 +611,9 @@ public class MainConfig
     public string? FundingIdsUrlFallback2 { get; set; }
 
     public List<MainConfigProxyServer>? ProxyServers { get; set; }
+
+    // 社区Discord邀请链接（可选），未下发时使用内置地址
+    public string? DiscordUrl { get; set; }
 }
 
 /// <summary>
@@ -648,6 +655,11 @@ public class ModConfig
     public string? ReplaceFileName { get; set; }
     public List<string> Conflicts { get; set; } = new();
     public List<string> Requirements { get; set; } = new();
+
+    // 作者推荐搭配的Mod（可选，不是依赖）："Recommends": ["ModId 或 GitHub链接", {"Id": "...", "Note": {"en-US": "...", "zh-CN": "..."}}]
+    [JsonProperty("Recommends")]
+    [JsonConverter(typeof(ModRecommendationListConverter))]
+    public List<ModRecommendation> Recommends { get; set; } = new();
 
     // 可选扩展字段（向后兼容，缺失时为null/空集合）
     [JsonProperty("Description")]
@@ -736,6 +748,9 @@ public class ModInstallInfo
     public List<InstalledFileInfo> InstalledFiles { get; set; } = new();
     public List<string> BackupFiles { get; set; } = new();
     public DateTime InstallDate { get; set; } = DateTime.Now;
+
+    // 由手动安装登记而来：更新后保留旧文件备份，不自动删除
+    public bool IsAdoptedManualInstall { get; set; }
 
     [JsonIgnore]
     public bool HasStructuredInstalledFiles => InstalledFiles.Any(f => !string.IsNullOrWhiteSpace(f.Sha256) || f.FileSize > 0);
@@ -860,6 +875,7 @@ public class ModViewModel : INotifyPropertyChanged
                 _installedVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
             }
         }
     }
@@ -875,6 +891,7 @@ public class ModViewModel : INotifyPropertyChanged
                 _latestVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanUpdate));
+                OnPropertyChanged(nameof(CanReinstall));
                 OnPropertyChanged(nameof(LatestVersionWithDate));
             }
         }
@@ -1151,9 +1168,10 @@ public class ModViewModel : INotifyPropertyChanged
             var installedVer = InstalledVersion?.TrimStart('v') ?? "";
             var latestVer = LatestVersion?.TrimStart('v') ?? "";
 
+            // 列表内的手动安装Mod读到版本号后也可以更新（会先登记到清单并备份旧文件）
             var result = IsInstalled &&
                         !IsTranslationPlugin &&
-                        !IsManuallyInstalled &&
+                        (!IsManuallyInstalled || IsSupportedManualMod) &&
                         !string.IsNullOrEmpty(latestVer) &&
                         latestVer != GHPC_Mod_Manager.Resources.Strings.Unknown &&
                         installedVer != latestVer &&
@@ -1169,10 +1187,12 @@ public class ModViewModel : INotifyPropertyChanged
     }
     
     // Property to determine if this mod can be reinstalled (for supported manual mods)
+    // 已显示"更新"时不再显示"重新安装"，两者做的是同一件事
     public bool CanReinstall => IsInstalled &&
                                 IsManuallyInstalled &&
                                 IsSupportedManualMod &&
-                                !IsTranslationPlugin;
+                                !IsTranslationPlugin &&
+                                !CanUpdate;
 
     // 已安装的普通Mod无论启用状态都允许卸载
     public bool CanUninstall => IsInstalled && !IsTranslationPlugin;
@@ -1251,6 +1271,81 @@ public class MainConfigTestResult
 /// <summary>
 /// ConfigSectionName 自定义 JSON 转换器，支持字符串或字符串数组
 /// </summary>
+/// <summary>
+/// 作者推荐搭配的Mod：Id + 可选的多语言说明
+/// </summary>
+public class ModRecommendation
+{
+    // 指向被推荐的Mod：Mod列表ID、GitHub仓库链接（或 owner/repo）、或Mod名称
+    public string Id { get; set; } = string.Empty;
+    public Dictionary<string, string>? Note { get; set; }
+}
+
+/// <summary>
+/// Recommends 字段兼容两种写法：纯ID字符串，或 {"Id": "...", "Note": "..." 或 {"en-US": "..."}}
+/// </summary>
+public sealed class ModRecommendationListConverter : JsonConverter<List<ModRecommendation>>
+{
+    public override List<ModRecommendation>? ReadJson(JsonReader reader, Type objectType, List<ModRecommendation>? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        var result = new List<ModRecommendation>();
+        if (reader.TokenType != JsonToken.StartArray)
+        {
+            // 写错格式时忽略，不影响整个Mod列表加载
+            JToken.Load(reader);
+            return result;
+        }
+
+        foreach (var item in JArray.Load(reader))
+        {
+            if (item.Type == JTokenType.String)
+            {
+                var id = item.ToString();
+                if (!string.IsNullOrWhiteSpace(id))
+                    result.Add(new ModRecommendation { Id = id });
+                continue;
+            }
+
+            if (item is not JObject obj)
+                continue;
+
+            // 作者文件里可以用 "Mod" 或 "Repo" 写GitHub链接，含义同 Id
+            var modId = (obj["Id"] ?? obj["Mod"] ?? obj["Repo"])?.ToString();
+            if (string.IsNullOrWhiteSpace(modId))
+                continue;
+
+            // Note 可以是单个字符串（所有语言共用）或按语言的字典
+            Dictionary<string, string>? note = obj["Note"] switch
+            {
+                JValue v when v.Type == JTokenType.String => new Dictionary<string, string> { ["en-US"] = v.ToString() },
+                JObject n => n.Properties().ToDictionary(p => p.Name, p => p.Value.ToString()),
+                _ => null
+            };
+            result.Add(new ModRecommendation { Id = modId, Note = note });
+        }
+
+        return result;
+    }
+
+    public override void WriteJson(JsonWriter writer, List<ModRecommendation>? value, JsonSerializer serializer)
+    {
+        writer.WriteStartArray();
+        foreach (var rec in value ?? new List<ModRecommendation>())
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Id");
+            writer.WriteValue(rec.Id);
+            if (rec.Note != null)
+            {
+                writer.WritePropertyName("Note");
+                serializer.Serialize(writer, rec.Note);
+            }
+            writer.WriteEndObject();
+        }
+        writer.WriteEndArray();
+    }
+}
+
 public sealed class ConfigSectionNameConverter : JsonConverter<List<string>>
 {
     public override List<string>? ReadJson(JsonReader reader, Type objectType, List<string>? existingValue, bool hasExistingValue, JsonSerializer serializer)

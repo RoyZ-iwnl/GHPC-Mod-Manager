@@ -255,8 +255,47 @@ public partial class SettingsViewModel : ObservableObject
         IsGitHubTokenVisible = !IsGitHubTokenVisible;
     }
 
+    [ObservableProperty]
+    private bool _isTestingGitHubToken;
+
+    [ObservableProperty]
+    private string _gitHubTokenTestStatus = string.Empty;
+
+    // 测试输入框里的token（不用先保存），token为空时显示匿名剩余额度
+    [RelayCommand]
+    private async Task TestGitHubTokenAsync()
+    {
+        if (IsTestingGitHubToken)
+            return;
+
+        IsTestingGitHubToken = true;
+        GitHubTokenTestStatus = Strings.GitHubTokenTesting;
+        try
+        {
+            var token = GitHubApiToken?.Trim();
+            var status = await _networkService.GetGitHubRateLimitAsync(token);
+            var resetText = status.ResetAt?.ToString("HH:mm") ?? "?";
+
+            if (status.TokenRejected)
+                GitHubTokenTestStatus = Strings.GitHubTokenTestRejected;
+            else if (!status.Success)
+                GitHubTokenTestStatus = string.Format(Strings.GitHubTokenTestFailed, status.Error);
+            else if (string.IsNullOrEmpty(token))
+                GitHubTokenTestStatus = string.Format(Strings.GitHubTokenTestNoToken, status.Remaining, status.Limit, resetText);
+            else
+                GitHubTokenTestStatus = string.Format(Strings.GitHubTokenTestOk, status.Remaining, status.Limit, resetText);
+        }
+        finally
+        {
+            IsTestingGitHubToken = false;
+        }
+    }
+
     partial void OnGitHubApiTokenChanged(string value)
     {
+        // 换了token，旧的测试结果不再适用
+        GitHubTokenTestStatus = string.Empty;
+
         // 配置token时禁用代理
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -580,6 +619,10 @@ public partial class SettingsViewModel : ObservableObject
 
             await _settingsService.SaveSettingsAsync();
             _loggingService.LogInfo("DoH setting saved: enabled={0}, language={1}", settings.UseDnsOverHttps, settings.Language);
+
+            // 换到普通权限写不进去的游戏目录时，询问以管理员身份重启
+            if (gamePathChanged && App.OfferElevationForGameFolder(GameRootPath))
+                return;
 
             if (_themeService.CurrentTheme != SelectedTheme)
             {

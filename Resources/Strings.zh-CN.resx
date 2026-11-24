@@ -687,7 +687,7 @@
     <value>启动时Mod更新检查失败: {0}</value>
   </data>
   <data name="DoNotShowAnnouncementBeforeUpdate" xml:space="preserve">
-    <value>更新前不再显示公告</value>
+    <value>不自动弹出新公告</value>
   </data>
   <data name="TranslationUpdatesFound" xml:space="preserve">
     <value>发现翻译更新: {0}</value>
@@ -900,7 +900,10 @@
     <value>预设删除失败</value>
   </data>
   <data name="ConfirmUninstallMod" xml:space="preserve">
-    <value>确定要卸载 {0} 吗？</value>
+    <value>确定要卸载 {0} 吗？
+
+“卸载”会在游戏目录保留备份（GHPCMM\modbackup\uninstalled），之后可以快速重装。
+“彻底删除”会连同所有备份一起删除。</value>
   </data>
   <data name="ConfirmUninstall" xml:space="preserve">
     <value>确认卸载</value>
@@ -2697,13 +2700,13 @@
     <value>GitHub API Token（可选）</value>
   </data>
   <data name="GitHubApiTokenDescription" xml:space="preserve">
-    <value>提高API访问限制（60→5000次/小时）</value>
+    <value>可选。检查新版本已不再使用GitHub API。一次安装或更新大量Mod时，Token可将上限从每小时60次提高到5000次。</value>
   </data>
   <data name="GitHubApiTokenHint" xml:space="preserve">
     <value>注意：配置token后将禁用代理加速，直连GitHub</value>
   </data>
   <data name="GitHubApiTokenGetUrl" xml:space="preserve">
-    <value>获取地址：https://github.com/settings/tokens</value>
+    <value>在GitHub上创建Token</value>
   </data>
   <data name="GitHubApiTokenPermissionHint" xml:space="preserve">
     <value>需要Github账号，仅需勾选 public_repo 权限即可</value>
@@ -3498,4 +3501,69 @@
   <data name="UpdateSelectedMods" xml:space="preserve"><value>更新所选 ({0})</value></data>
   <data name="ModUpdateQueued" xml:space="preserve"><value>已将 {0} 个MOD的更新添加至下载队列</value></data>
   <data name="SelectAll" xml:space="preserve"><value>全选</value></data>
+  <data name="InstalledManuallyBadge" xml:space="preserve"><value>手动安装</value></data>
+  <data name="ManualModAdopted" xml:space="preserve"><value>已将手动安装的Mod {0}（版本 {1}）登记到安装清单</value></data>
+  <data name="ManualModBackupKept" xml:space="preserve"><value>已保留手动安装的 {0} {1} 的备份</value></data>
+  <data name="ProtocolDialogTitle" xml:space="preserve"><value>Mod 链接</value></data>
+  <data name="ProtocolModRouteReceived" xml:space="preserve"><value>协议链接：{0} {1}</value></data>
+  <data name="ProtocolInvalidLink" xml:space="preserve"><value>链接无效：
+{0}</value></data>
+  <data name="ProtocolBusy" xml:space="preserve"><value>另一个安装或更新正在进行，请等它完成后再打开链接。</value></data>
+  <data name="ProtocolFinishSetupFirst" xml:space="preserve"><value>请先完成首次设置，然后再打开链接。</value></data>
+  <data name="ProtocolModListNotLoaded" xml:space="preserve"><value>Mod列表未能加载，无法打开该链接。请检查网络，点击刷新后重试。</value></data>
+  <data name="ProtocolUnknownMod" xml:space="preserve"><value>Mod列表中没有ID为“{0}”的Mod，未做任何更改。</value></data>
+  <data name="ProtocolUnknownModLog" xml:space="preserve"><value>协议链接：未知的Mod ID {0}</value></data>
+  <data name="ProtocolGameRunning" xml:space="preserve"><value>GHPC 正在运行。请先关闭游戏，再使用本页面的按钮。</value></data>
+  <data name="ProtocolNoRelease" xml:space="preserve"><value>没有找到可安装的 {0} 版本。</value></data>
+  <data name="ProtocolConfirmInstall" xml:space="preserve"><value>安装 {0} {1}？</value></data>
+  <data name="ProtocolConfirmUpdate" xml:space="preserve"><value>将 {0} 从 {1} 更新到 {2}？
+
+更新前会先备份当前版本。</value></data>
+  <data name="ProtocolConfirmReplaceManual" xml:space="preserve"><value>{0} 是手动放入Mods文件夹的，无法读取其版本。
+
+用 {1} 替换吗？替换前会先备份当前文件。</value></data>
+  <data name="ProtocolAlreadyUpToDate" xml:space="preserve"><value>{0} {1} 已安装且是最新版本。</value></data>
+  <data name="GitHubRateLimitResetsAt" xml:space="preserve"><value>将于 {0} 恢复（约 {1} 分钟后）。</value></data>
+  <data name="GitHubRateLimitNoTokenMessage" xml:space="preserve"><value>未配置Token时，GitHub每小时只允许60次请求，现已用完。{0}
+
+在此之前，安装和详情页的版本列表可能无法使用。
+
+配置免费的GitHub Token可将上限提高到每小时5000次。现在打开设置添加吗？</value></data>
+  <data name="GitHubRateLimitTokenMessage" xml:space="preserve"><value>你的GitHub Token额度（每小时5000次）已用完。{0}</value></data>
+  <data name="GitHubTokenRejectedLog" xml:space="preserve"><value>GitHub拒绝了API Token（401），改用匿名请求</value></data>
+  <data name="GitHubTokenRejectedMessage" xml:space="preserve"><value>GitHub拒绝了你的API Token，可能已过期或填写错误。
+
+管理器暂时不使用Token继续工作（每小时60次请求）。现在打开设置修改吗？</value></data>
+  <data name="GitHubTokenTest" xml:space="preserve"><value>测试</value></data>
+  <data name="GitHubTokenTesting" xml:space="preserve"><value>正在检查…</value></data>
+  <data name="GitHubTokenTestOk" xml:space="preserve"><value>Token可用：本小时剩余 {0}/{1} 次请求（{2} 重置）。</value></data>
+  <data name="GitHubTokenTestNoToken" xml:space="preserve"><value>未配置Token：本小时剩余 {0}/{1} 次请求（{2} 重置）。</value></data>
+  <data name="GitHubTokenTestRejected" xml:space="preserve"><value>GitHub拒绝了此Token，可能已过期或填写错误。</value></data>
+  <data name="GitHubTokenTestFailed" xml:space="preserve"><value>无法连接GitHub：{0}</value></data>
+  <data name="GitHubApiTokenSteps" xml:space="preserve"><value>获取方法（免费，约一分钟）：
+1. 登录GitHub（没有账号可免费注册），然后打开下方链接。
+2. Token名称随意，例如 GHPC Mod Manager。过期时间自选，过期后重新创建即可。
+3. Repository access 选择 Public repositories，不需要添加任何权限。
+4. 点击 Generate token，复制（以 github_pat_ 开头），粘贴到上方，点击测试，然后保存。</value></data>
+  <data name="GitHubTokenTitle" xml:space="preserve"><value>GitHub API Token</value></data>
+  <data name="NavAnnouncement" xml:space="preserve"><value>公告</value></data>
+  <data name="DiscordButton" xml:space="preserve"><value>Discord</value></data>
+  <data name="DiscordButtonTooltip" xml:space="preserve"><value>加入GHPC Mod社区Discord</value></data>
+  <data name="GameRunningModsLockedBanner" xml:space="preserve"><value>GHPC 正在运行。关闭游戏后才能安装、更新、启用/禁用或卸载Mod。</value></data>
+  <data name="ModDetailsPageTitle" xml:space="preserve"><value>Mod详情</value></data>
+  <data name="UninstallKeepBackupButton" xml:space="preserve"><value>卸载</value></data>
+  <data name="UninstallRemoveCompletelyButton" xml:space="preserve"><value>彻底删除</value></data>
+  <data name="ModBackupDeletedCompletely" xml:space="preserve"><value>已删除 {0} 的备份：{1}</value></data>
+  <data name="ElevationTitle" xml:space="preserve"><value>需要管理员权限</value></data>
+  <data name="ElevationAppFolderMessage" xml:space="preserve"><value>Mod管理器无法在自己的文件夹中保存设置：
+{0}
+
+该文件夹受Windows保护（例如 Program Files）。是否以管理员身份重启？
+
+提示：把Mod管理器放到普通文件夹（例如“文档”），就完全不需要管理员权限。</value></data>
+  <data name="ElevationGameFolderMessage" xml:space="preserve"><value>没有管理员权限，无法向游戏目录安装Mod：
+{0}
+
+是否以管理员身份重启Mod管理器？选择“否”则只能浏览Mod。</value></data>
+  <data name="RecommendedWithSection" xml:space="preserve"><value>作者推荐搭配</value></data>
 </root>

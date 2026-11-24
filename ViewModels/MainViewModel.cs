@@ -107,6 +107,9 @@ public partial class MainViewModel : ObservableObject
     private SaveEditorViewModel? _saveEditorViewModel;
     private DownloadManagerViewModel? _downloadManagerViewModel;
 
+    // 首次加载Mod列表完成的信号，协议链接要等列表加载完才能找到Mod
+    private readonly TaskCompletionSource _initialLoadCompleted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
     // 子View（导航页面）
     private UserControl? _installedModsView;
     private UserControl? _modBrowserView;
@@ -492,6 +495,57 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 处理 ghpcmm://mod/... 链接：打开Mod详情页，安装/更新前一定先让用户确认
+    /// </summary>
+    /// <param name="action">链接操作</param>
+    /// <param name="modId">Mod列表中的ID（不区分大小写）</param>
+    public async Task HandleModProtocolAsync(ProtocolModAction action, string modId)
+    {
+        await _initialLoadCompleted.Task;
+
+        // 列表正在刷新时等它结束，避免拿到旧的Mod对象
+        while (IsLoading)
+            await Task.Delay(200);
+
+        if (Mods.Count == 0)
+        {
+            MessageDialogHelper.ShowWarning(Strings.ProtocolModListNotLoaded, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 不受支持的手动Mod（manual_xxx）不在Mod列表里，不能通过链接操作
+        var mod = Mods.FirstOrDefault(m =>
+            string.Equals(m.Id, modId, StringComparison.OrdinalIgnoreCase) && !m.IsUnsupportedManualMod);
+        if (mod == null)
+        {
+            _loggingService.LogWarning(Strings.ProtocolUnknownModLog, modId);
+            MessageDialogHelper.ShowInformation(string.Format(Strings.ProtocolUnknownMod, modId), Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        if (_modDetailViewModel == null)
+            return;
+
+        if (_modDetailViewModel.IsInstalling || IsDownloading)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolBusy, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 打开详情页，返回时回到左侧导航当前选中的页面
+        _modDetailViewModel.ReturnToPage = SelectedNavigationItem?.Page ?? NavigationPage.InstalledMods;
+        var detailView = _serviceProvider.GetRequiredService<ModDetailView>();
+        detailView.DataContext = _modDetailViewModel;
+        CurrentPageView = detailView;
+        await _modDetailViewModel.InitializeAsync(mod, Mods.ToList());
+
+        if (action == ProtocolModAction.Open)
+            return;
+
+        await _modDetailViewModel.RunProtocolInstallOrUpdateAsync();
+    }
+
     // 从详情页返回
     private void OnDetailGoBack(object? sender, EventArgs e)
     {
@@ -545,8 +599,19 @@ public partial class MainViewModel : ObservableObject
         // 只在非首次运行时自动加载数据（首次运行用户还在配置网络）
         if (!_settingsService.Settings.IsFirstRun)
         {
-            await RefreshDataAsync();
+            try
+            {
+                await RefreshDataAsync();
+            }
+            finally
+            {
+                _initialLoadCompleted.TrySetResult();
+            }
             await CheckManagedModIntegrityAsync(promptOnMismatch: false);
+        }
+        else
+        {
+            _initialLoadCompleted.TrySetResult();
         }
 
         // 检测 MelonLoader 是否已安装（可能在软件关闭期间被用户删除）
@@ -662,7 +727,7 @@ public partial class MainViewModel : ObservableObject
             // 判断是否为新公告
             var isNewAnnouncement = md5 != settings.LastAnnouncementMd5;
 
-            // 不是新公告，直接返回
+            // 不是新公告，直接返回（随时可以用侧栏"公告"按钮重新打开）
             if (!isNewAnnouncement)
             {
                 return;
@@ -672,36 +737,75 @@ public partial class MainViewModel : ObservableObject
             settings.LastAnnouncementMd5 = md5;
             await _settingsService.SaveSettingsAsync();
 
-            // 显示公告窗口
-            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            // 用户选择了不自动弹出新公告
+            if (settings.DoNotShowAnnouncementBeforeUpdate)
             {
-                var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
-                await announcementViewModel.LoadAnnouncementAsync(lang);
+                return;
+            }
 
-                if (announcementViewModel.HasContent)
-                {
-                    var announcementWindow = new AnnouncementWindow
-                    {
-                        DataContext = announcementViewModel,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    };
-
-                    if (Application.Current.MainWindow != null)
-                    {
-                        announcementWindow.Owner = Application.Current.MainWindow;
-                        announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    }
-
-                    announcementWindow.ShowDialog();
-                }
-            });
-
-            // 窗口关闭后重新加载设置（用户可能勾选了复选框）
-            await _settingsService.LoadSettingsAsync();
+            await ShowAnnouncementWindowAsync(lang);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, "AnnouncementCheckFailed", ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 打开公告窗口（启动时的新公告和侧栏"公告"按钮共用）
+    /// </summary>
+    private async Task ShowAnnouncementWindowAsync(string lang)
+    {
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
+        {
+            var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
+            await announcementViewModel.LoadAnnouncementAsync(lang);
+
+            if (announcementViewModel.HasContent)
+            {
+                var announcementWindow = new AnnouncementWindow
+                {
+                    DataContext = announcementViewModel,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                if (Application.Current.MainWindow != null)
+                {
+                    announcementWindow.Owner = Application.Current.MainWindow;
+                    announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+
+                announcementWindow.ShowDialog();
+            }
+        });
+
+        // 窗口关闭后重新加载设置（用户可能勾选了复选框）
+        await _settingsService.LoadSettingsAsync();
+    }
+
+    [RelayCommand]
+    private async Task OpenAnnouncementAsync()
+    {
+        try
+        {
+            await ShowAnnouncementWindowAsync(_settingsService.Settings.Language);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "AnnouncementCheckFailed", ex.Message);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenDiscord()
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(_mainConfigService.GetDiscordUrl()) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Open Discord link failed");
         }
     }
 
@@ -726,17 +830,13 @@ public partial class MainViewModel : ObservableObject
                     var repo = GetRepoName(releaseUrl);
                     if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo)) continue;
 
-                    var releases = await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: true);
-                    if (releases.Count > 0)
+                    // 只取最新版本，优先走不占API额度的订阅源
+                    var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(owner, repo, forceRefresh: true);
+                    // LatestVersion 保持 TagName 原样，下载时按 TagName 精确匹配，避免匹配失败
+                    if (!string.IsNullOrEmpty(latestRelease?.TagName))
                     {
-                        // 源头已按 PublishedAt 倒序，[0] 即最新发布版本
-                        // LatestVersion 保持 TagName 原样，下载时按 TagName 精确匹配，避免匹配失败
-                        var latestRelease = releases[0];
-                        if (!string.IsNullOrEmpty(latestRelease.TagName))
-                        {
-                            mod.LatestVersion = latestRelease.TagName;
-                            mod.UpdateDate = latestRelease.PublishedAt;
-                        }
+                        mod.LatestVersion = latestRelease.TagName;
+                        mod.UpdateDate = latestRelease.PublishedAt != default ? latestRelease.PublishedAt : null;
                     }
                 }
                 catch
@@ -1883,13 +1983,14 @@ public partial class MainViewModel : ObservableObject
                 {
                     try
                     {
-                        var releases = await _networkService.GetGitHubReleasesAsync(
+                        // 只取最新版本，优先走不占API额度的订阅源，检查全部Mod也不会耗尽额度
+                        var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                             GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl),
                             GetRepoNameFromApiUrl(mod.Config.ReleaseUrl),
                             forceRefresh: true
                         );
 
-                        var latestVersion = releases.FirstOrDefault()?.TagName;
+                        var latestVersion = latestRelease?.TagName;
 
                         if (!string.IsNullOrEmpty(latestVersion))
                         {
@@ -2293,6 +2394,12 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnCurrentPageViewChanged(UserControl? value)
     {
+        // 详情页显示自己的标题，返回其他页面时恢复导航项标题（下载页由导航逻辑单独设置）
+        if (value is ModDetailView)
+            CurrentPageTitle = Strings.ModDetailsPageTitle;
+        else if (SelectedNavigationItem != null && !ReferenceEquals(value, _downloadManagerView))
+            CurrentPageTitle = SelectedNavigationItem.Label;
+
         UpdateShellStatus();
     }
 

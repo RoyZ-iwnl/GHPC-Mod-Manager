@@ -21,6 +21,10 @@ public class RelatedModInfo
     public bool IsInstalled { get; set; }
     public bool IsEnabled { get; set; }
     public bool IsDelisted { get; set; }
+
+    // 作者推荐理由（仅推荐列表使用）
+    public string? Note { get; set; }
+    public bool HasNote => !string.IsNullOrWhiteSpace(Note);
 }
 
 public partial class ModDetailViewModel : ObservableObject
@@ -83,6 +87,13 @@ public partial class ModDetailViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasConflicts;
 
+    // 作者推荐搭配的Mod
+    [ObservableProperty]
+    private ObservableCollection<RelatedModInfo> _recommendations = new();
+
+    [ObservableProperty]
+    private bool _hasRecommendations;
+
     // 记录来源页面（依赖跳转时用于返回）
     public string? ReturnToModId { get; set; }
     public bool IsNavigatedFromDependency { get; set; }
@@ -129,12 +140,80 @@ public partial class ModDetailViewModel : ObservableObject
         mod.RefreshLocalization(_settingsService.Settings.Language);
         _allMods = allMods;
         StatusMessage = string.Empty;
+        _creatorRecommends = new List<ModRecommendation>();
 
         // 加载依赖和冲突信息
         LoadRelatedMods();
 
         // 异步加载版本列表
         await LoadReleasesAsync();
+
+        // 作者仓库里的 ghpcmm.json（推荐搭配等），读到后刷新推荐列表
+        await LoadCreatorRecommendationsAsync(mod);
+    }
+
+    // 作者在自己仓库 ghpcmm.json 里写的推荐（与Mod列表里的 Recommends 合并显示）
+    private List<ModRecommendation> _creatorRecommends = new();
+
+    private async Task LoadCreatorRecommendationsAsync(ModViewModel mod)
+    {
+        try
+        {
+            // https://github.com/owner/repo -> ["owner", "repo"]
+            var repoUrl = mod.GitHubRepositoryUrl;
+            if (string.IsNullOrWhiteSpace(repoUrl))
+                return;
+            var segments = new Uri(repoUrl).AbsolutePath.Trim('/').Split('/');
+            if (segments.Length < 2)
+                return;
+
+            var creatorFile = await _networkService.GetCreatorModFileAsync(segments[0], segments[1]);
+            // 加载期间用户可能已经打开了别的Mod
+            if (creatorFile == null || creatorFile.Recommends.Count == 0 || !ReferenceEquals(Mod, mod))
+                return;
+
+            _creatorRecommends = creatorFile.Recommends;
+            LoadRelatedMods();
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("Creator recommendations failed for {0}: {1}", mod.Id, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 把推荐里写的引用对应到Mod列表：Mod ID、GitHub仓库链接（或 owner/repo）、Mod名称（任意语言），都不区分大小写
+    /// 作者通常不知道别人Mod的ID，但知道它的GitHub链接
+    /// </summary>
+    private ModViewModel? ResolveModReference(string reference)
+    {
+        var text = reference.Trim();
+        if (text.Length == 0)
+            return null;
+
+        var byId = _allMods.FirstOrDefault(m => string.Equals(m.Id, text, StringComparison.OrdinalIgnoreCase));
+        if (byId != null)
+            return byId;
+
+        // "https://github.com/owner/repo/releases" 或 "owner/repo" -> "owner/repo"
+        var repoPath = text;
+        var githubIndex = repoPath.IndexOf("github.com/", StringComparison.OrdinalIgnoreCase);
+        if (githubIndex >= 0)
+            repoPath = repoPath.Substring(githubIndex + "github.com/".Length);
+        var parts = repoPath.Trim('/').Split('/');
+        if (parts.Length >= 2)
+        {
+            var ownerRepo = $"{parts[0]}/{(parts[1].EndsWith(".git", StringComparison.OrdinalIgnoreCase) ? parts[1][..^4] : parts[1])}";
+            var byRepo = _allMods.FirstOrDefault(m =>
+                m.GitHubRepositoryUrl != null &&
+                m.GitHubRepositoryUrl.EndsWith("/" + ownerRepo, StringComparison.OrdinalIgnoreCase));
+            if (byRepo != null)
+                return byRepo;
+        }
+
+        return _allMods.FirstOrDefault(m =>
+            string.Equals(m.DisplayName, text, StringComparison.OrdinalIgnoreCase) ||
+            (m.Config?.Name?.Values.Any(n => string.Equals(n, text, StringComparison.OrdinalIgnoreCase)) ?? false));
     }
 
     private void LoadRelatedMods()
@@ -180,8 +259,50 @@ public partial class ModDetailViewModel : ObservableObject
             });
         }
 
+        // 构建推荐列表：Mod列表里的 Recommends 优先，再加作者仓库 ghpcmm.json 里的；只显示存在且未下架的Mod，重复的只显示一次
+        Recommendations.Clear();
+        var allRecommends = (Mod.Config.Recommends ?? new List<ModRecommendation>()).Concat(_creatorRecommends);
+        foreach (var rec in allRecommends)
+        {
+            var relatedMod = ResolveModReference(rec.Id);
+            if (relatedMod == null || relatedMod.IsDelisted || relatedMod.Id == Mod.Id ||
+                Recommendations.Any(r => r.ModId == relatedMod.Id))
+                continue;
+
+            Recommendations.Add(new RelatedModInfo
+            {
+                ModId = relatedMod.Id,
+                DisplayName = relatedMod.DisplayName,
+                IsInstalled = relatedMod.IsInstalled,
+                IsEnabled = relatedMod.IsEnabled,
+                Note = GetLocalizedNote(rec.Note)
+            });
+        }
+
         HasDependencies = Dependencies.Count > 0;
         HasConflicts = Conflicts.Count > 0;
+        HasRecommendations = Recommendations.Count > 0;
+    }
+
+    // 按当前语言取推荐理由：完全匹配 → 语言前缀 → en-US → 任意
+    private string? GetLocalizedNote(Dictionary<string, string>? notes)
+    {
+        if (notes == null || notes.Count == 0)
+            return null;
+
+        var lang = _settingsService.Settings.Language;
+        if (notes.TryGetValue(lang, out var exact) && !string.IsNullOrWhiteSpace(exact))
+            return exact;
+
+        var prefix = lang.Length >= 2 ? lang.Substring(0, 2) : lang;
+        var prefixMatch = notes.FirstOrDefault(kv => kv.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(kv.Value));
+        if (prefixMatch.Value != null)
+            return prefixMatch.Value;
+
+        if (notes.TryGetValue("en-US", out var en) && !string.IsNullOrWhiteSpace(en))
+            return en;
+
+        return notes.Values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
     }
 
     private string GetRelatedModDisplayName(string modId, ModViewModel? relatedMod)
@@ -375,16 +496,21 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageDialogHelper.Confirm(
+        // Yes = 卸载并保留备份，No = 彻底删除，其他 = 取消
+        var choice = MessageDialogHelper.ShowUninstallChoice(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
             Strings.ConfirmUninstall);
-        if (!result) return;
+        if (choice != MessageDialogResult.Yes && choice != MessageDialogResult.No) return;
+        var removeCompletely = choice == MessageDialogResult.No;
 
         try
         {
             IsInstalling = true;
             StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallModAsync(Mod.Id);
+            // 先正常卸载（失败时还有备份可回退），成功后再删除全部备份
+            if (success && removeCompletely)
+                success = await _modManagerService.DeleteAllModBackupsAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
                 : string.Format(Strings.UninstallFailed, Mod.DisplayName);
@@ -403,16 +529,21 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageDialogHelper.Confirm(
+        // Yes = 卸载并保留备份，No = 彻底删除，其他 = 取消
+        var choice = MessageDialogHelper.ShowUninstallChoice(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
             Strings.ConfirmUninstall);
-        if (!result) return;
+        if (choice != MessageDialogResult.Yes && choice != MessageDialogResult.No) return;
+        var removeCompletely = choice == MessageDialogResult.No;
 
         try
         {
             IsInstalling = true;
             StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallManualModAsync(Mod.Id);
+            // 先正常卸载（失败时还有备份可回退），成功后再删除全部备份
+            if (success && removeCompletely)
+                success = await _modManagerService.DeleteAllModBackupsAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
                 : string.Format(Strings.UninstallFailed, Mod.DisplayName);
@@ -507,6 +638,78 @@ public partial class ModDetailViewModel : ObservableObject
             ProgressValue = 0;
             IsInstalling = false;
         }
+    }
+
+    /// <summary>
+    /// 协议链接触发的安装/更新：先确认，再走详情页的正常安装或更新流程
+    /// </summary>
+    public async Task RunProtocolInstallOrUpdateAsync()
+    {
+        if (Mod == null) return;
+
+        if (IsInstalling)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolBusy, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        var latestRelease = AvailableReleases.FirstOrDefault(r => r.TagName == Mod.LatestVersion)
+                            ?? AvailableReleases.FirstOrDefault();
+        if (latestRelease == null)
+        {
+            MessageDialogHelper.ShowWarning(string.Format(Strings.ProtocolNoRelease, Mod.DisplayName), Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        var isUpToDate = Mod.IsInstalled && !Mod.CanUpdate &&
+                         !(Mod.IsManuallyInstalled && Mod.InstalledVersion == Strings.Manual);
+        if (isUpToDate)
+        {
+            MessageDialogHelper.ShowInformation(
+                string.Format(Strings.ProtocolAlreadyUpToDate, Mod.DisplayName, Mod.InstalledVersion),
+                Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        // 游戏运行中不能改文件，只打开页面，关游戏后按钮会自动可用
+        if (IsGameRunning)
+        {
+            MessageDialogHelper.ShowInformation(Strings.ProtocolGameRunning, Strings.ProtocolDialogTitle);
+            return;
+        }
+
+        if (Mod.IsInstalled)
+        {
+            if (Mod.CanUpdate)
+            {
+                if (!MessageDialogHelper.Confirm(
+                        string.Format(Strings.ProtocolConfirmUpdate, Mod.DisplayName, Mod.InstalledVersion, latestRelease.TagName),
+                        Strings.ProtocolDialogTitle))
+                    return;
+
+                SelectedRelease = latestRelease;
+                await UpdateAsync();
+                return;
+            }
+
+            // 手动安装且读不到版本号：无法判断新旧，问用户是否用最新版替换（旧文件会备份）
+            if (!MessageDialogHelper.Confirm(
+                    string.Format(Strings.ProtocolConfirmReplaceManual, Mod.DisplayName, latestRelease.TagName),
+                    Strings.ProtocolDialogTitle))
+                return;
+
+            SelectedRelease = latestRelease;
+            await InstallSelectedVersionCoreAsync(preferBackup: true);
+            return;
+        }
+
+        if (!MessageDialogHelper.Confirm(
+                string.Format(Strings.ProtocolConfirmInstall, Mod.DisplayName, latestRelease.TagName),
+                Strings.ProtocolDialogTitle))
+            return;
+
+        SelectedRelease = latestRelease;
+        await InstallSelectedVersionCoreAsync(preferBackup: true);
     }
 
     // 通知MainViewModel打开配置窗口

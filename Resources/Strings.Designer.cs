@@ -1276,7 +1276,10 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to uninstall {0}?.
+        ///   Looks up a localized string similar to Uninstall {0}?
+        ///
+        ///Uninstall keeps a backup in the game folder (GHPCMM\modbackup\uninstalled), so you can quickly reinstall it later.
+        ///Remove completely also deletes all of its backups..
         /// </summary>
         public static string ConfirmUninstallMod {
             get {
@@ -1941,6 +1944,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string DiscordButton {
+            get {
+                return ResourceManager.GetString("DiscordButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join the GHPC modding Discord.
+        /// </summary>
+        public static string DiscordButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiscordButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to - DNS resolution problem.
         /// </summary>
         public static string DNSResolutionProblem {
@@ -1959,7 +1980,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide before updated.
+        ///   Looks up a localized string similar to Don&apos;t open new announcements automatically.
         /// </summary>
         public static string DoNotShowAnnouncementBeforeUpdate {
             get {
@@ -2333,6 +2354,41 @@ namespace GHPC_Mod_Manager.Resources {
         public static string EdgeOneGhProxyCom {
             get {
                 return ResourceManager.GetString("EdgeOneGhProxyCom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Mod Manager can&apos;t save its settings in its own folder:
+        ///{0}
+        ///
+        ///Windows protects this folder (for example Program Files). Restart as administrator?
+        ///
+        ///Tip: move the Mod Manager to a normal folder, like Documents, and it won&apos;t need administrator rights at all..
+        /// </summary>
+        public static string ElevationAppFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationAppFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods can&apos;t be installed into the game folder without administrator rights:
+        ///{0}
+        ///
+        ///Restart the Mod Manager as administrator? Choose No to just browse mods..
+        /// </summary>
+        public static string ElevationGameFolderMessage {
+            get {
+                return ResourceManager.GetString("ElevationGameFolderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Administrator rights needed.
+        /// </summary>
+        public static string ElevationTitle {
+            get {
+                return ResourceManager.GetString("ElevationTitle", resourceCulture);
             }
         }
         
@@ -3318,6 +3374,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GHPC is running. Close the game to install, update, switch on/off or remove mods..
+        /// </summary>
+        public static string GameRunningModsLockedBanner {
+            get {
+                return ResourceManager.GetString("GameRunningModsLockedBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please reproduce the mod issue, then close the game before exporting the diagnostic package..
         /// </summary>
         public static string GameRunningWarningMessage {
@@ -3603,7 +3668,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Increase API rate limit from 60 to 5000 requests/hour.
+        ///   Looks up a localized string similar to Optional. Checking for new versions doesn&apos;t use the GitHub API any more. A token helps when you install or update a lot of mods in one go: it raises the limit from 60 to 5,000 requests per hour..
         /// </summary>
         public static string GitHubApiTokenDescription {
             get {
@@ -3612,7 +3677,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get token at: https://github.com/settings/tokens.
+        ///   Looks up a localized string similar to Create a token on GitHub.
         /// </summary>
         public static string GitHubApiTokenGetUrl {
             get {
@@ -3635,6 +3700,19 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubApiTokenPermissionHint {
             get {
                 return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to get one (free, about a minute):
+        ///1. Sign in to GitHub (or make a free account), then open the link below.
+        ///2. Token name: anything, e.g. GHPC Mod Manager. Expiration: your choice; when it runs out, make a new one.
+        ///3. Repository access: Public repositories. Don&apos;t add any permissions.
+        ///4. Click Generate token, copy it (it starts with github_pat_), paste it above, press Test, then Save..
+        /// </summary>
+        public static string GitHubApiTokenSteps {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenSteps", resourceCulture);
             }
         }
         
@@ -3720,11 +3798,42 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GitHub allows 60 requests per hour without a token, and they&apos;re used up. {0}
+        ///
+        ///Until then, installing and the version lists on mod pages may not work.
+        ///
+        ///A free GitHub token raises the limit to 5,000 per hour. Open Settings to add one?.
+        /// </summary>
+        public static string GitHubRateLimitNoTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitNoTokenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It resets at {0} (in about {1} min)..
+        /// </summary>
+        public static string GitHubRateLimitResetsAt {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitResetsAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GitHub API Rate Limit.
         /// </summary>
         public static string GitHubRateLimitTitle {
             get {
                 return ResourceManager.GetString("GitHubRateLimitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your GitHub token&apos;s limit (5,000 requests per hour) is used up. {0}.
+        /// </summary>
+        public static string GitHubRateLimitTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitTokenMessage", resourceCulture);
             }
         }
         
@@ -3761,6 +3870,89 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubTokenMigratedToEncrypted {
             get {
                 return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected the API token (401), retrying without it.
+        /// </summary>
+        public static string GitHubTokenRejectedLog {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected your API token. It may have expired or been mistyped.
+        ///
+        ///The manager keeps working without it for now (60 requests per hour). Open Settings to fix the token?.
+        /// </summary>
+        public static string GitHubTokenRejectedMessage {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string GitHubTokenTest {
+            get {
+                return ResourceManager.GetString("GitHubTokenTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t reach GitHub: {0}.
+        /// </summary>
+        public static string GitHubTokenTestFailed {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking….
+        /// </summary>
+        public static string GitHubTokenTesting {
+            get {
+                return ResourceManager.GetString("GitHubTokenTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No token: {0} of {1} requests left this hour (resets at {2})..
+        /// </summary>
+        public static string GitHubTokenTestNoToken {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestNoToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token works: {0} of {1} requests left this hour (resets at {2})..
+        /// </summary>
+        public static string GitHubTokenTestOk {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub rejected this token. It may have expired or been mistyped..
+        /// </summary>
+        public static string GitHubTokenTestRejected {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub API token.
+        /// </summary>
+        public static string GitHubTokenTitle {
+            get {
+                return ResourceManager.GetString("GitHubTokenTitle", resourceCulture);
             }
         }
         
@@ -3869,6 +4061,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string InstalledInGameDirectory {
             get {
                 return ResourceManager.GetString("InstalledInGameDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed manually.
+        /// </summary>
+        public static string InstalledManuallyBadge {
+            get {
+                return ResourceManager.GetString("InstalledManuallyBadge", resourceCulture);
             }
         }
         
@@ -4785,6 +4986,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registered manually installed mod {0} (version {1}) in the install manifest.
+        /// </summary>
+        public static string ManualModAdopted {
+            get {
+                return ResourceManager.GetString("ManualModAdopted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kept the backup of manually installed {0} {1}.
+        /// </summary>
+        public static string ManualModBackupKept {
+            get {
+                return ResourceManager.GetString("ManualModBackupKept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deleted manual mod file: {0}.
         /// </summary>
         public static string ManualModDeleted {
@@ -5271,6 +5490,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removed backup of {0}: {1}.
+        /// </summary>
+        public static string ModBackupDeletedCompletely {
+            get {
+                return ResourceManager.GetString("ModBackupDeletedCompletely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod backup directory structure initialized: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
@@ -5456,6 +5684,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModDescription {
             get {
                 return ResourceManager.GetString("ModDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod Details.
+        /// </summary>
+        public static string ModDetailsPageTitle {
+            get {
+                return ResourceManager.GetString("ModDetailsPageTitle", resourceCulture);
             }
         }
         
@@ -6095,6 +6332,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to News.
+        /// </summary>
+        public static string NavAnnouncement {
+            get {
+                return ResourceManager.GetString("NavAnnouncement", resourceCulture);
             }
         }
         
@@ -7219,6 +7465,137 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} is already installed and up to date..
+        /// </summary>
+        public static string ProtocolAlreadyUpToDate {
+            get {
+                return ResourceManager.GetString("ProtocolAlreadyUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another install or update is running. Wait for it to finish, then open the link again..
+        /// </summary>
+        public static string ProtocolBusy {
+            get {
+                return ResourceManager.GetString("ProtocolBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install {0} {1}?.
+        /// </summary>
+        public static string ProtocolConfirmInstall {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was copied into the Mods folder by hand and its version can&apos;t be read.
+        ///
+        ///Replace it with {1}? The current file is backed up first..
+        /// </summary>
+        public static string ProtocolConfirmReplaceManual {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmReplaceManual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update {0} from {1} to {2}?
+        ///
+        ///The current version is backed up first..
+        /// </summary>
+        public static string ProtocolConfirmUpdate {
+            get {
+                return ResourceManager.GetString("ProtocolConfirmUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod link.
+        /// </summary>
+        public static string ProtocolDialogTitle {
+            get {
+                return ResourceManager.GetString("ProtocolDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish the first-run setup, then open the link again..
+        /// </summary>
+        public static string ProtocolFinishSetupFirst {
+            get {
+                return ResourceManager.GetString("ProtocolFinishSetupFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC is running. Close the game first, then use the buttons on this page..
+        /// </summary>
+        public static string ProtocolGameRunning {
+            get {
+                return ResourceManager.GetString("ProtocolGameRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This link is not valid:
+        ///{0}.
+        /// </summary>
+        public static string ProtocolInvalidLink {
+            get {
+                return ResourceManager.GetString("ProtocolInvalidLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mod list could not be loaded, so the link can&apos;t be opened. Check your connection, press Refresh and try again..
+        /// </summary>
+        public static string ProtocolModListNotLoaded {
+            get {
+                return ResourceManager.GetString("ProtocolModListNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol link: {0} {1}.
+        /// </summary>
+        public static string ProtocolModRouteReceived {
+            get {
+                return ResourceManager.GetString("ProtocolModRouteReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No release of {0} was found to install..
+        /// </summary>
+        public static string ProtocolNoRelease {
+            get {
+                return ResourceManager.GetString("ProtocolNoRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no mod with the ID &quot;{0}&quot; in the mod list. Nothing was changed..
+        /// </summary>
+        public static string ProtocolUnknownMod {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol link: unknown mod ID {0}.
+        /// </summary>
+        public static string ProtocolUnknownModLog {
+            get {
+                return ResourceManager.GetString("ProtocolUnknownModLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string ProxyAddress {
@@ -7413,6 +7790,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Ready {
             get {
                 return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended with this mod.
+        /// </summary>
+        public static string RecommendedWithSection {
+            get {
+                return ResourceManager.GetString("RecommendedWithSection", resourceCulture);
             }
         }
         
@@ -9734,11 +10120,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall.
+        /// </summary>
+        public static string UninstallKeepBackupButton {
+            get {
+                return ResourceManager.GetString("UninstallKeepBackupButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall MelonLoader.
         /// </summary>
         public static string UninstallMelonLoader {
             get {
                 return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove completely.
+        /// </summary>
+        public static string UninstallRemoveCompletelyButton {
+            get {
+                return ResourceManager.GetString("UninstallRemoveCompletelyButton", resourceCulture);
             }
         }
         
