@@ -24,6 +24,9 @@ file static class BuiltinDefaults
     // 赞助者ID列表（纯文本，每行一个ID）
     public const string FundingIds         = "https://GHPC.DMR.gg/funding/IDs.txt";
     public const string FundingIdsFallback = "https://GHPC1.DMR.gg/funding/IDs.txt";
+
+    // GHPC Mod社区Discord邀请链接，可由 main.json 的 DiscordUrl 覆盖
+    public const string DiscordUrl = "https://discord.gg/DhmQ2wVsm7";
 }
 
 public interface IMainConfigService
@@ -45,6 +48,8 @@ public interface IMainConfigService
     string? GetModConfigUrlFallback2();
     IReadOnlyList<string> GetModConfigUrlCandidates();
     string GetTranslationConfigUrl();
+    // Discord邀请链接（main.json 未下发时用内置地址）
+    string GetDiscordUrl();
     string GetModI18nUrl();
     string GetModI18nUrlFallback();
     string? GetModI18nUrlFallback2();
@@ -452,6 +457,9 @@ public class MainConfigService : IMainConfigService
 
     public string GetTranslationConfigUrl() =>
         Config?.TranslationConfigUrl ?? BuiltinDefaults.TranslationConfig;
+
+    public string GetDiscordUrl() =>
+        string.IsNullOrWhiteSpace(Config?.DiscordUrl) ? BuiltinDefaults.DiscordUrl : Config.DiscordUrl;
 
     public string GetModI18nUrl() =>
         Config?.ModI18nUrl ?? BuiltinDefaults.ModI18n;

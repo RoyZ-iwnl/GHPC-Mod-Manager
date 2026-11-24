@@ -375,16 +375,21 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageDialogHelper.Confirm(
+        // Yes = 卸载并保留备份，No = 彻底删除，其他 = 取消
+        var choice = MessageDialogHelper.ShowUninstallChoice(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
             Strings.ConfirmUninstall);
-        if (!result) return;
+        if (choice != MessageDialogResult.Yes && choice != MessageDialogResult.No) return;
+        var removeCompletely = choice == MessageDialogResult.No;
 
         try
         {
             IsInstalling = true;
             StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallModAsync(Mod.Id);
+            // 先正常卸载（失败时还有备份可回退），成功后再删除全部备份
+            if (success && removeCompletely)
+                success = await _modManagerService.DeleteAllModBackupsAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
                 : string.Format(Strings.UninstallFailed, Mod.DisplayName);
@@ -403,16 +408,21 @@ public partial class ModDetailViewModel : ObservableObject
     {
         if (Mod == null) return;
 
-        var result = MessageDialogHelper.Confirm(
+        // Yes = 卸载并保留备份，No = 彻底删除，其他 = 取消
+        var choice = MessageDialogHelper.ShowUninstallChoice(
             string.Format(Strings.ConfirmUninstallMod, Mod.DisplayName),
             Strings.ConfirmUninstall);
-        if (!result) return;
+        if (choice != MessageDialogResult.Yes && choice != MessageDialogResult.No) return;
+        var removeCompletely = choice == MessageDialogResult.No;
 
         try
         {
             IsInstalling = true;
             StatusMessage = string.Format(Strings.Uninstalling, Mod.DisplayName);
             var success = await _modManagerService.UninstallManualModAsync(Mod.Id);
+            // 先正常卸载（失败时还有备份可回退），成功后再删除全部备份
+            if (success && removeCompletely)
+                success = await _modManagerService.DeleteAllModBackupsAsync(Mod.Id);
             StatusMessage = success
                 ? string.Format(Strings.ModUninstalledSuccessfully, Mod.DisplayName)
                 : string.Format(Strings.UninstallFailed, Mod.DisplayName);

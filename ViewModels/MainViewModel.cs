@@ -727,7 +727,7 @@ public partial class MainViewModel : ObservableObject
             // 判断是否为新公告
             var isNewAnnouncement = md5 != settings.LastAnnouncementMd5;
 
-            // 不是新公告，直接返回
+            // 不是新公告，直接返回（随时可以用侧栏"公告"按钮重新打开）
             if (!isNewAnnouncement)
             {
                 return;
@@ -737,36 +737,75 @@ public partial class MainViewModel : ObservableObject
             settings.LastAnnouncementMd5 = md5;
             await _settingsService.SaveSettingsAsync();
 
-            // 显示公告窗口
-            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            // 用户选择了不自动弹出新公告
+            if (settings.DoNotShowAnnouncementBeforeUpdate)
             {
-                var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
-                await announcementViewModel.LoadAnnouncementAsync(lang);
+                return;
+            }
 
-                if (announcementViewModel.HasContent)
-                {
-                    var announcementWindow = new AnnouncementWindow
-                    {
-                        DataContext = announcementViewModel,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    };
-
-                    if (Application.Current.MainWindow != null)
-                    {
-                        announcementWindow.Owner = Application.Current.MainWindow;
-                        announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    }
-
-                    announcementWindow.ShowDialog();
-                }
-            });
-
-            // 窗口关闭后重新加载设置（用户可能勾选了复选框）
-            await _settingsService.LoadSettingsAsync();
+            await ShowAnnouncementWindowAsync(lang);
         }
         catch (Exception ex)
         {
             _loggingService.LogError(ex, "AnnouncementCheckFailed", ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 打开公告窗口（启动时的新公告和侧栏"公告"按钮共用）
+    /// </summary>
+    private async Task ShowAnnouncementWindowAsync(string lang)
+    {
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
+        {
+            var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
+            await announcementViewModel.LoadAnnouncementAsync(lang);
+
+            if (announcementViewModel.HasContent)
+            {
+                var announcementWindow = new AnnouncementWindow
+                {
+                    DataContext = announcementViewModel,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+
+                if (Application.Current.MainWindow != null)
+                {
+                    announcementWindow.Owner = Application.Current.MainWindow;
+                    announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+
+                announcementWindow.ShowDialog();
+            }
+        });
+
+        // 窗口关闭后重新加载设置（用户可能勾选了复选框）
+        await _settingsService.LoadSettingsAsync();
+    }
+
+    [RelayCommand]
+    private async Task OpenAnnouncementAsync()
+    {
+        try
+        {
+            await ShowAnnouncementWindowAsync(_settingsService.Settings.Language);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "AnnouncementCheckFailed", ex.Message);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenDiscord()
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(_mainConfigService.GetDiscordUrl()) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, "Open Discord link failed");
         }
     }
 
@@ -2355,6 +2394,12 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnCurrentPageViewChanged(UserControl? value)
     {
+        // 详情页显示自己的标题，返回其他页面时恢复导航项标题（下载页由导航逻辑单独设置）
+        if (value is ModDetailView)
+            CurrentPageTitle = Strings.ModDetailsPageTitle;
+        else if (SelectedNavigationItem != null && !ReferenceEquals(value, _downloadManagerView))
+            CurrentPageTitle = SelectedNavigationItem.Label;
+
         UpdateShellStatus();
     }
 

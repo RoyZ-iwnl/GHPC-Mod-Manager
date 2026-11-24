@@ -687,7 +687,7 @@
     <value>Startup mod update check failed: {0}</value>
   </data>
   <data name="DoNotShowAnnouncementBeforeUpdate" xml:space="preserve">
-    <value>Hide before updated</value>
+    <value>Don't open new announcements automatically</value>
   </data>
   <data name="TranslationUpdatesFound" xml:space="preserve">
     <value>Translation updates found: {0}</value>
@@ -900,7 +900,10 @@
     <value>Preset deletion failed</value>
   </data>
   <data name="ConfirmUninstallMod" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0}?</value>
+    <value>Uninstall {0}?
+
+Uninstall keeps a backup in the game folder (GHPCMM\modbackup\uninstalled), so you can quickly reinstall it later.
+Remove completely also deletes all of its backups.</value>
   </data>
   <data name="ConfirmUninstall" xml:space="preserve">
     <value>Confirm Uninstall</value>
@@ -3580,4 +3583,12 @@ The manager keeps working without it for now (60 requests per hour). Open Settin
 3. Repository access: Public repositories. Don't add any permissions.
 4. Click Generate token, copy it (it starts with github_pat_), paste it above, press Test, then Save.</value></data>
   <data name="GitHubTokenTitle" xml:space="preserve"><value>GitHub API token</value></data>
+  <data name="NavAnnouncement" xml:space="preserve"><value>News</value></data>
+  <data name="DiscordButton" xml:space="preserve"><value>Discord</value></data>
+  <data name="DiscordButtonTooltip" xml:space="preserve"><value>Join the GHPC modding Discord</value></data>
+  <data name="GameRunningModsLockedBanner" xml:space="preserve"><value>GHPC is running. Close the game to install, update, switch on/off or remove mods.</value></data>
+  <data name="ModDetailsPageTitle" xml:space="preserve"><value>Mod Details</value></data>
+  <data name="UninstallKeepBackupButton" xml:space="preserve"><value>Uninstall</value></data>
+  <data name="UninstallRemoveCompletelyButton" xml:space="preserve"><value>Remove completely</value></data>
+  <data name="ModBackupDeletedCompletely" xml:space="preserve"><value>Removed backup of {0}: {1}</value></data>
 </root>

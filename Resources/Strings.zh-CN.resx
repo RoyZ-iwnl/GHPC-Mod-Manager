@@ -687,7 +687,7 @@
     <value>启动时Mod更新检查失败: {0}</value>
   </data>
   <data name="DoNotShowAnnouncementBeforeUpdate" xml:space="preserve">
-    <value>更新前不再显示公告</value>
+    <value>不自动弹出新公告</value>
   </data>
   <data name="TranslationUpdatesFound" xml:space="preserve">
     <value>发现翻译更新: {0}</value>
@@ -900,7 +900,10 @@
     <value>预设删除失败</value>
   </data>
   <data name="ConfirmUninstallMod" xml:space="preserve">
-    <value>确定要卸载 {0} 吗？</value>
+    <value>确定要卸载 {0} 吗？
+
+“卸载”会在游戏目录保留备份（GHPCMM\modbackup\uninstalled），之后可以快速重装。
+“彻底删除”会连同所有备份一起删除。</value>
   </data>
   <data name="ConfirmUninstall" xml:space="preserve">
     <value>确认卸载</value>
@@ -3543,4 +3546,12 @@
 3. Repository access 选择 Public repositories，不需要添加任何权限。
 4. 点击 Generate token，复制（以 github_pat_ 开头），粘贴到上方，点击测试，然后保存。</value></data>
   <data name="GitHubTokenTitle" xml:space="preserve"><value>GitHub API Token</value></data>
+  <data name="NavAnnouncement" xml:space="preserve"><value>公告</value></data>
+  <data name="DiscordButton" xml:space="preserve"><value>Discord</value></data>
+  <data name="DiscordButtonTooltip" xml:space="preserve"><value>加入GHPC Mod社区Discord</value></data>
+  <data name="GameRunningModsLockedBanner" xml:space="preserve"><value>GHPC 正在运行。关闭游戏后才能安装、更新、启用/禁用或卸载Mod。</value></data>
+  <data name="ModDetailsPageTitle" xml:space="preserve"><value>Mod详情</value></data>
+  <data name="UninstallKeepBackupButton" xml:space="preserve"><value>卸载</value></data>
+  <data name="UninstallRemoveCompletelyButton" xml:space="preserve"><value>彻底删除</value></data>
+  <data name="ModBackupDeletedCompletely" xml:space="preserve"><value>已删除 {0} 的备份：{1}</value></data>
 </root>

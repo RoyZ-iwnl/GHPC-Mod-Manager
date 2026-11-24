@@ -37,7 +37,7 @@ public partial class MainWindowViewModel : ObservableObject
         InitializeAsync();
     }
 
-    private async void InitializeAsync()
+    private void InitializeAsync()
     {
         if (_settingsService.Settings.IsFirstRun)
         {
@@ -45,65 +45,8 @@ public partial class MainWindowViewModel : ObservableObject
         }
         else
         {
+            // 公告只在有新内容时由 MainViewModel 弹出，不再每次启动都弹（之前新公告会弹两次）
             _navigationService.NavigateToMainView();
-            
-            // Show startup features after main view is loaded
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(1000); // Give UI time to load
-                await ShowStartupFeaturesAsync();
-            });
-        }
-    }
-
-    private async Task ShowStartupFeaturesAsync()
-    {
-        try
-        {
-            var currentLanguage = CultureInfo.CurrentUICulture.Name;
-            await ShowAnnouncementAsync(currentLanguage);
-        }
-        catch
-        {
-            // 不让启动功能崩溃主程序
-        }
-    }
-
-    private async Task ShowAnnouncementAsync(string language)
-    {
-        try
-        {
-            // 检查用户是否勾选了不再显示
-            var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
-            if (settingsService.Settings.DoNotShowAnnouncementBeforeUpdate)
-                return;
-
-            await Application.Current.Dispatcher.InvokeAsync(async () =>
-            {
-                var announcementViewModel = _serviceProvider.GetRequiredService<AnnouncementViewModel>();
-                await announcementViewModel.LoadAnnouncementAsync(language);
-
-                if (announcementViewModel.HasContent)
-                {
-                    var announcementWindow = new AnnouncementWindow
-                    {
-                        DataContext = announcementViewModel,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    };
-
-                    if (Application.Current.MainWindow != null)
-                    {
-                        announcementWindow.Owner = Application.Current.MainWindow;
-                        announcementWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    }
-
-                    announcementWindow.ShowDialog();
-                }
-            });
-        }
-        catch
-        {
-            // 不让公告窗口崩溃主程序
         }
     }
 

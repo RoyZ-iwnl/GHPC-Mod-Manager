@@ -127,6 +127,16 @@ namespace GHPC_Mod_Manager.Views
                     LaunchAppButton.Content = Strings.PreviousInstallationLaunchApp;
                     LaunchAppButton.Margin = new Thickness(8, 0, 0, 0);
                     break;
+                case MessageDialogButton.UninstallKeepRemoveCancel:
+                    CancelButton.Visibility = Visibility.Visible;
+                    CancelButton.Content = Strings.Cancel;
+                    NoButton.Visibility = Visibility.Visible;
+                    NoButton.Content = Strings.UninstallRemoveCompletelyButton;
+                    NoButton.Margin = new Thickness(8, 0, 0, 0);
+                    YesButton.Visibility = Visibility.Visible;
+                    YesButton.Content = Strings.UninstallKeepBackupButton;
+                    YesButton.Margin = new Thickness(8, 0, 0, 0);
+                    break;
                 case MessageDialogButton.RestartLater:
                     IgnoreButton.Visibility = Visibility.Visible;
                     IgnoreButton.Content = Strings.RestartLater;
@@ -191,6 +201,7 @@ namespace GHPC_Mod_Manager.Views
                 MessageDialogButton.LaunchAppIgnore => LaunchAppButton,
                 MessageDialogButton.GoToSettingsCancel => GoToSettingsButton,
                 MessageDialogButton.RestartLater => RestartButton,
+                MessageDialogButton.UninstallKeepRemoveCancel => YesButton,
                 _ => null
             };
         }
