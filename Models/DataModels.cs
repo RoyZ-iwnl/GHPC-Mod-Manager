@@ -599,6 +599,10 @@ public class MainConfig
     [JsonProperty("ModI18nUrlfallback2")]
     public string? ModI18nUrlFallback2 { get; set; }
 
+    // 获取最新版本的来源及顺序（可选）："feed"(releases.atom)、"latest"(releases/latest跳转)
+    // 例如 ["latest"] 或 [] 可远程关闭订阅源；API 始终作为最后的回退；未下发时两者都用
+    public List<string>? LatestVersionSources { get; set; }
+
     // 赞助者ID列表地址（纯文本，每行一个ID），三级回退同 ModConfig
     public string? FundingIdsUrl { get; set; }
     [JsonProperty("FundingIdsUrlfallback")]

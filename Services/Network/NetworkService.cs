@@ -55,6 +55,12 @@ public class NetworkService : INetworkService
     // 最新版本缓存有效期：订阅源不占API额度，可以比完整Releases缓存短
     private static readonly TimeSpan LatestReleaseCacheExpiry = TimeSpan.FromHours(24);
 
+    // github.com 网页来源（订阅源/跳转）连续失败次数，键 = 来源|代理域名
+    // 被墙或代理不放行时，连续失败3次后本次启动不再尝试，直接走API，避免每个Mod都白等
+    private static readonly ConcurrentDictionary<string, int> _webSourceFailures = new();
+    private const int WebSourceMaxFailures = 3;
+    private static readonly TimeSpan WebSourceTimeout = TimeSpan.FromSeconds(8);
+
     // Rate limit tracking
     private static readonly ConcurrentDictionary<string, DateTime> _rateLimitBlocks = new();
     private static DateTime _lastRateLimitWarning = DateTime.MinValue;
@@ -1615,24 +1621,64 @@ public class NetworkService : INetworkService
         }
 
         // 1. Releases 订阅源（releases.atom）：不占API额度，带发布时间
-        var fromFeed = await TryGetLatestReleaseFromFeedAsync(repoOwner, repoName);
-        if (fromFeed.Success)
+        if (IsWebSourceUsable("feed"))
         {
-            await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromFeed.Release);
-            return fromFeed.Release;
+            var fromFeed = await TryGetLatestReleaseFromFeedAsync(repoOwner, repoName);
+            RecordWebSourceResult("feed", fromFeed.Success);
+            if (fromFeed.Success)
+            {
+                await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromFeed.Release);
+                return fromFeed.Release;
+            }
         }
 
         // 2. releases/latest 跳转：同样不占额度，但只有Tag（不含预发布版和日期）
-        var fromRedirect = await TryGetLatestReleaseFromRedirectAsync(repoOwner, repoName);
-        if (fromRedirect != null)
+        if (IsWebSourceUsable("latest"))
         {
-            await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromRedirect);
-            return fromRedirect;
+            var fromRedirect = await TryGetLatestReleaseFromRedirectAsync(repoOwner, repoName);
+            RecordWebSourceResult("latest", fromRedirect != null);
+            if (fromRedirect != null)
+            {
+                await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromRedirect);
+                return fromRedirect;
+            }
         }
 
         // 3. 最后才用API（非强制刷新时会先读7天的完整缓存）
         var releases = await GetGitHubReleasesAsync(repoOwner, repoName, forceRefresh);
         return releases.FirstOrDefault();
+    }
+
+    // 当前 github.com 请求走哪条线路（直连或代理域名），失败计数按线路分开
+    private string GetWebSourceRoute()
+    {
+        if (_settingsService.Settings.UseGitHubProxy && string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken))
+            return GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
+        return "direct";
+    }
+
+    // 主配置可远程关闭某个来源；本线路连续失败太多次也跳过
+    private bool IsWebSourceUsable(string source)
+    {
+        var allowed = _mainConfigService.Config?.LatestVersionSources;
+        if (allowed != null && !allowed.Contains(source, StringComparer.OrdinalIgnoreCase))
+            return false;
+
+        return _webSourceFailures.GetValueOrDefault($"{source}|{GetWebSourceRoute()}") < WebSourceMaxFailures;
+    }
+
+    private void RecordWebSourceResult(string source, bool success)
+    {
+        var key = $"{source}|{GetWebSourceRoute()}";
+        if (success)
+        {
+            _webSourceFailures[key] = 0;
+            return;
+        }
+
+        var failures = _webSourceFailures.AddOrUpdate(key, 1, (_, n) => n + 1);
+        if (failures == WebSourceMaxFailures)
+            _loggingService.LogWarning("Latest version source '{0}' failed {1} times via {2}, using the API for the rest of this session", source, failures, GetWebSourceRoute());
     }
 
     // 开了代理且没配token时，github.com 的请求也走代理
@@ -1651,7 +1697,7 @@ public class NetworkService : INetworkService
     {
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            using var cts = new CancellationTokenSource(WebSourceTimeout);
             var url = BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases.atom");
             using var response = await _httpClient.GetAsync(url, cts.Token);
             if (!response.IsSuccessStatusCode)
@@ -1702,7 +1748,7 @@ public class NetworkService : INetworkService
     {
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            using var cts = new CancellationTokenSource(WebSourceTimeout);
             using var request = new HttpRequestMessage(HttpMethod.Head, BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases/latest"));
             using var response = await _httpClient.SendAsync(request, cts.Token);
 
