@@ -480,22 +480,39 @@
                                 </Grid>
                             </Button>
                         </Grid>
-                        <TextBlock Margin="0,4,0,16"
+                        <!-- 测试按钮：显示剩余额度或token是否被拒 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Button Content="{x:Static resources:Strings.GitHubTokenTest}"
+                                    Command="{Binding TestGitHubTokenCommand}"
+                                    IsEnabled="{Binding IsTestingGitHubToken, Converter={StaticResource InvBool}}"
+                                    Style="{DynamicResource OutlinedButtonStyle}"
+                                    Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding GitHubTokenTestStatus}"
+                                       Style="{StaticResource PageSectionHintTextStyle}"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <TextBlock Margin="0,4,0,8"
                                    Text="{x:Static resources:Strings.GitHubApiTokenDescription}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
-                        <TextBlock Text="{x:Static resources:Strings.GitHubApiTokenHint}"
                                    Style="{StaticResource PageSectionHintTextStyle}"
-                                   Foreground="{DynamicResource ErrorBrush}"/>
-                        <TextBlock Margin="0,6,0,0"
+                                   TextWrapping="Wrap"/>
+                        <!-- 获取token的步骤说明 -->
+                        <TextBlock Margin="0,0,0,6"
+                                   Text="{x:Static resources:Strings.GitHubApiTokenSteps}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Margin="0,0,0,10"
                                    Style="{StaticResource PageSectionHintTextStyle}">
-                            <Hyperlink NavigateUri="https://github.com/settings/tokens"
+                            <Hyperlink NavigateUri="https://github.com/settings/personal-access-tokens/new"
                                        RequestNavigate="Hyperlink_RequestNavigate">
                                 <Run Text="{x:Static resources:Strings.GitHubApiTokenGetUrl}"/>
                             </Hyperlink>
                         </TextBlock>
-                        <TextBlock Margin="0,6,0,16"
-                                   Text="{x:Static resources:Strings.GitHubApiTokenPermissionHint}"
-                                   Style="{StaticResource PageSectionHintTextStyle}"/>
+                        <TextBlock Margin="0,0,0,16"
+                                   Text="{x:Static resources:Strings.GitHubApiTokenHint}"
+                                   Style="{StaticResource PageSectionHintTextStyle}"
+                                   Foreground="{DynamicResource ErrorBrush}"
+                                   TextWrapping="Wrap"/>
 
                         <CheckBox Margin="0,0,0,8"
                                   IsChecked="{Binding UseGitHubProxy}"

@@ -791,17 +791,13 @@ public partial class MainViewModel : ObservableObject
                     var repo = GetRepoName(releaseUrl);
                     if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(repo)) continue;
 
-                    var releases = await _networkService.GetGitHubReleasesAsync(owner, repo, forceRefresh: true);
-                    if (releases.Count > 0)
+                    // 只取最新版本，优先走不占API额度的订阅源
+                    var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(owner, repo, forceRefresh: true);
+                    // LatestVersion 保持 TagName 原样，下载时按 TagName 精确匹配，避免匹配失败
+                    if (!string.IsNullOrEmpty(latestRelease?.TagName))
                     {
-                        // 源头已按 PublishedAt 倒序，[0] 即最新发布版本
-                        // LatestVersion 保持 TagName 原样，下载时按 TagName 精确匹配，避免匹配失败
-                        var latestRelease = releases[0];
-                        if (!string.IsNullOrEmpty(latestRelease.TagName))
-                        {
-                            mod.LatestVersion = latestRelease.TagName;
-                            mod.UpdateDate = latestRelease.PublishedAt;
-                        }
+                        mod.LatestVersion = latestRelease.TagName;
+                        mod.UpdateDate = latestRelease.PublishedAt != default ? latestRelease.PublishedAt : null;
                     }
                 }
                 catch
@@ -1948,13 +1944,14 @@ public partial class MainViewModel : ObservableObject
                 {
                     try
                     {
-                        var releases = await _networkService.GetGitHubReleasesAsync(
+                        // 只取最新版本，优先走不占API额度的订阅源，检查全部Mod也不会耗尽额度
+                        var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                             GetRepoOwnerFromApiUrl(mod.Config.ReleaseUrl),
                             GetRepoNameFromApiUrl(mod.Config.ReleaseUrl),
                             forceRefresh: true
                         );
 
-                        var latestVersion = releases.FirstOrDefault()?.TagName;
+                        var latestVersion = latestRelease?.TagName;
 
                         if (!string.IsNullOrEmpty(latestVersion))
                         {

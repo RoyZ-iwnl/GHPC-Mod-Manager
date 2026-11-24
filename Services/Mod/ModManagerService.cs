@@ -151,15 +151,15 @@ public partial class ModManagerService : IModManagerService
                 // 区分 GitHub 源和直接下载源
                 if (IsGitHubApiUrl(vm.Config.ReleaseUrl))
                 {
-                    // GitHub 模式：调用 API 获取版本
-                    var releases = await _networkService.GetGitHubReleasesAsync(
+                    // GitHub 模式：只取最新版本，优先走不占API额度的订阅源
+                    var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                         GetRepoOwner(vm.Config.ReleaseUrl),
                         GetRepoName(vm.Config.ReleaseUrl),
                         forceRefresh
                     );
-                    var latestRelease = releases.FirstOrDefault();
                     vm.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
-                    vm.UpdateDate = latestRelease?.PublishedAt;
+                    // 备用跳转方式拿不到发布时间
+                    vm.UpdateDate = latestRelease != null && latestRelease.PublishedAt != default ? latestRelease.PublishedAt : null;
                 }
                 else
                 {
@@ -333,11 +333,11 @@ public partial class ModManagerService : IModManagerService
                     {
                         if (IsGitHubApiUrl(matchingConfig.ReleaseUrl))
                         {
-                            var releases = await _networkService.GetGitHubReleasesAsync(
+                            var latestRelease = await _networkService.GetLatestGitHubReleaseAsync(
                                 GetRepoOwner(matchingConfig.ReleaseUrl),
                                 GetRepoName(matchingConfig.ReleaseUrl)
                             );
-                            supportedManualMod.LatestVersion = releases.FirstOrDefault()?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
+                            supportedManualMod.LatestVersion = latestRelease?.TagName ?? GHPC_Mod_Manager.Resources.Strings.Unknown;
                         }
                         else
                         {

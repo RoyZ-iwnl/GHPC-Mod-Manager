@@ -3586,7 +3586,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 提高API访问限制（60→5000次/小时）.
+        ///   Looks up a localized string similar to 可选。检查新版本已不再使用GitHub API。一次安装或更新大量Mod时，Token可将上限从每小时60次提高到5000次。.
         /// </summary>
         public static string GitHubApiTokenDescription {
             get {
@@ -3595,7 +3595,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 获取地址：https://github.com/settings/tokens.
+        ///   Looks up a localized string similar to 在GitHub上创建Token.
         /// </summary>
         public static string GitHubApiTokenGetUrl {
             get {
@@ -3618,6 +3618,19 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubApiTokenPermissionHint {
             get {
                 return ResourceManager.GetString("GitHubApiTokenPermissionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 获取方法（免费，约一分钟）：
+        ///1. 登录GitHub（没有账号可免费注册），然后打开下方链接。
+        ///2. Token名称随意，例如 GHPC Mod Manager。过期时间自选，过期后重新创建即可。
+        ///3. Repository access 选择 Public repositories，不需要添加任何权限。
+        ///4. 点击 Generate token，复制（以 github_pat_ 开头），粘贴到上方，点击测试，然后保存。.
+        /// </summary>
+        public static string GitHubApiTokenSteps {
+            get {
+                return ResourceManager.GetString("GitHubApiTokenSteps", resourceCulture);
             }
         }
         
@@ -3703,11 +3716,42 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 未配置Token时，GitHub每小时只允许60次请求，现已用完。{0}
+        ///
+        ///在此之前，安装和详情页的版本列表可能无法使用。
+        ///
+        ///配置免费的GitHub Token可将上限提高到每小时5000次。现在打开设置添加吗？.
+        /// </summary>
+        public static string GitHubRateLimitNoTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitNoTokenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 将于 {0} 恢复（约 {1} 分钟后）。.
+        /// </summary>
+        public static string GitHubRateLimitResetsAt {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitResetsAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GitHub API 访问限制.
         /// </summary>
         public static string GitHubRateLimitTitle {
             get {
                 return ResourceManager.GetString("GitHubRateLimitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 你的GitHub Token额度（每小时5000次）已用完。{0}.
+        /// </summary>
+        public static string GitHubRateLimitTokenMessage {
+            get {
+                return ResourceManager.GetString("GitHubRateLimitTokenMessage", resourceCulture);
             }
         }
         
@@ -3744,6 +3788,89 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GitHubTokenMigratedToEncrypted {
             get {
                 return ResourceManager.GetString("GitHubTokenMigratedToEncrypted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了API Token（401），改用匿名请求.
+        /// </summary>
+        public static string GitHubTokenRejectedLog {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了你的API Token，可能已过期或填写错误。
+        ///
+        ///管理器暂时不使用Token继续工作（每小时60次请求）。现在打开设置修改吗？.
+        /// </summary>
+        public static string GitHubTokenRejectedMessage {
+            get {
+                return ResourceManager.GetString("GitHubTokenRejectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 测试.
+        /// </summary>
+        public static string GitHubTokenTest {
+            get {
+                return ResourceManager.GetString("GitHubTokenTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 无法连接GitHub：{0}.
+        /// </summary>
+        public static string GitHubTokenTestFailed {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 正在检查….
+        /// </summary>
+        public static string GitHubTokenTesting {
+            get {
+                return ResourceManager.GetString("GitHubTokenTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 未配置Token：本小时剩余 {0}/{1} 次请求（{2} 重置）。.
+        /// </summary>
+        public static string GitHubTokenTestNoToken {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestNoToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token可用：本小时剩余 {0}/{1} 次请求（{2} 重置）。.
+        /// </summary>
+        public static string GitHubTokenTestOk {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub拒绝了此Token，可能已过期或填写错误。.
+        /// </summary>
+        public static string GitHubTokenTestRejected {
+            get {
+                return ResourceManager.GetString("GitHubTokenTestRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub API Token.
+        /// </summary>
+        public static string GitHubTokenTitle {
+            get {
+                return ResourceManager.GetString("GitHubTokenTitle", resourceCulture);
             }
         }
         

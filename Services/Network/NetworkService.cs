@@ -1,4 +1,7 @@
 using System.Collections.Concurrent;
+using System.Globalization;
+using System.Net;
+using System.Xml.Linq;
 using GHPC_Mod_Manager.Models;
 using Newtonsoft.Json;
 using System.IO;
@@ -18,6 +21,14 @@ public interface INetworkService
     Task<List<ModConfig>> GetModConfigAsync(string url, bool forceRefresh = false);
     Task<ModI18nManager> GetModI18nConfigAsync(string url, bool forceRefresh = false);
     Task<List<GitHubRelease>> GetGitHubReleasesAsync(string repoOwner, string repoName, bool forceRefresh = false);
+    /// <summary>
+    /// 只取最新版本（Tag + 发布时间），优先走不受API限额的Releases订阅源，失败再回退API
+    /// </summary>
+    Task<GitHubRelease?> GetLatestGitHubReleaseAsync(string repoOwner, string repoName, bool forceRefresh = false);
+    /// <summary>
+    /// 查询GitHub API剩余额度（rate_limit接口本身不计入额度），token为空时查匿名额度
+    /// </summary>
+    Task<GitHubRateLimitStatus> GetGitHubRateLimitAsync(string? token);
     Task<(string Content, string BaseUrl)> GetGitHubReadmeAsync(string repoOwner, string repoName);
     Task<byte[]> DownloadFileAsync(string url, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default, long? expectedSize = null, string? expectedDigest = null, string? assetName = null, string? displayName = null, string? sourceText = null);
     /// <summary>直接下载，不进入全局下载队列，仅用于 SetupWizard 初始化流程。</summary>
@@ -37,7 +48,22 @@ public class NetworkService : INetworkService
     private readonly ISettingsService _settingsService;
     private readonly IMainConfigService _mainConfigService;
     private readonly IDownloadQueueService _downloadQueueService;
+    private readonly INavigationService _navigationService;
 
+    // token 被拒时每次启动只提示一次
+    private static bool _invalidTokenWarned;
+    // 最新版本缓存有效期：订阅源不占API额度，可以比完整Releases缓存短
+    private static readonly TimeSpan LatestReleaseCacheExpiry = TimeSpan.FromHours(24);
+
+    // github.com 网页来源（订阅源/跳转）每条线路的连续失败次数，键 = 来源|线路（direct 或代理域名）
+    // 被墙或代理不放行时，连续失败3次后本次启动跳过这条线路，换下一条，避免每个Mod都白等
+    private static readonly ConcurrentDictionary<string, int> _webSourceFailures = new();
+    private static readonly ConcurrentDictionary<string, bool> _webSourceLogged = new();
+    private const int WebSourceMaxFailures = 3;
+    private static readonly TimeSpan WebSourceTimeout = TimeSpan.FromSeconds(8);
+    // 同时最多8个订阅源/跳转请求，100多个Mod一起刷新时不压垮代理
+    private static readonly SemaphoreSlim _webSourceGate = new(8, 8);
+    private List<string>? _builtinProxyDomains;
 
     // Rate limit tracking
     private static readonly ConcurrentDictionary<string, DateTime> _rateLimitBlocks = new();
@@ -52,8 +78,9 @@ public class NetworkService : INetworkService
     // 本次启动的内存缓存（非GitHub资源）
     private readonly ConcurrentDictionary<string, object> _sessionCache = new();
 
-    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService, IDownloadQueueService downloadQueueService)
+    public NetworkService(HttpClient httpClient, ILoggingService loggingService, ISettingsService settingsService, IMainConfigService mainConfigService, IDownloadQueueService downloadQueueService, INavigationService navigationService)
     {
+        _navigationService = navigationService;
         _httpClient = httpClient;
         _loggingService = loggingService;
         _settingsService = settingsService;
@@ -446,44 +473,52 @@ public class NetworkService : INetworkService
             _rateLimitBlocks.TryRemove(rateLimitKey, out _);
             
             // Make API request
-            List<GitHubRelease> result;
-            var hasToken = !string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken);
+            var token = _settingsService.Settings.GitHubApiToken;
+            var hasToken = !string.IsNullOrWhiteSpace(token);
+            var apiUrl = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
+            GitHubApiResponse apiResponse;
 
             // 有token时强制直连，忽略代理设置
             if (hasToken)
             {
-                var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
-                _loggingService.LogInfo(Strings.FetchingGitHubReleasesWithToken, url);
+                _loggingService.LogInfo(Strings.FetchingGitHubReleasesWithToken, apiUrl);
+                apiResponse = await RequestGitHubReleasesAsync(apiUrl, token);
 
-                using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Headers.Add("Authorization", $"token {_settingsService.Settings.GitHubApiToken}");
-
-                // using 确保响应资源释放，与同文件其他 SendAsync 调用一致
-                using var response = await _httpClient.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
-                result = releases ?? new List<GitHubRelease>();
+                // token 过期或填错：提示一次，并改用匿名请求，避免所有Mod版本都变成"未知"
+                if (apiResponse.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await ShowInvalidTokenWarningAsync();
+                    apiResponse = await RequestGitHubReleasesAsync(apiUrl, null);
+                }
             }
             else if (!_settingsService.Settings.UseGitHubProxy)
             {
-                var url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases";
-                _loggingService.LogInfo(Strings.FetchingGitHubReleases, url);
-
-                var json = await _httpClient.GetStringAsync(url);
-                var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
-                result = releases ?? new List<GitHubRelease>();
+                _loggingService.LogInfo(Strings.FetchingGitHubReleases, apiUrl);
+                apiResponse = await RequestGitHubReleasesAsync(apiUrl, null);
             }
             else
             {
                 // Use proxy for GitHub API access
                 var proxyDomain = GetProxyDomain(_settingsService.Settings.GitHubProxyServer);
-                var url = $"https://{proxyDomain}/https://api.github.com/repos/{repoOwner}/{repoName}/releases";
+                var url = $"https://{proxyDomain}/{apiUrl}";
                 _loggingService.LogInfo(Strings.FetchingGitHubReleases, url);
-
-                var json = await _httpClient.GetStringAsync(url);
-                var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
-                result = releases ?? new List<GitHubRelease>();
+                apiResponse = await RequestGitHubReleasesAsync(url, null);
             }
+
+            if (apiResponse.IsRateLimited)
+            {
+                _rateLimitBlocks[rateLimitKey] = DateTime.Now;
+                _loggingService.LogWarning(Strings.GitHubReleasesFetchError, repoOwner, repoName);
+                await ShowRateLimitWarningAsync(apiResponse.RateLimitReset);
+
+                var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
+                return staleCache ?? new List<GitHubRelease>();
+            }
+
+            if (apiResponse.Releases == null)
+                throw new HttpRequestException($"GitHub API returned {(int?)apiResponse.StatusCode} for {repoOwner}/{repoName}");
+
+            var result = apiResponse.Releases;
 
             // 按 PublishedAt 倒序排列，确保调用方 FirstOrDefault() 取到最新发布版本
             // 而非依赖 GitHub API 默认的 created_at 排序（修改发布时间后两者顺序可能不一致）
@@ -503,7 +538,7 @@ public class NetworkService : INetworkService
             _rateLimitBlocks[rateLimitKey] = DateTime.Now;
             
             // Show rate limit popup with localized message
-            await ShowRateLimitWarningAsync();
+            await ShowRateLimitWarningAsync(null);
             
             // Try to return stale cache if available
             var staleCache = await GetGitHubReleasesFromPersistentCacheAsync(repoOwner, repoName, ignoreExpiry: true);
@@ -1447,7 +1482,8 @@ public class NetworkService : INetworkService
     /// <summary>
     /// Show rate limit warning popup with localized message (with debounce logic)
     /// </summary>
-    private async Task ShowRateLimitWarningAsync()
+    /// <param name="resetAt">额度恢复时间（本地时间），未知时为null</param>
+    private async Task ShowRateLimitWarningAsync(DateTime? resetAt)
     {
         // Check if we've shown a warning recently (within cooldown period)
         var timeSinceLastWarning = DateTime.Now - _lastRateLimitWarning;
@@ -1461,13 +1497,375 @@ public class NetworkService : INetworkService
         // Update last warning timestamp
         _lastRateLimitWarning = DateTime.Now;
 
-        // Show the warning popup
-        await Application.Current.Dispatcher.InvokeAsync(async () =>
+        // "18:42 恢复（约 23 分钟后）"，不知道恢复时间时留空
+        var resetText = resetAt.HasValue
+            ? string.Format(Strings.GitHubRateLimitResetsAt, resetAt.Value.ToString("HH:mm"), Math.Max(1, (int)Math.Ceiling((resetAt.Value - DateTime.Now).TotalMinutes)))
+            : string.Empty;
+        var hasToken = !string.IsNullOrWhiteSpace(_settingsService.Settings.GitHubApiToken);
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            await MessageDialogHelper.ShowWarningAsync(
-                Strings.GitHubRateLimitMessage,
-                Strings.GitHubRateLimitTitle);
+            if (hasToken)
+            {
+                MessageDialogHelper.ShowWarning(
+                    string.Format(Strings.GitHubRateLimitTokenMessage, resetText).Trim(),
+                    Strings.GitHubRateLimitTitle);
+                return;
+            }
+
+            // 无token：说明原因，并提供打开设置页添加token
+            if (MessageDialogHelper.Confirm(
+                    string.Format(Strings.GitHubRateLimitNoTokenMessage, resetText).Trim(),
+                    Strings.GitHubRateLimitTitle))
+            {
+                _navigationService.NavigateToSettings();
+            }
         });
+    }
+
+    /// <summary>
+    /// token 被GitHub拒绝（401）时提示一次
+    /// </summary>
+    private async Task ShowInvalidTokenWarningAsync()
+    {
+        _loggingService.LogWarning(Strings.GitHubTokenRejectedLog);
+        if (_invalidTokenWarned)
+            return;
+        _invalidTokenWarned = true;
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            if (MessageDialogHelper.Confirm(Strings.GitHubTokenRejectedMessage, Strings.GitHubTokenTitle))
+                _navigationService.NavigateToSettings();
+        });
+    }
+
+    // GitHub API 请求结果：Releases 为 null 表示失败
+    private sealed record GitHubApiResponse(List<GitHubRelease>? Releases, HttpStatusCode? StatusCode, bool IsRateLimited, DateTime? RateLimitReset);
+
+    /// <summary>
+    /// 请求Releases列表并检查状态码，区分限额用尽、token失效和其他错误
+    /// </summary>
+    private async Task<GitHubApiResponse> RequestGitHubReleasesAsync(string url, string? token)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        if (!string.IsNullOrWhiteSpace(token))
+            request.Headers.Add("Authorization", $"token {token}");
+
+        // using 确保响应资源释放，与同文件其他 SendAsync 调用一致
+        using var response = await _httpClient.SendAsync(request);
+        var resetAt = ReadRateLimitReset(response);
+        var json = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var releases = JsonConvert.DeserializeObject<List<GitHubRelease>>(json) ?? new List<GitHubRelease>();
+            return new GitHubApiResponse(releases, response.StatusCode, false, resetAt);
+        }
+
+        // 限额用尽：403/429，且剩余额度为0或返回体提到 rate limit
+        var remaining = response.Headers.TryGetValues("X-RateLimit-Remaining", out var values) ? values.FirstOrDefault() : null;
+        var isRateLimited = (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests) &&
+                            (remaining == "0" || json.Contains("rate limit", StringComparison.OrdinalIgnoreCase));
+
+        return new GitHubApiResponse(null, response.StatusCode, isRateLimited, resetAt);
+    }
+
+    // X-RateLimit-Reset 是 Unix 秒，转换为本地时间
+    private static DateTime? ReadRateLimitReset(HttpResponseMessage response)
+    {
+        if (response.Headers.TryGetValues("X-RateLimit-Reset", out var values) &&
+            long.TryParse(values.FirstOrDefault(), out var unixSeconds))
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(unixSeconds).LocalDateTime;
+        }
+        return null;
+    }
+
+    public async Task<GitHubRateLimitStatus> GetGitHubRateLimitAsync(string? token)
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/rate_limit");
+            if (!string.IsNullOrWhiteSpace(token))
+                request.Headers.Add("Authorization", $"token {token.Trim()}");
+
+            using var response = await _httpClient.SendAsync(request, cts.Token);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+                return new GitHubRateLimitStatus { TokenRejected = true };
+            if (!response.IsSuccessStatusCode)
+                return new GitHubRateLimitStatus { Error = $"HTTP {(int)response.StatusCode}" };
+
+            // {"resources":{"core":{"limit":60,"remaining":57,"reset":1700000000}}}
+            var json = Newtonsoft.Json.Linq.JObject.Parse(await response.Content.ReadAsStringAsync(cts.Token));
+            var core = json["resources"]?["core"];
+            return new GitHubRateLimitStatus
+            {
+                Success = true,
+                Limit = core?.Value<int>("limit") ?? 0,
+                Remaining = core?.Value<int>("remaining") ?? 0,
+                ResetAt = core?["reset"] != null ? DateTimeOffset.FromUnixTimeSeconds(core.Value<long>("reset")).LocalDateTime : null
+            };
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("GitHub rate limit check failed: {0}", ex.Message);
+            return new GitHubRateLimitStatus { Error = ex.Message };
+        }
+    }
+
+    public async Task<GitHubRelease?> GetLatestGitHubReleaseAsync(string repoOwner, string repoName, bool forceRefresh = false)
+    {
+        if (!forceRefresh)
+        {
+            var cached = await ReadLatestReleaseCacheAsync(repoOwner, repoName);
+            if (cached.Found)
+                return cached.Release;
+        }
+
+        var routes = GetWebSourceRoutes();
+
+        // 1. Releases 订阅源（releases.atom）：不占API额度，带发布时间
+        //    按线路依次尝试（所选代理 → 其他代理 → 直连，或 直连 → 代理），某条线路被墙/被代理拦截就换下一条
+        if (IsWebSourceEnabled("feed"))
+        {
+            foreach (var route in routes.Where(r => IsWebSourceRouteUsable("feed", r)))
+            {
+                (bool Success, GitHubRelease? Release) fromFeed;
+                await _webSourceGate.WaitAsync();
+                try { fromFeed = await TryGetLatestReleaseFromFeedAsync(repoOwner, repoName, route); }
+                finally { _webSourceGate.Release(); }
+                RecordWebSourceResult("feed", route, fromFeed.Success);
+                if (fromFeed.Success)
+                {
+                    await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromFeed.Release);
+                    return fromFeed.Release;
+                }
+            }
+        }
+
+        // 2. releases/latest 跳转：同样不占额度，但只有Tag（不含预发布版和日期）
+        if (IsWebSourceEnabled("latest"))
+        {
+            foreach (var route in routes.Where(r => IsWebSourceRouteUsable("latest", r)))
+            {
+                GitHubRelease? fromRedirect;
+                await _webSourceGate.WaitAsync();
+                try { fromRedirect = await TryGetLatestReleaseFromRedirectAsync(repoOwner, repoName, route); }
+                finally { _webSourceGate.Release(); }
+                RecordWebSourceResult("latest", route, fromRedirect != null);
+                if (fromRedirect != null)
+                {
+                    await SaveLatestReleaseCacheAsync(repoOwner, repoName, fromRedirect);
+                    return fromRedirect;
+                }
+            }
+        }
+
+        // 3. 最后才用API（非强制刷新时会先读7天的完整缓存）
+        var releases = await GetGitHubReleasesAsync(repoOwner, repoName, forceRefresh);
+        return releases.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// 访问 github.com 公开页面（订阅源/跳转）的线路顺序，"direct" = 直连，其余为代理域名
+    /// 只读取公开的版本信息，所以可以借用列表里的其他代理
+    /// </summary>
+    private List<string> GetWebSourceRoutes()
+    {
+        var settings = _settingsService.Settings;
+
+        // 有token时其他请求都直连，这里保持一致
+        if (!string.IsNullOrWhiteSpace(settings.GitHubApiToken))
+            return new List<string> { "direct" };
+
+        // 只用内置的几个代理（域名可被下发配置按同名Id覆盖），不轮询下发列表里的其他第三方代理
+        // 只算一次：GetProxyDomain 每次都会写日志，100多个Mod会刷屏
+        var proxies = _builtinProxyDomains ??= Enum.GetValues<GitHubProxyServer>().Select(GetProxyDomain).ToList();
+
+        var routes = new List<string>();
+        if (settings.UseGitHubProxy)
+        {
+            // 所选代理 → 其他代理 → 直连（被墙时直连最慢，放最后）
+            routes.Add(GetProxyDomain(settings.GitHubProxyServer));
+            routes.AddRange(proxies);
+            routes.Add("direct");
+        }
+        else
+        {
+            // 没开代理：直连 → 代理（直连在国内可能不通）
+            routes.Add("direct");
+            routes.AddRange(proxies);
+        }
+
+        return routes.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+    }
+
+    // 主配置可远程关闭某个来源（LatestVersionSources）
+    private bool IsWebSourceEnabled(string source)
+    {
+        var allowed = _mainConfigService.Config?.LatestVersionSources;
+        return allowed == null || allowed.Contains(source, StringComparer.OrdinalIgnoreCase);
+    }
+
+    // 某来源在某线路上连续失败太多次，本次启动就不再走这条线路
+    private bool IsWebSourceRouteUsable(string source, string route)
+    {
+        return _webSourceFailures.GetValueOrDefault($"{source}|{route}") < WebSourceMaxFailures;
+    }
+
+    private void RecordWebSourceResult(string source, string route, bool success)
+    {
+        var key = $"{source}|{route}";
+        if (success)
+        {
+            // 每条线路只记一次，避免100多个Mod刷屏
+            if (_webSourceLogged.TryAdd($"ok|{key}", true))
+                _loggingService.LogInfo("Latest version source '{0}' works via {1}", source, route);
+            // 成功只抵消一次失败：时好时坏的线路（如 gh1.dmr.gg）不会被反复重试
+            _webSourceFailures.AddOrUpdate(key, 0, (_, n) => Math.Max(0, n - 1));
+            return;
+        }
+
+        var failures = _webSourceFailures.AddOrUpdate(key, 1, (_, n) => n + 1);
+        if (failures >= WebSourceMaxFailures && _webSourceLogged.TryAdd($"skip|{key}", true))
+            _loggingService.LogWarning("Latest version source '{0}' failed {1} times via {2}, skipping that route for the rest of this session", source, failures, route);
+    }
+
+    // github.com 公开页面地址，route 为代理域名时走 https://代理/https://github.com/...
+    private static string BuildGitHubWebUrl(string path, string route)
+    {
+        var url = $"https://github.com/{path}";
+        return route == "direct" ? url : $"https://{route}/{url}";
+    }
+
+    /// <summary>
+    /// 从 releases.atom 读最新一条Release，Success=false 表示这条线路不可用
+    /// </summary>
+    private async Task<(bool Success, GitHubRelease? Release)> TryGetLatestReleaseFromFeedAsync(string repoOwner, string repoName, string route)
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(WebSourceTimeout);
+            var url = BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases.atom", route);
+            using var response = await _httpClient.GetAsync(url, cts.Token);
+            if (!response.IsSuccessStatusCode)
+                return (false, null);
+
+            var xml = await response.Content.ReadAsStringAsync(cts.Token);
+            XNamespace atom = "http://www.w3.org/2005/Atom";
+            var feed = XDocument.Parse(xml).Root;
+            // 代理出错时可能返回HTML页面，不是Atom就当失败
+            if (feed == null || feed.Name != atom + "feed")
+                return (false, null);
+
+            // 订阅源按发布顺序倒序，第一条就是最新的；没有entry说明仓库还没有Release
+            var entry = feed.Elements(atom + "entry").FirstOrDefault();
+            if (entry == null)
+                return (true, null);
+
+            // href = https://github.com/owner/repo/releases/tag/v1.2.3
+            // 必须是这个仓库自己的Tag链接，防止代理返回别的内容
+            var tagMarker = $"/{repoOwner}/{repoName}/releases/tag/";
+            var href = entry.Elements(atom + "link")
+                .Select(l => (string?)l.Attribute("href"))
+                .FirstOrDefault(h => h != null && h.Contains(tagMarker, StringComparison.OrdinalIgnoreCase));
+            if (href == null)
+                return (false, null);
+
+            var tag = Uri.UnescapeDataString(href.Substring(href.IndexOf(tagMarker, StringComparison.OrdinalIgnoreCase) + tagMarker.Length));
+            DateTime.TryParse((string?)entry.Element(atom + "updated"), CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out var updated);
+
+            return (true, new GitHubRelease
+            {
+                TagName = tag,
+                Name = (string?)entry.Element(atom + "title") ?? tag,
+                PublishedAt = DateTime.SpecifyKind(updated, DateTimeKind.Utc)
+            });
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("Releases feed failed for {0}/{1} via {2}: {3}", repoOwner, repoName, route, ex.Message);
+            return (false, null);
+        }
+    }
+
+    /// <summary>
+    /// 读 releases/latest 跳转后的地址拿Tag（订阅源失败时的备用）
+    /// </summary>
+    private async Task<GitHubRelease?> TryGetLatestReleaseFromRedirectAsync(string repoOwner, string repoName, string route)
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(WebSourceTimeout);
+            using var request = new HttpRequestMessage(HttpMethod.Head, BuildGitHubWebUrl($"{repoOwner}/{repoName}/releases/latest", route));
+            using var response = await _httpClient.SendAsync(request, cts.Token);
+
+            // 自动跟随跳转后，最终地址形如 .../owner/repo/releases/tag/v1.2.3
+            // 代理若在服务端跟随跳转，最终地址里没有Tag，按失败处理
+            var tagMarker = $"/{repoOwner}/{repoName}/releases/tag/";
+            var finalUrl = response.RequestMessage?.RequestUri?.AbsoluteUri ?? string.Empty;
+            var index = finalUrl.IndexOf(tagMarker, StringComparison.OrdinalIgnoreCase);
+            if (!response.IsSuccessStatusCode || index < 0)
+                return null;
+
+            var tag = Uri.UnescapeDataString(finalUrl.Substring(index + tagMarker.Length).TrimEnd('/'));
+            return new GitHubRelease { TagName = tag, Name = tag };
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("Releases latest redirect failed for {0}/{1} via {2}: {3}", repoOwner, repoName, route, ex.Message);
+            return null;
+        }
+    }
+
+    private string GetLatestReleaseCachePath(string repoOwner, string repoName)
+    {
+        var cacheDir = Path.Combine(_settingsService.AppDataPath, "cache", "github_latest");
+        Directory.CreateDirectory(cacheDir);
+        return Path.Combine(cacheDir, $"{SanitizeFileName(repoOwner)}_{SanitizeFileName(repoName)}.json");
+    }
+
+    // 缓存格式: {"CachedAt": "...", "Release": {...} 或 null}
+    private sealed class LatestReleaseCacheEntry
+    {
+        public DateTime CachedAt { get; set; }
+        public GitHubRelease? Release { get; set; }
+    }
+
+    private async Task<(bool Found, GitHubRelease? Release)> ReadLatestReleaseCacheAsync(string repoOwner, string repoName)
+    {
+        try
+        {
+            var path = GetLatestReleaseCachePath(repoOwner, repoName);
+            if (!File.Exists(path))
+                return (false, null);
+
+            var entry = JsonConvert.DeserializeObject<LatestReleaseCacheEntry>(await File.ReadAllTextAsync(path));
+            if (entry == null || DateTime.Now - entry.CachedAt > LatestReleaseCacheExpiry)
+                return (false, null);
+
+            return (true, entry.Release);
+        }
+        catch
+        {
+            return (false, null);
+        }
+    }
+
+    private async Task SaveLatestReleaseCacheAsync(string repoOwner, string repoName, GitHubRelease? release)
+    {
+        try
+        {
+            var entry = new LatestReleaseCacheEntry { CachedAt = DateTime.Now, Release = release };
+            await File.WriteAllTextAsync(GetLatestReleaseCachePath(repoOwner, repoName), JsonConvert.SerializeObject(entry, Formatting.Indented));
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogWarning("Failed to save latest release cache for {0}/{1}: {2}", repoOwner, repoName, ex.Message);
+        }
     }
 
     /// <summary>
@@ -1575,6 +1973,9 @@ public class NetworkService : INetworkService
             // Save new cache
             var json = JsonConvert.SerializeObject(releases, Formatting.Indented);
             await File.WriteAllTextAsync(cacheFile, json);
+
+            // 完整列表是最新信息，同步更新最新版本缓存
+            await SaveLatestReleaseCacheAsync(repoOwner, repoName, releases.FirstOrDefault());
         }
         catch (Exception ex)
         {
@@ -1741,4 +2142,17 @@ internal class ChunkState
     public long RemainingBytes => TotalSize - BytesDownloaded;
     public TimeSpan ElapsedTime => StartTime.HasValue ? DateTime.Now - StartTime.Value : TimeSpan.Zero;
     public double ProgressPercentage => TotalSize == 0 ? 100.0 : (BytesDownloaded / (double)TotalSize) * 100;
+}
+
+/// <summary>
+/// GitHub API 额度查询结果
+/// </summary>
+public class GitHubRateLimitStatus
+{
+    public bool Success { get; set; }
+    public bool TokenRejected { get; set; }
+    public string? Error { get; set; }
+    public int Limit { get; set; }
+    public int Remaining { get; set; }
+    public DateTime? ResetAt { get; set; }
 }
