@@ -1276,7 +1276,10 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 确定要卸载 {0} 吗？.
+        ///   Looks up a localized string similar to 确定要卸载 {0} 吗？
+        ///
+        ///“卸载”会在游戏目录保留备份（GHPCMM\modbackup\uninstalled），之后可以快速重装。
+        ///“彻底删除”会连同所有备份一起删除。.
         /// </summary>
         public static string ConfirmUninstallMod {
             get {
@@ -1941,6 +1944,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string DiscordButton {
+            get {
+                return ResourceManager.GetString("DiscordButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 加入GHPC Mod社区Discord.
+        /// </summary>
+        public static string DiscordButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiscordButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to - DNS解析问题.
         /// </summary>
         public static string DNSResolutionProblem {
@@ -1959,7 +1980,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 更新前不再显示公告.
+        ///   Looks up a localized string similar to 不自动弹出新公告.
         /// </summary>
         public static string DoNotShowAnnouncementBeforeUpdate {
             get {
@@ -3314,6 +3335,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GameRunningCannotOperate {
             get {
                 return ResourceManager.GetString("GameRunningCannotOperate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC 正在运行。关闭游戏后才能安装、更新、启用/禁用或卸载Mod。.
+        /// </summary>
+        public static string GameRunningModsLockedBanner {
+            get {
+                return ResourceManager.GetString("GameRunningModsLockedBanner", resourceCulture);
             }
         }
         
@@ -5408,6 +5438,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 已删除 {0} 的备份：{1}.
+        /// </summary>
+        public static string ModBackupDeletedCompletely {
+            get {
+                return ResourceManager.GetString("ModBackupDeletedCompletely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 模组备份目录结构已初始化: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
@@ -5593,6 +5632,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModDescription {
             get {
                 return ResourceManager.GetString("ModDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod详情.
+        /// </summary>
+        public static string ModDetailsPageTitle {
+            get {
+                return ResourceManager.GetString("ModDetailsPageTitle", resourceCulture);
             }
         }
         
@@ -6223,6 +6271,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 公告.
+        /// </summary>
+        public static string NavAnnouncement {
+            get {
+                return ResourceManager.GetString("NavAnnouncement", resourceCulture);
             }
         }
         
@@ -9912,11 +9969,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 卸载.
+        /// </summary>
+        public static string UninstallKeepBackupButton {
+            get {
+                return ResourceManager.GetString("UninstallKeepBackupButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 卸载 MelonLoader.
         /// </summary>
         public static string UninstallMelonLoader {
             get {
                 return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 彻底删除.
+        /// </summary>
+        public static string UninstallRemoveCompletelyButton {
+            get {
+                return ResourceManager.GetString("UninstallRemoveCompletelyButton", resourceCulture);
             }
         }
         

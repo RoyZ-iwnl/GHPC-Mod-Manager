@@ -202,6 +202,14 @@ namespace GHPC_Mod_Manager.Helpers
         }
 
         /// <summary>
+        /// 卸载确认：Yes = 卸载并保留备份，No = 彻底删除（连备份一起删），Cancel/None = 取消
+        /// </summary>
+        public static MessageDialogResult ShowUninstallChoice(string message, string? title = null)
+        {
+            return Show(message, title ?? string.Empty, MessageDialogButton.UninstallKeepRemoveCancel, MessageDialogImage.Question);
+        }
+
+        /// <summary>
         /// 显示去设置更新/取消对话框
         /// </summary>
         /// <param name="message">消息内容</param>

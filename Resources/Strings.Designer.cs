@@ -1276,7 +1276,10 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to uninstall {0}?.
+        ///   Looks up a localized string similar to Uninstall {0}?
+        ///
+        ///Uninstall keeps a backup in the game folder (GHPCMM\modbackup\uninstalled), so you can quickly reinstall it later.
+        ///Remove completely also deletes all of its backups..
         /// </summary>
         public static string ConfirmUninstallMod {
             get {
@@ -1941,6 +1944,24 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string DiscordButton {
+            get {
+                return ResourceManager.GetString("DiscordButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join the GHPC modding Discord.
+        /// </summary>
+        public static string DiscordButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiscordButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to - DNS resolution problem.
         /// </summary>
         public static string DNSResolutionProblem {
@@ -1959,7 +1980,7 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide before updated.
+        ///   Looks up a localized string similar to Don&apos;t open new announcements automatically.
         /// </summary>
         public static string DoNotShowAnnouncementBeforeUpdate {
             get {
@@ -3314,6 +3335,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string GameRunningCannotOperate {
             get {
                 return ResourceManager.GetString("GameRunningCannotOperate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GHPC is running. Close the game to install, update, switch on/off or remove mods..
+        /// </summary>
+        public static string GameRunningModsLockedBanner {
+            get {
+                return ResourceManager.GetString("GameRunningModsLockedBanner", resourceCulture);
             }
         }
         
@@ -5425,6 +5455,15 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removed backup of {0}: {1}.
+        /// </summary>
+        public static string ModBackupDeletedCompletely {
+            get {
+                return ResourceManager.GetString("ModBackupDeletedCompletely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mod backup directory structure initialized: {0}.
         /// </summary>
         public static string ModBackupDirectoryCreated {
@@ -5610,6 +5649,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string ModDescription {
             get {
                 return ResourceManager.GetString("ModDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod Details.
+        /// </summary>
+        public static string ModDetailsPageTitle {
+            get {
+                return ResourceManager.GetString("ModDetailsPageTitle", resourceCulture);
             }
         }
         
@@ -6249,6 +6297,15 @@ namespace GHPC_Mod_Manager.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to News.
+        /// </summary>
+        public static string NavAnnouncement {
+            get {
+                return ResourceManager.GetString("NavAnnouncement", resourceCulture);
             }
         }
         
@@ -10019,11 +10076,29 @@ namespace GHPC_Mod_Manager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall.
+        /// </summary>
+        public static string UninstallKeepBackupButton {
+            get {
+                return ResourceManager.GetString("UninstallKeepBackupButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall MelonLoader.
         /// </summary>
         public static string UninstallMelonLoader {
             get {
                 return ResourceManager.GetString("UninstallMelonLoader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove completely.
+        /// </summary>
+        public static string UninstallRemoveCompletelyButton {
+            get {
+                return ResourceManager.GetString("UninstallRemoveCompletelyButton", resourceCulture);
             }
         }
         

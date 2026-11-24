@@ -112,6 +112,58 @@
                         CornerRadius="{DynamicResource RadiusMedium}"
                         Padding="14">
                     <StackPanel>
+                        <!-- 公告（可随时重新打开）和社区Discord -->
+                        <Button Margin="0,0,0,8"
+                                Content="{x:Static resources:Strings.NavAnnouncement}"
+                                Command="{Binding OpenAnnouncementCommand}"
+                                Style="{DynamicResource OutlinedButtonStyle}"
+                                Background="#12000000"
+                                Foreground="{DynamicResource NavRailTextBrush}"
+                                BorderBrush="{DynamicResource NavRailBorderBrush}"/>
+                        <!-- Discord 品牌色 #5865F2 + 标志 -->
+                        <Button Margin="0,0,0,8"
+                                ToolTip="{x:Static resources:Strings.DiscordButtonTooltip}"
+                                Command="{Binding OpenDiscordCommand}"
+                                Foreground="White"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <!-- 与描边按钮同尺寸，悬停时变深而不是变灰，保证白色文字可读 -->
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Chrome"
+                                            Background="#5865F2"
+                                            BorderBrush="#5865F2"
+                                            BorderThickness="1"
+                                            MinHeight="36"
+                                            CornerRadius="{DynamicResource RadiusSmall}">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"
+                                                          Margin="10,8"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Chrome" Property="Background" Value="#4752C4"/>
+                                            <Setter TargetName="Chrome" Property="BorderBrush" Value="#4752C4"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="Chrome" Property="Opacity" Value="0.92"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconDiscord}"
+                                      Fill="White"
+                                      Stretch="Uniform"
+                                      Width="16" Height="16"
+                                      Margin="0,0,6,0"
+                                      VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static resources:Strings.DiscordButton}"
+                                           FontFamily="{DynamicResource DefaultFontFamily}"
+                                           FontSize="{DynamicResource LabelLarge}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Button Content="{Binding DownloadsLabel}"
                                 Command="{Binding OpenDownloadsCommand}"
                                 Style="{DynamicResource OutlinedButtonStyle}"
@@ -201,6 +253,30 @@
             </Border>
 
             <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                <!-- 游戏运行中：说明为什么安装/更新/卸载按钮是灰的 -->
+                <Border Style="{StaticResource PageBannerCardStyle}"
+                        Background="{DynamicResource WarningContainerBrush}"
+                        BorderBrush="{DynamicResource WarningBrush}"
+                        Margin="0,0,0,12"
+                        Visibility="{Binding IsGameRunning, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconWarning}"
+                              Width="20" Height="20"
+                              Margin="0,0,12,0"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource OnWarningContainerBrush}"
+                              StrokeThickness="2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resources:Strings.GameRunningModsLockedBanner}"
+                                   Style="{StaticResource PageSubtitleTextStyle}"
+                                   Foreground="{DynamicResource OnWarningContainerBrush}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
                 <!-- 离线模式横幅 -->
                 <Border Style="{StaticResource PageBannerCardStyle}"
                         Background="{DynamicResource WarningContainerBrush}"

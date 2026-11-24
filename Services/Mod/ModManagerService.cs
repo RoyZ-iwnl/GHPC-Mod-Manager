@@ -16,6 +16,10 @@ public interface IModManagerService
     Task<bool> UpdateModAsync(string modId, string newVersion, IProgress<DownloadProgress>? progress = null, string? operationText = null);
     Task<bool> UninstallModAsync(string modId);
     Task<bool> UninstallManualModAsync(string modId);
+    /// <summary>
+    /// 删除某个Mod的全部卸载/禁用备份（"彻底删除"时在卸载成功后调用）
+    /// </summary>
+    Task<bool> DeleteAllModBackupsAsync(string modId);
     Task<bool> EnableModAsync(string modId);
     Task<bool> DisableModAsync(string modId);
     Task<Dictionary<string, object>> GetModConfigurationAsync(string modId);
@@ -1171,6 +1175,46 @@ public partial class ModManagerService : IModManagerService
         {
             _loggingService.LogError(ex, Strings.ModUninstallError, modId);
             return false;
+        }
+    }
+
+    public Task<bool> DeleteAllModBackupsAsync(string modId)
+    {
+        try
+        {
+            var backupRoot = Path.Combine(_settingsService.Settings.GameRootPath, "GHPCMM", "modbackup");
+            var uninstalledPath = Path.Combine(backupRoot, "uninstalled");
+            var targets = new List<string>();
+
+            // 卸载备份目录名: {modId}_v{version} 或 {modId}_manual
+            // 带上 "_v" 前缀匹配，避免 GHPCCO 误删 GHPCCOOP 的备份
+            if (Directory.Exists(uninstalledPath))
+            {
+                targets.AddRange(Directory.GetDirectories(uninstalledPath).Where(dir =>
+                {
+                    var name = Path.GetFileName(dir);
+                    return name.StartsWith($"{modId}_v", StringComparison.OrdinalIgnoreCase) ||
+                           name.Equals($"{modId}_manual", StringComparison.OrdinalIgnoreCase);
+                }));
+            }
+
+            var disabledPath = Path.Combine(backupRoot, "disabled", modId);
+            if (Directory.Exists(disabledPath))
+                targets.Add(disabledPath);
+
+            foreach (var dir in targets)
+            {
+                PathSecurityHelper.EnsurePathInsideDirectory(dir, backupRoot);
+                Directory.Delete(dir, true);
+                _loggingService.LogInfo(Strings.ModBackupDeletedCompletely, modId, Path.GetFileName(dir));
+            }
+
+            return Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogError(ex, Strings.ModUninstallError, modId);
+            return Task.FromResult(false);
         }
     }
 

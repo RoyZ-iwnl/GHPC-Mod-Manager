@@ -611,6 +611,9 @@ public class MainConfig
     public string? FundingIdsUrlFallback2 { get; set; }
 
     public List<MainConfigProxyServer>? ProxyServers { get; set; }
+
+    // 社区Discord邀请链接（可选），未下发时使用内置地址
+    public string? DiscordUrl { get; set; }
 }
 
 /// <summary>
